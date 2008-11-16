@@ -1,0 +1,2 @@
+$protoc --java_out=src media.proto
+ ./tutorial.thrift

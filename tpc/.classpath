@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen-javabean"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/libthrift.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/protobuf-2.0.2.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
