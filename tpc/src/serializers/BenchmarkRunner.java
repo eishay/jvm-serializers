@@ -16,6 +16,7 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new ProtobufSerializer());
     runner.addObjectSerializer(new ThriftSerializer());
     runner.addObjectSerializer(new JavaSerializer());
+    runner.addObjectSerializer(new StaxSerializer());
     runner.start();
   }
 
@@ -83,6 +84,7 @@ public class BenchmarkRunner
 
       byte[] array = serializer.serialize(serializer.create());
       System.out.println("[" + serializer.getName() + "] Serialized size = " + array.length);
+      System.out.println(new String(array));
     }
   }
 

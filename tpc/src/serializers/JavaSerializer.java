@@ -30,7 +30,7 @@ public class JavaSerializer implements ObjectSerializer<MediaContent>
     }
   }
 
-  public byte[] serialize(MediaContent content) throws IOException
+  public byte[] serialize(MediaContent content) throws IOException, Exception
   {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     ObjectOutputStream oos = new ObjectOutputStream(baos);
