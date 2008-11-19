@@ -114,6 +114,65 @@ public final class MediaContentHolder {
     public boolean hasSize() { return hasSize; }
     public serializers.protobuf.MediaContentHolder.Image.Size getSize() { return size_; }
     
+    @Override
+    public final boolean isInitialized() {
+      if (!hasUri) return false;
+      return true;
+    }
+    
+    @Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (hasUri()) {
+        output.writeString(1, getUri());
+      }
+      if (hasTitle()) {
+        output.writeString(2, getTitle());
+      }
+      if (hasWidth()) {
+        output.writeInt32(3, getWidth());
+      }
+      if (hasHeight()) {
+        output.writeInt32(4, getHeight());
+      }
+      if (hasSize()) {
+        output.writeEnum(5, getSize().getNumber());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    @Override
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (hasUri()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(1, getUri());
+      }
+      if (hasTitle()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(2, getTitle());
+      }
+      if (hasWidth()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, getWidth());
+      }
+      if (hasHeight()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, getHeight());
+      }
+      if (hasSize()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(5, getSize().getNumber());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
     public static serializers.protobuf.MediaContentHolder.Image parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -221,6 +280,97 @@ public final class MediaContentHolder {
         serializers.protobuf.MediaContentHolder.Image returnMe = result;
         result = null;
         return returnMe;
+      }
+      
+      @Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof serializers.protobuf.MediaContentHolder.Image) {
+          return mergeFrom((serializers.protobuf.MediaContentHolder.Image)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(serializers.protobuf.MediaContentHolder.Image other) {
+        if (other == serializers.protobuf.MediaContentHolder.Image.getDefaultInstance()) return this;
+        if (other.hasUri()) {
+          setUri(other.getUri());
+        }
+        if (other.hasTitle()) {
+          setTitle(other.getTitle());
+        }
+        if (other.hasWidth()) {
+          setWidth(other.getWidth());
+        }
+        if (other.hasHeight()) {
+          setHeight(other.getHeight());
+        }
+        if (other.hasSize()) {
+          setSize(other.getSize());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      @Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return mergeFrom(input,
+          com.google.protobuf.ExtensionRegistry.getEmptyRegistry());
+      }
+      
+      @Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistry extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              setUri(input.readString());
+              break;
+            }
+            case 18: {
+              setTitle(input.readString());
+              break;
+            }
+            case 24: {
+              setWidth(input.readInt32());
+              break;
+            }
+            case 32: {
+              setHeight(input.readInt32());
+              break;
+            }
+            case 40: {
+              int rawValue = input.readEnum();
+              serializers.protobuf.MediaContentHolder.Image.Size value = serializers.protobuf.MediaContentHolder.Image.Size.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(5, rawValue);
+              } else {
+                setSize(value);
+              }
+              break;
+            }
+          }
+        }
       }
       
       
@@ -467,6 +617,107 @@ public final class MediaContentHolder {
     public boolean hasCopyright() { return hasCopyright; }
     public java.lang.String getCopyright() { return copyright_; }
     
+    @Override
+    public final boolean isInitialized() {
+      if (!hasUri) return false;
+      return true;
+    }
+    
+    @Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (hasUri()) {
+        output.writeString(1, getUri());
+      }
+      if (hasTitle()) {
+        output.writeString(2, getTitle());
+      }
+      if (hasWidth()) {
+        output.writeInt32(3, getWidth());
+      }
+      if (hasHeight()) {
+        output.writeInt32(4, getHeight());
+      }
+      if (hasFormat()) {
+        output.writeString(5, getFormat());
+      }
+      if (hasDuration()) {
+        output.writeInt64(6, getDuration());
+      }
+      if (hasSize()) {
+        output.writeInt64(7, getSize());
+      }
+      if (hasBitrate()) {
+        output.writeInt32(8, getBitrate());
+      }
+      for (java.lang.String element : getPersonList()) {
+        output.writeString(9, element);
+      }
+      if (hasPlayer()) {
+        output.writeEnum(10, getPlayer().getNumber());
+      }
+      if (hasCopyright()) {
+        output.writeString(11, getCopyright());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    @Override
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (hasUri()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(1, getUri());
+      }
+      if (hasTitle()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(2, getTitle());
+      }
+      if (hasWidth()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, getWidth());
+      }
+      if (hasHeight()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, getHeight());
+      }
+      if (hasFormat()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(5, getFormat());
+      }
+      if (hasDuration()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(6, getDuration());
+      }
+      if (hasSize()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(7, getSize());
+      }
+      if (hasBitrate()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, getBitrate());
+      }
+      for (java.lang.String element : getPersonList()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(9, element);
+      }
+      if (hasPlayer()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(10, getPlayer().getNumber());
+      }
+      if (hasCopyright()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(11, getCopyright());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
     public static serializers.protobuf.MediaContentHolder.Media parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -578,6 +829,142 @@ public final class MediaContentHolder {
         serializers.protobuf.MediaContentHolder.Media returnMe = result;
         result = null;
         return returnMe;
+      }
+      
+      @Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof serializers.protobuf.MediaContentHolder.Media) {
+          return mergeFrom((serializers.protobuf.MediaContentHolder.Media)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(serializers.protobuf.MediaContentHolder.Media other) {
+        if (other == serializers.protobuf.MediaContentHolder.Media.getDefaultInstance()) return this;
+        if (other.hasUri()) {
+          setUri(other.getUri());
+        }
+        if (other.hasTitle()) {
+          setTitle(other.getTitle());
+        }
+        if (other.hasWidth()) {
+          setWidth(other.getWidth());
+        }
+        if (other.hasHeight()) {
+          setHeight(other.getHeight());
+        }
+        if (other.hasFormat()) {
+          setFormat(other.getFormat());
+        }
+        if (other.hasDuration()) {
+          setDuration(other.getDuration());
+        }
+        if (other.hasSize()) {
+          setSize(other.getSize());
+        }
+        if (other.hasBitrate()) {
+          setBitrate(other.getBitrate());
+        }
+        if (!other.person_.isEmpty()) {
+          if (result.person_.isEmpty()) {
+            result.person_ = new java.util.ArrayList<java.lang.String>();
+          }
+          result.person_.addAll(other.person_);
+        }
+        if (other.hasPlayer()) {
+          setPlayer(other.getPlayer());
+        }
+        if (other.hasCopyright()) {
+          setCopyright(other.getCopyright());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      @Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return mergeFrom(input,
+          com.google.protobuf.ExtensionRegistry.getEmptyRegistry());
+      }
+      
+      @Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistry extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              setUri(input.readString());
+              break;
+            }
+            case 18: {
+              setTitle(input.readString());
+              break;
+            }
+            case 24: {
+              setWidth(input.readInt32());
+              break;
+            }
+            case 32: {
+              setHeight(input.readInt32());
+              break;
+            }
+            case 42: {
+              setFormat(input.readString());
+              break;
+            }
+            case 48: {
+              setDuration(input.readInt64());
+              break;
+            }
+            case 56: {
+              setSize(input.readInt64());
+              break;
+            }
+            case 64: {
+              setBitrate(input.readInt32());
+              break;
+            }
+            case 74: {
+              addPerson(input.readString());
+              break;
+            }
+            case 80: {
+              int rawValue = input.readEnum();
+              serializers.protobuf.MediaContentHolder.Media.Player value = serializers.protobuf.MediaContentHolder.Media.Player.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(10, rawValue);
+              } else {
+                setPlayer(value);
+              }
+              break;
+            }
+            case 90: {
+              setCopyright(input.readString());
+              break;
+            }
+          }
+        }
       }
       
       
@@ -843,6 +1230,49 @@ public final class MediaContentHolder {
     public boolean hasMedia() { return hasMedia; }
     public serializers.protobuf.MediaContentHolder.Media getMedia() { return media_; }
     
+    @Override
+    public final boolean isInitialized() {
+      for (serializers.protobuf.MediaContentHolder.Image element : getImageList()) {
+        if (!element.isInitialized()) return false;
+      }
+      if (hasMedia()) {
+        if (!getMedia().isInitialized()) return false;
+      }
+      return true;
+    }
+    
+    @Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (serializers.protobuf.MediaContentHolder.Image element : getImageList()) {
+        output.writeMessage(1, element);
+      }
+      if (hasMedia()) {
+        output.writeMessage(2, getMedia());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    @Override
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      for (serializers.protobuf.MediaContentHolder.Image element : getImageList()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, element);
+      }
+      if (hasMedia()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getMedia());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
     public static serializers.protobuf.MediaContentHolder.MediaContent parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -954,6 +1384,80 @@ public final class MediaContentHolder {
         serializers.protobuf.MediaContentHolder.MediaContent returnMe = result;
         result = null;
         return returnMe;
+      }
+      
+      @Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof serializers.protobuf.MediaContentHolder.MediaContent) {
+          return mergeFrom((serializers.protobuf.MediaContentHolder.MediaContent)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(serializers.protobuf.MediaContentHolder.MediaContent other) {
+        if (other == serializers.protobuf.MediaContentHolder.MediaContent.getDefaultInstance()) return this;
+        if (!other.image_.isEmpty()) {
+          if (result.image_.isEmpty()) {
+            result.image_ = new java.util.ArrayList<serializers.protobuf.MediaContentHolder.Image>();
+          }
+          result.image_.addAll(other.image_);
+        }
+        if (other.hasMedia()) {
+          mergeMedia(other.getMedia());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      @Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return mergeFrom(input,
+          com.google.protobuf.ExtensionRegistry.getEmptyRegistry());
+      }
+      
+      @Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistry extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              serializers.protobuf.MediaContentHolder.Image.Builder subBuilder = serializers.protobuf.MediaContentHolder.Image.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addImage(subBuilder.buildPartial());
+              break;
+            }
+            case 18: {
+              serializers.protobuf.MediaContentHolder.Media.Builder subBuilder = serializers.protobuf.MediaContentHolder.Media.newBuilder();
+              if (hasMedia()) {
+                subBuilder.mergeFrom(getMedia());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setMedia(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
       }
       
       
@@ -1079,8 +1583,8 @@ public final class MediaContentHolder {
       "\001(\t\"\035\n\006Player\022\010\n\004JAVA\020\000\022\t\n\005FLASH\020\000\"f\n\014Me" +
       "diaContent\022*\n\005image\030\001 \003(\0132\033.serializers." +
       "protobuf.Image\022*\n\005media\030\002 \001(\0132\033.serializ" +
-      "ers.protobuf.MediaB*\n\024serializers.protob" +
-      "ufB\022MediaContentHolder";
+      "ers.protobuf.MediaB,\n\024serializers.protob" +
+      "ufB\022MediaContentHolderH\001";
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
         public com.google.protobuf.ExtensionRegistry assignDescriptors(
