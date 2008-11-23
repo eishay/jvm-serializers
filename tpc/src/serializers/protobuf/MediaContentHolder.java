@@ -1546,6 +1546,110 @@ public final class MediaContentHolder {
     }
   }
   
+  public static abstract class MediaServer
+      implements com.google.protobuf.Service {
+    public abstract void updateMedia(
+        com.google.protobuf.RpcController controller,
+        serializers.protobuf.MediaContentHolder.MediaContent request,
+        com.google.protobuf.RpcCallback<serializers.protobuf.MediaContentHolder.MediaContent> done);
+    
+    public static final
+        com.google.protobuf.Descriptors.ServiceDescriptor
+        getDescriptor() {
+      return serializers.protobuf.MediaContentHolder.getDescriptor().getServices().get(0);
+    }
+    public final com.google.protobuf.Descriptors.ServiceDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    
+    public final void callMethod(
+        com.google.protobuf.Descriptors.MethodDescriptor method,
+        com.google.protobuf.RpcController controller,
+        com.google.protobuf.Message request,
+        com.google.protobuf.RpcCallback<
+          com.google.protobuf.Message> done) {
+      if (method.getService() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "Service.callMethod() given method descriptor for wrong " +
+          "service type.");
+      }
+      switch(method.getIndex()) {
+        case 0:
+          this.updateMedia(controller, (serializers.protobuf.MediaContentHolder.MediaContent)request,
+            com.google.protobuf.RpcUtil.<serializers.protobuf.MediaContentHolder.MediaContent>specializeCallback(
+              done));
+          return;
+        default:
+          throw new java.lang.RuntimeException("Can't get here.");
+      }
+    }
+    
+    public final com.google.protobuf.Message
+        getRequestPrototype(
+        com.google.protobuf.Descriptors.MethodDescriptor method) {
+      if (method.getService() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "Service.getRequestPrototype() given method " +
+          "descriptor for wrong service type.");
+      }
+      switch(method.getIndex()) {
+        case 0:
+          return serializers.protobuf.MediaContentHolder.MediaContent.getDefaultInstance();
+        default:
+          throw new java.lang.RuntimeException("Can't get here.");
+      }
+    }
+    
+    public final com.google.protobuf.Message
+        getResponsePrototype(
+        com.google.protobuf.Descriptors.MethodDescriptor method) {
+      if (method.getService() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "Service.getResponsePrototype() given method " +
+          "descriptor for wrong service type.");
+      }
+      switch(method.getIndex()) {
+        case 0:
+          return serializers.protobuf.MediaContentHolder.MediaContent.getDefaultInstance();
+        default:
+          throw new java.lang.RuntimeException("Can't get here.");
+      }
+    }
+    
+    public static Stub newStub(
+        com.google.protobuf.RpcChannel channel) {
+      return new Stub(channel);
+    }
+    
+    public static final class Stub extends serializers.protobuf.MediaContentHolder.MediaServer {
+      private Stub(com.google.protobuf.RpcChannel channel) {
+        this.channel = channel;
+      }
+      
+      private final com.google.protobuf.RpcChannel channel;
+      
+      public com.google.protobuf.RpcChannel getChannel() {
+        return channel;
+      }
+      
+      public void updateMedia(
+          com.google.protobuf.RpcController controller,
+          serializers.protobuf.MediaContentHolder.MediaContent request,
+          com.google.protobuf.RpcCallback<serializers.protobuf.MediaContentHolder.MediaContent> done) {
+        channel.callMethod(
+          getDescriptor().getMethods().get(0),
+          controller,
+          request,
+          serializers.protobuf.MediaContentHolder.MediaContent.getDefaultInstance(),
+          com.google.protobuf.RpcUtil.generalizeCallback(
+            done,
+            serializers.protobuf.MediaContentHolder.MediaContent.class,
+            serializers.protobuf.MediaContentHolder.MediaContent.getDefaultInstance()));
+      }
+    }
+  }
+  
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_serializers_protobuf_Image_descriptor;
   private static
@@ -1583,8 +1687,11 @@ public final class MediaContentHolder {
       "\001(\t\"\035\n\006Player\022\010\n\004JAVA\020\000\022\t\n\005FLASH\020\000\"f\n\014Me" +
       "diaContent\022*\n\005image\030\001 \003(\0132\033.serializers." +
       "protobuf.Image\022*\n\005media\030\002 \001(\0132\033.serializ" +
-      "ers.protobuf.MediaB,\n\024serializers.protob" +
-      "ufB\022MediaContentHolderH\001";
+      "ers.protobuf.Media2d\n\013MediaServer\022U\n\013upd" +
+      "ateMedia\022\".serializers.protobuf.MediaCon" +
+      "tent\032\".serializers.protobuf.MediaContent" +
+      "B,\n\024serializers.protobufB\022MediaContentHo" +
+      "lderH\001";
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
         public com.google.protobuf.ExtensionRegistry assignDescriptors(

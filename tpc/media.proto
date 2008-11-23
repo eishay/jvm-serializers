@@ -40,3 +40,8 @@ message MediaContent {
   repeated Image image = 1;
   optional Media media = 2;
 }
+
+service MediaServer {
+  rpc updateMedia(MediaContent) returns(MediaContent);
+}
+
