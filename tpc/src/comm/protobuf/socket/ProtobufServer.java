@@ -1,4 +1,4 @@
-package comm.protobuf;
+package comm.protobuf.socket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
