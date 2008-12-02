@@ -21,12 +21,10 @@ public class StaxSerializer extends JavaSerializer
 {
   public MediaContent deserialize (byte[] array) throws Exception
   {
-    MediaContent content = new MediaContent();
-
     XMLInputFactory factory = XMLInputFactory.newInstance();
     XMLStreamReader parser = factory.createXMLStreamReader(new ByteArrayInputStream(array));
     searchTag(parser, "mc");
-    content.setMedia(readMedia(parser));
+    MediaContent content = new MediaContent(readMedia(parser));
     content.addImage(readImage(parser));
     content.addImage(readImage(parser));
     return content;

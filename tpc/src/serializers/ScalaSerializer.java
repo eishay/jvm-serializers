@@ -5,15 +5,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-import serializers.java.Image;
-import serializers.java.Media;
-import serializers.java.MediaContent;
-import serializers.java.Image.Size;
-import serializers.java.Media.Player;
+import scala.List;
+import serializers.scala.Image;
+import serializers.scala.Media;
+import serializers.scala.MediaContent;
+import serializers.scala.Player;
+import serializers.scala.Size;
 
 
-public class JavaSerializer implements ObjectSerializer<MediaContent>
+
+public class ScalaSerializer implements ObjectSerializer<MediaContent>
 {
 
   public MediaContent deserialize (byte[] array) throws Exception
@@ -41,21 +45,23 @@ public class JavaSerializer implements ObjectSerializer<MediaContent>
 
   public MediaContent create()
   {
-    Media media = new Media(null, "video/mpg4", Player.JAVA, "Javaone Keynote", "http://javaone.com/keynote.mpg", 1234567, 123, 0, 0, 0);
-    media.addToPerson("Bill Gates");
-    media.addToPerson("Steve Jobs");
+    Media media = new Media("http://javaone.com/keynote.mpg", "Javaone Keynote", 0, 0, "video/mpg4", 1234567, 0, 123, null, Player.JAVA());
+    media.addPerson("Bill Gates");
+    media.addPerson("Steve Jobs");
 
-    Image image1 = new Image(0, "Javaone Keynote", "A", 0, Size.LARGE);
-    Image image2 = new Image(0, "Javaone Keynote", "B", 0, Size.SMALL);
+    Image image1 = new Image("A", "Javaone Keynote", 0, 0, Size.LARGE());
+
+    Image image2 = new Image("B", "Javaone Keynote", 0, 0, Size.LARGE());
 
     MediaContent content = new MediaContent(media);
     content.addImage(image1);
     content.addImage(image2);
+    
     return content;
   }
 
   public String getName ()
   {
-    return "java";
+    return "scala";
   }
 }

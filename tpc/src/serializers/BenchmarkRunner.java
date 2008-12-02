@@ -5,7 +5,8 @@ import java.util.Set;
 
 public class BenchmarkRunner
 {
-  public final static int ITERATIONS = 200000;
+  public final static int ITERATIONS = 2000;
+  public final static int TRIALS = 20;
   
   @SuppressWarnings("unchecked")
   private Set<ObjectSerializer> _serializers = new HashSet<ObjectSerializer>();
@@ -16,6 +17,7 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new ProtobufSerializer());
     runner.addObjectSerializer(new ThriftSerializer());
     runner.addObjectSerializer(new JavaSerializer());
+    runner.addObjectSerializer(new ScalaSerializer());
     runner.addObjectSerializer(new StaxSerializer());
     runner.start();
   }
@@ -29,24 +31,24 @@ public class BenchmarkRunner
   private <T> double createObjects(ObjectSerializer<T> serializer) throws Exception
   {
     System.gc();
-    long start = System.currentTimeMillis();
-    for(int i = 0; i < ITERATIONS; i++)
+    long start = System.nanoTime();
+    for(int i = 0; i < ITERATIONS * 10; i++)
     {
       serializer.create();
     }
-    return timePerIteration(start);
+    return timePerIteration(start) / 10d;
   }
 
   private double timePerIteration (long start)
   {
-    return ((double)System.currentTimeMillis() - (double)start) / (double)ITERATIONS;
+    return ((double)System.nanoTime() - (double)start) / (double)(ITERATIONS);
   }
   
   private <T> double serializeObjects(ObjectSerializer<T> serializer) throws Exception
   {
     System.gc();
     T obj = serializer.create();
-    long start = System.currentTimeMillis();
+    long start = System.nanoTime();
     for(int i = 0; i < ITERATIONS; i++)
     {
       serializer.serialize(obj);
@@ -58,7 +60,7 @@ public class BenchmarkRunner
   {
     System.gc();
     byte[] array = serializer.serialize(serializer.create());
-    long start = System.currentTimeMillis();
+    long start = System.nanoTime();
     for(int i = 0; i < ITERATIONS; i++)
     {
       serializer.deserialize(array);
@@ -71,20 +73,23 @@ public class BenchmarkRunner
   {
     warmObjects();
 
+    System.out.printf(" ,Object create, Serializaton, Deserialization, Serilized Size\n");
     for(ObjectSerializer serializer: _serializers)
     {
-      double time = createObjects(serializer);
-      System.out.printf("[%s] Object create time = %1.5f mili\n", serializer.getName(), time);
+      double timeCreate = createObjects(serializer);
+      for(int i = 0; i < TRIALS; i++)
+        timeCreate = Math.min(timeCreate, createObjects(serializer));
 
-      time = serializeObjects(serializer);
-      System.out.printf("[%s] Object serialize time = %1.5f mili\n", serializer.getName(), time);
+      double timeSer = serializeObjects(serializer);
+      for(int i = 0; i < TRIALS; i++)
+        timeSer = Math.min(timeSer, serializeObjects(serializer));
 
-      time = deserializeObjects(serializer);
-      System.out.printf("[%s] Object dserialize time = %1.5f mili\n", serializer.getName(), time);
+      double timeDSer = deserializeObjects(serializer);
+      for(int i = 0; i < TRIALS; i++)
+        timeDSer = Math.min(timeDSer, deserializeObjects(serializer));
 
       byte[] array = serializer.serialize(serializer.create());
-      System.out.println("[" + serializer.getName() + "] Serialized size = " + array.length);
-      System.out.println(new String(array));
+      System.out.printf("%s, %1.5f, %1.5f, %1.5f, %d\n", serializer.getName(), timeCreate, timeSer, timeDSer, array.length);
     }
   }
 

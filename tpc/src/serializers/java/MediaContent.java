@@ -8,8 +8,13 @@ public class MediaContent  implements Serializable
 {
   private static final long serialVersionUID = 1L;
   private List<Image> _images;
-  private Media _media;
+  private final Media _media;
   
+  public MediaContent (Media media)
+  {
+    _media = media;
+  }
+
   public void addImage (Image image)
   {
     if(_images == null)
@@ -22,11 +27,6 @@ public class MediaContent  implements Serializable
   public Image getImage (int i)
   {
     return _images.get(i);
-  }
-  
-  public void setMedia (Media media)
-  {
-    _media = media;
   }
   
   public Media getMedia ()
