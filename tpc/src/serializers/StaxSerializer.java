@@ -19,14 +19,22 @@ import serializers.java.Media.Player;
 
 public class StaxSerializer extends JavaSerializer
 {
+    final XMLInputFactory inFactory;
+    final XMLOutputFactory outFactory;
+
+    public StaxSerializer() {
+      inFactory = XMLInputFactory.newInstance();
+      outFactory = XMLOutputFactory.newInstance();
+    }
+
   public MediaContent deserialize (byte[] array) throws Exception
   {
-    XMLInputFactory factory = XMLInputFactory.newInstance();
-    XMLStreamReader parser = factory.createXMLStreamReader(new ByteArrayInputStream(array));
+    XMLStreamReader parser = inFactory.createXMLStreamReader(new ByteArrayInputStream(array));
     searchTag(parser, "mc");
     MediaContent content = new MediaContent(readMedia(parser));
     content.addImage(readImage(parser));
     content.addImage(readImage(parser));
+    parser.close();
     return content;
   }
 
@@ -79,8 +87,7 @@ public class StaxSerializer extends JavaSerializer
   public byte[] serialize(MediaContent content) throws Exception
   {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    XMLOutputFactory factory = XMLOutputFactory.newInstance();
-    XMLStreamWriter writer = factory.createXMLStreamWriter(out);
+    XMLStreamWriter writer = outFactory.createXMLStreamWriter(out);
     writer.writeStartDocument("ISO-8859-1", "1.0");
     writer.writeStartElement("mc");
     writeMedia(writer, content.getMedia());
