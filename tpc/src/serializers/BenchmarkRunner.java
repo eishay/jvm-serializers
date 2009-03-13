@@ -19,6 +19,7 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new JavaSerializer());
     runner.addObjectSerializer(new ScalaSerializer());
     runner.addObjectSerializer(new StaxSerializer());
+    runner.addObjectSerializer(new JsonSerializer());
     runner.start();
   }
 
