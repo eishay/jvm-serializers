@@ -6,6 +6,6 @@ class MediaContent (_media: Media){
   def media() = _media
 
   def addImage(image: Image){
-      image :: _images
+      _images = image :: _images
   }
 }
