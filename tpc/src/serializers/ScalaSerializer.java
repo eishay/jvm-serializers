@@ -5,10 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 
-import scala.List;
 import serializers.scala.Image;
 import serializers.scala.Media;
 import serializers.scala.MediaContent;
@@ -56,7 +53,7 @@ public class ScalaSerializer implements ObjectSerializer<MediaContent>
     MediaContent content = new MediaContent(media);
     content.addImage(image1);
     content.addImage(image2);
-    
+
     return content;
   }
 

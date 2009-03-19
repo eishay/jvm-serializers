@@ -7,7 +7,7 @@ public class BenchmarkRunner
 {
   public final static int ITERATIONS = 2000;
   public final static int TRIALS = 20;
-  
+
   @SuppressWarnings("unchecked")
   private Set<ObjectSerializer> _serializers = new HashSet<ObjectSerializer>();
 
@@ -17,9 +17,12 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new ProtobufSerializer());
     runner.addObjectSerializer(new ThriftSerializer());
     runner.addObjectSerializer(new JavaSerializer());
+    runner.addObjectSerializer(new JavaExtSerializer());
     runner.addObjectSerializer(new ScalaSerializer());
     runner.addObjectSerializer(new StaxSerializer());
     runner.addObjectSerializer(new JsonSerializer());
+    runner.addObjectSerializer(new XStreamSerializer(false));
+    runner.addObjectSerializer(new XStreamSerializer(true));
     runner.start();
   }
 
@@ -44,7 +47,7 @@ public class BenchmarkRunner
   {
     return ((double)System.nanoTime() - (double)start) / (double)(ITERATIONS);
   }
-  
+
   private <T> double serializeObjects(ObjectSerializer<T> serializer) throws Exception
   {
     System.gc();
@@ -56,7 +59,7 @@ public class BenchmarkRunner
     }
     return timePerIteration(start);
   }
-  
+
   private <T> double deserializeObjects(ObjectSerializer<T> serializer) throws Exception
   {
     System.gc();
@@ -68,13 +71,13 @@ public class BenchmarkRunner
     }
     return timePerIteration(start);
   }
-  
+
   @SuppressWarnings("unchecked")
   private void start () throws Exception
   {
     warmObjects();
 
-    System.out.printf(" ,Object create, Serializaton, Deserialization, Serilized Size\n");
+    System.out.printf("%-30s, %15s, %15s, %15s, %10s\n", " ", "Object create", "Serializaton", "Deserialization", "Serialized Size");
     for(ObjectSerializer serializer: _serializers)
     {
       double timeCreate = createObjects(serializer);
@@ -90,7 +93,7 @@ public class BenchmarkRunner
         timeDSer = Math.min(timeDSer, deserializeObjects(serializer));
 
       byte[] array = serializer.serialize(serializer.create());
-      System.out.printf("%s, %1.5f, %1.5f, %1.5f, %d\n", serializer.getName(), timeCreate, timeSer, timeDSer, array.length);
+      System.out.printf("%-30s, %15.5f, %15.5f, %15.5f, %10d\n", serializer.getName(), timeCreate, timeSer, timeDSer, array.length);
     }
   }
 

@@ -8,7 +8,6 @@
 	<classpathentry kind="lib" path="lib/protobuf-2.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/scala-library.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="lib" path="lib/commons-httpclient-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.3.jar"/>
@@ -16,5 +15,6 @@
 	<classpathentry kind="lib" path="lib/jackson-asl-0.9.4.jar"/>
 	<classpathentry kind="lib" path="lib/stax2-api-3.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/woodstox-core-asl-4.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/xstream-1.3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
