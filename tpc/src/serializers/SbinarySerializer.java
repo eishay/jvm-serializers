@@ -1,43 +1,24 @@
 package serializers;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 import serializers.scala.Image;
 import serializers.scala.Media;
 import serializers.scala.MediaContent;
 import serializers.scala.Player;
+import serializers.scala.SbinarySerializerSupport;
 import serializers.scala.Size;
 
 
-
-public class ScalaSerializer implements ObjectSerializer<MediaContent>
+public class SbinarySerializer implements ObjectSerializer<MediaContent>
 {
-
   public MediaContent deserialize (byte[] array) throws Exception
   {
-    ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(array));
-    try
-    {
-      return (MediaContent)ois.readObject();
-    }
-    finally
-    {
-      ois.close();
-    }
+    return SbinarySerializerSupport.deserialize(array);
   }
-
   public byte[] serialize(MediaContent content) throws IOException, Exception
   {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    ObjectOutputStream oos = new ObjectOutputStream(baos);
-    oos.writeObject(content);
-    oos.close();
-    byte[] array = baos.toByteArray();
-    return array;
+    return SbinarySerializerSupport.serialize(content);
   }
 
   public MediaContent create()
@@ -59,6 +40,6 @@ public class ScalaSerializer implements ObjectSerializer<MediaContent>
 
   public String getName ()
   {
-    return "scala";
+    return "sbinary";
   }
 }

@@ -25,6 +25,8 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new XStreamSerializer(true, false));
     runner.addObjectSerializer(new XStreamSerializer(true, true));
     runner.addObjectSerializer(new JavolutionXMLFormatSerializer());
+    runner.addObjectSerializer(new SbinarySerializer());
+    //runner.addObjectSerializer(new YamlSerializer());
     runner.start();
   }
 
