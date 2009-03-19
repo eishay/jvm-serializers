@@ -21,8 +21,10 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new ScalaSerializer());
     runner.addObjectSerializer(new StaxSerializer());
     runner.addObjectSerializer(new JsonSerializer());
-    runner.addObjectSerializer(new XStreamSerializer(false));
-    runner.addObjectSerializer(new XStreamSerializer(true));
+    runner.addObjectSerializer(new XStreamSerializer(false, false));
+    runner.addObjectSerializer(new XStreamSerializer(true, false));
+    runner.addObjectSerializer(new XStreamSerializer(true, true));
+    runner.addObjectSerializer(new JavolutionXMLFormatSerializer());
     runner.start();
   }
 

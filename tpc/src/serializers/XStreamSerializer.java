@@ -10,6 +10,8 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.thoughtworks.xstream.io.xml.XppDriver;
 
 import serializers.java.Image;
 import serializers.java.Media;
@@ -19,15 +21,22 @@ import serializers.java.Media.Player;
 
 public class XStreamSerializer implements ObjectSerializer<MediaContent>
 {
-  private XStream xstream = new XStream();
-  private String name = "xstream default";
+  private XStream xstream = null;
+  private String name = "xstream";
 
-  public XStreamSerializer(boolean withSpecialConverter) throws Exception
+  public XStreamSerializer(boolean withSpecialConverter, boolean withStax) throws Exception
   {
+    if (withStax) {
+      xstream = new XStream(new StaxDriver());
+      name = name + "(stax)";
+    } else {
+      xstream = new XStream(new XppDriver());
+      name = name + "(xpp)";
+    }
     if (withSpecialConverter)
     {
       registerConverters();
-      name = "xstream with conv";
+      name = name + " with conv";
     }
   }
 
@@ -42,8 +51,7 @@ public class XStreamSerializer implements ObjectSerializer<MediaContent>
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     xstream.toXML(content, baos);
     baos.close();
-    byte[] array = baos.toByteArray();
-    return array;
+    return baos.toByteArray();
   }
 
   public MediaContent create()
@@ -68,10 +76,12 @@ public class XStreamSerializer implements ObjectSerializer<MediaContent>
 
   public void registerConverters() throws Exception
   {
-    ImageConverter imgCnv = new ImageConverter();
-    xstream.registerConverter(imgCnv);
-    MediaConverter mediaCnv = new MediaConverter();
-    xstream.registerConverter(mediaCnv);
+    xstream.alias("im", Image.class);
+    xstream.registerConverter(new ImageConverter());
+
+    xstream.alias("md", Image.class);
+    xstream.registerConverter(new MediaConverter());
+
     xstream.alias("mc", MediaContent.class);
     xstream.registerConverter(new MediaContentConverter());
   }
@@ -83,7 +93,7 @@ public class XStreamSerializer implements ObjectSerializer<MediaContent>
     public void marshal(Object obj, HierarchicalStreamWriter writer, MarshallingContext context)
     {
       MediaContent content = (MediaContent) obj;
-      writer.startNode("mc");
+      writer.startNode("md");
       context.convertAnother(content.getMedia());
       writer.endNode();
       writer.startNode("im");
@@ -130,7 +140,7 @@ public class XStreamSerializer implements ObjectSerializer<MediaContent>
       writer.addAttribute("tl", image.getTitle());
       writer.addAttribute("wd", String.valueOf(image.getWidth()));
       writer.addAttribute("hg", String.valueOf(image.getHeight()));
-      writer.addAttribute("sz", String.valueOf(image.getSize()));
+      writer.addAttribute("sz", String.valueOf(image.getSize().ordinal()));
     }
 
     @Override
@@ -141,7 +151,7 @@ public class XStreamSerializer implements ObjectSerializer<MediaContent>
       image.setTitle(reader.getAttribute("tl"));
       image.setWidth(Integer.valueOf(reader.getAttribute("wd")));
       image.setHeight(Integer.valueOf(reader.getAttribute("hg")));
-      image.setSize(Size.valueOf(reader.getAttribute("sz")));
+      image.setSize(Size.values()[Integer.valueOf(reader.getAttribute("sz"))]);
       return image;
     }
 
@@ -161,7 +171,7 @@ public class XStreamSerializer implements ObjectSerializer<MediaContent>
     public void marshal(Object obj, HierarchicalStreamWriter writer, MarshallingContext context)
     {
       Media media = (Media) obj;
-      writer.addAttribute("pl", media.getPlayer().name());
+      writer.addAttribute("pl", String.valueOf(media.getPlayer().ordinal()));
       writer.addAttribute("ul", media.getUri());
       writer.addAttribute("tl", media.getTitle());
       writer.addAttribute("wd", String.valueOf(media.getWidth()));
@@ -182,7 +192,7 @@ public class XStreamSerializer implements ObjectSerializer<MediaContent>
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context)
     {
       Media media = new Media();
-      media.setPlayer(Player.valueOf(reader.getAttribute("pl")));
+      media.setPlayer(Player.values()[Integer.valueOf(reader.getAttribute("pl"))]);
       media.setUri(reader.getAttribute("ul"));
       media.setTitle(reader.getAttribute("tl"));
       media.setWidth(Integer.valueOf(reader.getAttribute("wd")));
