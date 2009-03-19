@@ -1,26 +1,21 @@
 package serializers.scala
 
-import Player._
 @serializable
-class Media (_uri: String, _title: String,
-             _width: Int, _height: Int, _format: String,
-             _duration: Long, _size: Long,
-             _bitrate: Int,
-             _copyright: String,
-             _player: Player.Value){
+class Media (val uri: String, val title: String,
+             val width: Int, val height: Int,  val format: String,
+             val duration: Long, val size: Long,
+             val bitrate: Int,
+             val copyright: Option[String],
+             val player: Player.Value){
 
-  var _persons: List[String] = Nil
-  def uri() = _uri
-  def title() = _title
-  def width() = _width
-  def height() = _height
-  def format() = _format
-  def duration() = _duration
-  def size() = _size
-  def bitrate() = _bitrate
-  def copyright() = _copyright
-  def persons() = _persons
-  def player() = _player
+  def this(uri: String, title: String,
+           width: Int, height: Int,  format: String,
+           duration: Long, size: Long,
+           bitrate: Int,
+           player: Player.Value) = this(uri, title, width, height, format, duration, size, bitrate, None, player)
+
+  private var _persons: List[String] = Nil
+  def persons = _persons
 
   def addPerson(persons: String){
       _persons = persons :: _persons

@@ -1,11 +1,10 @@
 package serializers.scala
 @serializable
-class MediaContent (_media: Media){
+class MediaContent (val media: Media){
   var _images: List[Image] = Nil
-  def images() = _images
-  def media() = _media
+  def images = _images
 
   def addImage(image: Image){
-      _images = image :: _images
+    _images = image :: _images
   }
 }
