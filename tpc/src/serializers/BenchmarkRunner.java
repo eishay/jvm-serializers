@@ -1,6 +1,6 @@
 package serializers;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class BenchmarkRunner
@@ -9,7 +9,7 @@ public class BenchmarkRunner
   public final static int TRIALS = 20;
 
   @SuppressWarnings("unchecked")
-  private Set<ObjectSerializer> _serializers = new HashSet<ObjectSerializer>();
+  private Set<ObjectSerializer> _serializers = new LinkedHashSet<ObjectSerializer>();
 
   public static void main(String ...args) throws Exception
   {
