@@ -5,12 +5,8 @@ import java.util.Set;
 
 public class BenchmarkRunner
 {
-    /*
   public final static int ITERATIONS = 2000;
   public final static int TRIALS = 20;
-    */
-  public final static int ITERATIONS = 500;
-  public final static int TRIALS = 5;
 
   @SuppressWarnings("unchecked")
   private Set<ObjectSerializer> _serializers = new HashSet<ObjectSerializer>();
@@ -25,9 +21,9 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new ScalaSerializer());
     runner.addObjectSerializer(new StaxSerializer());
     runner.addObjectSerializer(new JsonSerializer());
-    runner.addObjectSerializer(new XStreamSerializer("xstream ()", false, false));
-    runner.addObjectSerializer(new XStreamSerializer("xstream ()", true, false));
-    runner.addObjectSerializer(new XStreamSerializer("xstream ()", true, true));
+    runner.addObjectSerializer(new XStreamSerializer("xstream (xpp)", false, false));
+    runner.addObjectSerializer(new XStreamSerializer("xstream (stax)", true, false));
+    runner.addObjectSerializer(new XStreamSerializer("xstream (stax with conv)", true, true));
     runner.addObjectSerializer(new JavolutionXMLFormatSerializer());
     runner.addObjectSerializer(new SbinarySerializer());
     //runner.addObjectSerializer(new YamlSerializer());
