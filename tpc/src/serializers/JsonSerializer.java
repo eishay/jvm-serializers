@@ -12,29 +12,16 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonParser;
 
-public class JsonSerializer implements ObjectSerializer<MediaContent>
+public class JsonSerializer extends StdMediaSerializer
 {
   private final JsonFactory _factory;
 
   public JsonSerializer()
   {
-    _factory = new JsonFactory();
+      super("json (jackson)");
+      _factory = new JsonFactory();
   }
 
-  public MediaContent create() throws Exception
-  {
-    Media media = new Media(null, "video/mpg4", Media.Player.JAVA, "Javaone Keynote", "http://javaone.com/keynote.mpg", 1234567, 123, 0, 0, 0);
-    media.addToPerson("Bill Gates");
-    media.addToPerson("Steve Jobs");
-
-    Image image1 = new Image(0, "Javaone Keynote", "A", 0, Image.Size.LARGE);
-    Image image2 = new Image(0, "Javaone Keynote", "B", 0, Image.Size.SMALL);
-
-    MediaContent content = new MediaContent(media);
-    content.addImage(image1);
-    content.addImage(image2);
-    return content;
-  }
 
   public byte[] serialize(MediaContent content) throws Exception
   {
@@ -170,10 +157,5 @@ public class JsonSerializer implements ObjectSerializer<MediaContent>
     }
 
     throw new IllegalStateException("Could not find expected token: " + name);
-  }
-
-  public String getName()
-  {
-    return "json";
   }
 }

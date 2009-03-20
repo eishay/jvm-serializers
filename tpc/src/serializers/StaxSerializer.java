@@ -16,15 +16,15 @@ import serializers.java.MediaContent;
 import serializers.java.Image.Size;
 import serializers.java.Media.Player;
 
-
-public class StaxSerializer extends JavaSerializer
+public class StaxSerializer extends StdMediaSerializer
 {
     final XMLInputFactory inFactory;
     final XMLOutputFactory outFactory;
 
     public StaxSerializer() {
-      inFactory = XMLInputFactory.newInstance();
-      outFactory = XMLOutputFactory.newInstance();
+        super("Stax/woodstox");
+        inFactory = XMLInputFactory.newInstance();
+        outFactory = XMLOutputFactory.newInstance();
     }
 
   public MediaContent deserialize (byte[] array) throws Exception
@@ -133,10 +133,5 @@ public class StaxSerializer extends JavaSerializer
     writeElement(writer, "pr", media.getPersons().get(0));
     writeElement(writer, "pr", media.getPersons().get(1));
     writer.writeEndElement();
-  }
-
-  public String getName ()
-  {
-    return "stax";
   }
 }

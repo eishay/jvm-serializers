@@ -1,6 +1,5 @@
 package serializers;
 
-
 public interface ObjectSerializer<T>
 {
   public T create() throws Exception;
