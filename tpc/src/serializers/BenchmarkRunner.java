@@ -15,6 +15,7 @@ public class BenchmarkRunner
   public static void main(String ...args) throws Exception
   {
     BenchmarkRunner runner = new BenchmarkRunner();
+
     runner.addObjectSerializer(new ProtobufSerializer());
     runner.addObjectSerializer(new ThriftSerializer());
     runner.addObjectSerializer(new JavaSerializer());
@@ -28,6 +29,10 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new StaxSerializer("stax/aalto",
                                                   new com.fasterxml.aalto.stax.InputFactoryImpl(),
                                                   new com.fasterxml.aalto.stax.OutputFactoryImpl()));
+    // And also Fast Infoset (binary xml)
+    runner.addObjectSerializer(new StaxSerializer("binaryxml/FI",
+                                                  new com.sun.xml.fastinfoset.stax.factory.StAXInputFactory(),
+                                                  new com.sun.xml.fastinfoset.stax.factory.StAXOutputFactory()));
 
     runner.addObjectSerializer(new JsonSerializer());
     runner.addObjectSerializer(new XStreamSerializer("xstream (xpp)", false, false));
@@ -49,7 +54,7 @@ public class BenchmarkRunner
   {
     System.gc();
     long start = System.nanoTime();
-    for(int i = 0; i < ITERATIONS * 10; i++)
+    for(int i = 0, len = ITERATIONS * 10; i < len; i++)
     {
       serializer.create();
     }
@@ -93,7 +98,7 @@ public class BenchmarkRunner
   {
     warmObjects();
 
-    System.out.printf("%-30s, %15s, %15s, %15s, %10s\n", " ", "Object create", "Serializaton", "Deserialization", "Serialized Size");
+    System.out.printf("%-24s, %15s, %15s, %15s, %10s\n", " ", "Object create", "Serialization", "Deserialization", "Serialized Size");
     for(ObjectSerializer serializer: _serializers)
     {
       double timeCreate = createObjects(serializer);
@@ -109,7 +114,7 @@ public class BenchmarkRunner
         timeDSer = Math.min(timeDSer, deserializeObjects(serializer));
 
       byte[] array = serializer.serialize(serializer.create(), new ByteArrayOutputStream(200));
-      System.out.printf("%-30s, %15.5f, %15.5f, %15.5f, %10d\n", serializer.getName(), timeCreate, timeSer, timeDSer, array.length);
+      System.out.printf("%-24s, %15.5f, %15.5f, %15.5f, %10d\n", serializer.getName(), timeCreate, timeSer, timeDSer, array.length);
     }
   }
 
