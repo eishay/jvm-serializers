@@ -1,5 +1,6 @@
 package comm.protobuf.socket;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -68,9 +69,10 @@ public class ProtobufServer extends MediaServer
 
         public void run (Message content)
         {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
           try
           {
-            byte[] array = _serializer.serialize((MediaContent) content);
+              byte[] array = _serializer.serialize((MediaContent) content, baos);
             dos.writeInt(array.length);
             dos.write(array);
           }

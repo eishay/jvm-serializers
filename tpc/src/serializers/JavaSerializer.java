@@ -28,9 +28,8 @@ public class JavaSerializer extends StdMediaSerializer
         return (MediaContent)ois.readObject();
     }
     
-    public byte[] serialize(MediaContent content) throws IOException, Exception
+    public byte[] serialize(MediaContent content, ByteArrayOutputStream baos) throws IOException, Exception
     {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(content);
         oos.close();

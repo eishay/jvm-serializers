@@ -23,17 +23,17 @@ public class JsonSerializer extends StdMediaSerializer
   }
 
 
-  public byte[] serialize(MediaContent content) throws Exception
+    public byte[] serialize(MediaContent content, ByteArrayOutputStream baos) throws Exception
   {
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    JsonGenerator generator = _factory.createJsonGenerator(out, JsonEncoding.UTF8);
+
+    JsonGenerator generator = _factory.createJsonGenerator(baos, JsonEncoding.UTF8);
     generator.writeStartObject();
     writeMedia(generator, content.getMedia());
     writeImage(generator, content.getImage(0));
     writeImage(generator, content.getImage(1));
     generator.writeEndObject();
     generator.close();
-    return out.toByteArray();
+    return baos.toByteArray();
   }
 
   public MediaContent deserialize(byte[] array) throws Exception
@@ -55,12 +55,12 @@ public class JsonSerializer extends StdMediaSerializer
     writeStringElement(generator, "pl", media.getPlayer().name());
     writeStringElement(generator, "ul", media.getUri());
     writeStringElement(generator, "tl", media.getTitle());
-    writeLongElement(generator, "wd", media.getWidth());
-    writeLongElement(generator, "hg", media.getHeight());
+    writeInt(generator, "wd", media.getWidth());
+    writeInt(generator, "hg", media.getHeight());
     writeStringElement(generator, "fr", media.getFormat());
-    writeLongElement(generator, "dr", media.getDuration());
-    writeLongElement(generator, "sz", media.getSize());
-    writeLongElement(generator, "br", media.getBitrate());
+    writeLong(generator, "dr", media.getDuration());
+    writeLong(generator, "sz", media.getSize());
+    writeInt(generator, "br", media.getBitrate());
     writeStringElement(generator, "pr", media.getPersons().get(0));
     writeStringElement(generator, "pr", media.getPersons().get(1));
     generator.writeEndObject();
@@ -72,22 +72,25 @@ public class JsonSerializer extends StdMediaSerializer
     generator.writeStartObject();
     writeStringElement(generator, "ul", image.getUri());
     writeStringElement(generator, "tl", image.getTitle());
-    writeLongElement(generator, "wd", image.getWidth());
-    writeLongElement(generator, "hg", image.getHeight());
+    writeInt(generator, "wd", image.getWidth());
+    writeInt(generator, "hg", image.getHeight());
     writeStringElement(generator, "sz", image.getSize().name());
     generator.writeEndObject();
   }
 
   private void writeStringElement(JsonGenerator generator, String name, String value) throws IOException
   {
-    generator.writeFieldName(name);
-    generator.writeString(value);
+      generator.writeStringField(name, value);
   }
 
-  private void writeLongElement(JsonGenerator generator, String name, long value) throws IOException
+  private void writeInt(JsonGenerator generator, String name, int value) throws IOException
   {
-    generator.writeFieldName(name);
-    generator.writeNumber(value);
+      generator.writeNumberField(name, value);
+  }
+
+  private void writeLong(JsonGenerator generator, String name, long value) throws IOException
+  {
+      generator.writeNumberField(name, value);
   }
 
   private Media readMedia(JsonParser parser) throws IOException

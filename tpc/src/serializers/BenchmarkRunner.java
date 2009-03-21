@@ -1,5 +1,6 @@
 package serializers;
 
+import java.io.ByteArrayOutputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -19,7 +20,15 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new JavaSerializer());
     runner.addObjectSerializer(new JavaExtSerializer());
     runner.addObjectSerializer(new ScalaSerializer());
-    runner.addObjectSerializer(new StaxSerializer());
+
+    // let's test both Woodstox and Aalto
+    runner.addObjectSerializer(new StaxSerializer("stax/woodstox",
+                                                  new com.ctc.wstx.stax.WstxInputFactory(),
+                                                  new com.ctc.wstx.stax.WstxOutputFactory()));
+    runner.addObjectSerializer(new StaxSerializer("stax/aalto",
+                                                  new com.fasterxml.aalto.stax.InputFactoryImpl(),
+                                                  new com.fasterxml.aalto.stax.OutputFactoryImpl()));
+
     runner.addObjectSerializer(new JsonSerializer());
     runner.addObjectSerializer(new XStreamSerializer("xstream (xpp)", false, false));
     runner.addObjectSerializer(new XStreamSerializer("xstream (stax)", true, false));
@@ -55,11 +64,14 @@ public class BenchmarkRunner
   private <T> double serializeObjects(ObjectSerializer<T> serializer) throws Exception
   {
     System.gc();
+    // let's reuse same instance to reduce overhead
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
     T obj = serializer.create();
     long start = System.nanoTime();
     for(int i = 0; i < ITERATIONS; i++)
     {
-      serializer.serialize(obj);
+        bos.reset();
+        serializer.serialize(obj, bos);
     }
     return timePerIteration(start);
   }
@@ -67,7 +79,7 @@ public class BenchmarkRunner
   private <T> double deserializeObjects(ObjectSerializer<T> serializer) throws Exception
   {
     System.gc();
-    byte[] array = serializer.serialize(serializer.create());
+    byte[] array = serializer.serialize(serializer.create(), new ByteArrayOutputStream(200));
     long start = System.nanoTime();
     for(int i = 0; i < ITERATIONS; i++)
     {
@@ -96,7 +108,7 @@ public class BenchmarkRunner
       for(int i = 0; i < TRIALS; i++)
         timeDSer = Math.min(timeDSer, deserializeObjects(serializer));
 
-      byte[] array = serializer.serialize(serializer.create());
+      byte[] array = serializer.serialize(serializer.create(), new ByteArrayOutputStream(200));
       System.out.printf("%-30s, %15.5f, %15.5f, %15.5f, %10d\n", serializer.getName(), timeCreate, timeSer, timeDSer, array.length);
     }
   }

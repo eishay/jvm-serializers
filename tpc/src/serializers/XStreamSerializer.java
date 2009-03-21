@@ -42,12 +42,10 @@ public class XStreamSerializer extends StdMediaSerializer
     return (MediaContent) xstream.fromXML(new ByteArrayInputStream(array));
   }
 
-  public byte[] serialize(MediaContent content) throws IOException,
+    public byte[] serialize(MediaContent content, ByteArrayOutputStream baos) throws IOException,
       Exception
   {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
     xstream.toXML(content, baos);
-    baos.close();
     return baos.toByteArray();
   }
 

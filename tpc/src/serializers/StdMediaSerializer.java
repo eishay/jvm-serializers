@@ -1,5 +1,7 @@
 package serializers;
 
+import java.io.ByteArrayOutputStream;
+
 import serializers.java.MediaContent;
 import serializers.java.Media;
 import serializers.java.Image;

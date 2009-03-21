@@ -16,14 +16,12 @@ public class ProtobufSerializer implements ObjectSerializer<MediaContent>
   {
     return MediaContent.parseFrom(array);
   }
-
-  public byte[] serialize(MediaContent content) throws IOException
-  {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    content.writeTo(baos);
-    byte[] array = baos.toByteArray();
-    return array;
-  }
+    
+    public byte[] serialize(MediaContent content, ByteArrayOutputStream baos) throws IOException
+    {
+        content.writeTo(baos);
+        return baos.toByteArray();
+    }
 
   public MediaContent create()
   {

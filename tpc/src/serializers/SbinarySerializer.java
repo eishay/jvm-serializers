@@ -1,6 +1,6 @@
 package serializers;
 
-import java.io.IOException;
+import java.io.*;
 
 import serializers.scala.Image;
 import serializers.scala.Media;
@@ -16,10 +16,11 @@ public class SbinarySerializer implements ObjectSerializer<MediaContent>
   {
     return SbinarySerializerSupport.deserialize(array);
   }
-  public byte[] serialize(MediaContent content) throws IOException, Exception
+    public byte[] serialize(MediaContent content, ByteArrayOutputStream bos) throws IOException, Exception
   {
     return SbinarySerializerSupport.serialize(content);
   }
+
 
   public MediaContent create()
   {

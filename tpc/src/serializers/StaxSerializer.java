@@ -21,10 +21,10 @@ public class StaxSerializer extends StdMediaSerializer
     final XMLInputFactory inFactory;
     final XMLOutputFactory outFactory;
 
-    public StaxSerializer() {
-        super("Stax/woodstox");
-        inFactory = XMLInputFactory.newInstance();
-        outFactory = XMLOutputFactory.newInstance();
+    public StaxSerializer(String name, XMLInputFactory inf, XMLOutputFactory outf) {
+        super(name);
+        inFactory = inf;
+        outFactory = outf;
     }
 
   public MediaContent deserialize (byte[] array) throws Exception
@@ -84,10 +84,9 @@ public class StaxSerializer extends StdMediaSerializer
     }
   }
 
-  public byte[] serialize(MediaContent content) throws Exception
+    public byte[] serialize(MediaContent content, ByteArrayOutputStream baos) throws Exception
   {
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    XMLStreamWriter writer = outFactory.createXMLStreamWriter(out);
+    XMLStreamWriter writer = outFactory.createXMLStreamWriter(baos);
     writer.writeStartDocument("ISO-8859-1", "1.0");
     writer.writeStartElement("mc");
     writeMedia(writer, content.getMedia());
@@ -97,7 +96,7 @@ public class StaxSerializer extends StdMediaSerializer
     writer.writeEndDocument();
     writer.flush();
     writer.close();
-    return out.toByteArray();
+    return baos.toByteArray();
   }
 
   private void writeImage (XMLStreamWriter writer, Image image) throws XMLStreamException

@@ -36,16 +36,15 @@ public class JavolutionXMLFormatSerializer extends StdMediaSerializer
     }
   }
 
-  public byte[] serialize(MediaContent content) throws IOException,
-      Exception
-  {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    XMLObjectWriter writer = XMLObjectWriter.newInstance(baos).setBinding(_binding);
-    writer.write(content, "mc", MediaContent.class);
-    writer.close();
-    //System.out.println(new String(baos.toByteArray()));
-    return baos.toByteArray();
-  }
+    public byte[] serialize(MediaContent content, ByteArrayOutputStream baos) 
+        throws Exception
+    {
+        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos).setBinding(_binding);
+        writer.write(content, "mc", MediaContent.class);
+        writer.close();
+        //System.out.println(new String(baos.toByteArray()));
+        return baos.toByteArray();
+    }
 
   //XML binding using reflection.
   static class MediaContentBinding extends XMLBinding
