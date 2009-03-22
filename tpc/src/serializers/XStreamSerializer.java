@@ -64,7 +64,7 @@ public class XStreamSerializer extends StdMediaSerializer
   static class MediaContentConverter implements Converter
   {
 
-    @Override
+    
     public void marshal(Object obj, HierarchicalStreamWriter writer, MarshallingContext context)
     {
       MediaContent content = (MediaContent) obj;
@@ -79,7 +79,7 @@ public class XStreamSerializer extends StdMediaSerializer
       writer.endNode();
     }
 
-    @Override
+    
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context)
     {
       reader.moveDown();
@@ -96,7 +96,7 @@ public class XStreamSerializer extends StdMediaSerializer
     }
 
     @SuppressWarnings("unchecked")
-    @Override
+    
     public boolean canConvert(Class arg0)
     {
       return MediaContent.class.equals(arg0);
@@ -107,7 +107,7 @@ public class XStreamSerializer extends StdMediaSerializer
   static class ImageConverter implements Converter
   {
 
-    @Override
+    
     public void marshal(Object obj, HierarchicalStreamWriter writer, MarshallingContext context)
     {
       Image image = (Image) obj;
@@ -118,7 +118,7 @@ public class XStreamSerializer extends StdMediaSerializer
       writer.addAttribute("sz", String.valueOf(image.getSize().ordinal()));
     }
 
-    @Override
+    
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context)
     {
       Image image = new Image();
@@ -131,7 +131,7 @@ public class XStreamSerializer extends StdMediaSerializer
     }
 
     @SuppressWarnings("unchecked")
-    @Override
+    
     public boolean canConvert(Class arg0)
     {
       return Image.class.equals(arg0);
@@ -142,7 +142,7 @@ public class XStreamSerializer extends StdMediaSerializer
   static class MediaConverter implements Converter
   {
 
-    @Override
+    
     public void marshal(Object obj, HierarchicalStreamWriter writer, MarshallingContext context)
     {
       Media media = (Media) obj;
@@ -163,7 +163,7 @@ public class XStreamSerializer extends StdMediaSerializer
       }
     }
 
-    @Override
+    
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context)
     {
       Media media = new Media();
@@ -186,7 +186,7 @@ public class XStreamSerializer extends StdMediaSerializer
     }
 
     @SuppressWarnings("unchecked")
-    @Override
+    
     public boolean canConvert(Class arg0)
     {
       return Media.class.equals(arg0);

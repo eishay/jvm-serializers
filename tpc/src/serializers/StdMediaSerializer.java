@@ -1,10 +1,8 @@
 package serializers;
 
-import java.io.ByteArrayOutputStream;
-
-import serializers.java.MediaContent;
-import serializers.java.Media;
 import serializers.java.Image;
+import serializers.java.Media;
+import serializers.java.MediaContent;
 
 /**
  * Shared base class for those serializers that operate on POJOs.

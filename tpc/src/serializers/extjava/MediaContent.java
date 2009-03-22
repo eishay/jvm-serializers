@@ -41,7 +41,6 @@ public class MediaContent implements Externalizable
     return _media;
   }
 
-  @Override
   public void readExternal(ObjectInput in) throws IOException,
       ClassNotFoundException
   {
@@ -54,7 +53,6 @@ public class MediaContent implements Externalizable
     }
   }
 
-  @Override
   public void writeExternal(ObjectOutput out) throws IOException
   {
     out.writeObject(_media);

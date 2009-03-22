@@ -84,7 +84,6 @@ public class Image implements Externalizable
     this._size = size;
   }
 
-  @Override
   public void readExternal(ObjectInput in) throws IOException,
       ClassNotFoundException
   {
@@ -94,7 +93,6 @@ public class Image implements Externalizable
     _size = Size.values()[in.readByte()];
   }
 
-  @Override
   public void writeExternal(ObjectOutput out) throws IOException
   {
     out.writeObject(_title);

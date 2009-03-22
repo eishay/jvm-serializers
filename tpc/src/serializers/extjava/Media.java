@@ -168,7 +168,6 @@ public class Media implements Externalizable
     _copyright = copyright;
   }
 
-  @Override
   public void readExternal(ObjectInput in) throws IOException,
       ClassNotFoundException
   {
@@ -193,7 +192,6 @@ public class Media implements Externalizable
     }
   }
 
-  @Override
   public void writeExternal(ObjectOutput out) throws IOException
   {
     out.writeByte(_player.ordinal());
