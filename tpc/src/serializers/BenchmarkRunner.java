@@ -35,9 +35,16 @@ public class BenchmarkRunner
                                                   new com.sun.xml.fastinfoset.stax.factory.StAXOutputFactory()));
 
     runner.addObjectSerializer(new JsonSerializer());
-    runner.addObjectSerializer(new XStreamSerializer("xstream (xpp)", false, false));
-    runner.addObjectSerializer(new XStreamSerializer("xstream (stax)", true, false));
-    runner.addObjectSerializer(new XStreamSerializer("xstream (stax with conv)", true, true));
+    runner.addObjectSerializer(new XStreamSerializer("xstream (xpp)", false, null, null));
+    runner.addObjectSerializer(new XStreamSerializer("xstream (xpp with conv)", true, null, null));
+    runner.addObjectSerializer(new XStreamSerializer("xstream (stax)", false,
+                                                  new com.ctc.wstx.stax.WstxInputFactory(),
+                                                  new com.ctc.wstx.stax.WstxOutputFactory()
+    ));
+    runner.addObjectSerializer(new XStreamSerializer("xstream (stax with conv)", true,
+                                                  new com.ctc.wstx.stax.WstxInputFactory(),
+                                                  new com.ctc.wstx.stax.WstxOutputFactory()
+    ));
     runner.addObjectSerializer(new JavolutionXMLFormatSerializer());
     runner.addObjectSerializer(new SbinarySerializer());
     //runner.addObjectSerializer(new YamlSerializer());

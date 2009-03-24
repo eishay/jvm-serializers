@@ -19,18 +19,37 @@ import serializers.java.MediaContent;
 import serializers.java.Media.Player;
 import serializers.java.Image.Size;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import java.io.Writer;
+import com.thoughtworks.xstream.io.xml.CompactWriter;
+
 public class XStreamSerializer extends StdMediaSerializer
 {
   private XStream xstream = null;
   private String name = "xstream";
 
-    public XStreamSerializer(String name, boolean withSpecialConverter, boolean withStax) throws Exception
+    public XStreamSerializer(String name, boolean withSpecialConverter, final XMLInputFactory inf, final XMLOutputFactory outf) throws Exception
     {
         super(name);
-        if (withStax) {
-            xstream = new XStream(new StaxDriver());
+        if (inf != null && outf != null) {
+            xstream = new XStream(new StaxDriver() {
+                public XMLInputFactory getInputFactory() {
+                    return inf;
+                }
+
+                public XMLOutputFactory getOutputFactory() {
+                   return outf;
+                }
+            });
         } else {
-            xstream = new XStream(new XppDriver());
+            xstream = new XStream(new XppDriver(){
+                public HierarchicalStreamWriter createWriter(Writer out) {
+                    //return new PrettyPrintWriter(out, xmlFriendlyReplacer());
+                    return new CompactWriter(out, xmlFriendlyReplacer());
+                }
+            });
+
         }
         if (withSpecialConverter) {
             registerConverters();
