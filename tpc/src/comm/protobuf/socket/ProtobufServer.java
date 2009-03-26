@@ -69,10 +69,9 @@ public class ProtobufServer extends MediaServer
 
         public void run (Message content)
         {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
           try
           {
-              byte[] array = _serializer.serialize((MediaContent) content, baos);
+              byte[] array = _serializer.serialize((MediaContent) content);
             dos.writeInt(array.length);
             dos.write(array);
           }

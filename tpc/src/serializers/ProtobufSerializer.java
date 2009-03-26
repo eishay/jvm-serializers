@@ -16,8 +16,8 @@ public class ProtobufSerializer implements ObjectSerializer<MediaContent>
   {
     return MediaContent.parseFrom(array);
   }
-    
-    public byte[] serialize(MediaContent content, ByteArrayOutputStream baos) throws IOException
+
+    public byte[] serialize(MediaContent content) throws IOException
     {
         return content.toByteArray();
     }
@@ -28,9 +28,9 @@ public class ProtobufSerializer implements ObjectSerializer<MediaContent>
     setMedia(
       Media.newBuilder().setUri("http://javaone.com/keynote.mpg").setFormat("video/mpg4").setTitle("Javaone Keynote").setDuration(1234567).
         setBitrate(123).addPerson("Bill Gates").addPerson("Steve Jobs").setPlayer(Player.JAVA).build()).
-    addImage( 
+    addImage(
       Image.newBuilder().setUri("http://javaone.com/keynote_large.jpg").setSize(Size.LARGE).setTitle("Javaone Keynote").build()).
-    addImage( 
+    addImage(
       Image.newBuilder().setUri("http://javaone.com/keynote_thumbnail.jpg").setSize(Size.SMALL).setTitle("Javaone Keynote").build()).
     build();
     return content;

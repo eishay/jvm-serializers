@@ -14,6 +14,7 @@ import com.facebook.thrift.transport.TIOStreamTransport;
 
 public class ThriftSerializer  implements ObjectSerializer<MediaContent>
 {
+  public int expectedSize = 0;
   public final static int ITERATIONS = 100000;
 
     public MediaContent deserialize(byte[] array) throws Exception
@@ -26,12 +27,15 @@ public class ThriftSerializer  implements ObjectSerializer<MediaContent>
     return content;
   }
 
-    public byte[] serialize(MediaContent content, ByteArrayOutputStream baos) throws Exception
+    public byte[] serialize(MediaContent content) throws Exception
   {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream(expectedSize);
     TIOStreamTransport trans = new TIOStreamTransport(baos);
     TBinaryProtocol oprot = new TBinaryProtocol(trans);
     content.write(oprot);
-    return baos.toByteArray();
+    byte[] array = baos.toByteArray();
+    expectedSize = array.length;
+    return array;
   }
 
   public MediaContent create()

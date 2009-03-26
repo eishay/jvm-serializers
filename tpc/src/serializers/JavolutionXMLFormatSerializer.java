@@ -19,6 +19,7 @@ import serializers.java.Media.Player;
 
 public class JavolutionXMLFormatSerializer extends StdMediaSerializer
 {
+  public int expectedSize = 0;
   private MediaContentBinding _binding = new MediaContentBinding();
 
     public JavolutionXMLFormatSerializer()
@@ -36,14 +37,17 @@ public class JavolutionXMLFormatSerializer extends StdMediaSerializer
     }
   }
 
-    public byte[] serialize(MediaContent content, ByteArrayOutputStream baos) 
+    public byte[] serialize(MediaContent content)
         throws Exception
     {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(expectedSize);
         XMLObjectWriter writer = XMLObjectWriter.newInstance(baos).setBinding(_binding);
         writer.write(content, "mc", MediaContent.class);
         writer.close();
         //System.out.println(new String(baos.toByteArray()));
-        return baos.toByteArray();
+        byte[] array = baos.toByteArray();
+        expectedSize = array.length;
+        return array;
     }
 
   //XML binding using reflection.

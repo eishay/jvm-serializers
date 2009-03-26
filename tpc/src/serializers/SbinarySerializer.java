@@ -16,7 +16,7 @@ public class SbinarySerializer implements ObjectSerializer<MediaContent>
   {
     return SbinarySerializerSupport.deserialize(array);
   }
-    public byte[] serialize(MediaContent content, ByteArrayOutputStream bos) throws IOException, Exception
+    public byte[] serialize(MediaContent content) throws IOException, Exception
   {
     return SbinarySerializerSupport.serialize(content);
   }

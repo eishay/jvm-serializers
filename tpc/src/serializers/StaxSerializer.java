@@ -18,6 +18,7 @@ import serializers.java.Media.Player;
 
 public class StaxSerializer extends StdMediaSerializer
 {
+    public int expectedSize = 0;
     final XMLInputFactory inFactory;
     final XMLOutputFactory outFactory;
 
@@ -71,7 +72,7 @@ public class StaxSerializer extends StdMediaSerializer
     while(true)
     {
       if(parser.next() != XMLStreamConstants.START_ELEMENT) continue;
-      if(parser.getLocalName().equals(string)) return parser.getElementText();        
+      if(parser.getLocalName().equals(string)) return parser.getElementText();
     }
   }
 
@@ -80,12 +81,13 @@ public class StaxSerializer extends StdMediaSerializer
     while(true)
     {
       if(parser.next() != XMLStreamConstants.START_ELEMENT) continue;
-      if(parser.getLocalName().equals(string)) return;        
+      if(parser.getLocalName().equals(string)) return;
     }
   }
 
-    public byte[] serialize(MediaContent content, ByteArrayOutputStream baos) throws Exception
+    public byte[] serialize(MediaContent content) throws Exception
   {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream(expectedSize);
     XMLStreamWriter writer = outFactory.createXMLStreamWriter(baos);
     writer.writeStartDocument("ISO-8859-1", "1.0");
     writer.writeStartElement("mc");
@@ -96,7 +98,9 @@ public class StaxSerializer extends StdMediaSerializer
     writer.writeEndDocument();
     writer.flush();
     writer.close();
-    return baos.toByteArray();
+    byte[] array = baos.toByteArray();
+    expectedSize = array.length;
+    return array;
   }
 
   private void writeImage (XMLStreamWriter writer, Image image) throws XMLStreamException
@@ -116,7 +120,7 @@ public class StaxSerializer extends StdMediaSerializer
     writer.writeCharacters(value);
     writer.writeEndElement();
   }
-  
+
   private void writeMedia (XMLStreamWriter writer, Media media) throws XMLStreamException
   {
     writer.writeStartElement("md");

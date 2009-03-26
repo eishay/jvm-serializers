@@ -28,6 +28,7 @@ public class XStreamSerializer extends StdMediaSerializer
 {
   private XStream xstream = null;
   private String name = "xstream";
+  public int expectedSize = 0;
 
     public XStreamSerializer(String name, boolean withSpecialConverter, final XMLInputFactory inf, final XMLOutputFactory outf) throws Exception
     {
@@ -61,11 +62,14 @@ public class XStreamSerializer extends StdMediaSerializer
     return (MediaContent) xstream.fromXML(new ByteArrayInputStream(array));
   }
 
-    public byte[] serialize(MediaContent content, ByteArrayOutputStream baos) throws IOException,
+    public byte[] serialize(MediaContent content) throws IOException,
       Exception
   {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream(expectedSize);
     xstream.toXML(content, baos);
-    return baos.toByteArray();
+    byte[] array = baos.toByteArray();
+    expectedSize = array.length;
+    return array;
   }
 
   public void registerConverters() throws Exception
@@ -83,7 +87,7 @@ public class XStreamSerializer extends StdMediaSerializer
   static class MediaContentConverter implements Converter
   {
 
-    
+
     public void marshal(Object obj, HierarchicalStreamWriter writer, MarshallingContext context)
     {
       MediaContent content = (MediaContent) obj;
@@ -98,7 +102,7 @@ public class XStreamSerializer extends StdMediaSerializer
       writer.endNode();
     }
 
-    
+
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context)
     {
       reader.moveDown();
@@ -115,7 +119,7 @@ public class XStreamSerializer extends StdMediaSerializer
     }
 
     @SuppressWarnings("unchecked")
-    
+
     public boolean canConvert(Class arg0)
     {
       return MediaContent.class.equals(arg0);
@@ -126,7 +130,7 @@ public class XStreamSerializer extends StdMediaSerializer
   static class ImageConverter implements Converter
   {
 
-    
+
     public void marshal(Object obj, HierarchicalStreamWriter writer, MarshallingContext context)
     {
       Image image = (Image) obj;
@@ -137,7 +141,7 @@ public class XStreamSerializer extends StdMediaSerializer
       writer.addAttribute("sz", String.valueOf(image.getSize().ordinal()));
     }
 
-    
+
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context)
     {
       Image image = new Image();
@@ -150,7 +154,7 @@ public class XStreamSerializer extends StdMediaSerializer
     }
 
     @SuppressWarnings("unchecked")
-    
+
     public boolean canConvert(Class arg0)
     {
       return Image.class.equals(arg0);
@@ -161,7 +165,7 @@ public class XStreamSerializer extends StdMediaSerializer
   static class MediaConverter implements Converter
   {
 
-    
+
     public void marshal(Object obj, HierarchicalStreamWriter writer, MarshallingContext context)
     {
       Media media = (Media) obj;
@@ -182,7 +186,7 @@ public class XStreamSerializer extends StdMediaSerializer
       }
     }
 
-    
+
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context)
     {
       Media media = new Media();
@@ -205,7 +209,7 @@ public class XStreamSerializer extends StdMediaSerializer
     }
 
     @SuppressWarnings("unchecked")
-    
+
     public boolean canConvert(Class arg0)
     {
       return Media.class.equals(arg0);

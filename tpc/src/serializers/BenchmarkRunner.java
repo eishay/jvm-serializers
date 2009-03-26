@@ -89,22 +89,21 @@ public class BenchmarkRunner
   private <T> double serializeObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
   {
     // let's reuse same instance to reduce overhead
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    T obj = serializer.create();
     long delta = 0;
     for(int i = 0; i < iterations; i++)
     {
-        bos.reset();
+        T obj = serializer.create();
         long start = System.nanoTime();
-        serializer.serialize(obj, bos);
+        serializer.serialize(obj);
         delta += System.nanoTime() - start;
+        if(i % 1000 == 0) doGc();
     }
     return iterationTime(delta) / 10d;
   }
 
   private <T> double deserializeObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
   {
-    byte[] array = serializer.serialize(serializer.create(), new ByteArrayOutputStream(200));
+    byte[] array = serializer.serialize(serializer.create());
     long delta = 0;
     for(int i = 0; i < iterations; i++)
     {
@@ -123,13 +122,16 @@ public class BenchmarkRunner
     {
         try { Thread.sleep(100L); } catch (InterruptedException ie) { }
         System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
         try { Thread.sleep(100L); } catch (InterruptedException ie) { }
     }
 
   @SuppressWarnings("unchecked")
   private void start () throws Exception
   {
-    System.out.printf("%-24s, %15s, %15s, %15s, %15s, %10s\n", 
+    System.out.printf("%-24s, %15s, %15s, %15s, %15s, %10s\n",
                       " ", "Object create", "Serialization", "Deserialization", "Total Time", "Serialized Size");
     for(ObjectSerializer serializer: _serializers)
     {
@@ -141,20 +143,20 @@ public class BenchmarkRunner
         double timeCreate = Double.MAX_VALUE;
         for(int i = 0; i < TRIALS; i++)
             timeCreate = Math.min(timeCreate, createObjects(serializer, CREATE_ITERATIONS));
-        
+
         warmSerialization(serializer);
         doGc();
         double timeSer = Double.MAX_VALUE;
         for(int i = 0; i < TRIALS; i++)
             timeSer = Math.min(timeSer, serializeObjects(serializer, ITERATIONS));
-        
+
         warmDeserialization(serializer);
         doGc();
         double timeDSer = Double.MAX_VALUE;
         for(int i = 0; i < TRIALS; i++)
             timeDSer = Math.min(timeDSer, deserializeObjects(serializer, ITERATIONS));
-        
-        byte[] array = serializer.serialize(serializer.create(), new ByteArrayOutputStream(200));
+
+        byte[] array = serializer.serialize(serializer.create());
         System.out.printf("%-24s, %15.5f, %15.5f, %15.5f, %15.5f, %10d\n", serializer.getName(), timeCreate, timeSer, timeDSer, timeCreate + timeSer + timeDSer, array.length);
     }
   }

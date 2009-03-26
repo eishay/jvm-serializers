@@ -16,6 +16,7 @@ import serializers.scala.Size;
 
 public class ScalaSerializer implements ObjectSerializer<MediaContent>
 {
+  public int expectedSize = 0;
 
   public MediaContent deserialize (byte[] array) throws Exception
   {
@@ -30,12 +31,14 @@ public class ScalaSerializer implements ObjectSerializer<MediaContent>
     }
   }
 
-    public byte[] serialize(MediaContent content, ByteArrayOutputStream baos) throws IOException, Exception
+    public byte[] serialize(MediaContent content) throws IOException, Exception
   {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream(expectedSize);
     ObjectOutputStream oos = new ObjectOutputStream(baos);
     oos.writeObject(content);
     oos.close();
     byte[] array = baos.toByteArray();
+    expectedSize = array.length;
     return array;
   }
 

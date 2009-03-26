@@ -15,6 +15,7 @@ import org.codehaus.jackson.JsonParser;
 public class JsonSerializer extends StdMediaSerializer
 {
   private final JsonFactory _factory;
+  public int expectedSize = 0;
 
   public JsonSerializer()
   {
@@ -23,9 +24,9 @@ public class JsonSerializer extends StdMediaSerializer
   }
 
 
-    public byte[] serialize(MediaContent content, ByteArrayOutputStream baos) throws Exception
+    public byte[] serialize(MediaContent content) throws Exception
   {
-
+    ByteArrayOutputStream baos = new ByteArrayOutputStream(expectedSize);
     JsonGenerator generator = _factory.createJsonGenerator(baos, JsonEncoding.UTF8);
     generator.writeStartObject();
     writeMedia(generator, content.getMedia());
@@ -33,7 +34,9 @@ public class JsonSerializer extends StdMediaSerializer
     writeImage(generator, content.getImage(1));
     generator.writeEndObject();
     generator.close();
-    return baos.toByteArray();
+    byte[] array = baos.toByteArray();
+    expectedSize = array.length;
+    return array;
   }
 
   public MediaContent deserialize(byte[] array) throws Exception
