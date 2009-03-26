@@ -71,17 +71,19 @@ public class BenchmarkRunner
 
   private <T> double createObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
   {
-    long start = System.nanoTime();
+    long delta = 0;
     for(int i = 0; i < iterations; i++)
     {
+      long start = System.nanoTime();
       serializer.create();
+      delta += System.nanoTime() - start;
     }
-    return timePerIteration(start, iterations) / 10d;
+    return iterationTime(delta) / 10d;
   }
 
-  private double timePerIteration (long start, int iterations)
+  private double iterationTime (long delta)
   {
-    return ((double)System.nanoTime() - (double)start) / (double)(iterations);
+    return (double)delta / (double)(ITERATIONS);
   }
 
   private <T> double serializeObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
@@ -89,24 +91,28 @@ public class BenchmarkRunner
     // let's reuse same instance to reduce overhead
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     T obj = serializer.create();
-    long start = System.nanoTime();
+    long delta = 0;
     for(int i = 0; i < iterations; i++)
     {
         bos.reset();
+        long start = System.nanoTime();
         serializer.serialize(obj, bos);
+        delta += System.nanoTime() - start;
     }
-    return timePerIteration(start, iterations);
+    return iterationTime(delta) / 10d;
   }
 
   private <T> double deserializeObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
   {
     byte[] array = serializer.serialize(serializer.create(), new ByteArrayOutputStream(200));
-    long start = System.nanoTime();
+    long delta = 0;
     for(int i = 0; i < iterations; i++)
     {
+      long start = System.nanoTime();
       serializer.deserialize(array);
+      delta += System.nanoTime() - start;
     }
-    return timePerIteration(start, iterations);
+    return iterationTime(delta) / 10d;
   }
 
     /**
@@ -123,7 +129,8 @@ public class BenchmarkRunner
   @SuppressWarnings("unchecked")
   private void start () throws Exception
   {
-    System.out.printf("%-24s, %15s, %15s, %15s, %10s\n", " ", "Object create", "Serialization", "Deserialization", "Serialized Size");
+    System.out.printf("%-24s, %15s, %15s, %15s, %15s, %10s\n", 
+                      " ", "Object create", "Serialization", "Deserialization", "Total Time", "Serialized Size");
     for(ObjectSerializer serializer: _serializers)
     {
         /* Should only warm things for the serializer that we test next: HotSpot
@@ -148,7 +155,7 @@ public class BenchmarkRunner
             timeDSer = Math.min(timeDSer, deserializeObjects(serializer, ITERATIONS));
         
         byte[] array = serializer.serialize(serializer.create(), new ByteArrayOutputStream(200));
-        System.out.printf("%-24s, %15.5f, %15.5f, %15.5f, %10d\n", serializer.getName(), timeCreate, timeSer, timeDSer, array.length);
+        System.out.printf("%-24s, %15.5f, %15.5f, %15.5f, %15.5f, %10d\n", serializer.getName(), timeCreate, timeSer, timeDSer, timeCreate + timeSer + timeDSer, array.length);
     }
   }
 
