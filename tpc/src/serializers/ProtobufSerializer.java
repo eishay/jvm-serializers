@@ -19,8 +19,7 @@ public class ProtobufSerializer implements ObjectSerializer<MediaContent>
     
     public byte[] serialize(MediaContent content, ByteArrayOutputStream baos) throws IOException
     {
-        content.writeTo(baos);
-        return baos.toByteArray();
+        return content.toByteArray();
     }
 
   public MediaContent create()
