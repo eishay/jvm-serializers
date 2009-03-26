@@ -9,6 +9,15 @@ public class BenchmarkRunner
   public final static int ITERATIONS = 2000;
   public final static int TRIALS = 20;
 
+    public final static int CREATE_ITERATIONS = ITERATIONS * 10;
+
+    /**
+     * Number of milliseconds to warm up for each operation type for
+     * each serializer. Let's start with 3 seconds.
+     */
+    final static long WARMUP_MSECS = 3000;
+
+
   @SuppressWarnings("unchecked")
   private Set<ObjectSerializer> _serializers = new LinkedHashSet<ObjectSerializer>();
 
@@ -48,6 +57,9 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new JavolutionXMLFormatSerializer());
     runner.addObjectSerializer(new SbinarySerializer());
     //runner.addObjectSerializer(new YamlSerializer());
+
+    System.out.println("Starting");
+
     runner.start();
   }
 
@@ -57,80 +69,113 @@ public class BenchmarkRunner
     _serializers.add(serializer);
   }
 
-  private <T> double createObjects(ObjectSerializer<T> serializer) throws Exception
+  private <T> double createObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
   {
-    System.gc();
     long start = System.nanoTime();
-    for(int i = 0, len = ITERATIONS * 10; i < len; i++)
+    for(int i = 0; i < iterations; i++)
     {
       serializer.create();
     }
-    return timePerIteration(start) / 10d;
+    return timePerIteration(start, iterations) / 10d;
   }
 
-  private double timePerIteration (long start)
+  private double timePerIteration (long start, int iterations)
   {
-    return ((double)System.nanoTime() - (double)start) / (double)(ITERATIONS);
+    return ((double)System.nanoTime() - (double)start) / (double)(iterations);
   }
 
-  private <T> double serializeObjects(ObjectSerializer<T> serializer) throws Exception
+  private <T> double serializeObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
   {
-    System.gc();
     // let's reuse same instance to reduce overhead
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     T obj = serializer.create();
     long start = System.nanoTime();
-    for(int i = 0; i < ITERATIONS; i++)
+    for(int i = 0; i < iterations; i++)
     {
         bos.reset();
         serializer.serialize(obj, bos);
     }
-    return timePerIteration(start);
+    return timePerIteration(start, iterations);
   }
 
-  private <T> double deserializeObjects(ObjectSerializer<T> serializer) throws Exception
+  private <T> double deserializeObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
   {
-    System.gc();
     byte[] array = serializer.serialize(serializer.create(), new ByteArrayOutputStream(200));
     long start = System.nanoTime();
-    for(int i = 0; i < ITERATIONS; i++)
+    for(int i = 0; i < iterations; i++)
     {
       serializer.deserialize(array);
     }
-    return timePerIteration(start);
+    return timePerIteration(start, iterations);
   }
+
+    /**
+     * JVM is not required to honor GC requests, but adding bit of sleep
+     * around request is most likely to give it a chance to do it.
+     */
+    private void doGc()
+    {
+        try { Thread.sleep(100L); } catch (InterruptedException ie) { }
+        System.gc();
+        try { Thread.sleep(100L); } catch (InterruptedException ie) { }
+    }
 
   @SuppressWarnings("unchecked")
   private void start () throws Exception
   {
-    warmObjects();
-
     System.out.printf("%-24s, %15s, %15s, %15s, %10s\n", " ", "Object create", "Serialization", "Deserialization", "Serialized Size");
     for(ObjectSerializer serializer: _serializers)
     {
-      double timeCreate = createObjects(serializer);
-      for(int i = 0; i < TRIALS; i++)
-        timeCreate = Math.min(timeCreate, createObjects(serializer));
-
-      double timeSer = serializeObjects(serializer);
-      for(int i = 0; i < TRIALS; i++)
-        timeSer = Math.min(timeSer, serializeObjects(serializer));
-
-      double timeDSer = deserializeObjects(serializer);
-      for(int i = 0; i < TRIALS; i++)
-        timeDSer = Math.min(timeDSer, deserializeObjects(serializer));
-
-      byte[] array = serializer.serialize(serializer.create(), new ByteArrayOutputStream(200));
-      System.out.printf("%-24s, %15.5f, %15.5f, %15.5f, %10d\n", serializer.getName(), timeCreate, timeSer, timeDSer, array.length);
+        /* Should only warm things for the serializer that we test next: HotSpot
+         * JIT will otherwise spent most of its time optimizing slower ones...
+         */
+        warmCreation(serializer);
+        doGc();
+        double timeCreate = Double.MAX_VALUE;
+        for(int i = 0; i < TRIALS; i++)
+            timeCreate = Math.min(timeCreate, createObjects(serializer, CREATE_ITERATIONS));
+        
+        warmSerialization(serializer);
+        doGc();
+        double timeSer = Double.MAX_VALUE;
+        for(int i = 0; i < TRIALS; i++)
+            timeSer = Math.min(timeSer, serializeObjects(serializer, ITERATIONS));
+        
+        warmDeserialization(serializer);
+        doGc();
+        double timeDSer = Double.MAX_VALUE;
+        for(int i = 0; i < TRIALS; i++)
+            timeDSer = Math.min(timeDSer, deserializeObjects(serializer, ITERATIONS));
+        
+        byte[] array = serializer.serialize(serializer.create(), new ByteArrayOutputStream(200));
+        System.out.printf("%-24s, %15.5f, %15.5f, %15.5f, %10d\n", serializer.getName(), timeCreate, timeSer, timeDSer, array.length);
     }
   }
 
-  private <T> void warmObjects () throws Exception
+  private <T> void warmCreation(ObjectSerializer<T> serializer) throws Exception
   {
-    System.out.println("warming up...");
-    for(ObjectSerializer<T> serializer: _serializers) createObjects(serializer);
-    for(ObjectSerializer<T> serializer: _serializers) serializeObjects(serializer);
-    for(ObjectSerializer<T> serializer: _serializers) deserializeObjects(serializer);
-    System.out.println("Starting");
+      // Instead of fixed counts, let's try to prime by running for N seconds
+      long endTime = System.currentTimeMillis() + WARMUP_MSECS;
+      do {
+          createObjects(serializer, 1);
+      } while (System.currentTimeMillis() < endTime);
+  }
+
+  private <T> void warmSerialization(ObjectSerializer<T> serializer) throws Exception
+  {
+      // Instead of fixed counts, let's try to prime by running for N seconds
+      long endTime = System.currentTimeMillis() + WARMUP_MSECS;
+      do {
+          serializeObjects(serializer, 1);
+      } while (System.currentTimeMillis() < endTime);
+  }
+
+  private <T> void warmDeserialization(ObjectSerializer<T> serializer) throws Exception
+  {
+      // Instead of fixed counts, let's try to prime by running for N seconds
+      long endTime = System.currentTimeMillis() + WARMUP_MSECS;
+      do {
+          deserializeObjects(serializer, 1);
+      } while (System.currentTimeMillis() < endTime);
   }
 }
