@@ -9,8 +9,6 @@ public class BenchmarkRunner
   public final static int ITERATIONS = 2000;
   public final static int TRIALS = 20;
 
-    public final static int CREATE_ITERATIONS = ITERATIONS * 10;
-
     /**
      * Number of milliseconds to warm up for each operation type for
      * each serializer. Let's start with 3 seconds.
@@ -142,7 +140,7 @@ public class BenchmarkRunner
         doGc();
         double timeCreate = Double.MAX_VALUE;
         for(int i = 0; i < TRIALS; i++)
-            timeCreate = Math.min(timeCreate, createObjects(serializer, CREATE_ITERATIONS));
+            timeCreate = Math.min(timeCreate, createObjects(serializer, ITERATIONS));
 
         warmSerialization(serializer);
         doGc();

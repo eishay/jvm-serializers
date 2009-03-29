@@ -44,8 +44,8 @@ public class StaxSerializer extends StdMediaSerializer
     Image image = new Image();
     image.setUri(readElement(parser, "ul"));
     image.setTitle(readElement(parser, "tl"));
-    image.setWidth(Integer.valueOf(readElement(parser, "wd")));
-    image.setHeight(Integer.valueOf(readElement(parser, "hg")));
+    image.setWidth(Integer.parseInt(readElement(parser, "wd")));
+    image.setHeight(Integer.parseInt(readElement(parser, "hg")));
     image.setSize(Size.valueOf(readElement(parser, "sz")));
     return image;
   }
@@ -56,12 +56,12 @@ public class StaxSerializer extends StdMediaSerializer
     media.setPlayer(Player.valueOf(readElement(parser, "pl")));
     media.setUri(readElement(parser, "ul"));
     media.setTitle(readElement(parser, "tl"));
-    media.setWidth(Integer.valueOf(readElement(parser, "wd")));
-    media.setHeight(Integer.valueOf(readElement(parser, "hg")));
+    media.setWidth(Integer.parseInt(readElement(parser, "wd")));
+    media.setHeight(Integer.parseInt(readElement(parser, "hg")));
     media.setFormat(readElement(parser, "fr"));
-    media.setDuration(Long.valueOf(readElement(parser, "dr")));
-    media.setSize(Long.valueOf(readElement(parser, "sz")));
-    media.setBitrate(Integer.valueOf(readElement(parser, "br")));
+    media.setDuration(Long.parseLong(readElement(parser, "dr")));
+    media.setSize(Long.parseLong(readElement(parser, "sz")));
+    media.setBitrate(Integer.parseInt(readElement(parser, "br")));
     media.addToPerson(readElement(parser, "pr"));
     media.addToPerson(readElement(parser, "pr"));
     return media;
