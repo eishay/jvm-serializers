@@ -23,25 +23,29 @@ public class BenchmarkRunner
   {
     BenchmarkRunner runner = new BenchmarkRunner();
 
+    // binary codecs first
     runner.addObjectSerializer(new ProtobufSerializer());
     runner.addObjectSerializer(new ThriftSerializer());
+    runner.addObjectSerializer(new HessianSerializer());
+
+    // then language default serializers
     runner.addObjectSerializer(new JavaSerializer());
     runner.addObjectSerializer(new JavaExtSerializer());
     runner.addObjectSerializer(new ScalaSerializer());
 
-    // let's test both Woodstox and Aalto
+    // then Json
+    runner.addObjectSerializer(new JsonSerializer());
+
+    // then xml via stax, textual and binary
     runner.addObjectSerializer(new StaxSerializer("stax/woodstox",
                                                   new com.ctc.wstx.stax.WstxInputFactory(),
                                                   new com.ctc.wstx.stax.WstxOutputFactory()));
     runner.addObjectSerializer(new StaxSerializer("stax/aalto",
                                                   new com.fasterxml.aalto.stax.InputFactoryImpl(),
                                                   new com.fasterxml.aalto.stax.OutputFactoryImpl()));
-    // And also Fast Infoset (binary xml)
     runner.addObjectSerializer(new StaxSerializer("binaryxml/FI",
                                                   new com.sun.xml.fastinfoset.stax.factory.StAXInputFactory(),
                                                   new com.sun.xml.fastinfoset.stax.factory.StAXOutputFactory()));
-
-    runner.addObjectSerializer(new JsonSerializer());
     runner.addObjectSerializer(new XStreamSerializer("xstream (xpp)", false, null, null));
     runner.addObjectSerializer(new XStreamSerializer("xstream (xpp with conv)", true, null, null));
     runner.addObjectSerializer(new XStreamSerializer("xstream (stax)", false,
@@ -53,6 +57,7 @@ public class BenchmarkRunner
                                                   new com.ctc.wstx.stax.WstxOutputFactory()
     ));
     runner.addObjectSerializer(new JavolutionXMLFormatSerializer());
+
     runner.addObjectSerializer(new SbinarySerializer());
     //runner.addObjectSerializer(new YamlSerializer());
 
