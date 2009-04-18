@@ -1,6 +1,5 @@
 package serializers;
 
-import java.io.ByteArrayOutputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -9,11 +8,11 @@ public class BenchmarkRunner
   public final static int ITERATIONS = 2000;
   public final static int TRIALS = 20;
 
-    /**
-     * Number of milliseconds to warm up for each operation type for
-     * each serializer. Let's start with 3 seconds.
-     */
-    final static long WARMUP_MSECS = 3000;
+  /**
+   * Number of milliseconds to warm up for each operation type for
+   * each serializer. Let's start with 3 seconds.
+   */
+  final static long WARMUP_MSECS = 3000;
 
 
   @SuppressWarnings("unchecked")
@@ -81,12 +80,12 @@ public class BenchmarkRunner
       serializer.create();
       delta += System.nanoTime() - start;
     }
-    return iterationTime(delta) / 10d;
+    return iterationTime(delta, iterations);
   }
 
-  private double iterationTime (long delta)
+  private double iterationTime (long delta, int iterations)
   {
-    return (double)delta / (double)(ITERATIONS);
+    return (double)delta / (double)(iterations);
   }
 
   private <T> double serializeObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
@@ -101,7 +100,7 @@ public class BenchmarkRunner
         delta += System.nanoTime() - start;
         if(i % 1000 == 0) doGc();
     }
-    return iterationTime(delta) / 10d;
+    return iterationTime(delta, iterations);
   }
 
   private <T> double deserializeObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
@@ -114,7 +113,7 @@ public class BenchmarkRunner
       serializer.deserialize(array);
       delta += System.nanoTime() - start;
     }
-    return iterationTime(delta) / 10d;
+    return iterationTime(delta, iterations);
   }
 
     /**
