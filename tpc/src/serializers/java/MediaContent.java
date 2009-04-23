@@ -34,4 +34,17 @@ public class MediaContent  implements Serializable
     return _media;
   }
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o == this) return true;
+        if (o == null) return false;
+        if (!(o instanceof MediaContent)) return false;
+
+        MediaContent other = (MediaContent) o;
+        if (!_media.equals(other._media)) {
+            return false;
+        }
+        return _images.equals(other._images);
+    }
 }

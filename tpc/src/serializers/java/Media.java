@@ -163,4 +163,31 @@ public class Media implements Serializable
     _copyright = copyright;
   }
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o == this) return true;
+        if (o == null) return false;
+        if (!(o instanceof Media)) return false;
+
+        Media other = (Media) o;
+
+        if (_width != other._width) return false;
+        if (_height != other._height) return false;
+        if (_duration != other._duration) return false;
+        if (_size != other._size) return false;
+        if (_bitrate != other._bitrate) return false;
+        if (!_player.equals(other._player)) return false;
+        if (!_uri.equals(other._uri)) return false;
+        if (!_title.equals(other._title)) return false;
+        if (!_format.equals(other._format)) return false;
+        if (!_persons.equals(other._persons)) return false;
+
+        if (_copyright == null) {
+            if (other._copyright != null) return false;
+        } else {
+            if (!_copyright.equals(other._copyright)) return false;
+        }
+        return true;
+    }
 }

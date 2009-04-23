@@ -42,7 +42,7 @@ public class JavaExtSerializer implements ObjectSerializer<MediaContent>
 
     public byte[] serialize(MediaContent content) throws IOException,
          Exception
-  {
+    {
     ByteArrayOutputStream baos = new ByteArrayOutputStream(expectedSize);
     ObjectOutputStream oos = new ObjectOutputStream(baos);
     oos.writeObject(content);

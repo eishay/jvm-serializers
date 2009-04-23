@@ -32,6 +32,7 @@ public class BenchmarkRunner
 
     // then language default serializers
     runner.addObjectSerializer(new JavaSerializer());
+
     runner.addObjectSerializer(new JavaExtSerializer());
     runner.addObjectSerializer(new ScalaSerializer());
 
@@ -171,6 +172,11 @@ public class BenchmarkRunner
        * Should only warm things for the serializer that we test next: HotSpot JIT will
        * otherwise spent most of its time optimizing slower ones... Use
        * -XX:CompileThreshold=1 to hint the JIT to start immediately
+       *
+       * Actually: 1 is often not a good value -- threshold is the number
+       * of samples needed to trigger inlining, and there's no point in
+       * inlining everything. Default value is in thousands, so lowering
+       * it to, say, 1000 is usually better.
        */
       warmCreation(serializer);
       doGc();
@@ -180,6 +186,10 @@ public class BenchmarkRunner
         timeCreate = Math.min(timeCreate, createObjects(serializer, ITERATIONS * 100));
 
       warmSerialization(serializer);
+
+      // actually: let's verify serializer actually works now:
+      checkCorrectness(serializer);
+
       doGc();
       double timeSer = Double.MAX_VALUE;
       for (int i = 0; i < TRIALS; i++)
@@ -204,6 +214,28 @@ public class BenchmarkRunner
     }
     printImages(values);
   }
+
+    /**
+     * Method that tries to validate correctness of serializer, using
+     * round-trip (construct, serializer, deserialize; compare objects
+     * after steps 1 and 3).
+     * Currently only done for StdMediaDeserializer...
+     */
+    private void checkCorrectness(ObjectSerializer serializer)
+        throws Exception
+    {
+        Object input = serializer.create();
+        byte[] array = serializer.serialize(input);
+        Object output = serializer.deserialize(array);
+        if (!input.equals(output)) {
+            /* Should throw an exception; but for now (that we have a few
+             * failures) let's just whine...
+             */
+            String msg = "serializer '"+serializer.getName()+"' failed round-trip test (ser+deser produces Object different from input)";
+            //throw new Exception("Error: "+msg);
+            System.err.println("WARN: "+msg);
+        }
+    }
 
   private void printImages(EnumMap<measurements, Map<String, Double>> values)
   {

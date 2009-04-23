@@ -79,4 +79,21 @@ public class Image implements Serializable
   {
     this._size = size;
   }
+
+    public boolean equals(Object o)
+    {
+        if (o == this) return true;
+        if (o == null) return false;
+        if (!(o instanceof Image)) return false;
+
+        Image other = (Image) o;
+
+        if (_width != other._width) return false;
+        if (_height != other._height) return false;
+        if (!_uri.equals(other._uri)) return false;
+        if (!_title.equals(other._title)) return false;
+        if (!_size.equals(other._size)) return false;
+
+        return true;
+    }
 }
