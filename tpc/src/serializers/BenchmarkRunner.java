@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import serializers.avro.AvroGenericSerializer;
+import serializers.avro.specific.AvroSpecificSerializer;
+
 public class BenchmarkRunner
 {
   public final static int ITERATIONS = 2000;
@@ -26,6 +29,8 @@ public class BenchmarkRunner
     BenchmarkRunner runner = new BenchmarkRunner();
 
     // binary codecs first
+    runner.addObjectSerializer(new AvroGenericSerializer());
+    runner.addObjectSerializer(new AvroSpecificSerializer());
     runner.addObjectSerializer(new ProtobufSerializer());
     runner.addObjectSerializer(new ThriftSerializer());
     runner.addObjectSerializer(new HessianSerializer());
