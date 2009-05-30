@@ -16,7 +16,13 @@ import serializers.ObjectSerializer;
 public class AvroSpecificSerializer implements ObjectSerializer<MediaContent> 
 
 {
-  private final Schema SCHEMA = new MediaContent().schema();
+  private static final Schema SCHEMA = new MediaContent().schema();
+
+  private static final SpecificDatumReader READER = 
+    new SpecificDatumReader(SCHEMA, "serializers.avro.specific.");
+
+  private static final SpecificDatumWriter WRITER =
+    new SpecificDatumWriter(SCHEMA);
 
   public String getName() {
     return "avro-specific";
@@ -61,16 +67,13 @@ public class AvroSpecificSerializer implements ObjectSerializer<MediaContent>
   }
 
   public MediaContent deserialize(byte[] array) throws Exception {
-    SpecificDatumReader reader = 
-      new SpecificDatumReader(SCHEMA, "serializers.avro.specific.");
     return (MediaContent) 
-      reader.read(null, new ValueReader(new ByteArrayInputStream(array)));
+      READER.read(null, new ValueReader(new ByteArrayInputStream(array)));
   }
 
   public byte[] serialize(MediaContent content) throws Exception {
-    SpecificDatumWriter writer = new SpecificDatumWriter(SCHEMA);
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    writer.write(content, new ValueWriter(out));
+    WRITER.write(content, new ValueWriter(out));
     return out.toByteArray();
   }
 

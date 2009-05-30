@@ -42,6 +42,12 @@ public class AvroGenericSerializer  implements ObjectSerializer<GenericRecord>
       MEDIA_SCHEMA +
       "}]}");
 
+  private static final GenericDatumWriter<GenericRecord> WRITER = 
+    new GenericDatumWriter<GenericRecord>(MEDIA_CONTENT_SCHEMA);
+
+  private static final GenericDatumReader<GenericRecord> READER = 
+    new GenericDatumReader<GenericRecord>(MEDIA_CONTENT_SCHEMA);
+
   public String getName() {
     return "avro-generic";
   }
@@ -90,16 +96,12 @@ public class AvroGenericSerializer  implements ObjectSerializer<GenericRecord>
   }
 
   public GenericRecord deserialize(byte[] array) throws Exception {
-    GenericDatumReader<GenericRecord> reader = 
-      new GenericDatumReader<GenericRecord>(MEDIA_CONTENT_SCHEMA);
-    return reader.read(null, new ValueReader(new ByteArrayInputStream(array)));
+    return READER.read(null, new ValueReader(new ByteArrayInputStream(array)));
   }
 
   public byte[] serialize(GenericRecord content) throws Exception {
-    GenericDatumWriter<GenericRecord> writer = 
-      new GenericDatumWriter<GenericRecord>(MEDIA_CONTENT_SCHEMA);
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    writer.write(content, new ValueWriter(out));
+    WRITER.write(content, new ValueWriter(out));
     return out.toByteArray();
   }
 
