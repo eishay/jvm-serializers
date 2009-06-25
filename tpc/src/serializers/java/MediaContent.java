@@ -23,6 +23,8 @@ public class MediaContent  implements Serializable
     }
     _images.add(image);
   }
+
+  public int imageCount() { return _images.size(); }
   
   public Image getImage (int i)
   {
