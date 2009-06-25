@@ -28,13 +28,26 @@ public class StaxSerializer extends StdMediaSerializer
         outFactory = outf;
     }
 
+    // // // Deserialization
+
   public MediaContent deserialize (byte[] array) throws Exception
   {
     XMLStreamReader parser = inFactory.createXMLStreamReader(new ByteArrayInputStream(array));
     searchTag(parser, "mc");
     MediaContent content = new MediaContent(readMedia(parser));
-    content.addImage(readImage(parser));
-    content.addImage(readImage(parser));
+    if (parser.nextTag() != XMLStreamConstants.START_ELEMENT) {
+        throw new IllegalStateException("Expected <im>, no START_ELEMENT encountered but "+parser.getEventType());
+    }
+    do {
+        if (!"im".equals(parser.getLocalName())) {
+            throw new IllegalStateException("Expected <im>, got <"+parser.getLocalName()+">");
+        }
+        content.addImage(readImage(parser));
+    } while (parser.nextTag() == XMLStreamConstants.START_ELEMENT);
+    // and should have closing </mc> at this point
+    if (!"mc".equals(parser.getLocalName())) {
+        throw new IllegalStateException("Expected closing </mc>, got </"+parser.getLocalName()+">");
+    }
     parser.close();
     return content;
   }
@@ -47,6 +60,10 @@ public class StaxSerializer extends StdMediaSerializer
     image.setWidth(Integer.parseInt(readElement(parser, "wd")));
     image.setHeight(Integer.parseInt(readElement(parser, "hg")));
     image.setSize(Size.valueOf(readElement(parser, "sz")));
+    // need to match close tag
+    if (parser.nextTag() != XMLStreamConstants.END_ELEMENT) {
+        throw new IllegalStateException("Expected closing </im>");
+    }
     return image;
   }
 
@@ -62,8 +79,15 @@ public class StaxSerializer extends StdMediaSerializer
     media.setDuration(Long.parseLong(readElement(parser, "dr")));
     media.setSize(Long.parseLong(readElement(parser, "sz")));
     media.setBitrate(Integer.parseInt(readElement(parser, "br")));
-    media.addToPerson(readElement(parser, "pr"));
-    media.addToPerson(readElement(parser, "pr"));
+
+    searchTag(parser, "pr");
+    do {
+        media.addToPerson(parser.getElementText());
+    } while (parser.nextTag() == XMLStreamConstants.START_ELEMENT
+             && "pr".equals(parser.getLocalName()));
+    if (!"md".equals(parser.getLocalName())) {
+        throw new IllegalStateException("Expected closing </md>, got </"+parser.getLocalName()+">");
+    }
     return media;
   }
 
@@ -85,15 +109,18 @@ public class StaxSerializer extends StdMediaSerializer
     }
   }
 
-    public byte[] serialize(MediaContent content) throws Exception
+    // // // Serialization
+
+  public byte[] serialize(MediaContent content) throws Exception
   {
     ByteArrayOutputStream baos = new ByteArrayOutputStream(expectedSize);
     XMLStreamWriter writer = outFactory.createXMLStreamWriter(baos);
     writer.writeStartDocument("ISO-8859-1", "1.0");
     writer.writeStartElement("mc");
     writeMedia(writer, content.getMedia());
-    writeImage(writer, content.getImage(0));
-    writeImage(writer, content.getImage(1));
+    for (int i = 0, len = content.imageCount(); i < len; ++i) {
+        writeImage(writer, content.getImage(i));
+    }
     writer.writeEndElement();
     writer.writeEndDocument();
     writer.flush();
@@ -133,8 +160,9 @@ public class StaxSerializer extends StdMediaSerializer
     writeElement(writer, "dr", String.valueOf(media.getDuration()));
     writeElement(writer, "sz", String.valueOf(media.getSize()));
     writeElement(writer, "br", String.valueOf(media.getBitrate()));
-    writeElement(writer, "pr", media.getPersons().get(0));
-    writeElement(writer, "pr", media.getPersons().get(1));
+    for (String person : media.getPersons()) {
+        writeElement(writer, "pr", person);
+    }
     writer.writeEndElement();
   }
 }
