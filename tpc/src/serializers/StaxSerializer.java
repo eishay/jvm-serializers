@@ -55,14 +55,14 @@ public class StaxSerializer extends StdMediaSerializer
   private Image readImage (XMLStreamReader parser) throws Exception
   {
     Image image = new Image();
-    image.setUri(readElement(parser, "ul"));
-    image.setTitle(readElement(parser, "tl"));
-    image.setWidth(Integer.parseInt(readElement(parser, "wd")));
-    image.setHeight(Integer.parseInt(readElement(parser, "hg")));
-    image.setSize(Size.valueOf(readElement(parser, "sz")));
+    image.setUri(readElement(parser, FIELD_NAME_URI));
+    image.setTitle(readElement(parser, FIELD_NAME_TITLE));
+    image.setWidth(Integer.parseInt(readElement(parser, FIELD_NAME_WIDTH)));
+    image.setHeight(Integer.parseInt(readElement(parser, FIELD_NAME_HEIGHT)));
+    image.setSize(Size.valueOf(readElement(parser, FIELD_NAME_SIZE)));
     // need to match close tag
     if (parser.nextTag() != XMLStreamConstants.END_ELEMENT) {
-        throw new IllegalStateException("Expected closing </im>");
+        throw new IllegalStateException("Expected closing </"+FIELD_NAME_IMAGES+">");
     }
     return image;
   }
@@ -70,43 +70,45 @@ public class StaxSerializer extends StdMediaSerializer
   private Media readMedia (XMLStreamReader parser) throws Exception
   {
     Media media = new Media();
-    media.setPlayer(Player.valueOf(readElement(parser, "pl")));
-    media.setUri(readElement(parser, "ul"));
-    media.setTitle(readElement(parser, "tl"));
-    media.setWidth(Integer.parseInt(readElement(parser, "wd")));
-    media.setHeight(Integer.parseInt(readElement(parser, "hg")));
-    media.setFormat(readElement(parser, "fr"));
-    media.setDuration(Long.parseLong(readElement(parser, "dr")));
-    media.setSize(Long.parseLong(readElement(parser, "sz")));
-    media.setBitrate(Integer.parseInt(readElement(parser, "br")));
+    media.setPlayer(Player.valueOf(readElement(parser, FIELD_NAME_PLAYER)));
+    media.setUri(readElement(parser, FIELD_NAME_URI));
+    media.setTitle(readElement(parser, FIELD_NAME_TITLE));
+    media.setWidth(Integer.parseInt(readElement(parser, FIELD_NAME_WIDTH)));
+    media.setHeight(Integer.parseInt(readElement(parser, FIELD_NAME_HEIGHT)));
+    media.setFormat(readElement(parser, FIELD_NAME_FORMAT));
+    media.setDuration(Long.parseLong(readElement(parser, FIELD_NAME_DURATION)));
+    media.setSize(Long.parseLong(readElement(parser, FIELD_NAME_SIZE)));
+    media.setBitrate(Integer.parseInt(readElement(parser, FIELD_NAME_BITRATE)));
 
-    searchTag(parser, "pr");
+    searchTag(parser, FIELD_NAME_PERSONS);
     do {
         media.addToPerson(parser.getElementText());
     } while (parser.nextTag() == XMLStreamConstants.START_ELEMENT
-             && "pr".equals(parser.getLocalName()));
+             && FIELD_NAME_PERSONS.equals(parser.getLocalName()));
     if (!"md".equals(parser.getLocalName())) {
         throw new IllegalStateException("Expected closing </md>, got </"+parser.getLocalName()+">");
     }
     return media;
   }
 
-  private String readElement (XMLStreamReader parser, String string) throws XMLStreamException
+  private String readElement(XMLStreamReader parser, String string) throws XMLStreamException
   {
-    while(true)
-    {
-      if(parser.next() != XMLStreamConstants.START_ELEMENT) continue;
-      if(parser.getLocalName().equals(string)) return parser.getElementText();
-    }
+      while (true) {
+          if (parser.nextTag() == XMLStreamConstants.START_ELEMENT
+              && parser.getLocalName().equals(string)) {
+              return parser.getElementText();
+          }
+      }
   }
 
-  private void searchTag (XMLStreamReader parser, String string) throws XMLStreamException
+  private void searchTag(XMLStreamReader parser, String string) throws XMLStreamException
   {
-    while(true)
-    {
-      if(parser.next() != XMLStreamConstants.START_ELEMENT) continue;
-      if(parser.getLocalName().equals(string)) return;
-    }
+      while (true) {
+          if (parser.nextTag() == XMLStreamConstants.START_ELEMENT
+              && parser.getLocalName().equals(string)) {
+              return;
+          }
+      }
   }
 
     // // // Serialization
@@ -114,8 +116,8 @@ public class StaxSerializer extends StdMediaSerializer
   public byte[] serialize(MediaContent content) throws Exception
   {
     ByteArrayOutputStream baos = new ByteArrayOutputStream(expectedSize);
-    XMLStreamWriter writer = outFactory.createXMLStreamWriter(baos);
-    writer.writeStartDocument("ISO-8859-1", "1.0");
+    XMLStreamWriter writer = outFactory.createXMLStreamWriter(baos, "UTF-8");
+    writer.writeStartDocument("UTF-8", "1.0");
     writer.writeStartElement("mc");
     writeMedia(writer, content.getMedia());
     for (int i = 0, len = content.imageCount(); i < len; ++i) {
@@ -132,37 +134,37 @@ public class StaxSerializer extends StdMediaSerializer
 
   private void writeImage (XMLStreamWriter writer, Image image) throws XMLStreamException
   {
-    writer.writeStartElement("im");
-    writeElement(writer, "ul", image.getUri());
-    writeElement(writer, "tl", image.getTitle());
-    writeElement(writer, "wd", String.valueOf(image.getWidth()));
-    writeElement(writer, "hg", String.valueOf(image.getHeight()));
-    writeElement(writer, "sz", String.valueOf(image.getSize()));
-    writer.writeEndElement();
+      writer.writeStartElement(FIELD_NAME_IMAGES);
+      writeElement(writer, FIELD_NAME_URI, image.getUri());
+      writeElement(writer, FIELD_NAME_TITLE, image.getTitle());
+      writeElement(writer, FIELD_NAME_WIDTH, String.valueOf(image.getWidth()));
+      writeElement(writer, FIELD_NAME_HEIGHT, String.valueOf(image.getHeight()));
+      writeElement(writer, FIELD_NAME_SIZE, String.valueOf(image.getSize()));
+      writer.writeEndElement();
   }
 
   private void writeElement(XMLStreamWriter writer, String name, String value) throws XMLStreamException
   {
-    writer.writeStartElement(name);
-    writer.writeCharacters(value);
-    writer.writeEndElement();
+      writer.writeStartElement(name);
+      writer.writeCharacters(value);
+      writer.writeEndElement();
   }
 
   private void writeMedia (XMLStreamWriter writer, Media media) throws XMLStreamException
   {
-    writer.writeStartElement("md");
-    writeElement(writer, "pl", media.getPlayer().name());
-    writeElement(writer, "ul", media.getUri());
-    writeElement(writer, "tl", media.getTitle());
-    writeElement(writer, "wd", String.valueOf(media.getWidth()));
-    writeElement(writer, "hg", String.valueOf(media.getHeight()));
-    writeElement(writer, "fr", media.getFormat());
-    writeElement(writer, "dr", String.valueOf(media.getDuration()));
-    writeElement(writer, "sz", String.valueOf(media.getSize()));
-    writeElement(writer, "br", String.valueOf(media.getBitrate()));
-    for (String person : media.getPersons()) {
-        writeElement(writer, "pr", person);
-    }
-    writer.writeEndElement();
+      writer.writeStartElement(FIELD_NAME_MEDIA);
+      writeElement(writer, FIELD_NAME_PLAYER, media.getPlayer().name());
+      writeElement(writer, FIELD_NAME_URI, media.getUri());
+      writeElement(writer, FIELD_NAME_TITLE, media.getTitle());
+      writeElement(writer, FIELD_NAME_WIDTH, String.valueOf(media.getWidth()));
+      writeElement(writer, FIELD_NAME_HEIGHT, String.valueOf(media.getHeight()));
+      writeElement(writer, FIELD_NAME_FORMAT, media.getFormat());
+      writeElement(writer, FIELD_NAME_DURATION, String.valueOf(media.getDuration()));
+      writeElement(writer, FIELD_NAME_SIZE, String.valueOf(media.getSize()));
+      writeElement(writer, FIELD_NAME_BITRATE, String.valueOf(media.getBitrate()));
+      for (String person : media.getPersons()) {
+          writeElement(writer, FIELD_NAME_PERSONS, person);
+      }
+      writer.writeEndElement();
   }
 }
