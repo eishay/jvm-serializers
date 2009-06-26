@@ -8,8 +8,10 @@ public class MediaContent  implements Serializable
 {
   private static final long serialVersionUID = 1L;
   private List<Image> _images;
-  private final Media _media;
+  private Media _media;
   
+    public MediaContent() { }
+
   public MediaContent (Media media)
   {
     _media = media;
@@ -35,6 +37,8 @@ public class MediaContent  implements Serializable
   {
     return _media;
   }
+
+    public void setMedia(Media m) { _media = m; }
 
     @Override
     public boolean equals(Object o)

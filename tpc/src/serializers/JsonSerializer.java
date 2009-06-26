@@ -51,19 +51,32 @@ public class JsonSerializer extends StdMediaSerializer
     if (parser.nextToken() != JsonToken.START_OBJECT) {
         reportIllegal(parser, JsonToken.START_OBJECT);
     }
-    MediaContent mc = new MediaContent(readMedia(parser));
-    if (parser.nextToken() != JsonToken.FIELD_NAME
-        || !"im".equals(parser.getCurrentName())) { // im
-        reportIllegal(parser, JsonToken.FIELD_NAME);
-    }
-    if (parser.nextToken() != JsonToken.START_ARRAY) {
-        reportIllegal(parser, JsonToken.START_ARRAY);
-    }
-    while (parser.nextToken() == JsonToken.START_OBJECT) {
-        mc.addImage(readImage(parser));
-    }
-    if (parser.nextToken() != JsonToken.END_OBJECT) {
-        reportIllegal(parser, JsonToken.END_OBJECT);
+    // loop for main-level fields
+    MediaContent mc = new MediaContent();
+    JsonToken t;
+
+    while ((t = parser.nextToken()) != JsonToken.END_OBJECT) {
+        if (t != JsonToken.FIELD_NAME) {
+            reportIllegal(parser, JsonToken.FIELD_NAME);
+        }
+        String field = parser.getCurrentName();
+        Integer I = fieldToIndex.get(field);
+        if (I != null) {
+            switch (I.intValue()) {
+            case FIELD_IX_MEDIA:
+                mc.setMedia(readMedia(parser));
+                continue;
+            case FIELD_IX_IMAGES:
+                if (parser.nextToken() != JsonToken.START_ARRAY) {
+                    reportIllegal(parser, JsonToken.START_ARRAY);
+                }
+                while (parser.nextToken() == JsonToken.START_OBJECT) {
+                    mc.addImage(readImage(parser));
+                }
+                continue;
+            }
+        }
+        throw new IllegalStateException("Unexpected field '"+field+"'");
     }
     parser.close();
     return mc;
@@ -71,18 +84,18 @@ public class JsonSerializer extends StdMediaSerializer
 
   private void writeMedia(JsonGenerator generator, Media media) throws IOException
   {
-    generator.writeFieldName("md");
+    generator.writeFieldName(FIELD_NAME_MEDIA);
     generator.writeStartObject();
-    generator.writeStringField("pl", media.getPlayer().name());
-    generator.writeStringField("ul", media.getUri());
-    generator.writeStringField("tl", media.getTitle());
-    generator.writeNumberField("wd", media.getWidth());
-    generator.writeNumberField("hg", media.getHeight());
-    generator.writeStringField("fr", media.getFormat());
-    generator.writeNumberField("dr", media.getDuration());
-    generator.writeNumberField("sz", media.getSize());
-    generator.writeNumberField("br", media.getBitrate());
-    generator.writeFieldName("pr");
+    generator.writeStringField(FIELD_NAME_PLAYER, media.getPlayer().name());
+    generator.writeStringField(FIELD_NAME_URI, media.getUri());
+    generator.writeStringField(FIELD_NAME_TITLE, media.getTitle());
+    generator.writeNumberField(FIELD_NAME_WIDTH, media.getWidth());
+    generator.writeNumberField(FIELD_NAME_HEIGHT, media.getHeight());
+    generator.writeStringField(FIELD_NAME_FORMAT, media.getFormat());
+    generator.writeNumberField(FIELD_NAME_DURATION, media.getDuration());
+    generator.writeNumberField(FIELD_NAME_SIZE, media.getSize());
+    generator.writeNumberField(FIELD_NAME_BITRATE, media.getBitrate());
+    generator.writeFieldName(FIELD_NAME_PERSONS);
     generator.writeStartArray();
     for (String person : media.getPersons()) {
         generator.writeString(person);
@@ -94,87 +107,109 @@ public class JsonSerializer extends StdMediaSerializer
   private void writeImage(JsonGenerator generator, Image image) throws IOException
   {
     generator.writeStartObject();
-    generator.writeStringField("ul", image.getUri());
-    generator.writeStringField("tl", image.getTitle());
-    generator.writeNumberField("wd", image.getWidth());
-    generator.writeNumberField("hg", image.getHeight());
-    generator.writeStringField("sz", image.getSize().name());
+    generator.writeStringField(FIELD_NAME_URI, image.getUri());
+    generator.writeStringField(FIELD_NAME_TITLE, image.getTitle());
+    generator.writeNumberField(FIELD_NAME_WIDTH, image.getWidth());
+    generator.writeNumberField(FIELD_NAME_HEIGHT, image.getHeight());
+    generator.writeStringField(FIELD_NAME_SIZE, image.getSize().name());
     generator.writeEndObject();
   }
 
   private Media readMedia(JsonParser parser) throws IOException
   {
-    parser.nextToken(); // field name
-    parser.nextToken(); // start object
-    Media media = new Media();
-    media.setPlayer(Media.Player.valueOf(readStringElement(parser, "pl")));
-    media.setUri(readStringElement(parser, "ul"));
-    media.setTitle(readStringElement(parser, "tl"));
-    media.setWidth(readIntElement(parser, "wd"));
-    media.setHeight(readIntElement(parser, "hg"));
-    media.setFormat(readStringElement(parser, "fr"));
-    media.setDuration(readLongElement(parser, "dr"));
-    media.setSize(readLongElement(parser, "sz"));
-    media.setBitrate(readIntElement(parser, "br"));
-
-    if (findToken(parser, "pr") != JsonToken.START_ARRAY) {
-        reportIllegal(parser, JsonToken.START_ARRAY);
-    }
-    while (parser.nextToken() != JsonToken.END_ARRAY) {
-        media.addToPerson(parser.getText());
-    }
-    if (parser.nextToken() != JsonToken.END_OBJECT) {
-        reportIllegal(parser, JsonToken.END_OBJECT);
-    }
-    return media;
+      if (parser.nextToken() != JsonToken.START_OBJECT) {
+          reportIllegal(parser, JsonToken.START_OBJECT);
+      }
+      Media media = new Media();
+      JsonToken t;
+      
+      while ((t = parser.nextToken()) != JsonToken.END_OBJECT) {
+          if (t != JsonToken.FIELD_NAME) {
+              reportIllegal(parser, JsonToken.FIELD_NAME);
+          }
+          // read value token (or START_ARRAY) 
+          String field = parser.getCurrentName();
+          t = parser.nextToken();
+          Integer I = fieldToIndex.get(field);
+          if (I != null) {
+              switch (I.intValue()) {
+              case FIELD_IX_PLAYER:
+                  media.setPlayer(Media.Player.valueOf(parser.getText()));
+                  continue;
+              case FIELD_IX_URI:
+                  media.setUri(parser.getText());
+                  continue;
+              case FIELD_IX_TITLE:
+                  media.setTitle(parser.getText());
+                  continue;
+              case FIELD_IX_WIDTH:
+                  media.setWidth(parser.getIntValue());
+                  continue;
+              case FIELD_IX_HEIGHT:
+                  media.setHeight(parser.getIntValue());
+                  continue;
+              case FIELD_IX_FORMAT:
+                  media.setFormat(parser.getText());
+                  continue;
+              case FIELD_IX_DURATION:
+                  media.setDuration(parser.getLongValue());
+                  continue;
+              case FIELD_IX_SIZE:
+                  media.setSize(parser.getLongValue());
+                  continue;
+              case FIELD_IX_BITRATE:
+                  media.setBitrate(parser.getIntValue());
+                  continue;
+              case FIELD_IX_PERSONS:
+                  if (t != JsonToken.START_ARRAY) {
+                      reportIllegal(parser, JsonToken.START_ARRAY);
+                  }
+                  while (parser.nextToken() != JsonToken.END_ARRAY) {
+                      media.addToPerson(parser.getText());
+                  }
+                  continue;
+              }
+          }
+          throw new IllegalStateException("Unexpected field '"+field+"'");
+      }
+      return media;
   }
 
   private Image readImage(JsonParser parser) throws IOException
   {
-      // gets called with opening START_OBJECT
-    Image image = new Image();
-    image.setUri(readStringElement(parser, "ul"));
-    image.setTitle(readStringElement(parser, "tl"));
-    image.setWidth(readIntElement(parser, "wd"));
-    image.setHeight(readIntElement(parser, "hg"));
-    image.setSize(Image.Size.valueOf(readStringElement(parser, "sz")));
-    if (parser.nextToken() != JsonToken.END_OBJECT) {
-        reportIllegal(parser, JsonToken.END_OBJECT);
-    }
-    return image;
-  }
-
-  private String readStringElement(JsonParser parser, String name) throws IOException
-  {
-    findToken(parser, name);
-    return parser.getText();
-  }
-
-  private long readLongElement(JsonParser parser, String name) throws IOException
-  {
-    findToken(parser, name);
-    return parser.getLongValue();
-  }
-
-  private int readIntElement(JsonParser parser, String name) throws IOException
-  {
-    findToken(parser, name);
-    return parser.getIntValue();
-  }
-
-  private JsonToken findToken(JsonParser parser, String name) throws IOException
-  {
       JsonToken t;
-      while ((t = parser.nextToken()) != null) {
-          if (t == JsonToken.FIELD_NAME && parser.getCurrentName().equals(name)) {
-              t = parser.nextToken();
-              if (t == null) {
-                  throw new IllegalStateException("Missing value for attribute: " + name);
-              }
-              return t;
+      Image image = new Image();
+      
+      while ((t = parser.nextToken()) != JsonToken.END_OBJECT) {
+          if (t != JsonToken.FIELD_NAME) {
+              reportIllegal(parser, JsonToken.FIELD_NAME);
           }
+          String field = parser.getCurrentName();
+          // read value token (or START_ARRAY) 
+          t = parser.nextToken();
+          Integer I = fieldToIndex.get(field);
+          if (I != null) {
+              switch (I.intValue()) {
+              case FIELD_IX_URI:
+                  image.setUri(parser.getText());
+                  continue;
+              case FIELD_IX_TITLE:
+                  image.setTitle(parser.getText());
+                  continue;
+              case FIELD_IX_WIDTH:
+                  image.setWidth(parser.getIntValue());
+                  continue;
+              case FIELD_IX_HEIGHT:
+                  image.setHeight(parser.getIntValue());
+                  continue;
+              case FIELD_IX_SIZE:
+                  image.setSize(Image.Size.valueOf(parser.getText()));
+                  continue;
+              }
+          }
+          throw new IllegalStateException("Unexpected field '"+field+"'");
       }
-      throw new IllegalStateException("Could not find expected field: " + name);
+      return image;
   }
 
     private void reportIllegal(JsonParser parser, JsonToken expToken)
