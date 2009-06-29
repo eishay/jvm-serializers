@@ -262,7 +262,7 @@ public class BenchmarkRunner
     int avg = (int) sum / map.size();
     System.out.println("<img src='http://chart.apis.google.com/chart?chtt="
         + m.name()
-        + "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=1000x300&chd=t:"
+        + "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=800x375&chd=t:"
         + valSb.toString().substring(0, valSb.length() - 1)
         + "&chds="
         + 0
