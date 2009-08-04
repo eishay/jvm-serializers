@@ -4,11 +4,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.twolattes.json.Entity;
+import com.twolattes.json.Value;
+
+@Entity
 public class MediaContent  implements Serializable
 {
   private static final long serialVersionUID = 1L;
-  private List<Image> _images;
-  private Media _media;
+  private @Value(name = "i") List<Image> _images;
+  private @Value(name = "m") Media _media;
   
     public MediaContent() { }
 

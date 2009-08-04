@@ -2,6 +2,10 @@ package serializers.java;
 
 import java.io.Serializable;
 
+import com.twolattes.json.Entity;
+import com.twolattes.json.Value;
+
+@Entity
 public class Image implements Serializable
 {
   private static final long serialVersionUID = 1L;
@@ -11,11 +15,11 @@ public class Image implements Serializable
     SMALL, LARGE
   }
 
-  private String _uri;
-  private String _title;
-  private int _width;
-  private int _height;
-  private Size _size;
+  private @Value(name = "u") String _uri;
+  private @Value(name = "t") String _title;
+  private @Value(name = "w") int _width;
+  private @Value(name = "h") int _height;
+  private @Value(name = "s", ordinal = true) Size _size;
 
   public Image(){}
 

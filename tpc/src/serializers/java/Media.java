@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.twolattes.json.Entity;
+import com.twolattes.json.Value;
+
+@Entity
 public class Media implements Serializable
 {
   private static final long serialVersionUID = 1L;
@@ -12,17 +16,17 @@ public class Media implements Serializable
   {
     JAVA, FLASH
   }
-  private Player _player;
-  private String _uri;
-  private String _title;
-  private int _width;
-  private int _height;
-  private String _format;
-  private long _duration;
-  private long _size;
-  private int _bitrate;
-  private List<String> _persons;
-  private String _copyright;
+  private @Value(name = "l", ordinal = true) Player _player;
+  private @Value(name = "u") String _uri;
+  private @Value(name = "r") String _title;
+  private @Value(name = "w") int _width;
+  private @Value(name = "h") int _height;
+  private @Value(name = "f") String _format;
+  private @Value(name = "d") long _duration;
+  private @Value(name = "s") long _size;
+  private @Value(name = "b") int _bitrate;
+  private @Value(name = "p") List<String> _persons;
+  private @Value(name = "c") String _copyright;
 
   public Media(){}
   

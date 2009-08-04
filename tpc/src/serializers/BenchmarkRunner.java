@@ -43,6 +43,7 @@ public class BenchmarkRunner
 
     // then Json
     runner.addObjectSerializer(new JsonSerializer());
+    runner.addObjectSerializer(new JsonMarshallerSerializer());
 
     // then xml via stax, textual and binary
     runner.addObjectSerializer(new StaxSerializer("stax/woodstox",
