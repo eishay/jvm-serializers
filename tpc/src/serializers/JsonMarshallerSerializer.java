@@ -1,9 +1,6 @@
 package serializers;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.Charset;
 
 import com.twolattes.json.Json;
@@ -22,23 +19,22 @@ public class JsonMarshallerSerializer extends StdMediaSerializer
 	public JsonMarshallerSerializer() {
 		super("JsonMarshaller");
 		_marshaller = TwoLattes.createMarshaller(MediaContent.class);
-		_charset = Charset.forName("UTF8");
+		_charset = Charset.forName("UTF-8");
 	}
 	
 	@Override
 	public MediaContent deserialize(byte[] array) throws Exception {
-		ByteArrayInputStream in = new ByteArrayInputStream(array);
+		String str = new String(array, _charset.toString());
 		return _marshaller.unmarshall((Json.Object) Json.read(
-				new InputStreamReader(in, _charset)));
+				new StringReader(str)));
 	}
 
 	@Override
 	public byte[] serialize(MediaContent content) throws Exception {
-		ByteArrayOutputStream out = new ByteArrayOutputStream(_expectedSize);
-		OutputStreamWriter writer = new OutputStreamWriter(out, _charset);
-		_marshaller.marshall(content).write(writer);
-		writer.flush();
-		byte[] result = out.toByteArray();
+		StringWriter sw = new StringWriter(_expectedSize);
+		_marshaller.marshall(content).write(sw);
+		sw.flush();
+    byte[] result = sw.toString().getBytes(_charset.toString());
 		_expectedSize = result.length;
 		return result;
 	}
