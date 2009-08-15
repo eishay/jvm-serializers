@@ -27,6 +27,6 @@
 	<classpathentry kind="lib" path="lib/asm-2.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/asm-attrs-2.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/asm-commons-2.2.3.jar"/>
-	<classpathentry kind="lib" path="lib/json-0.17.jar"/>
+	<classpathentry kind="lib" path="lib/json-0.19.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
