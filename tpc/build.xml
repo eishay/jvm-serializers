@@ -7,6 +7,12 @@
     </target>
 
     <target name="compile" depends="prepare">
+      
+        <!-- generate the activemq protobuf beans -->
+        <taskdef name="activemqprotoc" classname="org.apache.activemq.protobuf.compiler.ProtoTask" 
+           classpath="lib/activemq-protobuf-1.1-SNAPSHOT.jar:lib/activemq-util-6.0-SNAPSHOT.jar"/>
+        <activemqprotoc source="media.activemq.proto" target="src"/>
+
         <!-- First, thrift beans -->
         <javac srcdir="gen-javabean" destdir="build" classpath="lib" source="1.5" target="1.5">
           <classpath><fileset dir="lib" /> </classpath>

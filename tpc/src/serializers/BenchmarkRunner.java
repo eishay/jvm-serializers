@@ -31,6 +31,7 @@ public class BenchmarkRunner
     // binary codecs first
     runner.addObjectSerializer(new AvroGenericSerializer());
     runner.addObjectSerializer(new AvroSpecificSerializer());
+    runner.addObjectSerializer(new ActiveMQProtobufSerializer());
     runner.addObjectSerializer(new ProtobufSerializer());
     runner.addObjectSerializer(new ThriftSerializer());
     runner.addObjectSerializer(new HessianSerializer());
