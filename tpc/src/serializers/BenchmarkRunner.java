@@ -1,7 +1,11 @@
 package serializers;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -9,6 +13,9 @@ import java.util.Map.Entry;
 
 import serializers.avro.AvroGenericSerializer;
 import serializers.avro.specific.AvroSpecificSerializer;
+import serializers.kryo.KryoCompressedSerializer;
+import serializers.kryo.KryoOptimizedSerializer;
+import serializers.kryo.KryoSerializer;
 
 public class BenchmarkRunner
 {
@@ -35,6 +42,9 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new ProtobufSerializer());
     runner.addObjectSerializer(new ThriftSerializer());
     runner.addObjectSerializer(new HessianSerializer());
+    runner.addObjectSerializer(new KryoSerializer());
+    runner.addObjectSerializer(new KryoOptimizedSerializer());
+    runner.addObjectSerializer(new KryoCompressedSerializer());
 
     // then language default serializers
     runner.addObjectSerializer(new JavaSerializer());
@@ -246,8 +256,20 @@ public class BenchmarkRunner
 
   private void printImages(EnumMap<measurements, Map<String, Double>> values)
   {
-    for (measurements m : values.keySet())
-      printImage(values.get(m), m);
+    for (measurements m : values.keySet()) {
+   	 Map<String, Double> map = values.get(m);
+   	 ArrayList<Entry> list = new ArrayList(map.entrySet());
+   	 Collections.sort(list, new Comparator<Entry>() {
+			public int compare (Entry o1, Entry o2) {
+				double diff = (Double)o1.getValue() - (Double)o2.getValue();
+				return diff > 0 ? 1 : (diff < 0 ? -1 : 0);
+			}
+   	 });
+   	 LinkedHashMap sortedMap = new LinkedHashMap();
+   	 for (Entry entry : list)
+   		 sortedMap.put(entry.getKey(), entry.getValue());
+      printImage(sortedMap, m);
+    }
   }
 
   private void printImage(Map<String, Double> map, measurements m)
@@ -264,7 +286,7 @@ public class BenchmarkRunner
     int avg = (int) sum / map.size();
     System.out.println("<img src='http://chart.apis.google.com/chart?chtt="
         + m.name()
-        + "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=800x375&chd=t:"
+        + "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=689x435&chd=t:"
         + valSb.toString().substring(0, valSb.length() - 1)
         + "&chds="
         + 0

@@ -28,5 +28,9 @@
 	<classpathentry kind="lib" path="lib/asm-attrs-2.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/asm-commons-2.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/json-0.19.jar"/>
+	<classpathentry kind="lib" path="lib/activemq-protobuf-1.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/activemq-util-6.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/kryo-0.9.jar"/>
+	<classpathentry kind="lib" path="lib/minlog-info-1.0.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
