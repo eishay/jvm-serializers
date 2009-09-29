@@ -55,7 +55,7 @@ public class ThriftSerializer  implements ObjectSerializer<MediaContent>
     image1.setSize(Size.LARGE);
     image1.setTitle("Javaone Keynote");
 
-    Image image2 = new Image("http://javaone.com/keynote_thumbnail.jpg", "Javaone Keynote", -1, -1, Size.SMALL);
+    Image image2 = new Image("http://javaone.com/keynote_thumbnail.jpg", "Javaone Keynote", 0, 0, Size.SMALL);
 
     MediaContent content = new MediaContent();
     content.setMedia(media);

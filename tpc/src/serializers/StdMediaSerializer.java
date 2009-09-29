@@ -71,8 +71,8 @@ public abstract class StdMediaSerializer
         media.addToPerson("Bill Gates");
         media.addToPerson("Steve Jobs");
         MediaContent content = new MediaContent(media);
-        content.addImage(new Image(0, "Javaone Keynote", "A", 0, Image.Size.LARGE));
-        content.addImage(new Image(0, "Javaone Keynote", "B", 0, Image.Size.SMALL));
+        content.addImage(new Image(0, "Javaone Keynote", "http://javaone.com/keynote_large.jpg", 0, Image.Size.LARGE));
+        content.addImage(new Image(0, "Javaone Keynote", "http://javaone.com/keynote_thumbnail.jpg", 0, Image.Size.SMALL));
         return content;
     }
 }
