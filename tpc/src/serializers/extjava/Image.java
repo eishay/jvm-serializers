@@ -88,6 +88,7 @@ public class Image implements Externalizable
       ClassNotFoundException
   {
     _title = (String) in.readObject();
+    _uri = (String) in.readObject();
     _width = in.readInt();
     _height = in.readInt();
     _size = Size.values()[in.readByte()];
@@ -96,8 +97,39 @@ public class Image implements Externalizable
   public void writeExternal(ObjectOutput out) throws IOException
   {
     out.writeObject(_title);
+    out.writeObject(_uri);
     out.writeInt(_width);
     out.writeInt(_height);
     out.writeByte(_size.ordinal());
   }
+
+	public int hashCode () {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + _height;
+		result = prime * result + ((_size == null) ? 0 : _size.hashCode());
+		result = prime * result + ((_title == null) ? 0 : _title.hashCode());
+		result = prime * result + ((_uri == null) ? 0 : _uri.hashCode());
+		result = prime * result + _width;
+		return result;
+	}
+
+	public boolean equals (Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		Image other = (Image)obj;
+		if (_height != other._height) return false;
+		if (_size == null) {
+			if (other._size != null) return false;
+		} else if (!_size.equals(other._size)) return false;
+		if (_title == null) {
+			if (other._title != null) return false;
+		} else if (!_title.equals(other._title)) return false;
+		if (_uri == null) {
+			if (other._uri != null) return false;
+		} else if (!_uri.equals(other._uri)) return false;
+		if (_width != other._width) return false;
+		return true;
+	}
 }

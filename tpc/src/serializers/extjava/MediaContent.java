@@ -71,4 +71,25 @@ public class MediaContent implements Externalizable
     }
   }
 
+	public int hashCode () {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((_images == null) ? 0 : _images.hashCode());
+		result = prime * result + ((_media == null) ? 0 : _media.hashCode());
+		return result;
+	}
+
+	public boolean equals (Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		MediaContent other = (MediaContent)obj;
+		if (_images == null) {
+			if (other._images != null) return false;
+		} else if (!_images.equals(other._images)) return false;
+		if (_media == null) {
+			if (other._media != null) return false;
+		} else if (!_media.equals(other._media)) return false;
+		return true;
+	}
 }
