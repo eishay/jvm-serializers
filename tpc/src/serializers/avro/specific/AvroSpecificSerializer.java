@@ -34,14 +34,14 @@ public class AvroSpecificSerializer implements ObjectSerializer<MediaContent>
     media.format = new Utf8("video/mpg4");
     media.title = new Utf8("Javaone Keynote");
     media.duration = 1234567L;
-    media.bitrate = 123;
+    media.bitrate = 0;
     media.person = new GenericData.Array<Utf8>(2);
     media.person.add(new Utf8("Bill Gates"));
     media.person.add(new Utf8("Steve Jobs"));
     media.player = 0;
     media.height = 0;
     media.width = 0;
-    media.size = 0L;
+    media.size = 123L;
     media.copyright = new Utf8();
 
     Image image1 = new Image();
@@ -53,8 +53,8 @@ public class AvroSpecificSerializer implements ObjectSerializer<MediaContent>
 
     Image image2 = new Image();
     image2.uri = new Utf8("http://javaone.com/keynote_thumbnail.jpg");
-    image2.width = -1;
-    image2.height = -1;
+    image2.width = 0;
+    image2.height = 0;
     image2.size = 1;
     image2.title = new Utf8("Javaone Keynote");
 
