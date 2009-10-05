@@ -79,6 +79,7 @@ public class StaxSerializer extends StdMediaSerializer
     media.setDuration(Long.parseLong(readElement(parser, FIELD_NAME_DURATION)));
     media.setSize(Long.parseLong(readElement(parser, FIELD_NAME_SIZE)));
     media.setBitrate(Integer.parseInt(readElement(parser, FIELD_NAME_BITRATE)));
+    // NOTE: Does not read copyright field!
 
     searchTag(parser, FIELD_NAME_PERSONS);
     do {
@@ -162,6 +163,7 @@ public class StaxSerializer extends StdMediaSerializer
       writeElement(writer, FIELD_NAME_DURATION, String.valueOf(media.getDuration()));
       writeElement(writer, FIELD_NAME_SIZE, String.valueOf(media.getSize()));
       writeElement(writer, FIELD_NAME_BITRATE, String.valueOf(media.getBitrate()));
+      // NOTE: Does not write copyright field!
       for (String person : media.getPersons()) {
           writeElement(writer, FIELD_NAME_PERSONS, person);
       }

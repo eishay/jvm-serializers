@@ -30,7 +30,7 @@ public class SbinarySerializer implements ObjectSerializer<MediaContent>
 
     Image image1 = new Image("http://javaone.com/keynote_large.jpg", "Javaone Keynote", 0, 0, Size.LARGE());
 
-    Image image2 = new Image("http://javaone.com/keynote_thumbnail.jpg", "Javaone Keynote", 0, 0, Size.LARGE());
+    Image image2 = new Image("http://javaone.com/keynote_thumbnail.jpg", "Javaone Keynote", 0, 0, Size.SMALL());
 
     MediaContent content = new MediaContent(media);
     content.addImage(image1);

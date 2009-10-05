@@ -44,13 +44,13 @@ public class ScalaSerializer implements ObjectSerializer<MediaContent>
 
   public MediaContent create()
   {
-    Media media = new Media("http://javaone.com/keynote.mpg", "Javaone Keynote", 0, 0, "video/mpg4", 1234567, 0, 123, Player.JAVA());
+    Media media = new Media("http://javaone.com/keynote.mpg", "Javaone Keynote", 0, 0, "video/mpg4", 1234567, 123, 0, Player.JAVA());
     media.addPerson("Bill Gates");
     media.addPerson("Steve Jobs");
 
-    Image image1 = new Image("A", "Javaone Keynote", 0, 0, Size.LARGE());
+    Image image1 = new Image("http://javaone.com/keynote_large.jpg", "Javaone Keynote", 0, 0, Size.LARGE());
 
-    Image image2 = new Image("B", "Javaone Keynote", 0, 0, Size.LARGE());
+    Image image2 = new Image("http://javaone.com/keynote_thumbnail.jpg", "Javaone Keynote", 0, 0, Size.SMALL());
 
     MediaContent content = new MediaContent(media);
     content.addImage(image1);

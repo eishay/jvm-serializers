@@ -162,6 +162,7 @@ public class JavolutionXMLFormatSerializer extends StdMediaSerializer
       xml.setAttribute("br", media.getBitrate());
       List<String> persons = media.getPersons();
       xml.setAttribute("ps", persons.size());
+      // NOTE: Does not write copyright field!
       for (String p : persons)
       {
         xml.add(p);
@@ -180,6 +181,7 @@ public class JavolutionXMLFormatSerializer extends StdMediaSerializer
       media.setDuration(xml.getAttribute("dr", 0l));
       media.setSize(xml.getAttribute("sz", 0l));
       media.setBitrate(xml.getAttribute("br", 0));
+      // NOTE: Does not read copyright field!
       int ps = xml.getAttribute("ps", 0);
       for (int i = 0; i<ps; i++) {
         media.addToPerson((String)xml.getNext());

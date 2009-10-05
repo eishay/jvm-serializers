@@ -45,16 +45,15 @@ public class ThriftSerializer  implements ObjectSerializer<MediaContent>
     media.setFormat("video/mpg4");
     media.setTitle("Javaone Keynote");
     media.setDuration(1234567);
-    media.setBitrate(123);
+    media.setBitrate(0);
+    media.setSize(123);
+    media.setWidth(0);
+    media.setHeight(0);
     media.addToPerson("Bill Gates");
     media.addToPerson("Steve Jobs");
     media.setPlayer(Player.JAVA);
 
-    Image image1 = new Image();
-    image1.setUri("http://javaone.com/keynote_large.jpg");
-    image1.setSize(Size.LARGE);
-    image1.setTitle("Javaone Keynote");
-
+    Image image1 = new Image("http://javaone.com/keynote_large.jpg", "Javaone Keynote", 0, 0, Size.LARGE);
     Image image2 = new Image("http://javaone.com/keynote_thumbnail.jpg", "Javaone Keynote", 0, 0, Size.SMALL);
 
     MediaContent content = new MediaContent();

@@ -58,15 +58,15 @@ public class AvroGenericSerializer  implements ObjectSerializer<GenericRecord>
     media.put("format", new Utf8("video/mpg4"));
     media.put("title", new Utf8("Javaone Keynote"));
     media.put("duration", 1234567L);
-    media.put("bitrate", 123);
+    media.put("bitrate", 0);
     GenericData.Array<Utf8> person =  new GenericData.Array<Utf8>(2);
     person.add(new Utf8("Bill Gates"));
     person.add(new Utf8("Steve Jobs"));
     media.put("person", person);
-    media.put("player", 0);
+    media.put("player", 1);
     media.put("height", 0);
     media.put("width", 0);
-    media.put("size", 0L);
+    media.put("size", 123L);
     media.put("copyright", new Utf8());
 
     GenericRecord image1 = new GenericData.Record(IMAGE_SCHEMA);
@@ -78,8 +78,8 @@ public class AvroGenericSerializer  implements ObjectSerializer<GenericRecord>
 
     GenericRecord image2 = new GenericData.Record(IMAGE_SCHEMA);
     image2.put("uri", new Utf8("http://javaone.com/keynote_thumbnail.jpg"));
-    image2.put("width", -1);
-    image2.put("height", -1);
+    image2.put("width", 0);
+    image2.put("height", 0);
     image2.put("size", 1);
     image2.put("title", new Utf8("Javaone Keynote"));
     
