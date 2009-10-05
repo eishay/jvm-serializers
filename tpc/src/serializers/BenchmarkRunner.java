@@ -38,13 +38,18 @@ public class BenchmarkRunner
     // binary codecs first
     runner.addObjectSerializer(new AvroGenericSerializer());
     runner.addObjectSerializer(new AvroSpecificSerializer());
-    runner.addObjectSerializer(new ActiveMQProtobufSerializer());
+
+    // This serialization test uses lazy deserialization so cannot be compared with the rest of the tests.
+    // runner.addObjectSerializer(new ActiveMQProtobufSerializer());
+
     runner.addObjectSerializer(new ProtobufSerializer());
     runner.addObjectSerializer(new ThriftSerializer());
     runner.addObjectSerializer(new HessianSerializer());
     runner.addObjectSerializer(new KryoSerializer());
     runner.addObjectSerializer(new KryoOptimizedSerializer());
-    runner.addObjectSerializer(new KryoCompressedSerializer());
+
+    // None of the other serializers use compression, so we'll leave this out.
+    // runner.addObjectSerializer(new KryoCompressedSerializer());
 
     // then language default serializers
     runner.addObjectSerializer(new JavaSerializer());
@@ -286,7 +291,7 @@ public class BenchmarkRunner
     int avg = (int) sum / map.size();
     System.out.println("<img src='http://chart.apis.google.com/chart?chtt="
         + m.name()
-        + "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=689x435&chd=t:"
+        + "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=689x390&chd=t:"
         + valSb.toString().substring(0, valSb.length() - 1)
         + "&chds="
         + 0

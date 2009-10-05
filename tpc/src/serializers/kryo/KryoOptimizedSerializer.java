@@ -31,6 +31,7 @@ public class KryoOptimizedSerializer extends KryoSerializer {
 		CollectionSerializer imagesSerializer = new CollectionSerializer(kryo);
 		imagesSerializer.setElementClass(Image.class);
 		imagesSerializer.setElementsCanBeNull(false);
+		imagesSerializer.setLength(2);
 		imagesField.setClass(ArrayList.class, imagesSerializer);
 
 		CachedField mediaField = mediaContentSerializer.getField(MediaContent.class, "_media");
@@ -42,6 +43,7 @@ public class KryoOptimizedSerializer extends KryoSerializer {
 		CollectionSerializer personsSerializer = new CollectionSerializer(kryo);
 		personsSerializer.setElementClass(String.class);
 		personsSerializer.setElementsCanBeNull(false);
+		personsSerializer.setLength(2);
 		personsField.setClass(ArrayList.class, personsSerializer);
 
 		mediaSerializer.getField(Media.class, "_copyright").setCanBeNull(true);
