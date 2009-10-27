@@ -22,8 +22,10 @@
 	<classpathentry kind="lib" path="lib/sbinary-0.3-alpha.jar"/>
 	<classpathentry kind="lib" path="lib/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="lib" path="lib/hessian-3.2.0.jar"/>
-	<classpathentry kind="lib" path="lib/avro-0.1-dev-java.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-asl-0.9.5.jar"/>
+	<classpathentry kind="lib" path="lib/avro-1.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-asl-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-mapper-asl-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/paranamer-1.5.jar"/>
 	<classpathentry kind="lib" path="lib/asm-2.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/asm-attrs-2.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/asm-commons-2.2.3.jar"/>

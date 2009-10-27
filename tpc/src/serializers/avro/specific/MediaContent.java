@@ -16,7 +16,7 @@ public class MediaContent implements SpecificRecord {
   private static final Schema _SCHEMA = Schema.parse("{\"type\": \"record\", \"name\": \"MediaContent\", \"namespace\": \"serializers.avro.specific\", \"fields\": [{\"name\": \"image\", \"type\": {\"type\": \"array\", \"items\": {\"type\": \"record\", \"name\": \"Image\", \"fields\": [{\"name\": \"uri\", \"type\": \"string\"}, {\"name\": \"title\", \"type\": \"string\"}, {\"name\": \"width\", \"type\": \"int\"}, {\"name\": \"height\", \"type\": \"int\"}, {\"name\": \"size\", \"type\": \"int\"}]}}}, {\"name\": \"media\", \"type\": {\"type\": \"record\", \"name\": \"Media\", \"fields\": [{\"name\": \"uri\", \"type\": \"string\"}, {\"name\": \"title\", \"type\": \"string\"}, {\"name\": \"width\", \"type\": \"int\"}, {\"name\": \"height\", \"type\": \"int\"}, {\"name\": \"format\", \"type\": \"string\"}, {\"name\": \"duration\", \"type\": \"long\"}, {\"name\": \"size\", \"type\": \"long\"}, {\"name\": \"bitrate\", \"type\": \"int\"}, {\"name\": \"person\", \"type\": {\"type\": \"array\", \"items\": \"string\"}}, {\"name\": \"player\", \"type\": \"int\"}, {\"name\": \"copyright\", \"type\": \"string\"}]}}]}");
   public GenericArray<Image> image;
   public Media media;
-  public Schema schema() { return _SCHEMA; }
+  public Schema getSchema() { return _SCHEMA; }
   public Object get(int _field) {
     switch (_field) {
     case 0: return image;
@@ -63,7 +63,7 @@ public class MediaContent implements SpecificRecord {
     public Integer width;
     public Integer height;
     public Integer size;
-    public Schema schema() { return _SCHEMA; }
+    public Schema getSchema() { return _SCHEMA; }
     public Object get(int _field) {
       switch (_field) {
       case 0: return uri;
@@ -134,7 +134,7 @@ public class MediaContent implements SpecificRecord {
     public GenericArray<Utf8> person;
     public Integer player;
     public Utf8 copyright;
-    public Schema schema() { return _SCHEMA; }
+    public Schema getSchema() { return _SCHEMA; }
     public Object get(int _field) {
       switch (_field) {
       case 0: return uri;

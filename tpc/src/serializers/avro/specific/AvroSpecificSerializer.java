@@ -5,8 +5,8 @@ import java.io.ByteArrayOutputStream;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
-import org.apache.avro.io.ValueReader;
-import org.apache.avro.io.ValueWriter;
+import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.util.Utf8;
@@ -16,10 +16,10 @@ import serializers.ObjectSerializer;
 public class AvroSpecificSerializer implements ObjectSerializer<MediaContent> 
 
 {
-  private static final Schema SCHEMA = new MediaContent().schema();
+  private static final Schema SCHEMA = new MediaContent().getSchema();
 
   private static final SpecificDatumReader READER = 
-    new SpecificDatumReader(SCHEMA, "serializers.avro.specific.");
+    new SpecificDatumReader(SCHEMA);
 
   private static final SpecificDatumWriter WRITER =
     new SpecificDatumWriter(SCHEMA);
@@ -35,7 +35,7 @@ public class AvroSpecificSerializer implements ObjectSerializer<MediaContent>
     media.title = new Utf8("Javaone Keynote");
     media.duration = 1234567L;
     media.bitrate = 0;
-    media.person = new GenericData.Array<Utf8>(2);
+    media.person = new GenericData.Array<Utf8>(2, null);
     media.person.add(new Utf8("Bill Gates"));
     media.person.add(new Utf8("Steve Jobs"));
     media.player = 0;
@@ -60,7 +60,7 @@ public class AvroSpecificSerializer implements ObjectSerializer<MediaContent>
 
     MediaContent content = new MediaContent();
     content.media = media;
-    content.image = new GenericData.Array<Image>(2);
+    content.image = new GenericData.Array<Image>(2, null);
     content.image.add(image1);
     content.image.add(image2);
     return content;
@@ -68,12 +68,12 @@ public class AvroSpecificSerializer implements ObjectSerializer<MediaContent>
 
   public MediaContent deserialize(byte[] array) throws Exception {
     return (MediaContent) 
-      READER.read(null, new ValueReader(new ByteArrayInputStream(array)));
+      READER.read(null, new BinaryDecoder(new ByteArrayInputStream(array)));
   }
 
   public byte[] serialize(MediaContent content) throws Exception {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    WRITER.write(content, new ValueWriter(out));
+    WRITER.write(content, new BinaryEncoder(out));
     return out.toByteArray();
   }
 

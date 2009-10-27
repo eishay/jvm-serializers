@@ -8,8 +8,8 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.io.ValueReader;
-import org.apache.avro.io.ValueWriter;
+import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.util.Utf8;
 
 import serializers.ObjectSerializer;
@@ -59,7 +59,7 @@ public class AvroGenericSerializer  implements ObjectSerializer<GenericRecord>
     media.put("title", new Utf8("Javaone Keynote"));
     media.put("duration", 1234567L);
     media.put("bitrate", 0);
-    GenericData.Array<Utf8> person =  new GenericData.Array<Utf8>(2);
+    GenericData.Array<Utf8> person =  new GenericData.Array<Utf8>(2, null);
     person.add(new Utf8("Bill Gates"));
     person.add(new Utf8("Steve Jobs"));
     media.put("person", person);
@@ -84,7 +84,7 @@ public class AvroGenericSerializer  implements ObjectSerializer<GenericRecord>
     image2.put("title", new Utf8("Javaone Keynote"));
     
     GenericData.Array<GenericRecord> images = 
-      new GenericData.Array<GenericRecord>(2);
+      new GenericData.Array<GenericRecord>(2, null);
     images.add(image1);
     images.add(image2);
     
@@ -96,12 +96,12 @@ public class AvroGenericSerializer  implements ObjectSerializer<GenericRecord>
   }
 
   public GenericRecord deserialize(byte[] array) throws Exception {
-    return READER.read(null, new ValueReader(new ByteArrayInputStream(array)));
+    return READER.read(null, new BinaryDecoder(new ByteArrayInputStream(array)));
   }
 
   public byte[] serialize(GenericRecord content) throws Exception {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    WRITER.write(content, new ValueWriter(out));
+    WRITER.write(content, new BinaryEncoder(out));
     return out.toByteArray();
   }
 
