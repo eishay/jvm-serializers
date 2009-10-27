@@ -5,7 +5,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/libthrift.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.4.jar"/>
-	<classpathentry kind="lib" path="lib/protobuf-2.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/protobuf-java-2.2.0.jar"/>
 	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/scala-library.jar"/>
 	<classpathentry kind="lib" path="lib/commons-httpclient-3.1.jar"/>
@@ -32,5 +32,6 @@
 	<classpathentry kind="lib" path="lib/activemq-util-6.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/minlog-info-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/kryo-0.92.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff-json-1.0.0.M0.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
