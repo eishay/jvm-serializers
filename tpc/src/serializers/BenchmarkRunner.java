@@ -60,6 +60,8 @@ public class BenchmarkRunner
     // then Json
     runner.addObjectSerializer(new JsonSerializer());
     runner.addObjectSerializer(new JsonMarshallerSerializer());
+    runner.addObjectSerializer(new ProtostuffJsonSerializer());
+    runner.addObjectSerializer(new ProtostuffNumericJsonSerializer());
 
     // then xml via stax, textual and binary
     runner.addObjectSerializer(new StaxSerializer("stax/woodstox",
@@ -291,7 +293,7 @@ public class BenchmarkRunner
     int avg = (int) sum / map.size();
     System.out.println("<img src='http://chart.apis.google.com/chart?chtt="
         + m.name()
-        + "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=689x390&chd=t:"
+        + "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=689x430&chd=t:"
         + valSb.toString().substring(0, valSb.length() - 1)
         + "&chds="
         + 0
