@@ -1,9 +1,11 @@
 <project name="Thrift, ProtoBuf comparison">
     <target name="prepare">
         <mkdir dir="build" />
+        <mkdir dir="dist" />
     </target>
     <target name="clean">
         <delete dir="build"/>
+        <delete dir="dist"/>
     </target>
 
     <target name="compile" depends="prepare">
@@ -21,5 +23,27 @@
           <classpath><fileset dir="lib" /> </classpath>
         </javac>
     </target>
+    
+    <target name="jarjar" depends="compile">
+        <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="jarjar/jarjar-1.0.jar"/>
+        <jarjar jarfile="dist/tpc-benchmark.jar">
+            <manifest>
+                <attribute name="Main-Class" value="serializers.BenchmarkRunner" />
+            </manifest>
+            <fileset dir="build"/>
+            <zipgroupfileset dir="lib" includes="*.jar" />
+            <keep pattern="serializers.**"/>
+            <!-- below should've been removed but jarjar complains about duplicate META-INF/LICENSE -->
+            <keep pattern="com.**"/>
+            <keep pattern="comm.**"/>
+            <keep pattern="org.**"/>
+            <keep pattern="javax.**"/>
+            <keep pattern="javolution.**"/>
+            <keep pattern="sbinary.**"/>
+            <keep pattern="scala.**"/>
+        </jarjar>
+    </target>
+    
+
 </project>
 
