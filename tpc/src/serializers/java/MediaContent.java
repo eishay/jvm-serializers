@@ -11,8 +11,11 @@ import com.twolattes.json.Value;
 public class MediaContent  implements Serializable
 {
   private static final long serialVersionUID = 1L;
-  private @Value(name = "i") List<Image> _images;
-  private @Value(name = "m") Media _media;
+
+  // Note: use FIELD_NAME_IMAGES
+  private @Value(name = "im") List<Image> _images;
+  // Note: use FIELD_NAME_MEDIA
+  private @Value(name = "md") Media _media;
   
     public MediaContent() { }
 
@@ -56,5 +59,16 @@ public class MediaContent  implements Serializable
             return false;
         }
         return _images.equals(other._images);
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[MediaContent: ");
+        sb.append("media=").append(_media);
+        sb.append(", images=").append(_images);
+        sb.append("]");
+        return sb.toString();
     }
 }

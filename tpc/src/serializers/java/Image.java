@@ -15,11 +15,12 @@ public class Image implements Serializable
     SMALL, LARGE
   }
 
-  private @Value(name = "u") String _uri;
-  private @Value(name = "t") String _title;
-  private @Value(name = "w") int _width;
-  private @Value(name = "h") int _height;
-  private @Value(name = "s", ordinal = true) Size _size;
+    // Note: field names must match FIELD_NAME_xxx
+  private @Value(name = "ul") String _uri;
+  private @Value(name = "tl") String _title;
+  private @Value(name = "wd") int _width;
+  private @Value(name = "hg") int _height;
+  private @Value(name = "sz", ordinal = true) Size _size;
 
   public Image(){}
 
@@ -84,6 +85,7 @@ public class Image implements Serializable
     this._size = size;
   }
 
+    @Override
     public boolean equals(Object o)
     {
         if (o == this) return true;
@@ -99,5 +101,19 @@ public class Image implements Serializable
         if (!_size.equals(other._size)) return false;
 
         return true;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[Image ");
+        sb.append("width=").append(_width);
+        sb.append(", height=").append(_height);
+        sb.append(", uri=").append(_uri);
+        sb.append(", title=").append(_title);
+        sb.append(", size=").append(_size);
+        sb.append("]");
+        return sb.toString();
     }
 }

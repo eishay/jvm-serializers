@@ -70,6 +70,7 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new StaxSerializer("stax/aalto",
                                                   new com.fasterxml.aalto.stax.InputFactoryImpl(),
                                                   new com.fasterxml.aalto.stax.OutputFactoryImpl()));
+
     runner.addObjectSerializer(new StaxSerializer("binaryxml/FI",
                                                   new com.sun.xml.fastinfoset.stax.factory.StAXInputFactory(),
                                                   new com.sun.xml.fastinfoset.stax.factory.StAXOutputFactory()));
@@ -251,11 +252,12 @@ public class BenchmarkRunner
         Object input = serializer.create();
         byte[] array = serializer.serialize(input);
         Object output = serializer.deserialize(array);
+
         if (!input.equals(output)) {
             /* Should throw an exception; but for now (that we have a few
              * failures) let's just whine...
              */
-            String msg = "serializer '"+serializer.getName()+"' failed round-trip test (ser+deser produces Object different from input)";
+            String msg = "serializer '"+serializer.getName()+"' failed round-trip test (ser+deser produces Object different from input), input="+input+", output="+output;
             //throw new Exception("Error: "+msg);
             System.err.println("WARN: "+msg);
         }

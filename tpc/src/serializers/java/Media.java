@@ -16,16 +16,19 @@ public class Media implements Serializable
   {
     JAVA, FLASH
   }
-  private @Value(name = "l", ordinal = true) Player _player;
-  private @Value(name = "u") String _uri;
-  private @Value(name = "r") String _title;
-  private @Value(name = "w") int _width;
-  private @Value(name = "h") int _height;
-  private @Value(name = "f") String _format;
-  private @Value(name = "d") long _duration;
-  private @Value(name = "s") long _size;
-  private @Value(name = "b") int _bitrate;
-  private @Value(name = "p") List<String> _persons;
+
+    // Note: MUST use names from StdMediaSerializer (FIELD_NAME_xxx)
+
+  private @Value(name = "pl", ordinal = true) Player _player;
+  private @Value(name = "ul") String _uri;
+  private @Value(name = "tl") String _title;
+  private @Value(name = "wd") int _width;
+  private @Value(name = "hg") int _height;
+  private @Value(name = "fr") String _format;
+  private @Value(name = "dr") long _duration;
+  private @Value(name = "sz") long _size;
+  private @Value(name = "br") int _bitrate;
+  private @Value(name = "pr") List<String> _persons;
   private @Value(name = "c") String _copyright;
 
   public Media(){}
@@ -193,5 +196,25 @@ public class Media implements Serializable
             if (!_copyright.equals(other._copyright)) return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[Media ");
+        sb.append("width=").append(_width);
+        sb.append(", height=").append(_height);
+        sb.append(", duration=").append(_duration);
+        sb.append(", size=").append(_size);
+        sb.append(", bitrate=").append(_bitrate);
+        sb.append(", player=").append(_player);
+        sb.append(", uri=").append(_uri);
+        sb.append(", title=").append(_title);
+        sb.append(", format=").append(_format);
+        sb.append(", persons=").append(_persons);
+        sb.append(", copyright=").append(_copyright);
+        sb.append("]");
+        return sb.toString();
     }
 }
