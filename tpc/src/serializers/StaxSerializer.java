@@ -140,7 +140,7 @@ public class StaxSerializer extends StdMediaSerializer
       writeElement(writer, FIELD_NAME_TITLE, image.getTitle());
       writeElement(writer, FIELD_NAME_WIDTH, String.valueOf(image.getWidth()));
       writeElement(writer, FIELD_NAME_HEIGHT, String.valueOf(image.getHeight()));
-      writeElement(writer, FIELD_NAME_SIZE, String.valueOf(image.getSize()));
+      writeElement(writer, FIELD_NAME_SIZE, image.getSize().name());
       writer.writeEndElement();
   }
 
