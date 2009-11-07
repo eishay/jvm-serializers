@@ -31,7 +31,7 @@ public class JsonSerializer extends StdMediaSerializer
     JsonGenerator generator = _factory.createJsonGenerator(baos, JsonEncoding.UTF8);
     generator.writeStartObject();
     writeMedia(generator, content.getMedia());
-    generator.writeFieldName("im");
+    generator.writeFieldName(FIELD_NAME_IMAGES);
     generator.writeStartArray();
     for (int i = 0, len = content.imageCount(); i < len; ++i) {
         writeImage(generator, content.getImage(i));
