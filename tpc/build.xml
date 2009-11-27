@@ -19,7 +19,7 @@
         <javac srcdir="gen-javabean" destdir="build" classpath="lib" source="1.5" target="1.5">
           <classpath><fileset dir="lib" /> </classpath>
         </javac>
-        <javac srcdir="src" destdir="build" classpath="lib" source="1.5" target="1.5">
+        <javac srcdir="src" destdir="build" classpath="lib" source="1.5" target="1.5" debug="true">
           <classpath><fileset dir="lib" /> </classpath>
         </javac>
     </target>

@@ -20,9 +20,13 @@ public class JsonSerializer extends StdMediaSerializer
 
   public JsonSerializer()
   {
-      super("json (jackson)");
-      _factory = new JsonFactory();
+      this("json (jackson)");
   }
+
+    protected JsonSerializer(String id) {
+        super(id);
+      _factory = new JsonFactory();
+    }
 
 
     public byte[] serialize(MediaContent content) throws Exception
