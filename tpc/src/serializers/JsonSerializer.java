@@ -15,78 +15,67 @@ import org.codehaus.jackson.JsonToken;
 
 public class JsonSerializer extends StdMediaSerializer
 {
-  private final JsonFactory _factory;
-  public int expectedSize = 0;
+    protected final JsonFactory _factory;
 
-  public JsonSerializer()
-  {
-      this("json (jackson)");
-  }
-
+    public int expectedSize = 0;
+    
+    public JsonSerializer()
+    {
+        this("json (jackson)");
+    }
+    
     protected JsonSerializer(String id) {
         super(id);
-      _factory = new JsonFactory();
+        _factory = new JsonFactory();
     }
 
-
-    public byte[] serialize(MediaContent content) throws Exception
-  {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream(expectedSize);
-    JsonGenerator generator = _factory.createJsonGenerator(baos, JsonEncoding.UTF8);
-    generator.writeStartObject();
-    writeMedia(generator, content.getMedia());
-    generator.writeFieldName(FIELD_NAME_IMAGES);
-    generator.writeStartArray();
-    for (int i = 0, len = content.imageCount(); i < len; ++i) {
-        writeImage(generator, content.getImage(i));
+    // // // StdMediaSerializer implementation
+    
+    public final byte[] serialize(MediaContent content) throws Exception
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(expectedSize);
+        JsonGenerator generator = constructGenerator(baos);
+        writeMediaContent(generator, content);
+        generator.close();
+        byte[] array = baos.toByteArray();
+        expectedSize = array.length;
+        return array;
     }
-    generator.writeEndArray();
-
-    generator.writeEndObject();
-    generator.close();
-    byte[] array = baos.toByteArray();
-    expectedSize = array.length;
-    return array;
-  }
-
-  public MediaContent deserialize(byte[] array) throws Exception
-  {
-    JsonParser parser = _factory.createJsonParser(array);
-    if (parser.nextToken() != JsonToken.START_OBJECT) {
-        reportIllegal(parser, JsonToken.START_OBJECT);
+    
+    public final MediaContent deserialize(byte[] array) throws Exception
+    {
+        JsonParser parser = constructParser(array);
+        MediaContent mc = readMediaContent(parser);
+        parser.close();
+        return mc;
     }
-    // loop for main-level fields
-    MediaContent mc = new MediaContent();
-    JsonToken t;
 
-    while ((t = parser.nextToken()) != JsonToken.END_OBJECT) {
-        if (t != JsonToken.FIELD_NAME) {
-            reportIllegal(parser, JsonToken.FIELD_NAME);
+    // // // Internal methods
+
+    protected JsonParser constructParser(byte[] data) throws IOException
+    {
+        return _factory.createJsonParser(data);
+    }
+
+    protected JsonGenerator constructGenerator(ByteArrayOutputStream baos) throws IOException
+    {
+        return _factory.createJsonGenerator(baos, JsonEncoding.UTF8);
+    }
+
+    protected void writeMediaContent(JsonGenerator generator, MediaContent content) throws IOException
+    {
+        generator.writeStartObject();
+        writeMedia(generator, content.getMedia());
+        generator.writeFieldName(FIELD_NAME_IMAGES);
+        generator.writeStartArray();
+        for (int i = 0, len = content.imageCount(); i < len; ++i) {
+            writeImage(generator, content.getImage(i));
         }
-        String field = parser.getCurrentName();
-        Integer I = fieldToIndex.get(field);
-        if (I != null) {
-            switch (I.intValue()) {
-            case FIELD_IX_MEDIA:
-                mc.setMedia(readMedia(parser));
-                continue;
-            case FIELD_IX_IMAGES:
-                if (parser.nextToken() != JsonToken.START_ARRAY) {
-                    reportIllegal(parser, JsonToken.START_ARRAY);
-                }
-                while (parser.nextToken() == JsonToken.START_OBJECT) {
-                    mc.addImage(readImage(parser));
-                }
-                continue;
-            }
-        }
-        throw new IllegalStateException("Unexpected field '"+field+"'");
+        generator.writeEndArray();
+        generator.writeEndObject();
     }
-    parser.close();
-    return mc;
-  }
 
-  private void writeMedia(JsonGenerator generator, Media media) throws IOException
+  private final void writeMedia(JsonGenerator generator, Media media) throws IOException
   {
     generator.writeFieldName(FIELD_NAME_MEDIA);
     generator.writeStartObject();
@@ -108,7 +97,7 @@ public class JsonSerializer extends StdMediaSerializer
     generator.writeEndObject();
   }
 
-  private void writeImage(JsonGenerator generator, Image image) throws IOException
+  private final void writeImage(JsonGenerator generator, Image image) throws IOException
   {
     generator.writeStartObject();
     generator.writeStringField(FIELD_NAME_URI, image.getUri());
@@ -119,7 +108,42 @@ public class JsonSerializer extends StdMediaSerializer
     generator.writeEndObject();
   }
 
-  private Media readMedia(JsonParser parser) throws IOException
+    protected MediaContent readMediaContent(JsonParser parser) throws IOException
+    {
+        MediaContent mc = new MediaContent();
+        if (parser.nextToken() != JsonToken.START_OBJECT) {
+            reportIllegal(parser, JsonToken.START_OBJECT);
+        }
+        // loop for main-level fields
+        JsonToken t;
+        
+        while ((t = parser.nextToken()) != JsonToken.END_OBJECT) {
+            if (t != JsonToken.FIELD_NAME) {
+                reportIllegal(parser, JsonToken.FIELD_NAME);
+            }
+            String field = parser.getCurrentName();
+            Integer I = fieldToIndex.get(field);
+            if (I != null) {
+            switch (I.intValue()) {
+            case FIELD_IX_MEDIA:
+                mc.setMedia(readMedia(parser));
+                continue;
+            case FIELD_IX_IMAGES:
+                if (parser.nextToken() != JsonToken.START_ARRAY) {
+                    reportIllegal(parser, JsonToken.START_ARRAY);
+                }
+                while (parser.nextToken() == JsonToken.START_OBJECT) {
+                    mc.addImage(readImage(parser));
+                }
+                continue;
+            }
+            }
+            throw new IllegalStateException("Unexpected field '"+field+"'");
+        }
+        return mc;
+    }
+
+  private final Media readMedia(JsonParser parser) throws IOException
   {
       if (parser.nextToken() != JsonToken.START_OBJECT) {
           reportIllegal(parser, JsonToken.START_OBJECT);
@@ -179,7 +203,7 @@ public class JsonSerializer extends StdMediaSerializer
       return media;
   }
 
-  private Image readImage(JsonParser parser) throws IOException
+  private final Image readImage(JsonParser parser) throws IOException
   {
       JsonToken t;
       Image image = new Image();

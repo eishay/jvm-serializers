@@ -24,6 +24,9 @@ public class MediaContent  implements Serializable
     _media = media;
   }
 
+  public List<Image> getImages() { return _images; }
+  public void setImages(List<Image> i) { _images = i; }
+
   public void addImage (Image image)
   {
     if(_images == null)

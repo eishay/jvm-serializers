@@ -148,7 +148,12 @@ public class Media implements Serializable
 
   public List<String> getPersons ()
   {
-    return _persons;
+      return _persons;
+  }
+
+  public void setPersons(List<String> p)
+  {
+      _persons = p;
   }
 
   public void addToPerson (String person)
