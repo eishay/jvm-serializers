@@ -59,6 +59,7 @@ public class BenchmarkRunner
 
     // then Json
     runner.addObjectSerializer(new JsonSerializer());
+    runner.addObjectSerializer(new JsonDataBindingSerializer());
     runner.addObjectSerializer(new JsonMarshallerSerializer());
     runner.addObjectSerializer(new ProtostuffJsonSerializer());
     runner.addObjectSerializer(new ProtostuffNumericJsonSerializer());
@@ -102,14 +103,12 @@ public class BenchmarkRunner
 
   private <T> double createObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
   {
-    long delta = 0;
+    long start = System.nanoTime();
     for (int i = 0; i < iterations; i++)
     {
-      long start = System.nanoTime();
       serializer.create();
-      delta += System.nanoTime() - start;
     }
-    return iterationTime(delta, iterations);
+    return iterationTime(System.nanoTime() - start, iterations);
   }
 
   private double iterationTime(long delta, int iterations)
@@ -119,31 +118,25 @@ public class BenchmarkRunner
 
   private <T> double serializeObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
   {
-    // let's reuse same instance to reduce overhead
-    long delta = 0;
+    long start = System.nanoTime();
     for (int i = 0; i < iterations; i++)
     {
       T obj = serializer.create();
-      long start = System.nanoTime();
       serializer.serialize(obj);
-      delta += System.nanoTime() - start;
-      if (i % 1000 == 0)
-        doGc();
     }
-    return iterationTime(delta, iterations);
+    return iterationTime(System.nanoTime()-start, iterations);
   }
 
   private <T> double deserializeObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
   {
     byte[] array = serializer.serialize(serializer.create());
-    long delta = 0;
+    long start = System.nanoTime();
+    T result = null;
     for (int i = 0; i < iterations; i++)
     {
-      long start = System.nanoTime();
-      serializer.deserialize(array);
-      delta += System.nanoTime() - start;
+      result = serializer.deserialize(array);
     }
-    return iterationTime(delta, iterations);
+    return iterationTime(System.nanoTime()-start, iterations);
   }
 
   /**
@@ -152,24 +145,13 @@ public class BenchmarkRunner
    */
   private void doGc()
   {
-    try
-    {
-      Thread.sleep(100L);
-    }
-    catch (InterruptedException ie)
-    {
-    }
-    System.gc();
-    System.gc();
-    System.gc();
-    System.gc();
-    try
-    {
-      Thread.sleep(100L);
-    }
-    catch (InterruptedException ie)
-    {
-    }
+      try {
+          Thread.sleep(50L);
+      } catch (InterruptedException ie) { }
+      System.gc();
+      try { // longer sleep afterwards (not needed by GC, but may help with scheduling)
+          Thread.sleep(200L);
+      } catch (InterruptedException ie) { }
   }
 
   enum measurements

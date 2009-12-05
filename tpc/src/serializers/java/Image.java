@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.twolattes.json.Entity;
 import com.twolattes.json.Value;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 @Entity
 public class Image implements Serializable
@@ -23,7 +24,6 @@ public class Image implements Serializable
   private @Value(name = "sz", ordinal = true) Size _size;
 
   public Image(){}
-
   
   public Image (int height, String title, String uri, int width, Size size)
   {
@@ -35,51 +35,61 @@ public class Image implements Serializable
     _size = size;
   }
 
+  @JsonProperty("ul")
   public String getUri ()
   {
     return _uri;
   }
 
+  @JsonProperty("ul")
   public void setUri (String uri)
   {
     _uri = uri;
   }
 
+  @JsonProperty("tl")
   public String getTitle ()
   {
     return _title;
   }
 
+  @JsonProperty("tl")
   public void setTitle (String title)
   {
     _title = title;
   }
 
+  @JsonProperty("wd")
   public int getWidth ()
   {
     return _width;
   }
 
+  @JsonProperty("wd")
   public void setWidth (int width)
   {
     _width = width;
   }
 
+  @JsonProperty("hg")
   public int getHeight ()
   {
     return _height;
   }
 
+  @JsonProperty("hg")
   public void setHeight (int height)
   {
     _height = height;
   }
 
+  @JsonProperty("sz")
   public Size getSize ()
   {
     return _size;
   }
 
+  @JsonProperty("sz")
   public void setSize (Size size)
   {
     this._size = size;
