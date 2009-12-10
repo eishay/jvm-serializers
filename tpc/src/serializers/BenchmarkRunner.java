@@ -63,6 +63,8 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new JsonMarshallerSerializer());
     runner.addObjectSerializer(new ProtostuffJsonSerializer());
     runner.addObjectSerializer(new ProtostuffNumericJsonSerializer());
+    // this is pretty slow; so slow that it's almost not worth keeping but:
+    runner.addObjectSerializer(new GsonSerializer());
 
     // then xml via stax, textual and binary
     runner.addObjectSerializer(new StaxSerializer("stax/woodstox",
@@ -75,12 +77,11 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new StaxSerializer("binaryxml/FI",
                                                   new com.sun.xml.fastinfoset.stax.factory.StAXInputFactory(),
                                                   new com.sun.xml.fastinfoset.stax.factory.StAXOutputFactory()));
-    runner.addObjectSerializer(new XStreamSerializer("xstream (xpp)", false, null, null));
-    runner.addObjectSerializer(new XStreamSerializer("xstream (xpp with conv)", true, null, null));
-    runner.addObjectSerializer(new XStreamSerializer("xstream (stax)",
-                                                     false,
-                                                     new com.ctc.wstx.stax.WstxInputFactory(),
-                                                     new com.ctc.wstx.stax.WstxOutputFactory()));
+
+    // No point in running all 4 variants: let's just use fastest one:
+    //runner.addObjectSerializer(new XStreamSerializer("xstream (xpp)", false, null, null));
+    //runner.addObjectSerializer(new XStreamSerializer("xstream (xpp with conv)", true, null, null));
+    //runner.addObjectSerializer(new XStreamSerializer("xstream (stax)", false, new com.ctc.wstx.stax.WstxInputFactory(), new com.ctc.wstx.stax.WstxOutputFactory()));
     runner.addObjectSerializer(new XStreamSerializer("xstream (stax with conv)",
                                                      true,
                                                      new com.ctc.wstx.stax.WstxInputFactory(),
@@ -88,8 +89,9 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new JavolutionXMLFormatSerializer());
 
     runner.addObjectSerializer(new SbinarySerializer());
+    // broken? Does not correctly round-trip:
     // runner.addObjectSerializer(new YamlSerializer());
-
+    
     System.out.println("Starting");
 
     runner.start();
