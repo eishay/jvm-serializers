@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen-javabean"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/libthrift.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/protobuf-java-2.2.0.jar"/>
@@ -23,8 +23,6 @@
 	<classpathentry kind="lib" path="lib/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="lib" path="lib/hessian-3.2.0.jar"/>
 	<classpathentry kind="lib" path="lib/avro-1.2.0.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-core-asl-1.0.1.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-mapper-asl-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/paranamer-1.5.jar"/>
 	<classpathentry kind="lib" path="lib/asm-2.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/asm-attrs-2.2.3.jar"/>
@@ -35,5 +33,8 @@
 	<classpathentry kind="lib" path="lib/minlog-info-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/kryo-0.92.jar"/>
 	<classpathentry kind="lib" path="lib/protostuff-json-1.0.0.M0.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-asl-1.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-mapper-asl-1.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/gson-1.4.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

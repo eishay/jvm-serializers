@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 
 import serializers.avro.AvroGenericSerializer;
 import serializers.avro.specific.AvroSpecificSerializer;
-import serializers.kryo.KryoCompressedSerializer;
 import serializers.kryo.KryoOptimizedSerializer;
 import serializers.kryo.KryoSerializer;
 
@@ -38,10 +37,7 @@ public class BenchmarkRunner
     // binary codecs first
     runner.addObjectSerializer(new AvroGenericSerializer());
     runner.addObjectSerializer(new AvroSpecificSerializer());
-
-    // This serialization test uses lazy deserialization so cannot be compared with the rest of the tests.
-    // runner.addObjectSerializer(new ActiveMQProtobufSerializer());
-
+    runner.addObjectSerializer(new ActiveMQProtobufSerializer());
     runner.addObjectSerializer(new ProtobufSerializer());
     runner.addObjectSerializer(new ThriftSerializer());
     runner.addObjectSerializer(new HessianSerializer());
@@ -118,7 +114,7 @@ public class BenchmarkRunner
     return (double) delta / (double) (iterations);
   }
 
-  private <T> double serializeObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
+  private <T> double serializeDifferentObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
   {
     long start = System.nanoTime();
     for (int i = 0; i < iterations; i++)
@@ -128,8 +124,25 @@ public class BenchmarkRunner
     }
     return iterationTime(System.nanoTime()-start, iterations);
   }
+  
+  
+  private <T> double serializeSameObject(ObjectSerializer<T> serializer, int iterations) throws Exception
+  {
+    // let's reuse same instance to reduce overhead
+    T obj = serializer.create();
+    long delta = 0;
+    for (int i = 0; i < iterations; i++)
+    {
+      long start = System.nanoTime();
+      serializer.serialize(obj);
+      delta += System.nanoTime() - start;
+      if (i % 1000 == 0)
+        doGc();
+    }
+    return iterationTime(delta, iterations);
+  }  
 
-  private <T> double deserializeObjects(ObjectSerializer<T> serializer, int iterations) throws Exception
+  private <T> double deserializeNoFeildAcess(ObjectSerializer<T> serializer, int iterations) throws Exception
   {
     byte[] array = serializer.serialize(serializer.create());
     long start = System.nanoTime();
@@ -141,6 +154,34 @@ public class BenchmarkRunner
     return iterationTime(System.nanoTime()-start, iterations);
   }
 
+  private <T> double deserializeAndCheckAllFields(CheckingObjectSerializer<T> serializer, int iterations) throws Exception
+  {
+    byte[] array = serializer.serialize(serializer.create());
+    long delta = 0;
+    for (int i = 0; i < iterations; i++)
+    {
+      long start = System.nanoTime();
+      T obj = serializer.deserialize(array);
+      serializer.checkAllFields(obj);
+      delta += System.nanoTime() - start;
+    }
+    return iterationTime(delta, iterations);
+  }  
+  
+  private <T> double deserializeAndCheckMediaField(CheckingObjectSerializer<T> serializer, int iterations) throws Exception
+  {
+    byte[] array = serializer.serialize(serializer.create());
+    long delta = 0;
+    for (int i = 0; i < iterations; i++)
+    {
+      long start = System.nanoTime();
+      T obj = serializer.deserialize(array);
+      serializer.checkMediaField(obj);
+      delta += System.nanoTime() - start;
+    }
+    return iterationTime(delta, iterations);
+  }   
+  
   /**
    * JVM is not required to honor GC requests, but adding bit of sleep around request is
    * most likely to give it a chance to do it.
@@ -158,17 +199,20 @@ public class BenchmarkRunner
 
   enum measurements
   {
-    timeCreate, timeSer, timeDSer, totalTime, length
+    timeCreate, timeSerializeDifferentObjects, timeSerializeSameObject, timeDeserializeNoFieldAccess, timeDeserializeAndCheckMediaField, timeDeserializeAndCheckAllFields, totalTime, length
   }
 
   @SuppressWarnings("unchecked")
   private void start() throws Exception
   {
-    System.out.printf("%-24s, %15s, %15s, %15s, %15s, %10s\n",
+    System.out.printf("%-24s, %15s, %15s, %15s, %15s, %15s, %15s, %15s, %10s\n",
                       " ",
                       "Object create",
-                      "Serialization",
-                      "Deserialization",
+                      "Serialize",
+                      "/w Same Object",
+                      "Deserialize",
+                      "and Check Media",
+                      "and Check All",
                       "Total Time",
                       "Serialized Size");
     EnumMap<measurements, Map<String, Double>> values = new EnumMap<measurements, Map<String, Double>>(measurements.class);
@@ -200,26 +244,56 @@ public class BenchmarkRunner
       checkCorrectness(serializer);
 
       doGc();
-      double timeSer = Double.MAX_VALUE;
+      double timeSerializeDifferentObjects = Double.MAX_VALUE;
       for (int i = 0; i < TRIALS; i++)
-        timeSer = Math.min(timeSer, serializeObjects(serializer, ITERATIONS));
+        timeSerializeDifferentObjects = Math.min(timeSerializeDifferentObjects, serializeDifferentObjects(serializer, ITERATIONS));
 
-      warmDeserialization(serializer);
       doGc();
-      double timeDSer = Double.MAX_VALUE;
+      double timeSerializeSameObject = Double.MAX_VALUE;
       for (int i = 0; i < TRIALS; i++)
-        timeDSer = Math.min(timeDSer, deserializeObjects(serializer, ITERATIONS));
+          timeSerializeSameObject = Math.min(timeSerializeSameObject, serializeSameObject(serializer, ITERATIONS));
+      
+      warmDeserialization(serializer);
+      
+      doGc();
+      double timeDeserializeNoFieldAccess = Double.MAX_VALUE;
+      for (int i = 0; i < TRIALS; i++)
+        timeDeserializeNoFieldAccess = Math.min(timeDeserializeNoFieldAccess, deserializeNoFeildAcess(serializer, ITERATIONS));
 
+      double timeDeserializeAndCheckAllFields = Double.NaN;
+      double timeDeserializeAndCheckMediaField = Double.NaN;
+      
+      if( serializer instanceof CheckingObjectSerializer) {
+          CheckingObjectSerializer checkingSerializer = (CheckingObjectSerializer)serializer;
+
+          timeDeserializeAndCheckMediaField = Double.MAX_VALUE;
+          doGc();
+          for (int i = 0; i < TRIALS; i++)
+              timeDeserializeAndCheckMediaField = Math.min(timeDeserializeAndCheckMediaField, deserializeAndCheckMediaField(checkingSerializer, ITERATIONS));
+
+          timeDeserializeAndCheckAllFields = Double.MAX_VALUE;
+          doGc();
+          for (int i = 0; i < TRIALS; i++) 
+              timeDeserializeAndCheckAllFields = Math.min(timeDeserializeAndCheckAllFields, deserializeAndCheckAllFields(checkingSerializer, ITERATIONS));
+          
+      }
+      
+      
       byte[] array = serializer.serialize(serializer.create());
-      double totalTime = timeCreate + timeSer + timeDSer;
-      System.out.printf("%-24s, %15.5f, %15.5f, %15.5f, %15.5f, %10d\n",
+      double totalTime = timeCreate + timeSerializeDifferentObjects + timeDeserializeNoFieldAccess;
+      System.out.printf("%-24s, %15.5f, %15.5f, %15.5f, %15.5f, %15.5f, %15.5f, %15.5f, %10d\n",
                         serializer.getName(),
                         timeCreate,
-                        timeSer,
-                        timeDSer,
+                        timeSerializeDifferentObjects,
+                        timeSerializeSameObject,
+                        timeDeserializeNoFieldAccess,
+                        timeDeserializeAndCheckMediaField,
+                        timeDeserializeAndCheckAllFields,
                         totalTime,
                         array.length);
-      addValue(values, serializer.getName(), timeCreate, timeSer, timeDSer, totalTime, array.length);
+      
+      addValue(values, serializer.getName(), timeCreate, timeSerializeDifferentObjects, timeSerializeSameObject, 
+              timeDeserializeNoFieldAccess, timeDeserializeAndCheckMediaField, timeDeserializeAndCheckAllFields, totalTime, array.length);
     }
     printImages(values);
   }
@@ -258,9 +332,12 @@ public class BenchmarkRunner
 				return diff > 0 ? 1 : (diff < 0 ? -1 : 0);
 			}
    	 });
-   	 LinkedHashMap sortedMap = new LinkedHashMap();
-   	 for (Entry entry : list)
-   		 sortedMap.put(entry.getKey(), entry.getValue());
+   	 LinkedHashMap<String, Double> sortedMap = new LinkedHashMap<String, Double>();
+   	 for (Entry<String, Double> entry : list) {
+   	     if( !entry.getValue().isNaN() ) {
+   	         sortedMap.put(entry.getKey(), entry.getValue());
+   	     }
+   	 }
       printImage(sortedMap, m);
     }
   }
@@ -269,38 +346,45 @@ public class BenchmarkRunner
   {
     StringBuilder valSb = new StringBuilder();
     String names = "";
-    double sum = 0;
+    double max = Double.MIN_NORMAL;
     for (Entry<String, Double> entry : map.entrySet())
     {
       valSb.append(entry.getValue()).append(',');
-      sum += entry.getValue();
+      max = Math.max(max, entry.getValue());
       names = entry.getKey() + '|' + names;
     }
-    int avg = (int) sum / map.size();
+
+    int height = Math.min(30+map.size()*20, 430); 
+    double scale = max * 1.1;
     System.out.println("<img src='http://chart.apis.google.com/chart?chtt="
         + m.name()
-        + "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=689x430&chd=t:"
+        + "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=689x"+height+"&chd=t:"
         + valSb.toString().substring(0, valSb.length() - 1)
-        + "&chds="
-        + 0
-        + ","
-        + (avg * 2)
-        + "&chxl=0:|"
-        + names.substring(0, names.length() - 1)
-        + "&lklk&chdlp=t&chco=660000|660033|660066|660099|6600CC|6600FF|663300|663333|663366|663399|6633CC|6633FF|666600|666633|666666&cht=bhg&chbh=10&chxt=y&nonsense=aaa.png'/>");
+        + "&chds=0,"+ scale
+        + "&chxt=y"
+        + "&chxl=0:|" + names.substring(0, names.length() - 1)
+        + "&chm=N *f*,000000,0,-1,10&lklk&chdlp=t&chco=660000|660033|660066|660099|6600CC|6600FF|663300|663333|663366|663399|6633CC|6633FF|666600|666633|666666&cht=bhg&chbh=10&nonsense=aaa.png'/>");
+
   }
 
   private void addValue(EnumMap<measurements, Map<String, Double>> values,
                         String name,
                         double timeCreate,
-                        double timeSer,
-                        double timeDSer,
+                        double timeSerializeDifferentObjects,
+                        double timeSerializeSameObject,
+                        double timeDeserializeNoFieldAccess,
+                        double timeDeserializeAndCheckMediaField, 
+                        double timeDeserializeAndCheckAllFields,
                         double totalTime,
                         double length)
   {
+      
     values.get(measurements.timeCreate).put(name, timeCreate);
-    values.get(measurements.timeSer).put(name, timeSer);
-    values.get(measurements.timeDSer).put(name, timeDSer);
+    values.get(measurements.timeSerializeDifferentObjects).put(name, timeSerializeDifferentObjects);
+    values.get(measurements.timeSerializeSameObject).put(name, timeSerializeSameObject);
+    values.get(measurements.timeDeserializeNoFieldAccess).put(name, timeDeserializeNoFieldAccess);
+    values.get(measurements.timeDeserializeAndCheckMediaField).put(name, timeDeserializeAndCheckMediaField);
+    values.get(measurements.timeDeserializeAndCheckAllFields).put(name, timeDeserializeAndCheckAllFields);
     values.get(measurements.totalTime).put(name, totalTime);
     values.get(measurements.length).put(name, length);
   }
@@ -322,7 +406,7 @@ public class BenchmarkRunner
     long endTime = System.currentTimeMillis() + WARMUP_MSECS;
     do
     {
-      serializeObjects(serializer, 1);
+      serializeDifferentObjects(serializer, 1);
     }
     while (System.currentTimeMillis() < endTime);
   }
@@ -333,7 +417,7 @@ public class BenchmarkRunner
     long endTime = System.currentTimeMillis() + WARMUP_MSECS;
     do
     {
-      deserializeObjects(serializer, 1);
+      deserializeNoFeildAcess(serializer, 1);
     }
     while (System.currentTimeMillis() < endTime);
   }
