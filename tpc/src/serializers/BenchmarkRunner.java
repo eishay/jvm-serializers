@@ -262,7 +262,9 @@ public class BenchmarkRunner
 
       double timeDeserializeAndCheckAllFields = Double.NaN;
       double timeDeserializeAndCheckMediaField = Double.NaN;
-      
+
+      double totalTime = timeSerializeDifferentObjects + timeDeserializeNoFieldAccess;
+
       if( serializer instanceof CheckingObjectSerializer) {
           CheckingObjectSerializer checkingSerializer = (CheckingObjectSerializer)serializer;
 
@@ -275,12 +277,12 @@ public class BenchmarkRunner
           doGc();
           for (int i = 0; i < TRIALS; i++) 
               timeDeserializeAndCheckAllFields = Math.min(timeDeserializeAndCheckAllFields, deserializeAndCheckAllFields(checkingSerializer, ITERATIONS));
-          
+
+          totalTime = timeSerializeDifferentObjects + timeDeserializeAndCheckAllFields;
       }
       
       
       byte[] array = serializer.serialize(serializer.create());
-      double totalTime = timeSerializeDifferentObjects + timeDeserializeNoFieldAccess;
       System.out.printf("%-24s, %15.5f, %15.5f, %15.5f, %15.5f, %15.5f, %15.5f, %15.5f, %10d\n",
                         serializer.getName(),
                         timeCreate,
@@ -324,20 +326,20 @@ public class BenchmarkRunner
   private void printImages(EnumMap<measurements, Map<String, Double>> values)
   {
     for (measurements m : values.keySet()) {
-   	 Map<String, Double> map = values.get(m);
-   	 ArrayList<Entry> list = new ArrayList(map.entrySet());
-   	 Collections.sort(list, new Comparator<Entry>() {
-			public int compare (Entry o1, Entry o2) {
-				double diff = (Double)o1.getValue() - (Double)o2.getValue();
-				return diff > 0 ? 1 : (diff < 0 ? -1 : 0);
-			}
-   	 });
-   	 LinkedHashMap<String, Double> sortedMap = new LinkedHashMap<String, Double>();
-   	 for (Entry<String, Double> entry : list) {
-   	     if( !entry.getValue().isNaN() ) {
-   	         sortedMap.put(entry.getKey(), entry.getValue());
-   	     }
-   	 }
+     Map<String, Double> map = values.get(m);
+     ArrayList<Entry> list = new ArrayList(map.entrySet());
+     Collections.sort(list, new Comparator<Entry>() {
+            public int compare (Entry o1, Entry o2) {
+                double diff = (Double)o1.getValue() - (Double)o2.getValue();
+                return diff > 0 ? 1 : (diff < 0 ? -1 : 0);
+            }
+     });
+     LinkedHashMap<String, Double> sortedMap = new LinkedHashMap<String, Double>();
+     for (Entry<String, Double> entry : list) {
+         if( !entry.getValue().isNaN() ) {
+             sortedMap.put(entry.getKey(), entry.getValue());
+         }
+     }
       printImage(sortedMap, m);
     }
   }
