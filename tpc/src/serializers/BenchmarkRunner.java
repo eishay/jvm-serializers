@@ -142,7 +142,7 @@ public class BenchmarkRunner
     return iterationTime(delta, iterations);
   }  
 
-  private <T> double deserializeNoFeildAcess(ObjectSerializer<T> serializer, int iterations) throws Exception
+  private <T> double deserializeNoFieldAccess(ObjectSerializer<T> serializer, int iterations) throws Exception
   {
     byte[] array = serializer.serialize(serializer.create());
     long start = System.nanoTime();
@@ -258,7 +258,7 @@ public class BenchmarkRunner
       doGc();
       double timeDeserializeNoFieldAccess = Double.MAX_VALUE;
       for (int i = 0; i < TRIALS; i++)
-        timeDeserializeNoFieldAccess = Math.min(timeDeserializeNoFieldAccess, deserializeNoFeildAcess(serializer, ITERATIONS));
+        timeDeserializeNoFieldAccess = Math.min(timeDeserializeNoFieldAccess, deserializeNoFieldAccess(serializer, ITERATIONS));
 
       double timeDeserializeAndCheckAllFields = Double.NaN;
       double timeDeserializeAndCheckMediaField = Double.NaN;
@@ -417,7 +417,7 @@ public class BenchmarkRunner
     long endTime = System.currentTimeMillis() + WARMUP_MSECS;
     do
     {
-      deserializeNoFeildAcess(serializer, 1);
+      deserializeNoFieldAccess(serializer, 1);
     }
     while (System.currentTimeMillis() < endTime);
   }
