@@ -280,7 +280,7 @@ public class BenchmarkRunner
       
       
       byte[] array = serializer.serialize(serializer.create());
-      double totalTime = timeCreate + timeSerializeDifferentObjects + timeDeserializeNoFieldAccess;
+      double totalTime = timeSerializeDifferentObjects + timeDeserializeNoFieldAccess;
       System.out.printf("%-24s, %15.5f, %15.5f, %15.5f, %15.5f, %15.5f, %15.5f, %15.5f, %10d\n",
                         serializer.getName(),
                         timeCreate,
