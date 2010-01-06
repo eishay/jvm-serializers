@@ -33,8 +33,8 @@
 	<classpathentry kind="lib" path="lib/minlog-info-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/kryo-0.92.jar"/>
 	<classpathentry kind="lib" path="lib/protostuff-json-1.0.0.M0.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-core-asl-1.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-mapper-asl-1.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/gson-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-asl-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-mapper-asl-1.0.1.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

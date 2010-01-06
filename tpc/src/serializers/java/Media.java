@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.twolattes.json.Entity;
 import com.twolattes.json.Value;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 @Entity
 public class Media implements Serializable
@@ -18,14 +17,10 @@ public class Media implements Serializable
     JAVA, FLASH
   }
 
-   // Note: MUST use names from StdMediaSerializer (FIELD_NAME_xxx)
+    // Note: MUST use names from StdMediaSerializer (FIELD_NAME_xxx)
 
-  @Value(name = "pl", ordinal = true)
-  private Player _player;
-
-  @Value(name = "ul")
-  private String _uri;
-
+  private @Value(name = "pl", ordinal = true) Player _player;
+  private @Value(name = "ul") String _uri;
   private @Value(name = "tl") String _title;
   private @Value(name = "wd") int _width;
   private @Value(name = "hg") int _height;
@@ -61,121 +56,101 @@ public class Media implements Serializable
     _bitrate = bitrate;
   }
 
-  @JsonProperty("p1")
   public Player getPlayer ()
   {
     return _player;
   }
 
-  @JsonProperty("p1")
   public void setPlayer (Player player)
   {
     _player = player;
   }
 
-  @JsonProperty("u1")
   public String getUri ()
   {
     return _uri;
   }
 
-  @JsonProperty("u1")
   public void setUri (String uri)
   {
     _uri = uri;
   }
 
-  @JsonProperty("tl")
   public String getTitle ()
   {
     return _title;
   }
 
-  @JsonProperty("tl")
   public void setTitle (String title)
   {
     _title = title;
   }
 
-  @JsonProperty("wd")
   public int getWidth ()
   {
     return _width;
   }
 
-  @JsonProperty("wd")
   public void setWidth (int width)
   {
     _width = width;
   }
 
-  @JsonProperty("hg")
   public int getHeight ()
   {
     return _height;
   }
 
-  @JsonProperty("hg")
   public void setHeight (int height)
   {
     _height = height;
   }
 
-  @JsonProperty("fr")
   public String getFormat ()
   {
     return _format;
   }
 
-  @JsonProperty("fr")
   public void setFormat (String format)
   {
     _format = format;
   }
 
-  @JsonProperty("dr")
   public long getDuration ()
   {
     return _duration;
   }
 
-  @JsonProperty("dr")
   public void setDuration (long duration)
   {
     _duration = duration;
   }
 
-  @JsonProperty("sz")
   public long getSize ()
   {
     return _size;
   }
 
-  @JsonProperty("sz")
   public void setSize (long size)
   {
     _size = size;
   }
 
-  @JsonProperty("br")
   public int getBitrate ()
   {
     return _bitrate;
   }
 
-  @JsonProperty("br")
   public void setBitrate (int bitrate)
   {
     this._bitrate = bitrate;
   }
 
-  @JsonProperty("pr")
   public List<String> getPersons ()
   {
       return _persons;
   }
 
-  @JsonProperty("pr")
   public void setPersons(List<String> p)
   {
       _persons = p;
@@ -190,13 +165,11 @@ public class Media implements Serializable
     _persons.add(person);
   }
 
-  @JsonProperty("c")
   public String getCopyright ()
   {
     return _copyright;
   }
 
-  @JsonProperty("c")
   public void setCopyright (String copyright)
   {
     _copyright = copyright;

@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.twolattes.json.Entity;
 import com.twolattes.json.Value;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 @Entity
 public class MediaContent  implements Serializable
@@ -14,23 +13,18 @@ public class MediaContent  implements Serializable
   private static final long serialVersionUID = 1L;
 
   // Note: use FIELD_NAME_IMAGES
-  @Value(name = "im")
-  private List<Image> _images;
-
+  private @Value(name = "im") List<Image> _images;
   // Note: use FIELD_NAME_MEDIA
-  @Value(name = "md")
-  private Media _media;
+  private @Value(name = "md") Media _media;
   
-  public MediaContent() { }
+    public MediaContent() { }
 
   public MediaContent (Media media)
   {
     _media = media;
   }
 
-  @JsonProperty("im")
   public List<Image> getImages() { return _images; }
-  @JsonProperty("im")
   public void setImages(List<Image> i) { _images = i; }
 
   public void addImage (Image image)
@@ -49,11 +43,12 @@ public class MediaContent  implements Serializable
     return _images.get(i);
   }
   
-  @JsonProperty("md")
-  public Media getMedia () { return _media; }
+  public Media getMedia ()
+  {
+    return _media;
+  }
 
-  @JsonProperty("md")
-  public void setMedia(Media m) { _media = m; }
+    public void setMedia(Media m) { _media = m; }
 
     @Override
     public boolean equals(Object o)
