@@ -34,6 +34,6 @@
 	<classpathentry kind="lib" path="lib/jackson-mapper-asl-1.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/json-0.19-tpc.jar"/>
 	<classpathentry kind="lib" path="lib/asm-3.2.jar"/>
-	<classpathentry kind="lib" path="lib/kryo-0.93.jar"/>
+	<classpathentry kind="lib" path="lib/kryo-0.95.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 
 import serializers.avro.AvroGenericSerializer;
 import serializers.avro.specific.AvroSpecificSerializer;
-import serializers.kryo.KryoAsmSerializer;
 import serializers.kryo.KryoOptimizedSerializer;
 import serializers.kryo.KryoSerializer;
 
@@ -44,7 +43,6 @@ public class BenchmarkRunner
     // this is pretty slow; so slow that it's almost not worth keeping but:
     // runner.addObjectSerializer(new HessianSerializer());
     runner.addObjectSerializer(new KryoSerializer());
-    runner.addObjectSerializer(new KryoAsmSerializer());
     runner.addObjectSerializer(new KryoOptimizedSerializer());
 
     // None of the other serializers use compression, so we'll leave this out.
@@ -96,6 +94,10 @@ public class BenchmarkRunner
     
     System.out.println("Starting");
 
+    runner._serializers.clear();
+    runner.addObjectSerializer(new KryoSerializer());
+    runner.addObjectSerializer(new KryoOptimizedSerializer());
+    
     runner.start();
   }
 
