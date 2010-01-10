@@ -7,11 +7,13 @@ import serializers.java.Image;
 import serializers.java.Media;
 import serializers.java.MediaContent;
 
+import com.esotericsoftware.kryo.serialize.AsmFieldSerializer;
 import com.esotericsoftware.kryo.serialize.CollectionSerializer;
-import com.esotericsoftware.kryo.serialize.FieldSerializer;
-import com.esotericsoftware.kryo.serialize.IntSerializer;
-import com.esotericsoftware.kryo.serialize.FieldSerializer.CachedField;
+import com.esotericsoftware.kryo.serialize.AsmFieldSerializer.CachedField;
 
+/**
+ * This test does all possible Kryo serializer optimizations.
+ */
 public class KryoOptimizedSerializer extends KryoSerializer {
 	public KryoOptimizedSerializer () {
 		this("kryo-optimized");
@@ -19,11 +21,11 @@ public class KryoOptimizedSerializer extends KryoSerializer {
 
 	public KryoOptimizedSerializer (String name) {
 		super(name);
-		FieldSerializer imageSerializer = new FieldSerializer(kryo);
+		AsmFieldSerializer imageSerializer = new AsmFieldSerializer(kryo);
 		imageSerializer.setFieldsCanBeNull(false);
 		kryo.register(Image.class, imageSerializer);
 
-		FieldSerializer mediaContentSerializer = new FieldSerializer(kryo);
+		AsmFieldSerializer mediaContentSerializer = new AsmFieldSerializer(kryo);
 		mediaContentSerializer.setFieldsCanBeNull(false);
 		kryo.register(MediaContent.class, mediaContentSerializer);
 
@@ -35,7 +37,7 @@ public class KryoOptimizedSerializer extends KryoSerializer {
 		imagesField.setClass(ArrayList.class, imagesSerializer);
 
 		CachedField mediaField = mediaContentSerializer.getField(MediaContent.class, "_media");
-		FieldSerializer mediaSerializer = new FieldSerializer(kryo);
+		AsmFieldSerializer mediaSerializer = new AsmFieldSerializer(kryo);
 		mediaSerializer.setFieldsCanBeNull(false);
 		mediaField.setClass(Media.class, mediaSerializer);
 

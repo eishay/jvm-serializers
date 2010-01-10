@@ -19,17 +19,17 @@ public class Media implements Serializable
 
     // Note: MUST use names from StdMediaSerializer (FIELD_NAME_xxx)
 
-  private @Value(name = "pl", ordinal = true) Player _player;
-  private @Value(name = "ul") String _uri;
-  private @Value(name = "tl") String _title;
-  private @Value(name = "wd") int _width;
-  private @Value(name = "hg") int _height;
-  private @Value(name = "fr") String _format;
-  private @Value(name = "dr") long _duration;
-  private @Value(name = "sz") long _size;
-  private @Value(name = "br") int _bitrate;
-  private @Value(name = "pr") List<String> _persons;
-  private @Value(name = "c") String _copyright;
+  public @Value(name = "pl", ordinal = true) Player _player;
+  public @Value(name = "ul") String _uri;
+  public @Value(name = "tl") String _title;
+  public @Value(name = "wd") int _width;
+  public @Value(name = "hg") int _height;
+  public @Value(name = "fr") String _format;
+  public @Value(name = "dr") long _duration;
+  public @Value(name = "sz") long _size;
+  public @Value(name = "br") int _bitrate;
+  public @Value(name = "pr") List<String> _persons;
+  public @Value(name = "c") String _copyright;
 
   public Media(){}
   

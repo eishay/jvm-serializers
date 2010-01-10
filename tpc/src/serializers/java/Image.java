@@ -16,11 +16,11 @@ public class Image implements Serializable
   }
 
     // Note: field names must match FIELD_NAME_xxx
-  private @Value(name = "ul") String _uri;
-  private @Value(name = "tl") String _title;
-  private @Value(name = "wd") int _width;
-  private @Value(name = "hg") int _height;
-  private @Value(name = "sz", ordinal = true) Size _size;
+  public @Value(name = "ul") String _uri;
+  public @Value(name = "tl") String _title;
+  public @Value(name = "wd") int _width;
+  public @Value(name = "hg") int _height;
+  public @Value(name = "sz", ordinal = true) Size _size;
 
   public Image(){}
 

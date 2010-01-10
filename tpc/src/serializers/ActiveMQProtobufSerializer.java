@@ -62,7 +62,6 @@ public class ActiveMQProtobufSerializer implements CheckingObjectSerializer<Medi
         return "activemq protobuf";
     }
 
-    @Override
     public void checkAllFields(MediaContent content) {
         checkMediaField(content);
         List<Image> list = content.getImageList();
@@ -83,7 +82,6 @@ public class ActiveMQProtobufSerializer implements CheckingObjectSerializer<Medi
         assetEquals(image.getHeight(), 0);
     }
 
-    @Override
     public void checkMediaField(MediaContent content) {
         Media media = content.getMedia().copy();
         assetEquals(media.getUri(), "http://javaone.com/keynote.mpg");

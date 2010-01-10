@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 
 import serializers.avro.AvroGenericSerializer;
 import serializers.avro.specific.AvroSpecificSerializer;
+import serializers.kryo.KryoAsmSerializer;
 import serializers.kryo.KryoOptimizedSerializer;
 import serializers.kryo.KryoSerializer;
 
@@ -40,8 +41,10 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new ActiveMQProtobufSerializer());
     runner.addObjectSerializer(new ProtobufSerializer());
     runner.addObjectSerializer(new ThriftSerializer());
-    runner.addObjectSerializer(new HessianSerializer());
+    // this is pretty slow; so slow that it's almost not worth keeping but:
+    // runner.addObjectSerializer(new HessianSerializer());
     runner.addObjectSerializer(new KryoSerializer());
+    runner.addObjectSerializer(new KryoAsmSerializer());
     runner.addObjectSerializer(new KryoOptimizedSerializer());
 
     // None of the other serializers use compression, so we'll leave this out.
@@ -56,11 +59,14 @@ public class BenchmarkRunner
     // then Json
     runner.addObjectSerializer(new JsonSerializer());
     runner.addObjectSerializer(new JsonDataBindingSerializer());
-    runner.addObjectSerializer(new JsonMarshallerSerializer());
+
+    // This is disabled because it uses an old version of ASM. KryoOptimizedSerializer requires ASM 3.2.
+    // runner.addObjectSerializer(new JsonMarshallerSerializer());
+
     runner.addObjectSerializer(new ProtostuffJsonSerializer());
     runner.addObjectSerializer(new ProtostuffNumericJsonSerializer());
     // this is pretty slow; so slow that it's almost not worth keeping but:
-    runner.addObjectSerializer(new GsonSerializer());
+    // runner.addObjectSerializer(new GsonSerializer());
 
     // then xml via stax, textual and binary
     runner.addObjectSerializer(new StaxSerializer("stax/woodstox",

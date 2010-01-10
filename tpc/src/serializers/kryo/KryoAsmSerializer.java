@@ -13,26 +13,29 @@ import serializers.protobuf.MediaContentHolder.Media.Player;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.ObjectBuffer;
+import com.esotericsoftware.kryo.serialize.AsmFieldSerializer;
 
 /**
- * This is the most basic Kryo usage. Just register the classes and go.
+ * This is basic Kryo usage using AsmFieldSerializer instead of FieldSerializer. AsmFieldSerializer does bytecode generation to
+ * read and write public fields.
  */
-public class KryoSerializer extends StdMediaSerializer {
+public class KryoAsmSerializer extends StdMediaSerializer {
 	protected Kryo kryo;
 	protected ObjectBuffer objectBuffer;
 
-	public KryoSerializer () {
-		this("kryo");
+	public KryoAsmSerializer () {
+		this("kryo-asm");
 	}
 
-	public KryoSerializer (String name) {
+	public KryoAsmSerializer (String name) {
 		super(name);
 		kryo = new Kryo();
 		kryo.register(ArrayList.class);
-		kryo.register(MediaContent.class);
-		kryo.register(Media.class);
+		AsmFieldSerializer asmSerializer = new AsmFieldSerializer(kryo);
+		kryo.register(MediaContent.class, asmSerializer);
+		kryo.register(Media.class, asmSerializer);
 		kryo.register(Media.Player.class);
-		kryo.register(Image.class);
+		kryo.register(Image.class, asmSerializer);
 		kryo.register(Image.Size.class);
 		objectBuffer = new ObjectBuffer(kryo);
 	}

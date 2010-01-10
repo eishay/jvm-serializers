@@ -22,14 +22,12 @@ public class JsonMarshallerSerializer extends StdMediaSerializer
 		_charset = Charset.forName("UTF-8");
 	}
 	
-	@Override
 	public MediaContent deserialize(byte[] array) throws Exception {
 		String str = new String(array, _charset.toString());
 		return _marshaller.unmarshall((Json.Object) Json.read(
 				new StringReader(str)));
 	}
 
-	@Override
 	public byte[] serialize(MediaContent content) throws Exception {
 		StringWriter sw = new StringWriter(_expectedSize);
 		_marshaller.marshall(content).write(sw);
