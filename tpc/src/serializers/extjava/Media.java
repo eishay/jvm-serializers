@@ -148,9 +148,9 @@ public class Media implements Externalizable {
       _size = in.readLong();
       _bitrate = in.readInt();
       _copyright = ExternalizationHelper.readString(in);
+      _persons = null;
       int nbPersons = in.readInt();
-      // Note if _persons was empty when serialized, it will be null when deserialized.
-      if ( nbPersons > 0 ) {
+      if ( nbPersons >= 0 ) {
          _persons = new ArrayList<String>(nbPersons);
          for ( int i = 0; i < nbPersons; i++ ) {
             _persons.add(in.readUTF());
@@ -170,7 +170,7 @@ public class Media implements Externalizable {
       out.writeInt(_bitrate);
       ExternalizationHelper.writeString(out, _copyright);
       if ( _persons == null ) {
-         out.writeInt(0);
+         out.writeInt(-1);
       } else {
          out.writeInt(_persons.size());
          for ( int i = 0; i < _persons.size(); i++ ) {

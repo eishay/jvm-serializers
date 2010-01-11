@@ -42,13 +42,15 @@ public class MediaContent implements Externalizable {
          _media = new Media();
          _media.readExternal(in);
       }
+      _images = null;
       int nbImages = in.readInt();
-      // Note if _images was null when serialized, it won't be null when deserialized.
-      _images = new ArrayList<Image>(nbImages); 
-      for ( int i = 0; i < nbImages; i++ ) {
-         Image image = new Image();
-         image.readExternal(in);
-         _images.add(image);
+      if (nbImages >= 0) {
+         _images = new ArrayList<Image>(nbImages); 
+         for ( int i = 0; i < nbImages; i++ ) {
+            Image image = new Image();
+            image.readExternal(in);
+            _images.add(image);
+         }
       }
    }
 
@@ -56,7 +58,7 @@ public class MediaContent implements Externalizable {
       out.writeBoolean(_media != null);
       if ( _media != null ) _media.writeExternal(out);
       if ( _images == null ) {
-         out.writeInt(0);
+         out.writeInt(-1);
       } else {
          int nbImages = _images.size();
          out.writeInt(nbImages);
