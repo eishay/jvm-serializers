@@ -77,7 +77,7 @@ public class XStreamSerializer extends StdMediaSerializer
     xstream.alias("im", Image.class);
     xstream.registerConverter(new ImageConverter());
 
-    xstream.alias("md", Image.class);
+    xstream.alias("md", Media.class);
     xstream.registerConverter(new MediaConverter());
 
     xstream.alias("mc", MediaContent.class);
