@@ -40,13 +40,9 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new ActiveMQProtobufSerializer());
     runner.addObjectSerializer(new ProtobufSerializer());
     runner.addObjectSerializer(new ThriftSerializer());
-    // this is pretty slow; so slow that it's almost not worth keeping but:
-    // runner.addObjectSerializer(new HessianSerializer());
+    runner.addObjectSerializer(new HessianSerializer());
     runner.addObjectSerializer(new KryoSerializer());
     runner.addObjectSerializer(new KryoOptimizedSerializer());
-
-    // None of the other serializers use compression, so we'll leave this out.
-    // runner.addObjectSerializer(new KryoCompressedSerializer());
 
     // then language default serializers
     runner.addObjectSerializer(new JavaSerializer());
@@ -58,13 +54,12 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new JsonSerializer());
     runner.addObjectSerializer(new JsonDataBindingSerializer());
 
-    // This is disabled because it uses an old version of ASM. KryoOptimizedSerializer requires ASM 3.2.
-    // runner.addObjectSerializer(new JsonMarshallerSerializer());
+    runner.addObjectSerializer(new JsonMarshallerSerializer());
 
     runner.addObjectSerializer(new ProtostuffJsonSerializer());
     runner.addObjectSerializer(new ProtostuffNumericJsonSerializer());
     // this is pretty slow; so slow that it's almost not worth keeping but:
-    // runner.addObjectSerializer(new GsonSerializer());
+    runner.addObjectSerializer(new GsonSerializer());
 
     // then xml via stax, textual and binary
     runner.addObjectSerializer(new StaxSerializer("stax/woodstox",
@@ -89,15 +84,8 @@ public class BenchmarkRunner
     runner.addObjectSerializer(new JavolutionXMLFormatSerializer());
 
     runner.addObjectSerializer(new SbinarySerializer());
-    // broken? Does not correctly round-trip:
-    // runner.addObjectSerializer(new YamlSerializer());
-    
-    System.out.println("Starting");
 
-    runner._serializers.clear();
-    runner.addObjectSerializer(new KryoSerializer());
-    runner.addObjectSerializer(new KryoOptimizedSerializer());
-    
+    System.out.println("Starting");
     runner.start();
   }
 
@@ -301,9 +289,9 @@ public class BenchmarkRunner
                         timeDeserializeAndCheckAllFields,
                         totalTime,
                         array.length);
-      
-      addValue(values, serializer.getName(), timeCreate, timeSerializeDifferentObjects, timeSerializeSameObject, 
-              timeDeserializeNoFieldAccess, timeDeserializeAndCheckMediaField, timeDeserializeAndCheckAllFields, totalTime, array.length);
+
+     	addValue(values, serializer.getName(), timeCreate, timeSerializeDifferentObjects, timeSerializeSameObject, 
+             timeDeserializeNoFieldAccess, timeDeserializeAndCheckMediaField, timeDeserializeAndCheckAllFields, totalTime, array.length);
     }
     printImages(values);
   }
@@ -388,14 +376,16 @@ public class BenchmarkRunner
                         double totalTime,
                         double length)
   {
-      
-    values.get(measurements.timeCreate).put(name, timeCreate);
-    values.get(measurements.timeSerializeDifferentObjects).put(name, timeSerializeDifferentObjects);
-    values.get(measurements.timeSerializeSameObject).put(name, timeSerializeSameObject);
-    values.get(measurements.timeDeserializeNoFieldAccess).put(name, timeDeserializeNoFieldAccess);
-    values.get(measurements.timeDeserializeAndCheckMediaField).put(name, timeDeserializeAndCheckMediaField);
-    values.get(measurements.timeDeserializeAndCheckAllFields).put(name, timeDeserializeAndCheckAllFields);
-    values.get(measurements.totalTime).put(name, totalTime);
+    // Don't chart serializers that are extremely slow.
+    if (name.equals("json/google-gson") || name.equals("hessian")) {
+	    values.get(measurements.timeCreate).put(name, timeCreate);
+	    values.get(measurements.timeSerializeDifferentObjects).put(name, timeSerializeDifferentObjects);
+	    values.get(measurements.timeSerializeSameObject).put(name, timeSerializeSameObject);
+	    values.get(measurements.timeDeserializeNoFieldAccess).put(name, timeDeserializeNoFieldAccess);
+	    values.get(measurements.timeDeserializeAndCheckMediaField).put(name, timeDeserializeAndCheckMediaField);
+	    values.get(measurements.timeDeserializeAndCheckAllFields).put(name, timeDeserializeAndCheckAllFields);
+	    values.get(measurements.totalTime).put(name, totalTime);
+    }
     values.get(measurements.length).put(name, length);
   }
 

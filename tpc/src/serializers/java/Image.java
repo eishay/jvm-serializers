@@ -85,23 +85,35 @@ public class Image implements Serializable
     this._size = size;
   }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (o == this) return true;
-        if (o == null) return false;
-        if (!(o instanceof Image)) return false;
+  public int hashCode() {
+     final int prime = 31;
+     int result = 1;
+     result = prime * result + _height;
+     result = prime * result + ((_size == null) ? 0 : _size.hashCode());
+     result = prime * result + ((_title == null) ? 0 : _title.hashCode());
+     result = prime * result + ((_uri == null) ? 0 : _uri.hashCode());
+     result = prime * result + _width;
+     return result;
+  }
 
-        Image other = (Image) o;
-
-        if (_width != other._width) return false;
-        if (_height != other._height) return false;
-        if (!_uri.equals(other._uri)) return false;
-        if (!_title.equals(other._title)) return false;
-        if (!_size.equals(other._size)) return false;
-
-        return true;
-    }
+  public boolean equals( Object obj ) {
+     if ( this == obj ) return true;
+     if ( obj == null ) return false;
+     if ( getClass() != obj.getClass() ) return false;
+     Image other = (Image)obj;
+     if ( _height != other._height ) return false;
+     if ( _size == null ) {
+        if ( other._size != null ) return false;
+     } else if ( !_size.equals(other._size) ) return false;
+     if ( _title == null ) {
+        if ( other._title != null ) return false;
+     } else if ( !_title.equals(other._title) ) return false;
+     if ( _uri == null ) {
+        if ( other._uri != null ) return false;
+     } else if ( !_uri.equals(other._uri) ) return false;
+     if ( _width != other._width ) return false;
+     return true;
+  }
 
     @Override
     public String toString()

@@ -175,33 +175,53 @@ public class Media implements Serializable
     _copyright = copyright;
   }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (o == this) return true;
-        if (o == null) return false;
-        if (!(o instanceof Media)) return false;
+  public int hashCode() {
+     final int prime = 31;
+     int result = 1;
+     result = prime * result + _bitrate;
+     result = prime * result + ((_copyright == null) ? 0 : _copyright.hashCode());
+     result = prime * result + (int)(_duration ^ (_duration >>> 32));
+     result = prime * result + ((_format == null) ? 0 : _format.hashCode());
+     result = prime * result + _height;
+     result = prime * result + ((_persons == null) ? 0 : _persons.hashCode());
+     result = prime * result + ((_player == null) ? 0 : _player.hashCode());
+     result = prime * result + (int)(_size ^ (_size >>> 32));
+     result = prime * result + ((_title == null) ? 0 : _title.hashCode());
+     result = prime * result + ((_uri == null) ? 0 : _uri.hashCode());
+     result = prime * result + _width;
+     return result;
+  }
 
-        Media other = (Media) o;
-
-        if (_width != other._width) return false;
-        if (_height != other._height) return false;
-        if (_duration != other._duration) return false;
-        if (_size != other._size) return false;
-        if (_bitrate != other._bitrate) return false;
-        if (!_player.equals(other._player)) return false;
-        if (!_uri.equals(other._uri)) return false;
-        if (!_title.equals(other._title)) return false;
-        if (!_format.equals(other._format)) return false;
-        if (!_persons.equals(other._persons)) return false;
-
-        if (_copyright == null) {
-            if (other._copyright != null) return false;
-        } else {
-            if (!_copyright.equals(other._copyright)) return false;
-        }
-        return true;
-    }
+  public boolean equals( Object obj ) {
+     if ( this == obj ) return true;
+     if ( obj == null ) return false;
+     if ( getClass() != obj.getClass() ) return false;
+     Media other = (Media)obj;
+     if ( _bitrate != other._bitrate ) return false;
+     if ( _copyright == null ) {
+        if ( other._copyright != null ) return false;
+     } else if ( !_copyright.equals(other._copyright) ) return false;
+     if ( _duration != other._duration ) return false;
+     if ( _format == null ) {
+        if ( other._format != null ) return false;
+     } else if ( !_format.equals(other._format) ) return false;
+     if ( _height != other._height ) return false;
+     if ( _persons == null ) {
+        if ( other._persons != null ) return false;
+     } else if ( !_persons.equals(other._persons) ) return false;
+     if ( _player == null ) {
+        if ( other._player != null ) return false;
+     } else if ( !_player.equals(other._player) ) return false;
+     if ( _size != other._size ) return false;
+     if ( _title == null ) {
+        if ( other._title != null ) return false;
+     } else if ( !_title.equals(other._title) ) return false;
+     if ( _uri == null ) {
+        if ( other._uri != null ) return false;
+     } else if ( !_uri.equals(other._uri) ) return false;
+     if ( _width != other._width ) return false;
+     return true;
+  }
 
     @Override
     public String toString()

@@ -1,4 +1,4 @@
-<project name="Thrift, ProtoBuf comparison">
+<project name="Thrift, ProtoBuf comparison" default="jarjar">
     <target name="prepare">
         <mkdir dir="build" />
         <mkdir dir="dist" />
