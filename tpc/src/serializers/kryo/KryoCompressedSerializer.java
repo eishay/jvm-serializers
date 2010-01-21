@@ -11,12 +11,11 @@ import com.esotericsoftware.kryo.compress.DeflateCompressor;
  */
 public class KryoCompressedSerializer extends KryoOptimizedSerializer {
 	public KryoCompressedSerializer () {
-		this("kryo-compressed");
-	}
-
-	public KryoCompressedSerializer (String name) {
-		super(name);
 		Serializer mediaContentSerializer = kryo.getRegisteredClass(MediaContent.class).getSerializer();
 		kryo.register(MediaContent.class, new DeflateCompressor(mediaContentSerializer));
+	}
+
+	public String getName () {
+		return "kryo-compressed";
 	}
 }

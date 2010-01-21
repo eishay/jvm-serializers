@@ -1,15 +1,9 @@
 
 package serializers.kryo;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-import serializers.StdMediaSerializer;
-import serializers.java.Image;
-import serializers.java.Media;
-import serializers.java.MediaContent;
-import serializers.protobuf.MediaContentHolder.Image.Size;
-import serializers.protobuf.MediaContentHolder.Media.Player;
+import serializers.ObjectSerializer;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.ObjectBuffer;
@@ -17,16 +11,11 @@ import com.esotericsoftware.kryo.ObjectBuffer;
 /**
  * This is the most basic Kryo usage. Just register the classes and go.
  */
-public class KryoSerializer extends StdMediaSerializer {
+public class KryoSerializer implements ObjectSerializer<MediaContent> {
 	protected Kryo kryo;
 	protected ObjectBuffer objectBuffer;
 
 	public KryoSerializer () {
-		this("kryo");
-	}
-
-	public KryoSerializer (String name) {
-		super(name);
 		kryo = new Kryo();
 		kryo.register(ArrayList.class);
 		kryo.register(MediaContent.class);
@@ -34,7 +23,11 @@ public class KryoSerializer extends StdMediaSerializer {
 		kryo.register(Media.class);
 		kryo.register(Image.Size.class);
 		kryo.register(Image.class);
-		objectBuffer = new ObjectBuffer(kryo, 64, 1024);
+		objectBuffer = new ObjectBuffer(kryo, 1024);
+	}
+
+	public String getName () {
+		return "kryo";
 	}
 
 	public MediaContent deserialize (byte[] array) throws Exception {
@@ -43,5 +36,16 @@ public class KryoSerializer extends StdMediaSerializer {
 
 	public byte[] serialize (MediaContent content) throws Exception {
 		return objectBuffer.writeObjectData(content);
+	}
+
+	public final MediaContent create () throws Exception {
+		Media media = new Media(null, "video/mpg4", Media.Player.JAVA, "Javaone Keynote", "http://javaone.com/keynote.mpg",
+			1234567, 123, 0, 0, 0);
+		media.addToPerson("Bill Gates");
+		media.addToPerson("Steve Jobs");
+		MediaContent content = new MediaContent(media);
+		content.addImage(new Image(0, "Javaone Keynote", "http://javaone.com/keynote_large.jpg", 0, Image.Size.LARGE));
+		content.addImage(new Image(0, "Javaone Keynote", "http://javaone.com/keynote_thumbnail.jpg", 0, Image.Size.SMALL));
+		return content;
 	}
 }

@@ -13,9 +13,9 @@ public class MediaContent  implements Serializable
   private static final long serialVersionUID = 1L;
 
   // Note: use FIELD_NAME_IMAGES
-  public @Value(name = "im") List<Image> _images;
+  private @Value(name = "im") List<Image> _images;
   // Note: use FIELD_NAME_MEDIA
-  public @Value(name = "md") Media _media;
+  private @Value(name = "md") Media _media;
   
     public MediaContent() { }
 

@@ -3,12 +3,8 @@ package serializers.kryo;
 
 import java.util.ArrayList;
 
-import serializers.java.Image;
-import serializers.java.Media;
-import serializers.java.MediaContent;
-
-import com.esotericsoftware.kryo.serialize.FieldSerializer;
 import com.esotericsoftware.kryo.serialize.CollectionSerializer;
+import com.esotericsoftware.kryo.serialize.FieldSerializer;
 import com.esotericsoftware.kryo.serialize.FieldSerializer.CachedField;
 
 /**
@@ -16,12 +12,6 @@ import com.esotericsoftware.kryo.serialize.FieldSerializer.CachedField;
  */
 public class KryoOptimizedSerializer extends KryoSerializer {
 	public KryoOptimizedSerializer () {
-		this("kryo-optimized");
-	}
-
-	public KryoOptimizedSerializer (String name) {
-		super(name);
-
 		FieldSerializer imageSerializer = (FieldSerializer)kryo.getSerializer(Image.class);
 		imageSerializer.setFieldsCanBeNull(false);
 
@@ -48,5 +38,9 @@ public class KryoOptimizedSerializer extends KryoSerializer {
 		personsField.setClass(ArrayList.class, personsSerializer);
 
 		mediaSerializer.getField("_copyright").setCanBeNull(true);
+	}
+
+	public String getName () {
+		return "kryo-optimized";
 	}
 }
