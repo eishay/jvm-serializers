@@ -16,7 +16,7 @@ public class KryoCompressedSerializer extends KryoOptimizedSerializer {
 
 	public KryoCompressedSerializer (String name) {
 		super(name);
-		Serializer mediaContentSerializer = kryo.getRegisteredClass(MediaContent.class).serializer;
+		Serializer mediaContentSerializer = kryo.getRegisteredClass(MediaContent.class).getSerializer();
 		kryo.register(MediaContent.class, new DeflateCompressor(mediaContentSerializer));
 	}
 }

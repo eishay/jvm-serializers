@@ -30,11 +30,11 @@ public class KryoSerializer extends StdMediaSerializer {
 		kryo = new Kryo();
 		kryo.register(ArrayList.class);
 		kryo.register(MediaContent.class);
-		kryo.register(Media.class);
 		kryo.register(Media.Player.class);
-		kryo.register(Image.class);
+		kryo.register(Media.class);
 		kryo.register(Image.Size.class);
-		objectBuffer = new ObjectBuffer(kryo);
+		kryo.register(Image.class);
+		objectBuffer = new ObjectBuffer(kryo, 64, 1024);
 	}
 
 	public MediaContent deserialize (byte[] array) throws Exception {
