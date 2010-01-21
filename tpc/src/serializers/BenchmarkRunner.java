@@ -256,8 +256,8 @@ public class BenchmarkRunner
       for (int i = 0; i < TRIALS; i++)
         timeDeserializeNoFieldAccess = Math.min(timeDeserializeNoFieldAccess, deserializeNoFieldAccess(serializer, ITERATIONS));
 
-      double timeDeserializeAndCheckAllFields = Double.NaN;
-      double timeDeserializeAndCheckMediaField = Double.NaN;
+      double timeDeserializeAndCheckAllFields = timeDeserializeNoFieldAccess;
+      double timeDeserializeAndCheckMediaField = timeDeserializeNoFieldAccess;
 
       double totalTime = timeSerializeDifferentObjects + timeDeserializeNoFieldAccess;
 
@@ -276,8 +276,7 @@ public class BenchmarkRunner
 
           totalTime = timeSerializeDifferentObjects + timeDeserializeAndCheckAllFields;
       }
-      
-      
+            
       byte[] array = serializer.serialize(serializer.create());
       System.out.printf("%-24s, %15.5f, %15.5f, %15.5f, %15.5f, %15.5f, %15.5f, %15.5f, %10d\n",
                         serializer.getName(),
@@ -336,7 +335,7 @@ public class BenchmarkRunner
              sortedMap.put(entry.getKey(), entry.getValue());
          }
      }
-      printImage(sortedMap, m);
+      if (!sortedMap.isEmpty()) printImage(sortedMap, m);
     }
   }
 
@@ -376,9 +375,8 @@ public class BenchmarkRunner
                         double totalTime,
                         double length)
   {
-    // Don't chart serializers that are extremely slow.
-    if (name.equals("json/google-gson") || name.equals("hessian")) {
-	    values.get(measurements.timeCreate).put(name, timeCreate);
+    // Omit some charts for serializers that are extremely slow.
+    if (!name.equals("json/google-gson") && !name.equals("scala")) {
 	    values.get(measurements.timeSerializeDifferentObjects).put(name, timeSerializeDifferentObjects);
 	    values.get(measurements.timeSerializeSameObject).put(name, timeSerializeSameObject);
 	    values.get(measurements.timeDeserializeNoFieldAccess).put(name, timeDeserializeNoFieldAccess);
@@ -387,6 +385,7 @@ public class BenchmarkRunner
 	    values.get(measurements.totalTime).put(name, totalTime);
     }
     values.get(measurements.length).put(name, length);
+    values.get(measurements.timeCreate).put(name, timeCreate);
   }
 
   private <T> void warmCreation(ObjectSerializer<T> serializer) throws Exception
