@@ -9,8 +9,8 @@ import com.caucho.hessian.io.*;
 
 public class HessianSerializer extends StdMediaSerializer
 {
-    public int expectedSize = 0;
-
+    private ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
+    
     public HessianSerializer()
     {
         super("hessian");
@@ -25,12 +25,10 @@ public class HessianSerializer extends StdMediaSerializer
 
     public byte[] serialize(MediaContent content) throws Exception
     {
-        ByteArrayOutputStream out = new ByteArrayOutputStream(expectedSize);
+        out.reset();
         Hessian2StreamingOutput hout = new Hessian2StreamingOutput(out);
         hout.writeObject(content);
-        out.close();
         byte[] array = out.toByteArray();
-        expectedSize = array.length;
         return array;
     }
 }
