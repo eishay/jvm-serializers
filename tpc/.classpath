@@ -33,7 +33,7 @@
 	<classpathentry kind="lib" path="lib/json-0.19-tpc.jar"/>
 	<classpathentry kind="lib" path="lib/asm-commons-3.2.jar"/>
 	<classpathentry kind="lib" path="lib/asm-3.2.jar"/>
-	<classpathentry kind="lib" path="lib/kryo-0.97.jar"/>
 	<classpathentry kind="lib" path="lib/hessian-4.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/kryo-0.98.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
