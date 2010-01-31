@@ -2,9 +2,16 @@ package serializers;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.Externalizable;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
 import serializers.extjava.Image;
 import serializers.extjava.Media;
@@ -25,12 +32,13 @@ public class JavaExtSerializer implements ObjectSerializer<MediaContent> {
    }
 
    public MediaContent deserialize( byte[] array ) throws Exception {
-      ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(array));
+      ObjectInput ois = new ExternalizableObjectInput(new ByteArrayInputStream(array));
       MediaContent mediaContent = null;
       if ( ois.readBoolean() ) {
          mediaContent = new MediaContent();
          mediaContent.readExternal(ois);
       }
+      ois.close();
       return mediaContent;
    }
 
@@ -50,7 +58,7 @@ public class JavaExtSerializer implements ObjectSerializer<MediaContent> {
 
    public byte[] serialize( MediaContent content ) throws IOException, Exception {
       ByteArrayOutputStream baos = new ByteArrayOutputStream(expectedSize);
-      ObjectOutputStream oos = new ObjectOutputStream(baos);
+      ObjectOutput oos = new ExternalizableObjectOutput(baos);
       oos.writeBoolean(content != null);
       if ( content != null ) content.writeExternal(oos);
       oos.close();
@@ -58,4 +66,27 @@ public class JavaExtSerializer implements ObjectSerializer<MediaContent> {
       expectedSize = array.length;
       return array;
    }
+   
+   private static class ExternalizableObjectInput extends DataInputStream implements ObjectInput {
+
+      public ExternalizableObjectInput( InputStream in ) {
+         super(in);
+      }
+
+      public Object readObject() throws ClassNotFoundException, IOException {
+         throw new UnsupportedOperationException("This implementation of ObjectInput does not provide readObject(). Use constructor and x.readExternal(in) instead.");
+      }
+   }
+
+   public static class ExternalizableObjectOutput extends DataOutputStream implements ObjectOutput {
+
+      public ExternalizableObjectOutput( OutputStream out) {
+         super(out);
+      }
+
+      public void writeObject( Object obj ) throws IOException {
+         throw new UnsupportedOperationException("This implementation of ObjectOutput does not provide writeObject(). Use x.writeExternal(in) instead.");
+      }
+   }
+
 }
