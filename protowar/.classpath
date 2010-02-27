@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM 1.5.0 (MacOS X Default)"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/tpc"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.mortbay.jetty.serveradaptor.runtimeClasspathProvider/Jetty 6"/>
+	<classpathentry kind="lib" path="/Users/esmith/projects/jetty-6.1.14/lib/servlet-api-2.5-6.1.14.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
