@@ -1,5 +1,9 @@
 package serializers;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +37,9 @@ public class BenchmarkRunner
 		Integer trials = null;
 		Long warmupTime = null;
 		boolean printChart = false;
+		String dataFileName = null;
+
+		Set<String> optionsSeen = new HashSet<String>();
 
 		for (String arg : args) {
 			String remainder;
@@ -42,9 +49,14 @@ public class BenchmarkRunner
 			else if (arg.startsWith("-")) {
 				remainder = arg.substring(1);
 			}
+			else if (dataFileName == null) {
+				dataFileName = arg;
+				continue;
+			}
 			else {
-				System.err.println("Invalid argument \"" + arg + "\".");
-				System.err.println("Expecting \"-option\" or \"-option=value\".");
+				System.err.println("Expecting only one non-option argument (<data-file> = \"" + dataFileName + "\").");
+				System.err.println("Found a second one: \"" + arg + "\"");
+				System.err.println("Use \"-help\" for usage information.");
 				System.exit(1); return;
 			}
 
@@ -58,6 +70,11 @@ public class BenchmarkRunner
 				value = null;
 			}
 
+			if (!optionsSeen.add(option)) {
+				System.err.println("Repeated option: \"" + arg + "\"");
+				System.exit(1); return;
+			}
+
 			if (option.equals("include")) {
 				if (value == null) {
 					System.err.println("The \"include\" option requires a value.");
@@ -66,9 +83,6 @@ public class BenchmarkRunner
 				if (filterIsInclude == null) {
 					filterIsInclude = true;
 					filterStrings = new HashSet<String>(Arrays.asList(value.split(",")));
-				} else if (filterIsInclude) {
-					System.err.println("Repeated option: \"" + arg + "\"");
-					System.exit(1); return;
 				} else {
 					System.err.println("Can't use 'include' and 'exclude' options at the same time.");
 					System.exit(1); return;
@@ -82,9 +96,6 @@ public class BenchmarkRunner
 				if (filterIsInclude == null) {
 					filterIsInclude = false;
 					filterStrings = new HashSet<String>(Arrays.asList(value.split(",")));
-				} else if (!filterIsInclude) {
-					System.err.println("Repeated option: \"" + arg + "\"");
-					System.exit(1); return;
 				} else {
 					System.err.println("Can't use 'include' and 'exclude' options at the same time.");
 					System.exit(1); return;
@@ -95,10 +106,7 @@ public class BenchmarkRunner
 					System.err.println("The \"iterations\" option requires a value.");
 					System.exit(1); return;
 				}
-				if (iterations != null) {
-					System.err.println("Repeated \"iterations\" option: \"" + arg + "\"");
-					System.exit(1); return;
-				}
+				assert iterations == null;
 				try {
 					iterations = Integer.parseInt(value);
 				} catch (NumberFormatException ex) {
@@ -115,10 +123,7 @@ public class BenchmarkRunner
 					System.err.println("The \"trials\" option requires a value.");
 					System.exit(1); return;
 				}
-				if (trials != null) {
-					System.err.println("Repeated \"trials\" option: \"" + arg + "\"");
-					System.exit(1); return;
-				}
+				assert trials == null;
 				try {
 					trials = Integer.parseInt(value);
 				} catch (NumberFormatException ex) {
@@ -135,10 +140,7 @@ public class BenchmarkRunner
 					System.err.println("The \"warmup-time\" option requires a value.");
 					System.exit(1); return;
 				}
-				if (warmupTime != null) {
-					System.err.println("Repeated \"warmup-time\" option: \"" + arg + "\"");
-					System.exit(1); return;
-				}
+				assert warmupTime == null;
 				try {
 					warmupTime = Long.parseLong(value);
 				} catch (NumberFormatException ex) {
@@ -155,10 +157,7 @@ public class BenchmarkRunner
 					System.err.println("The \"chart\" option does not take a value: \"" + arg + "\"");
 					System.exit(1); return;
 				}
-				if (printChart) {
-					System.err.println("Dupliate \"warmup-time\" option: \"" + arg + "\"");
-					System.exit(1); return;
-				}
+				assert !printChart;
 				printChart = true;
 			}
 			else if (option.equals("help")) {
@@ -171,7 +170,7 @@ public class BenchmarkRunner
 					System.exit(1); return;
 				}
 				System.out.println();
-				System.out.println("Usage: COMMAND [options]");
+				System.out.println("Usage: COMMAND [options] <data-file>");
 				System.out.println();
 				System.out.println("  -include=impl1,impl2,impl3,...");
 				System.out.println("  -exclude=impl1,impl2,impl3,...");
@@ -190,10 +189,15 @@ public class BenchmarkRunner
 			}
 		}
 
-
 		if (iterations == null) iterations = DEFAULT_ITERATIONS;
 		if (trials == null) trials = DEFAULT_TRIALS;
 		if (warmupTime == null) warmupTime = DEFAULT_WARMUP_MSECS;
+
+		if (dataFileName == null) {
+			System.err.println("Missing <data-file> argument.");
+			System.err.println("Use \"-help\" for usage information.");
+			System.exit(1); return;
+		}
 
 		// --------------------------------------------------
 		// Load serializers.
@@ -208,13 +212,84 @@ public class BenchmarkRunner
 		ProtostuffJson.register(groups);
 		ProtobufJson.register(groups);
 		Gson.register(groups);
+		CksText.register(groups);
+
+		// --------------------------------------------------
+		// Load data value.
+
+		Object dataValue;
+		TestGroup<?> group;
+		{
+			File dataFile = new File(dataFileName);
+			String[] parts = dataFile.getName().split("\\.");
+			if (parts.length < 3) {
+				System.out.println("Data file \"" + dataFile.getName() + "\" should be of the form \"<type>.<name>.<extension>\"");
+				System.exit(1); return;
+			}
+
+			String dataType = parts[0];
+			String extension = parts[parts.length-1];
+
+			group = groups.groupMap.get(dataType);
+			if (group == null) {
+				System.out.println("Data file \"" + dataFileName + "\" can't be loaded.");
+				System.out.println("Don't know about data type \"" + dataType + "\"");
+				System.exit(1); return;
+			}
+
+			TestGroup.Entry<?,Object> loader = group.extensionMap.get(parts[parts.length-1]);
+			if (loader == null) {
+				System.out.println("Data file \"" + dataFileName + "\" can't be loaded.");
+				System.out.println("No deserializer registered for data type \"" + dataType + "\" and file extension \"." + extension + "\"");
+				System.exit(1); return;
+			}
+
+			// Load entire file into a byte array.
+			byte[] fileBytes = readFile(new File(dataFileName));
+
+			Object deserialized;
+			try {
+				deserialized = loader.serializer.deserialize(fileBytes);
+			}
+			catch (Exception ex) {
+				System.err.println("Error loading data from file \"" + dataFileName + "\".");
+				System.err.println(ex.getMessage());
+				System.exit(1); return;
+			}
+
+			dataValue = loader.transformer.reverse(deserialized);
+		}
+
+		@SuppressWarnings("unchecked")
+		TestGroup<Object> group_ = (TestGroup<Object>) group;
 
 		// --------------------------------------------------
 
-		EnumMap<measurements, Map<String, Double>> values = start(filterIsInclude, filterStrings, iterations, trials, warmupTime, groups.media, data.media.TestValues.v1);
+		EnumMap<measurements, Map<String, Double>> values = start(filterIsInclude, filterStrings, iterations, trials, warmupTime, group_, dataValue);
 
 		if (printChart) {
 			printImages(values);
+		}
+	}
+
+	// ------------------------------------------------------------------------------------
+
+	private static byte[] readFile(File file)
+		throws IOException
+	{
+		FileInputStream fin = new FileInputStream(file);
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] data = new byte[1024];
+			while (true) {
+				int numBytes = fin.read(data);
+				if (numBytes < 0) break;
+				baos.write(data, 0, numBytes);
+			}
+			return baos.toByteArray();
+		}
+		finally {
+			fin.close();
 		}
 	}
 
@@ -377,8 +452,8 @@ public class BenchmarkRunner
 
 	private static <J> EnumMap<measurements, Map<String, Double>> start(Boolean filterIsInclude, Set<String> filterStrings, int iterations, int trials, long warmupTime, TestGroup<J> group, J value) throws Exception
 	{
-		System.out.printf("%-24s %6s %6s %6s %6s %6s %6s %6s %5s\n",
-			" ",
+		System.out.printf("%-24s %6s %7s %7s %8s %8s %8s %8s %7s\n",
+			"",
 			"create",
 			"ser",
 			"+same",
@@ -442,7 +517,7 @@ public class BenchmarkRunner
 			double totalTime = timeSerializeDifferentObjects + timeDeserializeAndCheck;
 
 			byte[] array = entry.serializer.serialize(entry.transformer.forward(value));
-			System.out.printf("%-24s %6.0f %6.0f %6.0f %6.0f %6.0f %6.0f %6.0f %5d\n",
+			System.out.printf("%-24s %6.0f %7.0f %7.0f %8.0f %8.0f %8.0f %8.0f %7d\n",
 				name,
 				timeCreate,
 				timeSerializeDifferentObjects,
