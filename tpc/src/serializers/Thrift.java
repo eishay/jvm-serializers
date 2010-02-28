@@ -146,7 +146,7 @@ public class Thrift
 				media.getSize(),
 				media.isSetBitrate() ? media.getBitrate() : 0,
 				media.isSetBitrate(),
-				media.getPerson(),
+				new ArrayList<String>(media.getPerson()),
 				reversePlayer(media.getPlayer()),
 				media.isSetCopyright() ? media.getCopyright() : null
 			);

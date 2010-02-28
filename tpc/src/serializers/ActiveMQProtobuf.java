@@ -140,7 +140,7 @@ public class ActiveMQProtobuf
 				media.getSize(),
 				media.hasBitrate() ? media.getBitrate() : 0,
 				media.hasBitrate(),
-				media.getPersonList(),
+				new ArrayList<String>(media.getPersonList()),
 				reversePlayer(media.getPlayer()),
 				media.hasCopyright() ? media.getCopyright() : null
 			);
