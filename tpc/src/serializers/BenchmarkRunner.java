@@ -205,6 +205,8 @@ public class BenchmarkRunner
 		ProtobufJson.register(groups);
 		ProtostuffJson.register(groups);
 		ActiveMQProtobuf.register(groups);
+		JavaBuiltIn.register(groups);
+		Gson.register(groups);
 
 		// --------------------------------------------------
 
