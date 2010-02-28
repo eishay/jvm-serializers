@@ -16,9 +16,9 @@ import com.google.protobuf.MessageLite.Builder;
 import com.dyuproject.protostuff.json.ProtobufConvertor;
 import com.dyuproject.protostuff.json.ProtobufJSON;
 
-import serializers.protobuf.MediaContentHolder.MediaContent;
-import serializers.protobuf.MediaContentHolder.Media;
-import serializers.protobuf.MediaContentHolder.Image;
+import serializers.protobuf.media.MediaContentHolder.MediaContent;
+import serializers.protobuf.media.MediaContentHolder.Media;
+import serializers.protobuf.media.MediaContentHolder.Image;
 
 public final class MediaContentHolderJSON extends ProtobufJSON
 {

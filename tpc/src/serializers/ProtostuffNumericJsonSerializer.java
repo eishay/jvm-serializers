@@ -4,11 +4,11 @@ import java.io.ByteArrayOutputStream;
 
 import org.codehaus.jackson.JsonParser;
 
-import serializers.protobuf.MediaContentHolder.Image;
-import serializers.protobuf.MediaContentHolder.Media;
-import serializers.protobuf.MediaContentHolder.MediaContent;
-import serializers.protobuf.MediaContentHolder.Image.Size;
-import serializers.protobuf.MediaContentHolder.Media.Player;
+import serializers.protobuf.media.MediaContentHolder.Image;
+import serializers.protobuf.media.MediaContentHolder.Media;
+import serializers.protobuf.media.MediaContentHolder.MediaContent;
+import serializers.protobuf.media.MediaContentHolder.Image.Size;
+import serializers.protobuf.media.MediaContentHolder.Media.Player;
 import serializers.protostuff.MediaContentHolderNumericJSON;
 
 /**

@@ -1,10 +1,4 @@
-#!/usr/local/bin/thrift --gen cpp --gen java:hashcode,beans --gen py --php --gen rb --gen perl --erl --xsd -r
-#
-# News Media
-# Before running this file, you will need to have installed the thrift compiler
-# into /usr/local/bin.
-
-namespace java serializers.thrift
+namespace java serializers.thrift.media
 
 typedef i32 int
 typedef i64 long

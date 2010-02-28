@@ -1,7 +1,5 @@
 ##########################################################################
 
-Schemas = $(patsubst schema/%,%,$(wildcard schema/*.thrift schema/*.proto))
-
 -include Config.mk
 
 # Settings you can put in "Config.mk"
@@ -18,9 +16,13 @@ Schemas = $(patsubst schema/%,%,$(wildcard schema/*.thrift schema/*.proto))
 JavaC ?= javac
 JavaC_Opt := -Xlint:unchecked
 
+empty :=
+space := $(empty) $(empty)
+
 protobuf_generator ?= protoc
 thrift_generator ?= thrift
-activemqprotoc_generator ?= activemq-protoc
+activemqprotobuf_cp = $(subst $(space),:,$(wildcard lib/activemq-*))
+activemqprotobuf_generator ?= java -cp "$(activemqprotobuf_cp)" org.apache.activemq.protobuf.compiler.AltJavaGenerator
 
 Generate_protobuf ?= n
 Generate_thrift ?= n
@@ -31,8 +33,6 @@ Generate_activemqprotobuf ?= n
 .PHONY: default compile
 default: compile build/gen-cp build/lib-cp
 
-empty :=
-space := $(empty) $(empty)
 
 p1 := @
 p2 := @
@@ -47,7 +47,9 @@ endif
 ##########################################################################
 # Figure out classpath
 
-build/gen-cp: Makefile
+Schemas = $(patsubst schema/%,%,$(wildcard schema/*.thrift schema/*.proto))
+
+build/gen-cp: schema
 	$(p2)mkdir -p build
 	$(p1)echo "$(subst $(space),:,$(Schemas:%=build/bytecode/gen/%))" > build/gen-cp
 
@@ -78,9 +80,10 @@ StampSuffix_$(1) := gen
 
 build/gen/$(2): schema/$(2)
 	# Generate: $(2)
+	$(p2)[ ! -e $$@ ] || rm -r $$@
 	$(p2)mkdir -p $$@
 ifneq ($(findstring .activemq.proto,$(2)),)
-	$(p1)$(activemqprotobuf_generator) --java_out=$$@ $$<
+	$(p1)$(activemqprotobuf_generator) --out=$$@ $$<
 else ifneq ($(findstring .proto,$(2)),)
 	$(p1)$(protobuf_generator) --java_out=$$@ $$<
 else ifneq ($(findstring .thrift,$(2)),)

@@ -3,7 +3,7 @@
  *
  * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
  */
-package serializers.thrift;
+package serializers.thrift.media;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import java.util.List;

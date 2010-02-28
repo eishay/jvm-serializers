@@ -1,8 +1,8 @@
 // See README.txt for information and build instructions.
 
-package serializers.activemq.protobuf;
+package serializers.activemq.media;
 
-option java_package = "serializers.activemq.protobuf";
+option java_package = "serializers.activemq.media";
 option java_outer_classname = "MediaContentHolder";
 option optimize_for = SPEED;
 
