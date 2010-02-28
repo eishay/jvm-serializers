@@ -202,10 +202,11 @@ public class BenchmarkRunner
 
 		Protobuf.register(groups);
 		Thrift.register(groups);
-		ProtobufJson.register(groups);
-		ProtostuffJson.register(groups);
+		CksBinary.register(groups);
 		ActiveMQProtobuf.register(groups);
 		JavaBuiltIn.register(groups);
+		ProtostuffJson.register(groups);
+		ProtobufJson.register(groups);
 		Gson.register(groups);
 
 		// --------------------------------------------------

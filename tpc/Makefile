@@ -21,15 +21,18 @@ space := $(empty) $(empty)
 
 protobuf_generator ?= protoc
 thrift_generator ?= thrift
-activemqprotobuf_cp = $(subst $(space),:,$(wildcard lib/activemq-*))
+activemqprotobuf_cp := $(subst $(space),:,$(wildcard lib/activemq-*))
 activemqprotobuf_generator ?= java -cp "$(activemqprotobuf_cp)" org.apache.activemq.protobuf.compiler.AltJavaGenerator
+cks_cp := lib/cks.jar:lib/cakoose-util.jar
+cks_generator ?= java -cp "$(cks_cp)" cks.tool.Main
 
 # Default to 'no' because we might not have these tools available.
 Generate_protobuf ?= n
 Generate_thrift ?= n
 
 # Default to 'yes' because the generator tools are included in 'lib/'.
-Generate_activemqprotobuf ?= n
+Generate_activemqprotobuf ?= y
+Generate_cks ?= y
 
 ##########################################################################
 
@@ -48,9 +51,12 @@ ifeq ($(SHOW),a)
 endif
 
 ##########################################################################
-# Figure out classpath
 
-Schemas = $(patsubst schema/%,%,$(wildcard schema/*.thrift schema/*.proto))
+SchemaExtensions := .thrift .proto .tcks
+Schemas = $(patsubst schema/%,%,$(wildcard $(SchemaExtensions:%=schema/*%)))
+
+##########################################################################
+# Figure out classpath
 
 build/gen-cp: schema
 	$(p2)mkdir -p build
@@ -72,6 +78,8 @@ else ifneq ($(findstring .proto,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_protobuf)
 else ifneq ($(findstring .thrift,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_thrift)
+else ifneq ($(findstring .tcks,$(2)),)
+	NeedToGenerate_$(1) := $(Generate_cks)
 else
 endif
 
@@ -91,6 +99,8 @@ else ifneq ($(findstring .proto,$(2)),)
 	$(p1)$(protobuf_generator) --java_out=$$@ $$<
 else ifneq ($(findstring .thrift,$(2)),)
 	$(p1)$(thrift_generator) -o $$@ --gen java:hashcode,beans $$<
+else ifneq ($(findstring .tcks,$(2)),)
+	$(p1)$(cks_generator) gen-java $$< serializers.cks.$(basename $(2)) $$@/serializers/cks/$(basename $(2))
 else
 endif
 
