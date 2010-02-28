@@ -24,8 +24,11 @@ thrift_generator ?= thrift
 activemqprotobuf_cp = $(subst $(space),:,$(wildcard lib/activemq-*))
 activemqprotobuf_generator ?= java -cp "$(activemqprotobuf_cp)" org.apache.activemq.protobuf.compiler.AltJavaGenerator
 
+# Default to 'no' because we might not have these tools available.
 Generate_protobuf ?= n
 Generate_thrift ?= n
+
+# Default to 'yes' because the generator tools are included in 'lib/'.
 Generate_activemqprotobuf ?= n
 
 ##########################################################################
