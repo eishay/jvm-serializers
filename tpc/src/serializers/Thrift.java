@@ -84,6 +84,7 @@ public class Thrift
 				mb.addToPerson(person);
 			}
 			mb.setPlayer(forwardPlayer(media.player));
+			if (media.copyright != null) mb.setCopyright(media.copyright);
 
 			return mb;
 		}

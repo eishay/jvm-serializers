@@ -78,6 +78,7 @@ public class ActiveMQProtobuf
 				mb.addPerson(person);
 			}
 			mb.setPlayer(forwardPlayer(media.player));
+			if (media.copyright != null) mb.setCopyright(media.copyright);
 
 			return mb;
 		}

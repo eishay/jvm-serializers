@@ -70,6 +70,7 @@ public class Protobuf
 				mb.addPerson(person);
 			}
 			mb.setPlayer(forwardPlayer(media.player));
+			if (media.copyright != null) mb.setCopyright(media.copyright);
 
 			return mb.build();
 		}
