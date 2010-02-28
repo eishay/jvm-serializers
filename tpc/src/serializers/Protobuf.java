@@ -141,9 +141,12 @@ public class Protobuf
 
 		public data.media.Media.Player reversePlayer(Media.Player p)
 		{
-			if (p == Media.Player.JAVA) return data.media.Media.Player.JAVA;
-			if (p == Media.Player.FLASH) return data.media.Media.Player.FLASH;
-			throw new AssertionError("invalid case: " + p);
+			switch (p) {
+				case JAVA:  return data.media.Media.Player.JAVA;
+				case FLASH: return data.media.Media.Player.FLASH;
+				default:
+					throw new AssertionError("invalid case: " + p);
+			}
 		}
 
 		private data.media.Image reverseImage(Image image)

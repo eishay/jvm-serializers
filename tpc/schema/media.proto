@@ -30,7 +30,7 @@ message Media {
   repeated string person = 9;   //name of a person featured in the video
   enum Player {
     JAVA = 0;
-    FLASH = 0;
+    FLASH = 1;
   }
   optional Player player = 10;   //in case of a player specific media
   optional string copyright = 11;//media copyright

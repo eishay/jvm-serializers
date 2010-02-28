@@ -562,15 +562,16 @@ public final class MediaContentHolder {
     public enum Player
         implements com.google.protobuf.ProtocolMessageEnum {
       JAVA(0, 0),
+      FLASH(1, 1),
       ;
       
-      public static final Player FLASH = JAVA;
       
       public final int getNumber() { return value; }
       
       public static Player valueOf(int value) {
         switch (value) {
           case 0: return JAVA;
+          case 1: return FLASH;
           default: return null;
         }
       }
@@ -1991,7 +1992,7 @@ public final class MediaContentHolder {
       "\n\007bitrate\030\010 \001(\005\022\016\n\006person\030\t \003(\t\0228\n\006playe" +
       "r\030\n \001(\0162(.serializers.protobuf.media.Med",
       "ia.Player\022\021\n\tcopyright\030\013 \001(\t\"\035\n\006Player\022\010" +
-      "\n\004JAVA\020\000\022\t\n\005FLASH\020\000\"r\n\014MediaContent\0220\n\005i" +
+      "\n\004JAVA\020\000\022\t\n\005FLASH\020\001\"r\n\014MediaContent\0220\n\005i" +
       "mage\030\001 \003(\0132!.serializers.protobuf.media." +
       "Image\0220\n\005media\030\002 \001(\0132!.serializers.proto" +
       "buf.media.Media2p\n\013MediaServer\022a\n\013update" +
