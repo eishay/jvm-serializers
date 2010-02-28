@@ -2,17 +2,19 @@ package data.media;
 
 import java.util.List;
 
-public class MediaContent
+public class MediaContent implements java.io.Serializable
 {
 	public Media media;
 	public List<Image> images;
+
+	public MediaContent() {}
 
 	public MediaContent (Media media, List<Image> images) {
 		this.media = media;
 		this.images = images;
 	}
 
-	public int hashCode () {
+	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((images == null) ? 0 : images.hashCode());
@@ -20,7 +22,7 @@ public class MediaContent
 		return result;
 	}
 
-	public boolean equals (Object obj) {
+	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
@@ -34,7 +36,7 @@ public class MediaContent
 		return true;
 	}
 
-	public String toString () {
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[MediaContent: ");
 		sb.append("media=").append(media);

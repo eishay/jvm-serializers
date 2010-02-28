@@ -1,6 +1,6 @@
 package data.media;
 
-public class Image
+public class Image implements java.io.Serializable
 {
 	public enum Size {
 		SMALL, LARGE
@@ -11,6 +11,8 @@ public class Image
 	public int width;
 	public int height;
 	public Size size;
+
+	public Image() {}
 
 	public Image (String uri, String title, int width, int height, Size size) {
 		this.height = height;
