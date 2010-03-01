@@ -172,12 +172,15 @@ public class BenchmarkRunner
 				System.out.println();
 				System.out.println("Usage: COMMAND [options] <data-file>");
 				System.out.println();
+				System.out.println("  -chart");
+				System.out.println();
+				System.out.println("  -iterations=n [default=" + DEFAULT_ITERATIONS + "]");
+				System.out.println("  -trials=n  [default=" + DEFAULT_TRIALS + "]");
+				System.out.println("  -warmup-time=milliseconds  [default=" + DEFAULT_WARMUP_MSECS + "]");
+				System.out.println();
 				System.out.println("  -include=impl1,impl2,impl3,...");
 				System.out.println("  -exclude=impl1,impl2,impl3,...");
-				System.out.println("  -iterations=num [default=" + DEFAULT_ITERATIONS + "]");
-				System.out.println("  -trials=num  [default=" + DEFAULT_TRIALS + "]");
-				System.out.println("  -warmup-time=milliseconds  [default=" + DEFAULT_WARMUP_MSECS + "]");
-				System.out.println("  -chart");
+				System.out.println();
 				System.out.println("  -help");
 				System.out.println();
 				System.exit(0); return;
@@ -208,6 +211,7 @@ public class BenchmarkRunner
 		Thrift.register(groups);
 		CksBinary.register(groups);
 		ActiveMQProtobuf.register(groups);
+		Kryo.register(groups);
 		JavaBuiltIn.register(groups);
 		ProtostuffJson.register(groups);
 		ProtobufJson.register(groups);
@@ -333,16 +337,14 @@ public class BenchmarkRunner
 		{
 			// let's reuse same instance to reduce overhead
 			Object obj = transformer.forward(value);
-			long delta = 0;
+			long start = System.nanoTime();
 			for (int i = 0; i < iterations; i++)
 			{
-				long start = System.nanoTime();
 				serializer.serialize(obj);
-				delta += System.nanoTime() - start;
-				if (i % 1000 == 0)
-					doGc();
+				//if (i % 1000 == 0)
+				//	doGc();
 			}
-			return iterationTime(delta, iterations);
+			return iterationTime(System.nanoTime() - start, iterations);
 		}
 	};
 
