@@ -169,19 +169,20 @@ public class BenchmarkRunner
 					System.err.println("The \"help\" option cannot be combined with any other option.");
 					System.exit(1); return;
 				}
+
 				System.out.println();
-				System.out.println("Usage: COMMAND [options] <data-file>");
+				System.out.println("Usage: run [options] <data-file>");
 				System.out.println();
-				System.out.println("  -chart");
-				System.out.println();
-				System.out.println("  -iterations=n [default=" + DEFAULT_ITERATIONS + "]");
-				System.out.println("  -trials=n  [default=" + DEFAULT_TRIALS + "]");
+				System.out.println("Options:");
+				System.out.println("  -iterations=n              [default=" + DEFAULT_ITERATIONS + "]");
+				System.out.println("  -trials=n                  [default=" + DEFAULT_TRIALS + "]");
 				System.out.println("  -warmup-time=milliseconds  [default=" + DEFAULT_WARMUP_MSECS + "]");
-				System.out.println();
+				System.out.println("  -chart");
 				System.out.println("  -include=impl1,impl2,impl3,...");
 				System.out.println("  -exclude=impl1,impl2,impl3,...");
-				System.out.println();
 				System.out.println("  -help");
+				System.out.println();
+				System.out.println("Example: run  -chart -include=protobuf,thrift  data/media.1.cks");
 				System.out.println();
 				System.exit(0); return;
 			}
