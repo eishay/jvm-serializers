@@ -21,10 +21,10 @@ space := $(empty) $(empty)
 
 protobuf_generator ?= protoc
 thrift_generator ?= thrift
-activemqprotobuf_cp := $(subst $(space),:,$(wildcard lib/activemq-*))
+activemqprotobuf_cp := $(subst $(space),:,$(wildcard lib/activemq-*.jar))
 activemqprotobuf_generator ?= java -cp "$(activemqprotobuf_cp)" org.apache.activemq.protobuf.compiler.AltJavaGenerator
-cks_cp := lib/cks.jar:lib/cakoose-util.jar
-cks_generator ?= java -cp "$(cks_cp)" cks.tool.Main
+cks_generator ?= java -jar lib/cks-gen.jar
+protostuff_cp ?= $(subst $(space),:,$(wildcard lib/protostuff-*.jar))
 
 # Default to 'no' because we might not have these tools available.
 Generate_protobuf ?= n
@@ -32,6 +32,7 @@ Generate_thrift ?= n
 
 # Default to 'yes' because the generator tools are included in 'lib/'.
 Generate_activemqprotobuf ?= y
+Generate_protostuff ?= y
 Generate_cks ?= y
 
 ##########################################################################
