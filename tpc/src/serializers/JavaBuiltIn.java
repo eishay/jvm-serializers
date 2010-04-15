@@ -31,10 +31,10 @@ public class JavaBuiltIn
 
 	public static Serializer<Object> GenericSerializer = new Serializer<Object>()
 	{
-		public MediaContent deserialize(byte[] array) throws Exception
+		public Object deserialize(byte[] array) throws Exception
 		{
 			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(array));
-			return (MediaContent)ois.readObject();
+			return ois.readObject();
 		}
 
 		public byte[] serialize(Object data) throws IOException

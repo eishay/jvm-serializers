@@ -212,11 +212,14 @@ public class BenchmarkRunner
 		CksBinary.register(groups);
 		ActiveMQProtobuf.register(groups);
 		Kryo.register(groups);
+		AvroGeneric.register(groups);
 		JavaBuiltIn.register(groups);
 		ProtostuffJson.register(groups);
 		ProtobufJson.register(groups);
 		Gson.register(groups);
 		CksText.register(groups);
+		JsonJackson.register(groups);
+		JsonJacksonDatabind.register(groups);
 
 		// --------------------------------------------------
 		// Load data value.
