@@ -178,35 +178,41 @@ public class Avro
 	// -------------------------------------------------------------
 	// Media
 
-	public static final Type tImage =
-		R("Image", null,
-			F("uri", STRING),
-			F("title", O(STRING)),
-			F("width", INT),
-			F("height", INT),
-			F("size", INT));
+	public static final class Media
+	{
+		public static final Type tImage =
+			R("Image", null,
+				F("uri", STRING),
+				F("title", O(STRING)),
+				F("width", INT),
+				F("height", INT),
+				F("size", INT));
 
-	public static final Type tMedia =
-		R("Media", null,
-			F("uri", STRING),
-			F("title", O(STRING)),
-			F("width", INT),
-			F("height", INT),
-			F("format", STRING),
-			F("duration", LONG),
-			F("size", LONG),
-			F("bitrate", O(INT)),
-			F("person", A(STRING)),
-			F("player", INT),
-			F("copyright", O(STRING)));
+		public static final Type tMedia =
+			R("Media", null,
+				F("uri", STRING),
+				F("title", O(STRING)),
+				F("width", INT),
+				F("height", INT),
+				F("format", STRING),
+				F("duration", LONG),
+				F("size", LONG),
+				F("bitrate", O(INT)),
+				F("persons", A(STRING)),
+				F("player", INT),
+				F("copyright", O(STRING)));
 
-	public static final Type tMediaContent =
-		R("MediaContent", "serializers.avro.specific",
-			F("images", A(tImage)),
-			F("media", tMedia));
+		public static final Type tMediaContent =
+			R("MediaContent", "serializers.avro.specific",
+				F("images", A(tImage)),
+				F("media", tMedia));
 
-	public static final Schema sImage = Schema.parse(tImage.toSchema());
-	public static final Schema sMedia = Schema.parse(tMedia.toSchema());
-	public static final Schema sMediaContent = Schema.parse(tMediaContent.toSchema());
+		public static final Schema sImage = Schema.parse(tImage.toSchema());
+		public static final Schema sMedia = Schema.parse(tMedia.toSchema());
+		public static final Schema sMediaContent = Schema.parse(tMediaContent.toSchema());
+
+		public static final Schema sImages = sMediaContent.getField("images").schema();
+		public static final Schema sPersons = sMedia.getField("persons").schema();
+	}
 
 }

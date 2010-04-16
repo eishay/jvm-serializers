@@ -8,7 +8,7 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.util.Utf8;
 
@@ -27,6 +27,9 @@ public class AvroGenericSerializer  implements ObjectSerializer<GenericRecord>
       "\"array\", \"items\": \"string\"}}, {\"name\": \"player\", " +
       "\"type\": \"int\"}, {\"name\": \"copyright\", \"type\": \"string\"}]}");
 
+  private static final Schema PERSON_SCHEMA =
+    MEDIA_SCHEMA.getField("person").schema();
+
   private static final Schema IMAGE_SCHEMA = Schema.parse(
       "{\"type\": \"record\", \"name\": \"Image\", \"fields\": [{\"name\": " +
       "\"uri\", \"type\": \"string\"}, {\"name\": \"title\", \"type\": " +
@@ -41,6 +44,9 @@ public class AvroGenericSerializer  implements ObjectSerializer<GenericRecord>
       "}}, {\"name\": \"media\", \"type\": " +
       MEDIA_SCHEMA +
       "}]}");
+
+  private static final Schema IMAGES_SCHEMA =
+    MEDIA_CONTENT_SCHEMA.getField("image").schema();
 
   private static final GenericDatumWriter<GenericRecord> WRITER = 
     new GenericDatumWriter<GenericRecord>(MEDIA_CONTENT_SCHEMA);
@@ -59,7 +65,8 @@ public class AvroGenericSerializer  implements ObjectSerializer<GenericRecord>
     media.put("title", new Utf8("Javaone Keynote"));
     media.put("duration", 1234567L);
     media.put("bitrate", 0);
-    GenericData.Array<Utf8> person =  new GenericData.Array<Utf8>(2, null);
+    GenericData.Array<Utf8> person =
+      new GenericData.Array<Utf8>(2, PERSON_SCHEMA);
     person.add(new Utf8("Bill Gates"));
     person.add(new Utf8("Steve Jobs"));
     media.put("person", person);
@@ -84,7 +91,7 @@ public class AvroGenericSerializer  implements ObjectSerializer<GenericRecord>
     image2.put("title", new Utf8("Javaone Keynote"));
     
     GenericData.Array<GenericRecord> images = 
-      new GenericData.Array<GenericRecord>(2, null);
+      new GenericData.Array<GenericRecord>(2, IMAGES_SCHEMA);
     images.add(image1);
     images.add(image2);
     
@@ -95,8 +102,10 @@ public class AvroGenericSerializer  implements ObjectSerializer<GenericRecord>
     return content;
   }
 
+  private static final DecoderFactory FACTORY = DecoderFactory.defaultFactory();
+
   public GenericRecord deserialize(byte[] array) throws Exception {
-    return READER.read(null, new BinaryDecoder(new ByteArrayInputStream(array)));
+    return READER.read(null, FACTORY.createBinaryDecoder(array, null));
   }
 
   public byte[] serialize(GenericRecord content) throws Exception {

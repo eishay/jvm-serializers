@@ -7,11 +7,10 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.util.Utf8;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,12 +21,13 @@ public class AvroGeneric
 {
 	public static void register(TestGroups groups)
 	{
-		// FIXME: This doesn't work.  Get a NullPointerException in the Avro library.
-		// groups.media.add(MediaTransformer, new GenericSerializer(Avro.sMediaContent));
+		groups.media.add(MediaTransformer, new GenericSerializer(Avro.Media.sMediaContent));
 	}
 
 	// ------------------------------------------------------------
-	// Serializer (just one)
+	// Serializer (just one class)
+
+	private static final DecoderFactory FACTORY = DecoderFactory.defaultFactory();
 
 	public static class GenericSerializer extends Serializer<GenericRecord>
 	{
@@ -44,7 +44,7 @@ public class AvroGeneric
 
 		public GenericRecord deserialize(byte[] array) throws Exception
 		{
-			return READER.read(null, new BinaryDecoder(new ByteArrayInputStream(array)));
+			return READER.read(null, FACTORY.createBinaryDecoder(array, null));
 		}
 
 		public byte[] serialize(GenericRecord data) throws IOException
@@ -65,22 +65,22 @@ public class AvroGeneric
 
 		public GenericRecord forward(MediaContent mc)
 		{
-			GenericRecord content = new GenericData.Record(Avro.sMediaContent);
+			GenericRecord content = new GenericData.Record(Avro.Media.sMediaContent);
 
 			content.put("media", forwardMedia(mc.media));
 
-			GenericData.Array<GenericRecord> images = new GenericData.Array<GenericRecord>(mc.images.size(), null);
+			GenericData.Array<GenericRecord> images = new GenericData.Array<GenericRecord>(mc.images.size(), Avro.Media.sImages);
 			for (Image image : mc.images) {
 				images.add(forwardImage(image));
 			}
-			content.put("image", images);
+			content.put("images", images);
 
 			return content;
 		}
 
 		private GenericRecord forwardMedia(Media media)
 		{
-			GenericRecord m = new GenericData.Record(Avro.sMedia);
+			GenericRecord m = new GenericData.Record(Avro.Media.sMedia);
 			m.put("uri", new Utf8(media.uri));
 			m.put("format", new Utf8(media.format));
 			if (media.title != null) {
@@ -91,7 +91,7 @@ public class AvroGeneric
 				m.put("bitrate", media.bitrate);
 			}
 
-			GenericData.Array<Utf8> persons =  new GenericData.Array<Utf8>(media.persons.size(), null);
+			GenericData.Array<Utf8> persons =  new GenericData.Array<Utf8>(media.persons.size(), Avro.Media.sPersons);
 			for (String p : media.persons) {
 				persons.add(new Utf8(p));
 			}
@@ -120,7 +120,7 @@ public class AvroGeneric
 
 		private GenericRecord forwardImage(Image image)
 		{
-			GenericRecord i = new GenericData.Record(Avro.sImage);
+			GenericRecord i = new GenericData.Record(Avro.Media.sImage);
 			i.put("uri", new Utf8(image.uri));
 			i.put("width", image.width);
 			i.put("height", image.height);
@@ -134,8 +134,8 @@ public class AvroGeneric
 		public int forwardSize(Image.Size s)
 		{
 			switch (s) {
-				case SMALL: return 0;
-				case LARGE: return 1;
+				case SMALL: return 1;
+				case LARGE: return 2;
 				default:
 					throw new AssertionError("invalid case: " + s);
 			}
@@ -159,8 +159,6 @@ public class AvroGeneric
 		private Media reverseMedia(GenericRecord media)
 		{
 			// Media
-			Utf8 title = (Utf8) media.get("title");
-			Integer bitrate = (Integer) media.get("bitrate");
 
 			@SuppressWarnings("unchecked")
 			GenericData.Array<Utf8> gpersons = (GenericData.Array<Utf8>) media.get("persons");
@@ -169,9 +167,14 @@ public class AvroGeneric
 				persons.add(person.toString());
 			}
 
+			// Optional fields.
+			Utf8 title = (Utf8) media.get("title");
+			Integer bitrate = (Integer) media.get("bitrate");
+			Utf8 copyright = (Utf8) media.get("copyright");
+
 			return new Media(
 				((Utf8) media.get("uri")).toString(),
-				title == null ? null : title.toString(),
+				title != null ? title.toString() : null,
 				(Integer) media.get("width"),
 				(Integer) media.get("height"),
 				((Utf8) media.get("format")).toString(),
@@ -181,7 +184,7 @@ public class AvroGeneric
 				bitrate != null,
 				persons,
 				reversePlayer((Integer) media.get("player")),
-				((Utf8) media.get("copyright")).toString()
+				copyright != null ? copyright.toString() : null
 			);
 		}
 
@@ -189,7 +192,7 @@ public class AvroGeneric
 		{
 			switch (p) {
 				case 1: return Media.Player.JAVA;
-				case 2: return Media.Player.JAVA;
+				case 2: return Media.Player.FLASH;
 				default: throw new AssertionError("invalid case: " + p);
 			}
 		}

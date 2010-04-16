@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
-import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
@@ -16,13 +16,17 @@ import serializers.ObjectSerializer;
 public class AvroSpecificSerializer implements ObjectSerializer<MediaContent> 
 
 {
-  private static final Schema SCHEMA = new MediaContent().getSchema();
+  private static final Schema PERSON_SCHEMA =
+    Media.SCHEMA$.getField("person").schema();
 
-  private static final SpecificDatumReader READER = 
-    new SpecificDatumReader(SCHEMA);
+  private static final Schema IMAGES_SCHEMA =
+    MediaContent.SCHEMA$.getField("image").schema();
 
-  private static final SpecificDatumWriter WRITER =
-    new SpecificDatumWriter(SCHEMA);
+  private static final SpecificDatumReader<MediaContent> READER =
+    new SpecificDatumReader<MediaContent>(MediaContent.class);
+
+  private static final SpecificDatumWriter<MediaContent> WRITER =
+    new SpecificDatumWriter<MediaContent>(MediaContent.class);
 
   public String getName() {
     return "avro-specific";
@@ -35,7 +39,7 @@ public class AvroSpecificSerializer implements ObjectSerializer<MediaContent>
     media.title = new Utf8("Javaone Keynote");
     media.duration = 1234567L;
     media.bitrate = 0;
-    media.person = new GenericData.Array<Utf8>(2, null);
+    media.person = new GenericData.Array<Utf8>(2, PERSON_SCHEMA);
     media.person.add(new Utf8("Bill Gates"));
     media.person.add(new Utf8("Steve Jobs"));
     media.player = 0;
@@ -60,15 +64,18 @@ public class AvroSpecificSerializer implements ObjectSerializer<MediaContent>
 
     MediaContent content = new MediaContent();
     content.media = media;
-    content.image = new GenericData.Array<Image>(2, null);
+
+    content.image = new GenericData.Array<Image>(2, IMAGES_SCHEMA);
     content.image.add(image1);
     content.image.add(image2);
     return content;
   }
 
+  private static final DecoderFactory FACTORY = DecoderFactory.defaultFactory();
+
   public MediaContent deserialize(byte[] array) throws Exception {
-    return (MediaContent) 
-      READER.read(null, new BinaryDecoder(new ByteArrayInputStream(array)));
+    return (MediaContent)READER.read(null,
+                                     FACTORY.createBinaryDecoder(array, null));
   }
 
   public byte[] serialize(MediaContent content) throws Exception {
