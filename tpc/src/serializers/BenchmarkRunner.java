@@ -213,16 +213,17 @@ public class BenchmarkRunner
 		Thrift.register(groups);
 		ActiveMQProtobuf.register(groups);
 		Kryo.register(groups);
-		AvroSpecific.register(groups);
 		CksBinary.register(groups);
-
-		// Binary Formats, Generic Serialization
-		JavaBuiltIn.register(groups);
+		AvroSpecific.register(groups);
 		AvroGeneric.register(groups);
+
+		// Binary Formats, Any Java Object
+		Hessian.register(groups);
+		JavaBuiltIn.register(groups);
 
 		// Abbreviated Text Formats
 		JsonJackson.register(groups);
-
+		
 		// Text Formats
 		JsonJacksonDatabind.register(groups);
 		JsonTwoLattes.register(groups);
