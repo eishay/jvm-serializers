@@ -126,10 +126,10 @@ build/bytecode/gen/$(2).compile.$$(StampSuffix_$(1)): $$(JavaSourceRoots_$(1)) $
 	$(p2)mkdir -p build/bytecode/gen/$(2)
 	$(p2)rm -f build/bytecode/gen/$(2).compile.*
 	# Compile: $$(JavaSourceRoots_$(1))
+	$(p2)touch "$$@"
 	$(p1)$(JavaC) $(JavaC_Opt) $$(JavaC_Opt_$(2)) -d build/bytecode/gen/$(2) \
 		-classpath "$$(shell cat build/lib-cp)" \
 		$$(shell find $$(JavaSourceRoots_$(1)) -type f -name '*.java')
-	$(p2)touch "$$@"
 
 build/bytecode/gen/$(2).compile: build/bytecode/gen/$(2).compile.$$(StampSuffix_$(1))
 	$(p2)touch "$$@"
@@ -150,6 +150,7 @@ JavaSourceFiles = $(shell find $(JavaSourceRoots) -type f -name '*.java')
 build/bytecode/main.compile : $(JavaSourceRoots) $(JavaSourceDirs) $(JavaSourceFiles) lib build/lib-cp build/gen-cp $(wildcard lib/*.jar) $(Schemas:%=build/bytecode/gen/%.compile)
 	$(p2)[ ! -e build/bytecode/main ] || rm -r build/bytecode/main
 	$(p2)mkdir -p build/bytecode/main
+	$(p2)touch "$@"
 ifeq ($(JavaSourceFiles),)
 	# Compile: $(JavaSourceRoots) (empty)
 else
@@ -157,7 +158,6 @@ else
 	$(p1)$(JavaC) $(JavaC_Opt) -d build/bytecode/main \
 		-classpath "$(shell cat build/lib-cp):$(shell cat build/gen-cp)" \
 		$(JavaSourceFiles)
-	$(p2)touch "$@"
 endif
 
 compile: build/bytecode/main.compile
