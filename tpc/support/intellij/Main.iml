@@ -8,6 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../../pregen/media.thrift/gen-javabean" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../build/gen/media.activemq.proto" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../build/gen/media.tcks" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../build/gen/media.avro" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

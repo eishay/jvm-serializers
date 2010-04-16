@@ -208,19 +208,27 @@ public class BenchmarkRunner
 
 		TestGroups groups = new TestGroups();
 
+		// Binary Format, Specialized Serialization
 		Protobuf.register(groups);
 		Thrift.register(groups);
-		CksBinary.register(groups);
 		ActiveMQProtobuf.register(groups);
 		Kryo.register(groups);
-		AvroGeneric.register(groups);
+		AvroSpecific.register(groups);
+		CksBinary.register(groups);
+
+		// Binary Formats, Generic Serialization
 		JavaBuiltIn.register(groups);
+		AvroGeneric.register(groups);
+
+		// Abbreviated Text Formats
+		JsonJackson.register(groups);
+
+		// Text Formats
+		JsonJacksonDatabind.register(groups);
 		ProtostuffJson.register(groups);
+		CksText.register(groups);
 		ProtobufJson.register(groups);
 		Gson.register(groups);
-		CksText.register(groups);
-		JsonJackson.register(groups);
-		JsonJacksonDatabind.register(groups);
 
 		// --------------------------------------------------
 		// Load data value.

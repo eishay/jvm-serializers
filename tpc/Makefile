@@ -24,7 +24,8 @@ thrift_generator ?= thrift
 activemqprotobuf_cp := $(subst $(space),:,$(wildcard lib/activemq-*.jar))
 activemqprotobuf_generator ?= java -cp "$(activemqprotobuf_cp)" org.apache.activemq.protobuf.compiler.AltJavaGenerator
 cks_generator ?= java -jar lib/cks-gen.jar
-protostuff_cp ?= $(subst $(space),:,$(wildcard lib/protostuff-*.jar))
+avro_cp ?= $(subst $(space),:,$(wildcard lib/avro-*.jar lib/jackson-*.jar lib/jopt-simple-*.jar))
+avro_generator ?= java -cp $(avro_cp)
 
 # Default to 'no' because we might not have these tools available.
 Generate_protobuf ?= n
@@ -32,8 +33,8 @@ Generate_thrift ?= n
 
 # Default to 'yes' because the generator tools are included in 'lib/'.
 Generate_activemqprotobuf ?= y
-Generate_protostuff ?= y
 Generate_cks ?= y
+Generate_avro ?= y
 
 ##########################################################################
 
@@ -53,7 +54,7 @@ endif
 
 ##########################################################################
 
-SchemaExtensions := .thrift .proto .tcks
+SchemaExtensions := .thrift .proto .tcks .avro
 Schemas = $(patsubst schema/%,%,$(wildcard $(SchemaExtensions:%=schema/*%)))
 
 ##########################################################################
@@ -81,6 +82,8 @@ else ifneq ($(findstring .thrift,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_thrift)
 else ifneq ($(findstring .tcks,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_cks)
+else ifneq ($(findstring .avro,$(2)),)
+	NeedToGenerate_$(1) := $(Generate_avro)
 else
 endif
 
@@ -102,6 +105,8 @@ else ifneq ($(findstring .thrift,$(2)),)
 	$(p1)$(thrift_generator) -o $$@ --gen java:hashcode,beans $$<
 else ifneq ($(findstring .tcks,$(2)),)
 	$(p1)$(cks_generator) gen-java $$< serializers.cks.$(basename $(2)) $$@/serializers/cks/$(basename $(2))
+else ifneq ($(findstring .avro,$(2)),)
+	$(p1)$(avro_generator) compile schema $$< $$@
 else
 endif
 

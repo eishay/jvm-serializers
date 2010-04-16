@@ -1,0 +1,30 @@
+{"type": "record", "name": "MediaContent", "namespace": "serializers.avro.media", "fields": [
+  {"name": "images", "type": {"type": "array", 
+    "items": {"type": "record", "name": "Image",
+      "fields": [
+        {"name": "uri", "type": "string"},
+        {"name": "title", "type": ["null", "string"]},
+        {"name": "width", "type": "int"},
+        {"name": "height", "type": "int"},
+        {"name": "size", "type": "int"}
+      ]
+    }
+  }},
+  {"name": "media", 
+    "type": {"type": "record", "name": "Media",
+      "fields": [
+        {"name": "uri", "type": "string"},
+        {"name": "title", "type": ["null", "string"]},
+        {"name": "width", "type": "int"},
+        {"name": "height", "type": "int"},
+        {"name": "format", "type": "string"},
+        {"name": "duration", "type": "long"},
+        {"name": "size", "type": "long"},
+        {"name": "bitrate", "type": ["null", "int"]},
+        {"name": "persons", "type": {"type": "array", "items": "string"}},
+        {"name": "player", "type": "int"},
+        {"name": "copyright", "type": ["null", "string"]}
+      ]
+    }
+  }
+]}
