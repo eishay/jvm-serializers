@@ -225,6 +225,7 @@ public class BenchmarkRunner
 
 		// Text Formats
 		JsonJacksonDatabind.register(groups);
+		JsonTwoLattes.register(groups);
 		ProtostuffJson.register(groups);
 		CksText.register(groups);
 		ProtobufJson.register(groups);
