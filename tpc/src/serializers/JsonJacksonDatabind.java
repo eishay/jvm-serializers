@@ -2,8 +2,6 @@ package serializers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 import data.media.MediaContent;
 
