@@ -25,7 +25,7 @@ activemqprotobuf_cp := $(subst $(space),:,$(wildcard lib/activemq-*.jar))
 activemqprotobuf_generator ?= java -cp "$(activemqprotobuf_cp)" org.apache.activemq.protobuf.compiler.AltJavaGenerator
 cks_generator ?= java -jar lib/cks-gen.jar
 avro_cp ?= $(subst $(space),:,$(wildcard lib/avro-*.jar lib/jackson-*.jar lib/jopt-simple-*.jar))
-avro_generator ?= java -cp $(avro_cp)
+avro_generator ?= java -cp $(avro_cp) org.apache.avro.tool.Main
 
 # Default to 'no' because we might not have these tools available.
 Generate_protobuf ?= n
