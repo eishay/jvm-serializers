@@ -2,10 +2,12 @@ package serializers;
 
 import java.io.ByteArrayOutputStream;
 
+import com.dyuproject.protostuff.json.ProtobufJSON;
 import org.codehaus.jackson.JsonParser;
 
 import serializers.protobuf.media.MediaContentHolder.MediaContent;
 import serializers.protostuff.MediaContentHolderJSON;
+import serializers.protostuff.MediaContentHolderNumericJSON;
 
 /**
  * @author David Yu
@@ -14,18 +16,29 @@ import serializers.protostuff.MediaContentHolderJSON;
 
 public class ProtostuffJson
 {
-    private static final MediaContentHolderJSON json = new MediaContentHolderJSON();
+	private static final MediaContentHolderJSON json = new MediaContentHolderJSON();
+    private static final MediaContentHolderNumericJSON numericJson = new MediaContentHolderNumericJSON();
 
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(Protobuf.MediaTransformer, MediaSerializer);
+		groups.media.add(Protobuf.MediaTransformer, new MediaSerializer("json", json));
+		groups.media.add(Protobuf.MediaTransformer, new MediaSerializer("numeric-json", numericJson));
 	}
 
 	// ------------------------------------------------------------
 	// Serializers
 
-	public static final Serializer<MediaContent> MediaSerializer = new Serializer<MediaContent>()
+	public static final class MediaSerializer extends Serializer<MediaContent>
 	{
+		private final String suffix;
+		private final ProtobufJSON json;
+
+		public MediaSerializer(String suffix, ProtobufJSON json)
+		{
+			this.suffix = suffix;
+			this.json = json;
+		}
+
 		public MediaContent deserialize(byte[] array) throws Exception
 		{
 			MediaContent.Builder builder = MediaContent.newBuilder();
@@ -44,7 +57,7 @@ public class ProtostuffJson
 
 		public String getName()
 		{
-			return "protostuff-json";
+			return "protostuff-" + suffix;
 		}
 	};
 }
