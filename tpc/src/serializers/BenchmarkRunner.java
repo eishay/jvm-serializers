@@ -273,7 +273,32 @@ public class BenchmarkRunner
 
 		// --------------------------------------------------
 
-		EnumMap<measurements, Map<String, Double>> values = start(filterIsInclude, filterStrings, iterations, trials, warmupTime, group_, dataValue);
+		Iterable<TestGroup.Entry<Object,Object>> matchingEntries;
+		if (filterStrings == null) {
+			matchingEntries = group_.entries;
+		}
+		else {
+			ArrayList<TestGroup.Entry<Object,Object>> al = new ArrayList<TestGroup.Entry<Object,Object>>();
+			matchingEntries = al;
+
+			for (TestGroup.Entry<?,Object> entry_ : group.entries) {
+				@SuppressWarnings("unchecked")
+				TestGroup.Entry<Object,Object> entry = (TestGroup.Entry<Object,Object>) entry_;
+
+				String name = entry.serializer.getName();
+				boolean found = filterStrings.remove(name);
+				if (found == filterIsInclude) {
+					al.add(entry);
+				}
+			}
+
+			for (String s : filterStrings) {
+				System.err.println("Warning: there is no implementation named \"" + s + "\"");
+			}
+		}
+
+		EnumMap<measurements, Map<String, Double>> values = start(iterations, trials, warmupTime, matchingEntries, dataValue);
+
 
 		if (printChart) {
 			printImages(values);
@@ -456,7 +481,7 @@ public class BenchmarkRunner
 		timeCreate, timeSerializeDifferentObjects, timeSerializeSameObject, timeDeserializeNoFieldAccess, timeDeserializeAndCheck, timeDeserializeAndCheckShallow, totalTime, length
 	}
 
-	private static <J> EnumMap<measurements, Map<String, Double>> start(Boolean filterIsInclude, Set<String> filterStrings, int iterations, int trials, long warmupTime, TestGroup<J> group, J value) throws Exception
+	private static <J> EnumMap<measurements, Map<String, Double>> start(int iterations, int trials, long warmupTime, Iterable<TestGroup.Entry<J,Object>> groups, J value) throws Exception
 	{
 		System.out.printf("%-24s %6s %7s %7s %8s %8s %8s %8s %7s\n",
 			"",
@@ -473,15 +498,11 @@ public class BenchmarkRunner
 			values.put(m, new HashMap<String, Double>());
 
 
-		for (TestGroup.Entry<J,Object> entry : group.entries)
+		for (TestGroup.Entry<J,Object> entry : groups)
 		{
 			TestCaseRunner<J> runner = new TestCaseRunner<J>(entry.transformer, entry.serializer, value);
 
 			String name = entry.serializer.getName();
-
-			if (filterIsInclude != null) {
-				if (filterIsInclude != filterStrings.contains(name)) continue;
-			}
 
 			/*
 			 * Should only warm things for the serializer that we test next: HotSpot JIT will
