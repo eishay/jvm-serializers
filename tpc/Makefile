@@ -39,6 +39,7 @@ Generate_avro ?= y
 ##########################################################################
 
 .PHONY: default compile
+.DELETE_ON_ERROR:
 default: compile build/gen-cp build/lib-cp
 
 
@@ -93,22 +94,27 @@ ifeq ($$(NeedToGenerate_$(1)),y)
 JavaSourceRoots_$(1) = build/gen/$(2)
 StampSuffix_$(1) := gen
 
-build/gen/$(2): schema/$(2)
+build/gen/$(2): build/gen/$(2).gen
+
+build/gen/$(2).gen: schema/$(2)
 	# Generate: $(2)
-	$(p2)[ ! -e $$@ ] || rm -r $$@
-	$(p2)mkdir -p $$@
+	$(p2)[ ! -e build/gen/$(2) ] || rm -r build/gen/$(2)
+	$(p2)mkdir -p build/gen/$(2)
+	$(p2)touch $$@
 ifneq ($(findstring .activemq.proto,$(2)),)
-	$(p1)$(activemqprotobuf_generator) --out=$$@ $$<
+	$(p1)$(activemqprotobuf_generator) --out=build/gen/$(2) $$<
 else ifneq ($(findstring .proto,$(2)),)
-	$(p1)$(protobuf_generator) --java_out=$$@ $$<
+	$(p1)$(protobuf_generator) --java_out=build/gen/$(2) $$<
 else ifneq ($(findstring .thrift,$(2)),)
-	$(p1)$(thrift_generator) -o $$@ --gen java:hashcode,beans $$<
+	$(p1)$(thrift_generator) -o build/gen/$(2) --gen java:hashcode,beans $$<
 else ifneq ($(findstring .tcks,$(2)),)
-	$(p1)$(cks_generator) gen-java $$< serializers.cks.$(basename $(2)) $$@/serializers/cks/$(basename $(2))
+	$(p1)$(cks_generator) gen-java $$< serializers.cks.$(basename $(2)) build/gen/$(2)/serializers/cks/$(basename $(2))
 else ifneq ($(findstring .avro,$(2)),)
-	$(p1)$(avro_generator) compile schema $$< $$@
+	$(p1)$(avro_generator) compile schema $$< build/gen/$(2)
 else
 endif
+
+build/bytecode/gen/$(2).compile.gen: build/gen/$(2).gen
 
 else
 
@@ -134,7 +140,7 @@ build/bytecode/gen/$(2).compile.$$(StampSuffix_$(1)): $$(JavaSourceRoots_$(1)) $
 build/bytecode/gen/$(2).compile: build/bytecode/gen/$(2).compile.$$(StampSuffix_$(1))
 	$(p2)touch "$$@"
 
-compile: build/bytecode/gen/$(2).compile
+build/bytecode/main.compile: build/bytecode/gen/$(2).compile
 
 endef
 
