@@ -1,5 +1,7 @@
 package serializers;
 
+import quicklz.QuickLZ;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,6 +16,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.DeflaterOutputStream;
 
 public class BenchmarkRunner
 {
@@ -488,12 +491,14 @@ public class BenchmarkRunner
 
 	enum measurements
 	{
-		timeCreate, timeSerializeDifferentObjects, timeSerializeSameObject, timeDeserializeNoFieldAccess, timeDeserializeAndCheck, timeDeserializeAndCheckShallow, totalTime, length
+		timeCreate, timeSerializeDifferentObjects, timeSerializeSameObject, timeDeserializeNoFieldAccess,
+		timeDeserializeAndCheck, timeDeserializeAndCheckShallow,
+		totalTime, length, lengthQlz, lengthDeflate,
 	}
 
 	private static <J> EnumMap<measurements, Map<String, Double>> start(int iterations, int trials, long warmupTime, Iterable<TestGroup.Entry<J,Object>> groups, J value) throws Exception
 	{
-		System.out.printf("%-24s %6s %7s %7s %8s %8s %8s %8s %7s\n",
+		System.out.printf("%-24s %6s %7s %7s %7s %7s %7s %7s %6s %5s %5s\n",
 			"",
 			"create",
 			"ser",
@@ -502,7 +507,9 @@ public class BenchmarkRunner
 			"+shal",
 			"+deep",
 			"total",
-			"size");
+			"size",
+			"+qlz",
+			"+dfl");
 		EnumMap<measurements, Map<String, Double>> values = new EnumMap<measurements, Map<String, Double>>(measurements.class);
 		for (measurements m : measurements.values())
 			values.put(m, new HashMap<String, Double>());
@@ -554,7 +561,11 @@ public class BenchmarkRunner
 			double totalTime = timeSerializeDifferentObjects + timeDeserializeAndCheck;
 
 			byte[] array = entry.serializer.serialize(entry.transformer.forward(value));
-			System.out.printf("%-24s %6.0f %7.0f %7.0f %8.0f %8.0f %8.0f %8.0f %7d\n",
+
+			byte[] compressQlz = QuickLZ.compress(array);
+			byte[] compressDeflate = compressDeflate(array);
+
+			System.out.printf("%-24s %6.0f %7.0f %7.0f %7.0f %7.0f %7.0f %7.0f %6d %5d %5d\n",
 				name,
 				timeCreate,
 				timeSerializeDifferentObjects,
@@ -563,12 +574,32 @@ public class BenchmarkRunner
 				timeDeserializeAndCheckShallow,
 				timeDeserializeAndCheck,
 				totalTime,
-				array.length);
+				array.length,
+				compressQlz.length,
+				compressDeflate.length);
 
 			addValue(values, name, timeCreate, timeSerializeDifferentObjects, timeSerializeSameObject,
-				timeDeserializeNoFieldAccess, timeDeserializeAndCheckShallow, timeDeserializeAndCheck, totalTime, array.length);
+				timeDeserializeNoFieldAccess, timeDeserializeAndCheckShallow, timeDeserializeAndCheck, totalTime,
+				array.length, compressQlz.length, compressDeflate.length);
 		}
 		return values;
+	}
+
+	private static byte[] compressDeflate(byte[] data)
+	{
+		try {
+			ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			DeflaterOutputStream compresser = new DeflaterOutputStream(bout);
+			compresser.write(data, 0, data.length);
+			compresser.finish();
+			compresser.flush();
+			return bout.toByteArray();
+		}
+		catch (IOException ex) {
+			AssertionError ae = new AssertionError("IOException while writing to ByteArrayOutputStream!");
+			ae.initCause(ex);
+			throw ae;
+		}
 	}
 
 	/**
@@ -651,7 +682,7 @@ public class BenchmarkRunner
 		double timeDeserializeAndCheckShallow,
 		double timeDeserializeAndCheck,
 		double totalTime,
-		double length)
+		double length, double lengthQlz, double lengthDeflate)
 	{
 		// Omit some charts for serializers that are extremely slow.
 		if (!name.equals("json/google-gson") && !name.equals("scala")) {
@@ -663,6 +694,8 @@ public class BenchmarkRunner
 			values.get(measurements.totalTime).put(name, totalTime);
 		}
 		values.get(measurements.length).put(name, length);
+		values.get(measurements.lengthQlz).put(name, lengthQlz);
+		values.get(measurements.lengthDeflate).put(name, lengthDeflate);
 		values.get(measurements.timeCreate).put(name, timeCreate);
 	}
 
