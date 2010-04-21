@@ -12,8 +12,10 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.zip.DeflaterOutputStream;
 
 public class BenchmarkRunner
@@ -292,6 +294,8 @@ public class BenchmarkRunner
 
 		// --------------------------------------------------
 
+		Set<String> matched = new HashSet<String>();
+
 		Iterable<TestGroup.Entry<Object,Object>> matchingEntries;
 		if (filterStrings == null) {
 			matchingEntries = group_.entries;
@@ -305,14 +309,26 @@ public class BenchmarkRunner
 				TestGroup.Entry<Object,Object> entry = (TestGroup.Entry<Object,Object>) entry_;
 
 				String name = entry.serializer.getName();
-				boolean found = filterStrings.remove(name);
+
+				// See if any of the filters match.
+				boolean found = false;
+				for (String s : filterStrings) {
+					boolean thisOneMatches = match(s, name);
+					if (thisOneMatches) {
+						matched.add(s);
+						found = true;
+					}
+				}
+
 				if (found == filterIsInclude) {
 					al.add(entry);
 				}
 			}
 
-			for (String s : filterStrings) {
-				System.err.println("Warning: there is no implementation named \"" + s + "\"");
+			Set<String> unmatched = new HashSet<String>(filterStrings);
+			unmatched.removeAll(matched);
+			for (String s : unmatched) {
+				System.err.println("Warning: there is no implementation name matching the pattern \"" + s + "\"");
 			}
 		}
 
@@ -322,6 +338,29 @@ public class BenchmarkRunner
 		if (printChart) {
 			printImages(values);
 		}
+	}
+
+	private static boolean match(String pattern, String name)
+	{
+		StringBuilder regex = new StringBuilder();
+
+		while (pattern.length() > 0) {
+			int starPos = pattern.indexOf('*');
+			if (starPos < 0) {
+				regex.append(Pattern.quote(pattern));
+				break;
+			}
+			else {
+				String beforeStar = pattern.substring(0, starPos);
+				String afterStar = pattern.substring(starPos + 1);
+
+				regex.append(Pattern.quote(beforeStar));
+				regex.append(".*");
+				pattern = afterStar;
+			}
+		}
+
+		return Pattern.matches(regex.toString(), name);
 	}
 
 	// ------------------------------------------------------------------------------------
