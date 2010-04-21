@@ -1,6 +1,7 @@
 package data.media;
 
 import java.util.List;
+import static data.ReprUtil.repr;
 
 public class Media implements java.io.Serializable {
 	public enum Player {
@@ -38,67 +39,60 @@ public class Media implements java.io.Serializable {
 		this.copyright = copyright;
 	}
 
-	public int hashCode () {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + bitrate;
-		result = prime * result + ((copyright == null) ? 0 : copyright.hashCode());
-		result = prime * result + (int)(duration ^ (duration >>> 32));
-		result = prime * result + ((format == null) ? 0 : format.hashCode());
-		result = prime * result + height;
-		result = prime * result + ((persons == null) ? 0 : persons.hashCode());
-		result = prime * result + ((player == null) ? 0 : player.hashCode());
-		result = prime * result + (int)(size ^ (size >>> 32));
-		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
-		result = prime * result + width;
-		return result;
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Media media = (Media) o;
+
+		if (bitrate != media.bitrate) return false;
+		if (duration != media.duration) return false;
+		if (hasBitrate != media.hasBitrate) return false;
+		if (height != media.height) return false;
+		if (size != media.size) return false;
+		if (width != media.width) return false;
+		if (copyright != null ? !copyright.equals(media.copyright) : media.copyright != null) return false;
+		if (format != null ? !format.equals(media.format) : media.format != null) return false;
+		if (persons != null ? !persons.equals(media.persons) : media.persons != null) return false;
+		if (player != media.player) return false;
+		if (title != null ? !title.equals(media.title) : media.title != null) return false;
+		if (uri != null ? !uri.equals(media.uri) : media.uri != null) return false;
+
+		return true;
 	}
 
-	public boolean equals (Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
-		Media other = (Media)obj;
-		if (hasBitrate != other.hasBitrate) return false;
-		if (hasBitrate && (bitrate != other.bitrate)) return false;
-		if (copyright == null) {
-			if (other.copyright != null) return false;
-		} else if (!copyright.equals(other.copyright)) return false;
-		if (duration != other.duration) return false;
-		if (format == null) {
-			if (other.format != null) return false;
-		} else if (!format.equals(other.format)) return false;
-		if (height != other.height) return false;
-		if (persons == null) {
-			if (other.persons != null) return false;
-		} else if (!persons.equals(other.persons)) return false;
-		if (player == null) {
-			if (other.player != null) return false;
-		} else if (!player.equals(other.player)) return false;
-		if (size != other.size) return false;
-		if (title == null) {
-			if (other.title != null) return false;
-		} else if (!title.equals(other.title)) return false;
-		if (uri == null) {
-			if (other.uri != null) return false;
-		} else if (!uri.equals(other.uri)) return false;
-		if (width != other.width) return false;
-		return true;
+	@Override
+	public int hashCode()
+	{
+		int result = uri != null ? uri.hashCode() : 0;
+		result = 31 * result + (title != null ? title.hashCode() : 0);
+		result = 31 * result + width;
+		result = 31 * result + height;
+		result = 31 * result + (format != null ? format.hashCode() : 0);
+		result = 31 * result + (int) (duration ^ (duration >>> 32));
+		result = 31 * result + (int) (size ^ (size >>> 32));
+		result = 31 * result + bitrate;
+		result = 31 * result + (hasBitrate ? 1 : 0);
+		result = 31 * result + (persons != null ? persons.hashCode() : 0);
+		result = 31 * result + (player != null ? player.hashCode() : 0);
+		result = 31 * result + (copyright != null ? copyright.hashCode() : 0);
+		return result;
 	}
 
 	public String toString () {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[Media ");
-		sb.append("uri=").append(uri);
-		sb.append(", title=").append(title);
+		sb.append("uri=").append(repr(uri));
+		sb.append(", title=").append(repr(title));
 		sb.append(", width=").append(width);
 		sb.append(", height=").append(height);
-		sb.append(", format=").append(format);
+		sb.append(", format=").append(repr(format));
 		sb.append(", duration=").append(duration);
 		sb.append(", size=").append(size);
 		sb.append(", bitrate=").append(hasBitrate ? Integer.toString(bitrate) : "?");
-		sb.append(", persons=").append(persons);
+		sb.append(", persons=").append(repr(persons));
 		sb.append(", player=").append(player);
 		sb.append(", copyright=").append(copyright);
 		sb.append("]");
