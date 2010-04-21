@@ -209,7 +209,7 @@ public class BenchmarkRunner
 
 		TestGroups groups = new TestGroups();
 
-		// Binary Format, Specialized Serialization
+		// Custom Binary Format, Specialized Serialization
 		Protobuf.register(groups);
 		Thrift.register(groups);
 		ActiveMQProtobuf.register(groups);
@@ -218,20 +218,22 @@ public class BenchmarkRunner
 		AvroSpecific.register(groups);
 		AvroGeneric.register(groups);
 
-		// Binary Formats, Any Java Object
+		// Custom Binary Formats, Any Java Object
 		Hessian.register(groups);
 		JavaBuiltIn.register(groups);
 
-		// Abbreviated Text Formats
+		// JSON-like formats.
 		JsonJackson.register(groups);
-		
-		// Text Formats
 		JsonJacksonDatabind.register(groups);
 		JsonTwoLattes.register(groups);
 		ProtostuffJson.register(groups);
 		CksText.register(groups);
 		ProtobufJson.register(groups);
 		Gson.register(groups);
+
+		// XML-based formats.
+		Stax.register(groups);
+		XStream.register(groups);
 		JavolutionXml.register(groups);
 
 		// --------------------------------------------------
