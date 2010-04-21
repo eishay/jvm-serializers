@@ -51,13 +51,13 @@ public class XStream
 		for (Stax.Handler h : Stax.Handlers) {
 			// TODO: This doesn't work yet.  Need to properly handle optional fields in readMedia/readImage.
 			groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "",  EmptyConfiguration));
-			groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "+", MediaConfiguration));
+			groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "+conv", MediaConfiguration));
 		}
 	}
 
 	private static <T> ConverterSerializer<T> mkStaxSerializer(final Stax.Handler handler, String suffix, Configuration config)
 	{
-		return new ConverterSerializer<T>(handler.name + "-xstrm" + suffix,
+		return new ConverterSerializer<T>(handler.name + "-xstream" + suffix,
 			new com.thoughtworks.xstream.XStream(new StaxDriver() {
 				public XMLInputFactory getInputFactory() { return handler.inFactory; }
 				public XMLOutputFactory getOutputFactory() { return handler.outFactory; }

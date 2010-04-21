@@ -43,13 +43,13 @@ public class Stax
 	}
 
 	public static final Handler[] Handlers = new Handler[] {
-		new Handler("xml-fi/sun-stax",
+		new Handler("xml-fi/sun",
 			new com.sun.xml.fastinfoset.stax.factory.StAXInputFactory(),
 			new com.sun.xml.fastinfoset.stax.factory.StAXOutputFactory()),
-		new Handler("xml/woodstox-stax",
+		new Handler("xml/woodstox",
 			new com.ctc.wstx.stax.WstxInputFactory(),
 			new com.ctc.wstx.stax.WstxOutputFactory()),
-		new Handler("xml/alto-stax",
+		new Handler("xml/alto",
 			new com.fasterxml.aalto.stax.InputFactoryImpl(),
 			new com.fasterxml.aalto.stax.OutputFactoryImpl()),
 	};
@@ -61,7 +61,7 @@ public class Stax
 	{
 		private final Handler handler;
 
-		public String getName() { return handler.name; }
+		public String getName() { return handler.name + "-stax"; }
 
 		public MediaSerializer(Handler handler)
 		{
