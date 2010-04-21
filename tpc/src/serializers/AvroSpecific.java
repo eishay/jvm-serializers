@@ -29,7 +29,7 @@ public class AvroSpecific
 
 	public static final class GenericSerializer<T> extends Serializer<T>
 	{
-		public String getName() { return "avro-specific"; }
+		public String getName() { return "avro"; }
 
 		private final SpecificDatumReader<T> READER;
 		private final SpecificDatumWriter<T> WRITER;
@@ -93,7 +93,7 @@ public class AvroSpecific
 			m.persons = persons;
 
 			m.player = forwardPlayer(media.player);
-			if (media.copyright != null) m.uri = new Utf8(media.copyright);
+			if (media.copyright != null) m.copyright = new Utf8(media.copyright);
 
 			return m;
 		}
