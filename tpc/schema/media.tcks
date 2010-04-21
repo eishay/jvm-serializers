@@ -24,6 +24,6 @@ def Media = {
 }
 
 def MediaContent = {
-  Media: Media
   Images: List(Image)
+  Media: Media
 }
