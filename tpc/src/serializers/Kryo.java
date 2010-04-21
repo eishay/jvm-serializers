@@ -67,7 +67,7 @@ public class Kryo
 
 		public String getName()
 		{
-			return "kryo+opt";
+			return "kryo-opt";
 		}
 	}
 

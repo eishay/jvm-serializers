@@ -44,7 +44,7 @@ public class CksText
 
 		public String getName ()
 		{
-			return "cks/text";
+			return "cks-text";
 		}
 	};
 }

@@ -36,7 +36,7 @@ public class CksBinary
 
 		public String getName ()
 		{
-			return "cks/binary";
+			return "cks";
 		}
 	};
 }

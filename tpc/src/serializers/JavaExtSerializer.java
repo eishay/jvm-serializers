@@ -28,7 +28,7 @@ public class JavaExtSerializer implements ObjectSerializer<MediaContent> {
    public JavaExtSerializer() {}
 
    public String getName() {
-      return "java (externalizable)";
+      return "java+ext";
    }
 
    public MediaContent deserialize( byte[] array ) throws Exception {

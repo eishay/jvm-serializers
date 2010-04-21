@@ -21,8 +21,8 @@ public class ProtostuffJson
 
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(Protobuf.MediaTransformer, new MediaSerializer("json", json));
-		groups.media.add(Protobuf.MediaTransformer, new MediaSerializer("numeric-json", numericJson));
+		groups.media.add(Protobuf.MediaTransformer, new MediaSerializer("", json));
+		groups.media.add(Protobuf.MediaTransformer, new MediaSerializer("-numeric", numericJson));
 	}
 
 	// ------------------------------------------------------------
@@ -57,7 +57,7 @@ public class ProtostuffJson
 
 		public String getName()
 		{
-			return "protostuff-" + suffix;
+			return "json/protostuff" + suffix;
 		}
 	};
 }

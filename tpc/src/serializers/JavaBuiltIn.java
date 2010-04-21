@@ -47,7 +47,7 @@ public class JavaBuiltIn
 
 		public String getName()
 		{
-			return "java/built-in";
+			return "java";
 		}
 	};
 

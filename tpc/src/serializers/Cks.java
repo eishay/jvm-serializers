@@ -24,7 +24,7 @@ public class Cks
 				images.add(forwardImage(image));
 			}
 
-			return new MediaContent(forwardMedia(mc.media), images);
+			return new MediaContent(images, forwardMedia(mc.media));
 		}
 
 		private Media forwardMedia(data.media.Media media)

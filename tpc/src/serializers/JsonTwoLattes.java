@@ -20,7 +20,7 @@ public class JsonTwoLattes
 
 	public static final class GenericSerializer<T> extends Serializer<T>
 	{
-		public String getName() { return "json-twolattes"; }
+		public String getName() { return "json/twolattes"; }
 
 		private final Marshaller<T> _marshaller;
 		private final Charset _charset = Charset.forName("UTF-8");

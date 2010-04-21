@@ -32,7 +32,7 @@ public class ProtobufJson
 
 		public String getName ()
 		{
-			return "protobuf-json";
+			return "json/protobuf";
 		}
 	};
 }

@@ -38,7 +38,7 @@ public class ActiveMQProtobuf
 
 		public String getName()
 		{
-			return "activemq-protobuf/alt";
+			return "protobuf/activemq+alt";
 		}
 	};
 
