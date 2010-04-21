@@ -232,6 +232,7 @@ public class BenchmarkRunner
 		CksText.register(groups);
 		ProtobufJson.register(groups);
 		Gson.register(groups);
+		JavolutionXml.register(groups);
 
 		// --------------------------------------------------
 		// Load data value.
@@ -240,6 +241,11 @@ public class BenchmarkRunner
 		TestGroup<?> group;
 		{
 			File dataFile = new File(dataFileName);
+			if (!dataFile.exists()) {
+				System.out.println("Couldn't find data file \"" + dataFile.getPath() + "\"");
+				System.exit(1); return;
+			}
+
 			String[] parts = dataFile.getName().split("\\.");
 			if (parts.length < 3) {
 				System.out.println("Data file \"" + dataFile.getName() + "\" should be of the form \"<type>.<name>.<extension>\"");
@@ -615,9 +621,10 @@ public class BenchmarkRunner
 			/* Should throw an exception; but for now (that we have a few
 							 * failures) let's just whine...
 							 */
-			String msg = "serializer '"+serializer.getName()+"' failed round-trip test (ser+deser produces Object different from input), input="+value+", output="+output;
 			//throw new Exception("Error: "+msg);
-			System.err.println("WARN: "+msg);
+			System.err.println("WARN: serializer \"" + serializer.getName() + "\" failed round-trip test.");
+			System.err.println("ORIGINAL:  " + value);
+			System.err.println("ROUNDTRIP: " + output);
 		}
 	}
 
@@ -699,7 +706,7 @@ public class BenchmarkRunner
 		long endTime = System.currentTimeMillis() + warmupTime;
 		do
 		{
-			runner.run(Create, 100);
+			runner.run(Create, 10);
 		}
 		while (System.currentTimeMillis() < endTime);
 	}
@@ -710,7 +717,7 @@ public class BenchmarkRunner
 		long endTime = System.currentTimeMillis() + warmupTime;
 		do
 		{
-			runner.run(Serialize, 100);
+			runner.run(Serialize, 10);
 		}
 		while (System.currentTimeMillis() < endTime);
 	}
@@ -721,7 +728,7 @@ public class BenchmarkRunner
 		long endTime = System.currentTimeMillis() + warmupTime;
 		do
 		{
-			runner.run(DeserializeAndCheck, 100);
+			runner.run(DeserializeAndCheck, 10);
 		}
 		while (System.currentTimeMillis() < endTime);
 	}
