@@ -37,22 +37,31 @@ public class XStream
 					//return new PrettyPrintWriter(out, xmlFriendlyReplacer());
 					return new CompactWriter(out, xmlFriendlyReplacer());
 				}
+			}), EmptyConfiguration));
+
+		groups.media.add(JavaBuiltIn.MediaTransformer, new ConverterSerializer<MediaContent>("xml/xstrm+",
+			new com.thoughtworks.xstream.XStream(new XppDriver() {
+				public HierarchicalStreamWriter createWriter(Writer out) {
+					//return new PrettyPrintWriter(out, xmlFriendlyReplacer());
+					return new CompactWriter(out, xmlFriendlyReplacer());
+				}
 			}), MediaConfiguration));
 
 		// Adapt each of the STAX handlers to use XStream
 		for (Stax.Handler h : Stax.Handlers) {
 			// TODO: This doesn't work yet.  Need to properly handle optional fields in readMedia/readImage.
-			groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h));
+			groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "",  EmptyConfiguration));
+			groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "+", MediaConfiguration));
 		}
 	}
 
-	private static <T> ConverterSerializer<T> mkStaxSerializer(final Stax.Handler handler)
+	private static <T> ConverterSerializer<T> mkStaxSerializer(final Stax.Handler handler, String suffix, Configuration config)
 	{
-		return new ConverterSerializer<T>(handler.name + "-xstrm",
+		return new ConverterSerializer<T>(handler.name + "-xstrm" + suffix,
 			new com.thoughtworks.xstream.XStream(new StaxDriver() {
 				public XMLInputFactory getInputFactory() { return handler.inFactory; }
 				public XMLOutputFactory getOutputFactory() { return handler.outFactory; }
-			}), MediaConfiguration);
+			}), config);
 	}
 
 	public static final class ConverterSerializer<T> extends Serializer<T>
@@ -92,6 +101,11 @@ public class XStream
 
 	// -----------------------------------------------------------------------
 	// Serializer: Media
+
+	public static final Configuration EmptyConfiguration = new Configuration()
+	{
+		public void run(com.thoughtworks.xstream.XStream xstream) {}
+	};
 
 	public static final Configuration MediaConfiguration = new Configuration()
 	{
@@ -196,7 +210,7 @@ public class XStream
 			writer.addAttribute("dr", String.valueOf(media.duration));
 			writer.addAttribute("sz", String.valueOf(media.size));
 			if (media.hasBitrate) writer.addAttribute("br", String.valueOf(media.bitrate));
-			writer.addAttribute("cp", media.copyright);
+			if (media.copyright != null) writer.addAttribute("cp", media.copyright);
 			for (String p : media.persons)
 			{
 				writer.startNode("pr");
