@@ -30,7 +30,7 @@ public class BenchmarkRunner
 	 */
 	final static long DEFAULT_WARMUP_MSECS = 3000;
 
-	public static void main(String[] args) throws Exception
+	public static void main(String[] args)
 	{
 		// --------------------------------------------------
 		// Parse command-line options.
@@ -284,11 +284,10 @@ public class BenchmarkRunner
 				System.exit(1); return;
 			}
 
-			// Load entire file into a byte array.
-			byte[] fileBytes = readFile(new File(dataFileName));
 
 			Object deserialized;
 			try {
+				byte[] fileBytes = readFile(new File(dataFileName)); // Load entire file into a byte array.
 				deserialized = loader.serializer.deserialize(fileBytes);
 			}
 			catch (Exception ex) {
@@ -343,8 +342,14 @@ public class BenchmarkRunner
 			}
 		}
 
-		EnumMap<measurements, Map<String, Double>> values = start(iterations, trials, warmupTime, prewarm, matchingEntries, dataValue);
-
+		EnumMap<measurements, Map<String, Double>> values;
+		try {
+			values = start(iterations, trials, warmupTime, prewarm, matchingEntries, dataValue);
+		}
+		catch (Exception ex) {
+			ex.printStackTrace(System.err);
+			System.exit(1); return;
+		}
 
 		if (printChart) {
 			printImages(values);
@@ -754,16 +759,44 @@ public class BenchmarkRunner
 			names = urlEncode(entry.getKey()) + '|' + names;
 		}
 
-		int height = Math.min(30+map.size()*20, 430);
+		int headerSize = 30;
+
+		int maxPixels = 300 * 1000; // Limit set by Google's Chart API.
+		int width = 700;
+		int maxHeight = maxPixels / width;
+
+		int barThickness = 10;
+		int barSpacing = 10;
+
+		int height;
+
+		// Reduce bar thickness and spacing until we can fit in the maximum height.
+		while (true) {
+			height = headerSize + map.size()*(barThickness + barSpacing);
+			if (height <= maxHeight) break;
+			barSpacing--;
+			if (barSpacing == 1) break;
+
+			height = headerSize + map.size()*(barThickness + barSpacing);
+			if (height <= maxHeight) break;
+			barThickness--;
+			if (barThickness == 1) break;
+		}
+
+		if (height > maxHeight) {
+			System.err.println("WARNING: Not enough room to fit all bars in chart.");
+			height = maxHeight;
+		}
+
 		double scale = max * 1.1;
 		System.out.println("<img src='http://chart.apis.google.com/chart?chtt="
 			+ urlEncode(m.displayName)
-			+ "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=689x"+height+"&chd=t:"
+			+ "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs="+width+"x"+height+"&chd=t:"
 			+ valSb.toString().substring(0, valSb.length() - 1)
 			+ "&chds=0,"+ scale
 			+ "&chxt=y"
 			+ "&chxl=0:|" + names.substring(0, names.length() - 1)
-			+ "&chm=N *f*,000000,0,-1,10&lklk&chdlp=t&chco=660000|660033|660066|660099|6600CC|6600FF|663300|663333|663366|663399|6633CC|6633FF|666600|666633|666666&cht=bhg&chbh=10&nonsense=aaa.png'/>");
+			+ "&chm=N *f*,000000,0,-1,10&lklk&chdlp=t&chco=660000|660033|660066|660099|6600CC|6600FF|663300|663333|663366|663399|6633CC|6633FF|666600|666633|666666&cht=bhg&chbh=" + barThickness + ",0," + barSpacing + "&nonsense=aaa.png'/>");
 
 	}
 
