@@ -51,7 +51,7 @@ public class XStream
 		for (Stax.Handler h : Stax.Handlers) {
 			// TODO: This doesn't work yet.  Need to properly handle optional fields in readMedia/readImage.
 			groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "",  EmptyConfiguration));
-			groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "+conv", MediaConfiguration));
+			groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "+c", MediaConfiguration));
 		}
 	}
 
