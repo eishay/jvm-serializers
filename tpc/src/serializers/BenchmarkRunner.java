@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,7 +14,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -40,6 +41,7 @@ public class BenchmarkRunner
 		Integer trials = null;
 		Long warmupTime = null;
 		boolean printChart = false;
+		boolean prewarm = false;
 		String dataFileName = null;
 
 		Set<String> optionsSeen = new HashSet<String>();
@@ -155,6 +157,14 @@ public class BenchmarkRunner
 					System.exit(1); return;
 				}
 			}
+			else if (option.equals("pre-warmup")) {
+				if (value != null) {
+					System.err.println("The \"pre-warmup\" option does not take a value: \"" + arg + "\"");
+					System.exit(1); return;
+				}
+				assert !prewarm;
+				prewarm = true;
+			}
 			else if (option.equals("chart")) {
 				if (value != null) {
 					System.err.println("The \"chart\" option does not take a value: \"" + arg + "\"");
@@ -180,6 +190,7 @@ public class BenchmarkRunner
 				System.out.println("  -iterations=n              [default=" + DEFAULT_ITERATIONS + "]");
 				System.out.println("  -trials=n                  [default=" + DEFAULT_TRIALS + "]");
 				System.out.println("  -warmup-time=milliseconds  [default=" + DEFAULT_WARMUP_MSECS + "]");
+				System.out.println("  -pre-warmup");
 				System.out.println("  -chart");
 				System.out.println("  -include=impl1,impl2,impl3,...");
 				System.out.println("  -exclude=impl1,impl2,impl3,...");
@@ -332,7 +343,7 @@ public class BenchmarkRunner
 			}
 		}
 
-		EnumMap<measurements, Map<String, Double>> values = start(iterations, trials, warmupTime, matchingEntries, dataValue);
+		EnumMap<measurements, Map<String, Double>> values = start(iterations, trials, warmupTime, prewarm, matchingEntries, dataValue);
 
 
 		if (printChart) {
@@ -536,13 +547,47 @@ public class BenchmarkRunner
 
 	enum measurements
 	{
-		timeCreate, timeSerializeDifferentObjects, timeSerializeSameObject, timeDeserializeNoFieldAccess,
-		timeDeserializeAndCheck, timeDeserializeAndCheckShallow,
-		totalTime, length, lengthDeflate,
+		timeCreate("create"), timeSerializeDifferentObjects("ser"), timeSerializeSameObject("ser+same"),
+		timeDeserializeNoFieldAccess("deser"), timeDeserializeAndCheck("deser+shal"), timeDeserializeAndCheckShallow("deser+deep"),
+		totalTime("total"), length("size"), lengthDeflate("size+dfl"),
+		;
+
+		public final String displayName;
+
+		measurements(String displayName)
+		{
+			this.displayName = displayName;
+		}
 	}
 
-	private static <J> EnumMap<measurements, Map<String, Double>> start(int iterations, int trials, long warmupTime, Iterable<TestGroup.Entry<J,Object>> groups, J value) throws Exception
+	private static <J> EnumMap<measurements, Map<String, Double>>
+	start(int iterations, int trials, long warmupTime, boolean prewarm, Iterable<TestGroup.Entry<J,Object>> groups, J value) throws Exception
 	{
+		// Check correctness first.
+		System.out.println("Checking correctness...");
+		for (TestGroup.Entry<J,Object> entry : groups)
+		{
+			checkCorrectness(entry.transformer, entry.serializer, value);
+		}
+		System.out.println("[done]");
+
+		// Pre-warm.
+		if (prewarm) {
+			System.out.print("Pre-warmup...");
+			for (TestGroup.Entry<J,Object> entry : groups)
+			{
+				TestCaseRunner<J> runner = new TestCaseRunner<J>(entry.transformer, entry.serializer, value);
+				String name = entry.serializer.getName();
+				System.out.print(" " + name);
+
+				warmCreation(runner, warmupTime);
+				warmSerialization(runner, warmupTime);
+				warmDeserialization(runner, warmupTime);
+			}
+			System.out.println();
+			System.out.println("[done]");
+		}
+
 		System.out.printf("%-24s %6s %7s %7s %7s %7s %7s %7s %6s %5s\n",
 			"",
 			"create",
@@ -558,7 +603,7 @@ public class BenchmarkRunner
 		for (measurements m : measurements.values())
 			values.put(m, new HashMap<String, Double>());
 
-
+		// Actual tests.
 		for (TestGroup.Entry<J,Object> entry : groups)
 		{
 			TestCaseRunner<J> runner = new TestCaseRunner<J>(entry.transformer, entry.serializer, value);
@@ -581,9 +626,6 @@ public class BenchmarkRunner
 			double timeCreate = runner.runTakeMin(trials, Create, iterations * 100); // do more iteration for object creation because of its short time
 
 			warmSerialization(runner, warmupTime);
-
-			// actually: let's verify serializer actually works now:
-			checkCorrectness(entry.transformer, entry.serializer, value);
 
 			doGc();
 			double timeSerializeDifferentObjects = runner.runTakeMin(trials, Serialize, iterations);
@@ -690,6 +732,16 @@ public class BenchmarkRunner
 		}
 	}
 
+	private static String urlEncode(String s)
+	{
+		try {
+			return URLEncoder.encode(s, "UTF-8");
+		}
+		catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	private static void printImage(Map<String, Double> map, measurements m)
 	{
 		StringBuilder valSb = new StringBuilder();
@@ -699,13 +751,13 @@ public class BenchmarkRunner
 		{
 			valSb.append(entry.getValue()).append(',');
 			max = Math.max(max, entry.getValue());
-			names = entry.getKey() + '|' + names;
+			names = urlEncode(entry.getKey()) + '|' + names;
 		}
 
 		int height = Math.min(30+map.size()*20, 430);
 		double scale = max * 1.1;
 		System.out.println("<img src='http://chart.apis.google.com/chart?chtt="
-			+ m.name()
+			+ urlEncode(m.displayName)
 			+ "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs=689x"+height+"&chd=t:"
 			+ valSb.toString().substring(0, valSb.length() - 1)
 			+ "&chds=0,"+ scale
