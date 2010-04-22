@@ -16,28 +16,29 @@ public class JavaBuiltIn
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(MediaTransformer, JavaBuiltIn.<MediaContent>GenericSerializer());
-	}
-
-	public static <T> Serializer<T> GenericSerializer()
-	{
-		@SuppressWarnings("unchecked")
-		Serializer<T> s = (Serializer<T>) GenericSerializer;
-		return s;
+		groups.media.add(MediaTransformer, new GenericSerializer<MediaContent>("java-built-in"));
 	}
 
 	// ------------------------------------------------------------
 	// Serializer (just one)
 
-	public static Serializer<Object> GenericSerializer = new Serializer<Object>()
+	public static class GenericSerializer<T> extends Serializer<T>
 	{
-		public Object deserialize(byte[] array) throws Exception
+		private final String name;
+		public GenericSerializer(String name)
 		{
-			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(array));
-			return ois.readObject();
+			this.name = name;
 		}
 
-		public byte[] serialize(Object data) throws IOException
+		public T deserialize(byte[] array) throws Exception
+		{
+			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(array));
+			@SuppressWarnings("unchecked")
+			T v = (T) ois.readObject();
+			return v;
+		}
+
+		public byte[] serialize(T data) throws IOException
 		{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -47,9 +48,9 @@ public class JavaBuiltIn
 
 		public String getName()
 		{
-			return "java";
+			return name;
 		}
-	};
+	}
 
 	// ------------------------------------------------------------
 	// MediaTransformer

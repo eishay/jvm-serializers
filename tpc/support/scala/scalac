@@ -1,0 +1,24 @@
+#! /bin/bash
+
+# Locate the script file.  Cross symlinks if necessary.
+loc="$0"
+while [ -h "$loc" ]; do
+	ls=`ls -ld "$loc"`
+	link=`expr "$ls" : '.*-> \(.*\)$'`
+	if expr "$link" : '/.*' > /dev/null; then
+		loc="$link"  # Absolute link
+	else
+		loc="`dirname "$loc"`/$link"  # Relative link
+	fi
+done
+
+base_dir=`dirname "$loc"`
+
+cp=""
+sep=""
+for jar in "$base_dir"/scala-compiler-*.jar "$base_dir/../../lib"/scala-library-*.jar; do
+	cp="$cp$sep$jar"
+	sep=":"
+done
+
+java -cp "$cp" scala.tools.nsc.Main "$@"

@@ -152,17 +152,24 @@ $(foreach s,$(Schemas),$(eval $(call EachSchema,$(subst .,_,$(s)),$(s))))
 JavaSourceRoots = src
 JavaSourceDirs = $(shell find $(JavaSourceRoots) -type d)
 JavaSourceFiles = $(shell find $(JavaSourceRoots) -type f -name '*.java')
+ScalaSourceFiles = $(shell find $(JavaSourceRoots) -type f -name '*.scala')
 
-build/bytecode/main.compile : $(JavaSourceRoots) $(JavaSourceDirs) $(JavaSourceFiles) lib build/lib-cp build/gen-cp $(wildcard lib/*.jar) $(Schemas:%=build/bytecode/gen/%.compile)
+build/bytecode/main.compile : $(JavaSourceRoots) $(JavaSourceDirs) $(JavaSourceFiles) $(ScalaSourceFiles) lib build/lib-cp build/gen-cp $(wildcard lib/*.jar) $(Schemas:%=build/bytecode/gen/%.compile)
 	$(p2)[ ! -e build/bytecode/main ] || rm -r build/bytecode/main
 	$(p2)mkdir -p build/bytecode/main
 	$(p2)touch "$@"
 ifeq ($(JavaSourceFiles),)
 	# Compile: $(JavaSourceRoots) (empty)
 else
-	# Compile: $(JavaSourceRoots)
+	# Compile: $(JavaSourceRoots) [scalac]
+	$(p1)support/scala/scalac -d build/bytecode/main \
+		-deprecation \
+		-cp "$(shell cat build/lib-cp)" \
+		$(ScalaSourceFiles) $(JavaSourceFiles)
+	# Compile: $(JavaSourceRoots) [javac]
 	$(p1)$(JavaC) $(JavaC_Opt) -d build/bytecode/main \
-		-classpath "$(shell cat build/lib-cp):$(shell cat build/gen-cp)" \
+		-deprecation \
+		-classpath "build/bytecode/main:$(shell cat build/lib-cp):$(shell cat build/gen-cp)" \
 		$(JavaSourceFiles)
 endif
 
