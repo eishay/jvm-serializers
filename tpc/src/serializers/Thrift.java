@@ -1,52 +1,69 @@
 package serializers;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import serializers.thrift.media.*;
-
+import org.apache.thrift.TDeserializer;
+import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TBinaryProtocol;
-import org.apache.thrift.transport.TIOStreamTransport;
+import org.apache.thrift.protocol.TCompactProtocol;
+import org.apache.thrift.protocol.TProtocolFactory;
+
+import serializers.thrift.media.*;
 
 public class Thrift
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(MediaTransformer, MediaSerializer);
+		groups.media.add(MediaTransformer, new MediaSerializer(ProtocolSpec.DefaultBinary));
+		groups.media.add(MediaTransformer, new MediaSerializer(ProtocolSpec.CompactBinary));
 	}
 
 	// ------------------------------------------------------------
 	// Serializers
 
-	public static final Serializer<MediaContent> MediaSerializer = new Serializer<MediaContent>()
+	public static final class ProtocolSpec
 	{
+		public final TProtocolFactory factory;
+		public final String suffix;
+
+		public ProtocolSpec(TProtocolFactory factory, String suffix)
+		{
+			this.factory = factory;
+			this.suffix = suffix;
+		}
+
+		public static final ProtocolSpec DefaultBinary = new ProtocolSpec(new TBinaryProtocol.Factory(), "");
+		public static final ProtocolSpec CompactBinary = new ProtocolSpec(new TCompactProtocol.Factory(), "-compact");
+	}
+
+	public static final class MediaSerializer extends Serializer<MediaContent>
+	{
+		private final ProtocolSpec spec;
+
+		public MediaSerializer(ProtocolSpec spec)
+		{
+			this.spec = spec;
+		}
+
 		public MediaContent deserialize(byte[] array) throws Exception
 		{
-			ByteArrayInputStream bais = new ByteArrayInputStream(array);
-			TIOStreamTransport trans = new TIOStreamTransport(bais);
-			TBinaryProtocol oprot = new TBinaryProtocol(trans);
 			MediaContent content = new MediaContent();
-			content.read(oprot);
+			new TDeserializer(spec.factory).deserialize(content, array);
 			return content;
 		}
 
 		public byte[] serialize(MediaContent content) throws Exception
 		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			TIOStreamTransport trans = new TIOStreamTransport(baos);
-			TBinaryProtocol oprot = new TBinaryProtocol(trans);
-			content.write(oprot);
-			return baos.toByteArray();
+			return new TSerializer(spec.factory).serialize(content);
 		}
 
 		public String getName()
 		{
-			return "thrift";
+			return "thrift" + spec.suffix;
 		}
-	};
+	}
 
 	// ------------------------------------------------------------
 	// Transformers
