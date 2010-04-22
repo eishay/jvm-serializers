@@ -230,6 +230,7 @@ public class BenchmarkRunner
 		CksBinary.register(groups);
 		AvroSpecific.register(groups);
 		AvroGeneric.register(groups);
+		JavaManual.register(groups);
 
 		// Custom Binary Formats, Any Java Object
 		Hessian.register(groups);
@@ -553,7 +554,7 @@ public class BenchmarkRunner
 	enum measurements
 	{
 		timeCreate("create"), timeSerializeDifferentObjects("ser"), timeSerializeSameObject("ser+same"),
-		timeDeserializeNoFieldAccess("deser"), timeDeserializeAndCheck("deser+shal"), timeDeserializeAndCheckShallow("deser+deep"),
+		timeDeserializeNoFieldAccess("deser"), timeDeserializeAndCheck("deser+deep"), timeDeserializeAndCheckShallow("deser+shal"),
 		totalTime("total"), length("size"), lengthDeflate("size+dfl"),
 		;
 
@@ -754,7 +755,8 @@ public class BenchmarkRunner
 		double max = Double.MIN_NORMAL;
 		for (Map.Entry<String, Double> entry : map.entrySet())
 		{
-			valSb.append(entry.getValue()).append(',');
+			double value = entry.getValue();
+			valSb.append((int) value).append(',');
 			max = Math.max(max, entry.getValue());
 			names = urlEncode(entry.getKey()) + '|' + names;
 		}
@@ -812,15 +814,12 @@ public class BenchmarkRunner
 		double totalTime,
 		double length, double lengthDeflate)
 	{
-		// Omit some charts for serializers that are extremely slow.
-		if (!name.equals("json/google-gson") && !name.equals("scala")) {
-			values.get(measurements.timeSerializeDifferentObjects).put(name, timeSerializeDifferentObjects);
-			values.get(measurements.timeSerializeSameObject).put(name, timeSerializeSameObject);
-			values.get(measurements.timeDeserializeNoFieldAccess).put(name, timeDeserializeNoFieldAccess);
-			values.get(measurements.timeDeserializeAndCheckShallow).put(name, timeDeserializeAndCheckShallow);
-			values.get(measurements.timeDeserializeAndCheck).put(name, timeDeserializeAndCheck);
-			values.get(measurements.totalTime).put(name, totalTime);
-		}
+		values.get(measurements.timeSerializeDifferentObjects).put(name, timeSerializeDifferentObjects);
+		values.get(measurements.timeSerializeSameObject).put(name, timeSerializeSameObject);
+		values.get(measurements.timeDeserializeNoFieldAccess).put(name, timeDeserializeNoFieldAccess);
+		values.get(measurements.timeDeserializeAndCheckShallow).put(name, timeDeserializeAndCheckShallow);
+		values.get(measurements.timeDeserializeAndCheck).put(name, timeDeserializeAndCheck);
+		values.get(measurements.totalTime).put(name, totalTime);
 		values.get(measurements.length).put(name, length);
 		values.get(measurements.lengthDeflate).put(name, lengthDeflate);
 		values.get(measurements.timeCreate).put(name, timeCreate);
