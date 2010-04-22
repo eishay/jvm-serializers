@@ -49,7 +49,7 @@ public class Stax
 		new Handler("xml/woodstox",
 			new com.ctc.wstx.stax.WstxInputFactory(),
 			new com.ctc.wstx.stax.WstxOutputFactory()),
-		new Handler("xml/alto",
+		new Handler("xml/aalto",
 			new com.fasterxml.aalto.stax.InputFactoryImpl(),
 			new com.fasterxml.aalto.stax.OutputFactoryImpl()),
 	};

@@ -31,7 +31,7 @@ public class XStream
 	public static void register(TestGroups groups)
 	{
 		// The default XStream serializer.
-		groups.media.add(JavaBuiltIn.MediaTransformer, new ConverterSerializer<MediaContent>("xml/xstrm",
+		groups.media.add(JavaBuiltIn.MediaTransformer, new ConverterSerializer<MediaContent>("xml/xstream",
 			new com.thoughtworks.xstream.XStream(new XppDriver() {
 				public HierarchicalStreamWriter createWriter(Writer out) {
 					//return new PrettyPrintWriter(out, xmlFriendlyReplacer());
@@ -39,7 +39,7 @@ public class XStream
 				}
 			}), EmptyConfiguration));
 
-		groups.media.add(JavaBuiltIn.MediaTransformer, new ConverterSerializer<MediaContent>("xml/xstrm+",
+		groups.media.add(JavaBuiltIn.MediaTransformer, new ConverterSerializer<MediaContent>("xml/xstream+c",
 			new com.thoughtworks.xstream.XStream(new XppDriver() {
 				public HierarchicalStreamWriter createWriter(Writer out) {
 					//return new PrettyPrintWriter(out, xmlFriendlyReplacer());
