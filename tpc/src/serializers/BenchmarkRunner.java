@@ -227,7 +227,6 @@ public class BenchmarkRunner
 		Thrift.register(groups);
 		ActiveMQProtobuf.register(groups);
 		Kryo.register(groups);
-		CksBinary.register(groups);
 		AvroSpecific.register(groups);
 		AvroGeneric.register(groups);
 		Hessian.register(groups);
@@ -240,7 +239,6 @@ public class BenchmarkRunner
 		JsonJacksonDatabind.register(groups);
 		JsonTwoLattes.register(groups);
 		ProtostuffJson.register(groups);
-		CksText.register(groups);
 		ProtobufJson.register(groups);
 		Gson.register(groups);
 
