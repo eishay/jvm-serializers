@@ -229,6 +229,7 @@ public class BenchmarkRunner
 		Kryo.register(groups);
 		AvroSpecific.register(groups);
 		AvroGeneric.register(groups);
+		CksBinary.register(groups);
 		Hessian.register(groups);
 		JavaBuiltIn.register(groups);
 		JavaManual.register(groups);
@@ -238,8 +239,9 @@ public class BenchmarkRunner
 		JsonJackson.register(groups);
 		JsonJacksonDatabind.register(groups);
 		JsonTwoLattes.register(groups);
-		ProtostuffJson.register(groups);
 		ProtobufJson.register(groups);
+		CksText.register(groups);
+		ProtostuffJson.register(groups);
 		Gson.register(groups);
 
 		// XML-based formats.
