@@ -20,8 +20,7 @@ public class Stax
 	public static void register(TestGroups groups)
 	{
 		for (Handler h : Handlers) {
-			// TODO: This doesn't work yet.  Need to properly handle optional fields in readMedia/readImage.
-			//groups.media.add(JavaBuiltIn.MediaTransformer, new MediaSerializer(h));
+			groups.media.add(JavaBuiltIn.MediaTransformer, new MediaSerializer(h));
 		}
 	}
 
@@ -43,15 +42,15 @@ public class Stax
 	}
 
 	public static final Handler[] Handlers = new Handler[] {
-		new Handler("xml-fi/sun",
-			new com.sun.xml.fastinfoset.stax.factory.StAXInputFactory(),
-			new com.sun.xml.fastinfoset.stax.factory.StAXOutputFactory()),
-		new Handler("xml/woodstox",
+		new Handler("woodstox",
 			new com.ctc.wstx.stax.WstxInputFactory(),
 			new com.ctc.wstx.stax.WstxOutputFactory()),
-		new Handler("xml/aalto",
+		new Handler("aalto",
 			new com.fasterxml.aalto.stax.InputFactoryImpl(),
 			new com.fasterxml.aalto.stax.OutputFactoryImpl()),
+                new Handler("fastinfo",
+                        new com.sun.xml.fastinfoset.stax.factory.StAXInputFactory(),
+                        new com.sun.xml.fastinfoset.stax.factory.StAXOutputFactory()),
 	};
 
 	// -------------------------------------------------------------------
@@ -61,7 +60,7 @@ public class Stax
 	{
 		private final Handler handler;
 
-		public String getName() { return handler.name + "-stax"; }
+		public String getName() { return "xml/manual-"+handler.name; }
 
 		public MediaSerializer(Handler handler)
 		{
@@ -80,8 +79,8 @@ public class Stax
 				throw new IllegalStateException("Expected <im>, no START_ELEMENT encountered but "+parser.getEventType());
 			}
 			do {
-				if (!"im".equals(parser.getLocalName())) {
-					throw new IllegalStateException("Expected <im>, got <"+parser.getLocalName()+">");
+				if (!FIELD_NAME_IMAGES.equals(parser.getLocalName())) {
+					throw new IllegalStateException("Expected <"+FIELD_NAME_IMAGES+">, got <"+parser.getLocalName()+">");
 				}
 				images.add(readImage(parser));
 			} while (parser.nextTag() == XMLStreamConstants.START_ELEMENT);
@@ -132,8 +131,8 @@ public class Stax
 				persons.add(parser.getElementText());
 			} while (parser.nextTag() == XMLStreamConstants.START_ELEMENT
 							 && FIELD_NAME_PERSONS.equals(parser.getLocalName()));
-			if (!"md".equals(parser.getLocalName())) {
-				throw new IllegalStateException("Expected closing </md>, got </"+parser.getLocalName()+">");
+			if (!FIELD_NAME_MEDIA.equals(parser.getLocalName())) {
+				throw new IllegalStateException("Expected closing </"+FIELD_NAME_MEDIA+">, got </"+parser.getLocalName()+">");
 			}
 			media.persons = persons;
 			return media;
@@ -141,35 +140,39 @@ public class Stax
 
 		private String readElementMaybe(XMLStreamReader parser, String string) throws XMLStreamException
 		{
-			while (true) {
-				if (parser.nextTag() == XMLStreamConstants.START_ELEMENT) {
-					if (parser.getLocalName().equals(string)) {
-						return parser.getElementText();
-					} else {
-						return null;
-					}
-				}
-			}
+                    if (parser.getEventType() != XMLStreamConstants.START_ELEMENT) {
+                        while (parser.next() != XMLStreamConstants.START_ELEMENT) { }
+                    }
+                    return (parser.getLocalName().equals(string)) ? parser.getElementText() : null;
 		}
 
 		private String readElement(XMLStreamReader parser, String string) throws XMLStreamException
 		{
-			while (true) {
-				if (parser.nextTag() == XMLStreamConstants.START_ELEMENT
-					&& parser.getLocalName().equals(string)) {
-					return parser.getElementText();
-				}
-			}
+		    // If not at START_ELEMENT, find one (usually called when at END_ELEMENT)
+                    if (parser.getEventType() != XMLStreamConstants.START_ELEMENT) {
+                        while (parser.next() != XMLStreamConstants.START_ELEMENT) { }
+                    }
+                    while (true) {
+                        if (parser.getLocalName().equals(string)) {
+                            return parser.getElementText();
+                        }
+                        while (parser.next() != XMLStreamConstants.START_ELEMENT) { }
+                    }
 		}
 
 		private void searchTag(XMLStreamReader parser, String string) throws XMLStreamException
 		{
-			while (true) {
-				if (parser.nextTag() == XMLStreamConstants.START_ELEMENT
-					&& parser.getLocalName().equals(string)) {
-					return;
-				}
-			}
+		    // may already be located at the start element
+		    if (parser.getEventType() == XMLStreamConstants.START_ELEMENT
+		            && parser.getLocalName().equals(string)) {
+		        return;
+		    }
+		    while (true) {
+		        if (parser.nextTag() == XMLStreamConstants.START_ELEMENT
+		                && parser.getLocalName().equals(string)) {
+		            return;
+		        }
+		    }
 		}
 
 		// Serialization
