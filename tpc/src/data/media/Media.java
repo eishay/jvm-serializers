@@ -3,6 +3,7 @@ package data.media;
 import java.util.List;
 import static data.ReprUtil.repr;
 
+@SuppressWarnings("serial")
 public class Media implements java.io.Serializable {
 	public enum Player {
 		JAVA, FLASH

@@ -48,7 +48,7 @@ public class JavolutionXml
 		public byte[] serialize(T content)
 			throws Exception
 		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ByteArrayOutputStream baos = outputStream(content);
 			XMLObjectWriter writer = XMLObjectWriter.newInstance(baos).setBinding(binding);
 			writer.write(content, "mc", clazz);
 			writer.close();

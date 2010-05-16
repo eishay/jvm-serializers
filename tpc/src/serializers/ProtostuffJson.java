@@ -50,7 +50,7 @@ public class ProtostuffJson
 
 		public byte[] serialize(MediaContent content) throws Exception
 		{
-			ByteArrayOutputStream out = new ByteArrayOutputStream(512);
+			ByteArrayOutputStream out = outputStream(content);
 			json.writeTo(out, content);
 			return out.toByteArray();
 		}

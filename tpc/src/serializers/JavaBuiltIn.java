@@ -40,7 +40,7 @@ public class JavaBuiltIn
 
 		public byte[] serialize(T data) throws IOException
 		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ByteArrayOutputStream baos = outputStream(data);
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 			oos.writeObject(data);
 			return baos.toByteArray();

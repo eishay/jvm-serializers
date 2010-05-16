@@ -35,7 +35,7 @@ public class CksText
 
 		public byte[] serialize(MediaContent content) throws Exception
 		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ByteArrayOutputStream baos = outputStream(content);
 			OutputStreamWriter out = new OutputStreamWriter(baos);
 			MediaContent._TextWriter.write(out, content);
 			out.flush();

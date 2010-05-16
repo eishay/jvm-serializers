@@ -25,7 +25,7 @@ public class Gson
 	// ------------------------------------------------------------
 	// Serializer (just one)
 
-	public static Serializer<Object> GenericSerializer = new Serializer<Object>()
+	public static Serializer<MediaContent> GenericSerializer = new Serializer<MediaContent>()
 	{
 		private final com.google.gson.Gson _gson = new com.google.gson.Gson();
 
@@ -37,9 +37,9 @@ public class Gson
 			return result;
 		}
 
-		public byte[] serialize(Object data) throws IOException
+		public byte[] serialize(MediaContent data) throws IOException
 		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        ByteArrayOutputStream baos = outputStream(data);
 			OutputStreamWriter w = new OutputStreamWriter(baos, "UTF-8");
 			_gson.toJson(data, w);
 			w.close();

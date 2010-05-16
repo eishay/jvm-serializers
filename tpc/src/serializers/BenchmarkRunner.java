@@ -386,7 +386,7 @@ public class BenchmarkRunner
 	{
 		FileInputStream fin = new FileInputStream(file);
 		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
 			byte[] data = new byte[1024];
 			while (true) {
 				int numBytes = fin.read(data);
@@ -677,7 +677,7 @@ public class BenchmarkRunner
 	private static byte[] compressDeflate(byte[] data)
 	{
 		try {
-			ByteArrayOutputStream bout = new ByteArrayOutputStream();
+			ByteArrayOutputStream bout = new ByteArrayOutputStream(500);
 			DeflaterOutputStream compresser = new DeflaterOutputStream(bout);
 			compresser.write(data, 0, data.length);
 			compresser.finish();

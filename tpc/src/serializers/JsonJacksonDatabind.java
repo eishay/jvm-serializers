@@ -23,7 +23,6 @@ public class JsonJacksonDatabind
 	// ------------------------------------------------------------
 	// Serializer (just one)
 
-	private static final JsonFactory _factory = new JsonFactory();
 	private static final ObjectMapper _mapper = new ObjectMapper();
 
 	public static class GenericSerializer<T> extends Serializer<T>
@@ -38,28 +37,12 @@ public class JsonJacksonDatabind
 
 		public byte[] serialize(T data) throws IOException
 		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			JsonGenerator generator = constructGenerator(baos);
-			_mapper.writeValue(generator, data);
-			generator.close();
-			return baos.toByteArray();
+			return _mapper.writeValueAsBytes(data);
 		}
 
 		public T deserialize(byte[] array) throws Exception
 		{
-			JsonParser parser = constructParser(array);
-			T o = _mapper.readValue(parser, clazz);
-			return o;
-		}
-
-		protected JsonParser constructParser(byte[] data) throws IOException
-		{
-			return _factory.createJsonParser(data);
-		}
-
-		protected JsonGenerator constructGenerator(ByteArrayOutputStream baos) throws IOException
-		{
-			return _factory.createJsonGenerator(baos, JsonEncoding.UTF8);
+			return _mapper.readValue(array, 0, array.length, clazz);
 		}
 	};
 }

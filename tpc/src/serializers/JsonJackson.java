@@ -28,11 +28,11 @@ public class JsonJackson
 
 	public static final Serializer<MediaContent> MediaSerializer = new Serializer<MediaContent>()
 	{
-		public String getName() { return "json/jackson"; }
+		public String getName() { return "json/jackson-manual"; }
 
 		public final byte[] serialize(MediaContent content) throws Exception
 		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ByteArrayOutputStream baos = outputStream(content);
 			JsonGenerator generator = constructGenerator(baos);
 			writeMediaContent(generator, content);
 			generator.close();
@@ -51,7 +51,7 @@ public class JsonJackson
 
 		protected JsonParser constructParser(byte[] data) throws IOException
 		{
-			return _factory.createJsonParser(data);
+			return _factory.createJsonParser(data, 0, data.length);
 		}
 
 		protected JsonGenerator constructGenerator(ByteArrayOutputStream baos) throws IOException

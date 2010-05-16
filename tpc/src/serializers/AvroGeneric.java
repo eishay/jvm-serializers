@@ -49,7 +49,7 @@ public class AvroGeneric
 
 		public byte[] serialize(GenericRecord data) throws IOException
 		{
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			ByteArrayOutputStream out = outputStream(data);
 			WRITER.write(data, new BinaryEncoder(out));
 			return out.toByteArray();
 		}

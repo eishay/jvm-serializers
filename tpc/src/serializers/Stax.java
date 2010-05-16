@@ -176,7 +176,7 @@ public class Stax
 
 		public byte[] serialize(MediaContent content) throws Exception
 		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ByteArrayOutputStream baos = outputStream(content);
 			XMLStreamWriter writer = handler.outFactory.createXMLStreamWriter(baos, "UTF-8");
 			writer.writeStartDocument("UTF-8", "1.0");
 			writer.writeStartElement("mc");

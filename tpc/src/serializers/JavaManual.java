@@ -40,7 +40,7 @@ public class JavaManual
 		public byte[] serialize(MediaContent data)
 			throws IOException
 		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ByteArrayOutputStream baos = outputStream(data);
 			DataOutputStream oos = new DataOutputStream(baos);
 			writeMediaContent(oos, data);
 			oos.flush();

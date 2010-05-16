@@ -88,7 +88,7 @@ public class XStream
 
 		public byte[] serialize(T content) throws IOException
 		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ByteArrayOutputStream baos = outputStream(content);
 			xstream.toXML(content, baos);
 			return baos.toByteArray();
 		}

@@ -28,7 +28,7 @@ public class CksBinary
 
 		public byte[] serialize(MediaContent content) throws Exception
 		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ByteArrayOutputStream baos = outputStream(content);
 			DataOutputStream dout = new DataOutputStream(baos);
 			MediaContent._BinaryWriter.write(dout, content);
 			return baos.toByteArray();
