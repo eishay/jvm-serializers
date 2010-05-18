@@ -1,24 +1,28 @@
-package serializers;
+package serializers
 
 import _root_.java.util.ArrayList
 import _root_.scala.collection.JavaConversions._
 
-import _root_.sbinary.DefaultProtocol._
-import _root_.sbinary.Operations._
-import _root_.sbinary._
+import _root_.sbinary.Operations
+import _root_.sbinary.{Format, Input, Output, DefaultProtocol}
 
-import _root_.serializers.scala._
+import _root_.serializers.{scala => sdata}
 
 object Scala
 {
 	def register(groups: TestGroups)
 	{
-		groups.media.add(MediaTransformer, new JavaBuiltIn.GenericSerializer[MediaContent]("scala/java-built-in"))
+		groups.media.add(MediaTransformer, new JavaBuiltIn.GenericSerializer[sdata.media.MediaContent]("scala/java-built-in"))
 		groups.media.add(MediaTransformer, MediaSerializer)
 	}
 
-	object MediaTransformer extends Transformer[data.media.MediaContent,MediaContent]
+	// --------------------------------------------------------------------------
+	// MediaContent
+
+	object MediaTransformer extends Transformer[data.media.MediaContent,sdata.media.MediaContent]
 	{
+		import sdata.media._
+
 		def forward(mc: data.media.MediaContent) : MediaContent =
 			new MediaContent(forwardMedia(mc.media), List.concat(mc.images.map(forwardImage)))
 
@@ -101,17 +105,20 @@ object Scala
 	// -------------------------------------------------------
 	// SBinary Serializers
 
-	object MediaSerializer extends Serializer[MediaContent]
+	object MediaSerializer extends Serializer[sdata.media.MediaContent]
 	{
-		import MediaProtocol._
+		import sdata.media._
 
 		def getName = "scala/sbinary"
-		def serialize(content: MediaContent) = toByteArray[MediaContent](content)(MediaProtocol.MediaContentFormat)
-		def deserialize(array: Array[Byte]) = fromByteArray[MediaContent](array)(MediaProtocol.MediaContentFormat)
+		def serialize(content: MediaContent) = Operations.toByteArray[MediaContent](content)(MediaProtocol.MediaContentFormat)
+		def deserialize(array: Array[Byte]) = Operations.fromByteArray[MediaContent](array)(MediaProtocol.MediaContentFormat)
 	}
 
 	object MediaProtocol extends DefaultProtocol
 	{
+		import sdata.media._
+		import Operations.{read, write}
+
 		implicit object MediaContentFormat extends Format[MediaContent]
 		{
 			def reads(in : Input) =

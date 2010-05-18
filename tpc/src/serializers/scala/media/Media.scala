@@ -1,4 +1,4 @@
-package serializers.scala
+package serializers.scala.media
 
 @serializable
 case class Media (
