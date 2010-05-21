@@ -226,6 +226,7 @@ public class BenchmarkRunner
 		Protobuf.register(groups);
 		Thrift.register(groups);
 		ActiveMQProtobuf.register(groups);
+		Protostuff.register(groups);
 		Kryo.register(groups);
 		AvroSpecific.register(groups);
 		AvroGeneric.register(groups);

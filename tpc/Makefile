@@ -26,6 +26,7 @@ activemqprotobuf_generator ?= java -cp "$(activemqprotobuf_cp)" org.apache.activ
 cks_generator ?= java -jar lib/cks-gen.jar
 avro_cp ?= $(subst $(space),:,$(wildcard lib/avro-*.jar lib/jackson-*.jar lib/jopt-simple-*.jar))
 avro_generator ?= java -cp $(avro_cp) org.apache.avro.tool.Main
+protostuff_compiler ?= $(wildcard lib/protostuff-compiler-*.jar)
 
 # Default to 'no' because we might not have these tools available.
 Generate_protobuf ?= n
@@ -35,6 +36,7 @@ Generate_thrift ?= n
 Generate_activemqprotobuf ?= y
 Generate_cks ?= y
 Generate_avro ?= y
+Generate_protostuff ?= y
 
 ##########################################################################
 
@@ -77,6 +79,8 @@ define EachSchema
 
 ifneq ($(findstring .activemq.proto,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_activemqprotobuf)
+else ifneq ($(findstring .protostuff.proto,$(2)),)
+	NeedToGenerate_$(1) := $(Generate_protostuff)
 else ifneq ($(findstring .proto,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_protobuf)
 else ifneq ($(findstring .thrift,$(2)),)
@@ -103,6 +107,8 @@ build/gen/$(2).gen: schema/$(2)
 	$(p2)touch $$@
 ifneq ($(findstring .activemq.proto,$(2)),)
 	$(p1)$(activemqprotobuf_generator) --out=build/gen/$(2) $$<
+else ifneq ($(findstring .protostuff.proto,$(2)),)
+	$(p1)java -Dsource=$$< -Doutput=java_bean -Doptions=builder_pattern -DoutputDir=build/gen/$(2) -jar $(protostuff_compiler)
 else ifneq ($(findstring .proto,$(2)),)
 	$(p1)$(protobuf_generator) --java_out=build/gen/$(2) $$<
 else ifneq ($(findstring .thrift,$(2)),)
