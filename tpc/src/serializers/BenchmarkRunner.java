@@ -242,7 +242,6 @@ public class BenchmarkRunner
 		JsonTwoLattes.register(groups);
 		ProtobufJson.register(groups);
 		CksText.register(groups);
-		ProtostuffJson.register(groups);
 		Gson.register(groups);
 
 		// XML-based formats.
