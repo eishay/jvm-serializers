@@ -1,63 +1,72 @@
 package serializers;
 
-import java.io.ByteArrayOutputStream;
+import com.dyuproject.protostuff.JsonIOUtil;
+import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
-import com.dyuproject.protostuff.json.ProtobufJSON;
-import org.codehaus.jackson.JsonParser;
-
-import serializers.protobuf.media.MediaContentHolder.MediaContent;
-import serializers.protostuff.MediaContentHolderJSON;
-import serializers.protostuff.MediaContentHolderNumericJSON;
+import serializers.protostuff.media.MediaContent;
+import serializers.protostuff.media.Media;
+import serializers.protostuff.media.Image;
 
 /**
  * @author David Yu
  * @created Oct 26, 2009
  */
 
-public class ProtostuffJson
+public final class ProtostuffJson
 {
-	private static final MediaContentHolderJSON json = new MediaContentHolderJSON();
-    private static final MediaContentHolderNumericJSON numericJson = new MediaContentHolderNumericJSON();
 
-	public static void register(TestGroups groups)
-	{
-		groups.media.add(Protobuf.MediaTransformer, new MediaSerializer("", json));
-		groups.media.add(Protobuf.MediaTransformer, new MediaSerializer("-numeric", numericJson));
-	}
+    public static void register(TestGroups groups)
+    {
+            groups.media.add(Protostuff.MediaTransformer, JsonMediaSerializer);
+            groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeJsonMediaSerializer);
+    }
 
-	// ------------------------------------------------------------
-	// Serializers
+    public static final Serializer<MediaContent> JsonMediaSerializer = 
+        new Serializer<MediaContent>()
+    {
 
-	public static final class MediaSerializer extends Serializer<MediaContent>
-	{
-		private final String suffix;
-		private final ProtobufJSON json;
+        public MediaContent deserialize(byte[] array) throws Exception
+        {
+            MediaContent mc = new MediaContent();
+            JsonIOUtil.mergeFrom(array, mc, true);
+            return mc;
+        }
 
-		public MediaSerializer(String suffix, ProtobufJSON json)
-		{
-			this.suffix = suffix;
-			this.json = json;
-		}
+        public byte[] serialize(MediaContent content) throws Exception
+        {
+            return JsonIOUtil.toByteArray(content, true);
+        }
+        
+        public String getName()
+        {
+            return "json/protostuff-core";
+        }
+        
+    };
 
-		public MediaContent deserialize(byte[] array) throws Exception
-		{
-			MediaContent.Builder builder = MediaContent.newBuilder();
-			JsonParser parser = json.getJsonFactory().createJsonParser(array);
-			json.mergeFrom(parser, builder);
-			parser.close();
-			return builder.build();
-		}
+    public static final Serializer<data.media.MediaContent> RuntimeJsonMediaSerializer = 
+        new Serializer<data.media.MediaContent>()
+    {
 
-		public byte[] serialize(MediaContent content) throws Exception
-		{
-			ByteArrayOutputStream out = outputStream(content);
-			json.writeTo(out, content);
-			return out.toByteArray();
-		}
+	final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
 
-		public String getName()
-		{
-			return "json/protostuff" + suffix;
-		}
-	};
+        public data.media.MediaContent deserialize(byte[] array) throws Exception
+        {
+            data.media.MediaContent mc = new data.media.MediaContent();
+            JsonIOUtil.mergeFrom(array, mc, schema, true);
+            return mc;
+        }
+
+        public byte[] serialize(data.media.MediaContent content) throws Exception
+        {
+            return JsonIOUtil.toByteArray(content, schema, true);
+        }
+        
+        public String getName()
+        {
+            return "json/protostuff-runtime";
+        }
+        
+    };
 }

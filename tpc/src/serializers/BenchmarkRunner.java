@@ -240,6 +240,7 @@ public class BenchmarkRunner
 		JsonJackson.register(groups);
 		JsonJacksonDatabind.register(groups);
 		JsonTwoLattes.register(groups);
+		ProtostuffJson.register(groups);
 		ProtobufJson.register(groups);
 		CksText.register(groups);
 		Gson.register(groups);
