@@ -593,7 +593,7 @@ public class BenchmarkRunner
 			System.out.println("[done]");
 		}
 
-		System.out.printf("%-24s %6s %7s %7s %7s %7s %7s %7s %6s %5s\n",
+		System.out.printf("%-28s %6s %7s %7s %7s %7s %7s %7s %6s %5s\n",
 			"",
 			"create",
 			"ser",
@@ -655,7 +655,7 @@ public class BenchmarkRunner
 
 			byte[] compressDeflate = compressDeflate(array);
 
-			System.out.printf("%-24s %6.0f %7.0f %7.0f %7.0f %7.0f %7.0f %7.0f %6d %5d\n",
+			System.out.printf("%-28s %6.0f %7.0f %7.0f %7.0f %7.0f %7.0f %7.0f %6d %5d\n",
 				name,
 				timeCreate,
 				timeSerializeDifferentObjects,
