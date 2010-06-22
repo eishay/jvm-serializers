@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.dyuproject.protostuff.BufferedOutput;
 import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
@@ -17,8 +18,12 @@ public final class Protostuff
     
     public static void register(TestGroups groups)
     {
-            groups.media.add(MediaTransformer, MediaSerializer);
-            groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeMediaSerializer);
+        groups.media.add(MediaTransformer, MediaSerializer);
+        groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeMediaSerializer);
+        
+        groups.media.add(MediaTransformer, MediaSerializerGE);
+        // protostuff has too many entries
+        //groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeMediaSerializerGE);
     }
     
     public static final Serializer<MediaContent> MediaSerializer = 
@@ -39,7 +44,30 @@ public final class Protostuff
         
         public String getName()
         {
-            return "protobuf/protostuff-core";
+            return "protobuf/protostuff";
+        }
+        
+    };
+
+    public static final Serializer<MediaContent> MediaSerializerGE = 
+        new Serializer<MediaContent>()
+    {
+
+        public MediaContent deserialize(byte[] array) throws Exception
+        {
+            MediaContent mc = new MediaContent();
+            IOUtil.mergeFrom(array, 0, array.length, mc, mc.cachedSchema(), true);
+            return mc;
+        }
+
+        public byte[] serialize(MediaContent content) throws Exception
+        {
+            return IOUtil.toByteArray(content, content.cachedSchema(), BufferedOutput.DEFAULT_BUFFER_SIZE, true);
+        }
+        
+        public String getName()
+        {
+            return "protostuff-core-ge";
         }
         
     };
@@ -65,6 +93,31 @@ public final class Protostuff
         public String getName()
         {
             return "protobuf/protostuff-runtime";
+        }
+        
+    };
+
+    public static final Serializer<data.media.MediaContent> RuntimeMediaSerializerGE = 
+        new Serializer<data.media.MediaContent>()
+    {
+
+	final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
+
+        public data.media.MediaContent deserialize(byte[] array) throws Exception
+        {
+            final data.media.MediaContent mc = new data.media.MediaContent();
+            IOUtil.mergeFrom(array, 0, array.length, mc, schema, true);
+            return mc;
+        }
+
+        public byte[] serialize(data.media.MediaContent content) throws Exception
+        {
+            return IOUtil.toByteArray(content, schema, BufferedOutput.DEFAULT_BUFFER_SIZE, true);
+        }
+        
+        public String getName()
+        {
+            return "protostuff-runtime-ge";
         }
         
     };
