@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.dyuproject.protostuff.BufferedOutput;
 import com.dyuproject.protostuff.IOUtil;
+import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
@@ -22,24 +23,31 @@ public final class Protostuff
         groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeMediaSerializer);
         
         groups.media.add(MediaTransformer, MediaSerializerGE);
-        // protostuff has too many entries
-        //groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeMediaSerializerGE);
+        groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeMediaSerializerGE);
     }
     
     public static final Serializer<MediaContent> MediaSerializer = 
         new Serializer<MediaContent>()
     {
+        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
 
         public MediaContent deserialize(byte[] array) throws Exception
         {
-            MediaContent mc = new MediaContent();
+            final MediaContent mc = new MediaContent();
             IOUtil.mergeFrom(array, mc);
             return mc;
         }
 
         public byte[] serialize(MediaContent content) throws Exception
         {
-            return IOUtil.toByteArray(content);
+            try
+            {
+                return IOUtil.toByteArray(content, buffer);
+            }
+            finally
+            {
+                buffer.clear();
+            }
         }
         
         public String getName()
@@ -52,17 +60,25 @@ public final class Protostuff
     public static final Serializer<MediaContent> MediaSerializerGE = 
         new Serializer<MediaContent>()
     {
+        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
 
         public MediaContent deserialize(byte[] array) throws Exception
         {
-            MediaContent mc = new MediaContent();
+            final MediaContent mc = new MediaContent();
             IOUtil.mergeFrom(array, 0, array.length, mc, mc.cachedSchema(), true);
             return mc;
         }
 
         public byte[] serialize(MediaContent content) throws Exception
         {
-            return IOUtil.toByteArray(content, content.cachedSchema(), BufferedOutput.DEFAULT_BUFFER_SIZE, true);
+            try
+            {
+                return IOUtil.toByteArray(content, content.cachedSchema(), buffer, true);
+            }
+            finally
+            {
+                buffer.clear();
+            }
         }
         
         public String getName()
@@ -76,7 +92,8 @@ public final class Protostuff
         new Serializer<data.media.MediaContent>()
     {
 
-	final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
+	    final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
+        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
 
         public data.media.MediaContent deserialize(byte[] array) throws Exception
         {
@@ -87,7 +104,14 @@ public final class Protostuff
 
         public byte[] serialize(data.media.MediaContent content) throws Exception
         {
-            return IOUtil.toByteArray(content, schema);
+            try
+            {
+                return IOUtil.toByteArray(content, schema, buffer);
+            }
+            finally
+            {
+                buffer.clear();
+            }
         }
         
         public String getName()
@@ -101,7 +125,8 @@ public final class Protostuff
         new Serializer<data.media.MediaContent>()
     {
 
-	final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
+	    final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
+        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
 
         public data.media.MediaContent deserialize(byte[] array) throws Exception
         {
@@ -112,7 +137,14 @@ public final class Protostuff
 
         public byte[] serialize(data.media.MediaContent content) throws Exception
         {
-            return IOUtil.toByteArray(content, schema, BufferedOutput.DEFAULT_BUFFER_SIZE, true);
+            try
+            {
+                return IOUtil.toByteArray(content, schema, buffer, true);
+            }
+            finally
+            {
+                buffer.clear();
+            }
         }
         
         public String getName()
