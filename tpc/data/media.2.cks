@@ -1,5 +1,5 @@
-// This test is mainly to make sure the serializers are "honest".
-// The values are all different from media.1.cks.
+// A test value where everything is different from media.1.cks.
+// This is mainly used to check if the serializers are "honest".
 {
 	Media = {
 		Uri = "http://javaone.com/keynote.ogg"
