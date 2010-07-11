@@ -43,6 +43,7 @@ public class BenchmarkRunner
 		boolean printChart = false;
 		boolean prewarm = false;
 		String dataFileName = null;
+		boolean verbose = false;
 
 		Set<String> optionsSeen = new HashSet<String>();
 
@@ -173,6 +174,14 @@ public class BenchmarkRunner
 				assert !printChart;
 				printChart = true;
 			}
+			else if (option.equals("verbose")) {
+				if (value != null) {
+					System.err.println("The \"verbose\" option does not take a value: \"" + arg + "\"");
+					System.exit(1); return;
+				}
+				assert !verbose;
+				verbose = true;
+			}
 			else if (option.equals("help")) {
 				if (value != null) {
 					System.err.println("The \"help\" option does not take a value: \"" + arg + "\"");
@@ -194,6 +203,7 @@ public class BenchmarkRunner
 				System.out.println("  -chart");
 				System.out.println("  -include=impl1,impl2,impl3,...");
 				System.out.println("  -exclude=impl1,impl2,impl3,...");
+				System.out.println("  -verbose");
 				System.out.println("  -help");
 				System.out.println();
 				System.out.println("Example: run  -chart -include=protobuf,thrift  data/media.1.cks");
@@ -345,7 +355,7 @@ public class BenchmarkRunner
 
 		EnumMap<measurements, Map<String, Double>> values;
 		try {
-			values = start(iterations, trials, warmupTime, prewarm, matchingEntries, dataValue);
+			values = start(verbose, iterations, trials, warmupTime, prewarm, matchingEntries, dataValue);
 		}
 		catch (Exception ex) {
 			ex.printStackTrace(System.err);
@@ -567,13 +577,18 @@ public class BenchmarkRunner
 	}
 
 	private static <J> EnumMap<measurements, Map<String, Double>>
-	start(int iterations, int trials, long warmupTime, boolean prewarm, Iterable<TestGroup.Entry<J,Object>> groups, J value) throws Exception
+	start(boolean verbose, int iterations, int trials, long warmupTime, boolean prewarm, Iterable<TestGroup.Entry<J,Object>> groups, J value) throws Exception
 	{
 		// Check correctness first.
 		System.out.println("Checking correctness...");
+		boolean failed = false;
 		for (TestGroup.Entry<J,Object> entry : groups)
 		{
-			checkCorrectness(entry.transformer, entry.serializer, value);
+			boolean ok = checkCorrectness(verbose, entry.transformer, entry.serializer, value);
+			if (!ok) failed = true;
+		}
+		if (failed && !verbose) {
+			System.out.println("Run with \"-verbose\" for more information about correctness failures.");
 		}
 		System.out.println("[done]");
 
@@ -609,69 +624,84 @@ public class BenchmarkRunner
 		for (measurements m : measurements.values())
 			values.put(m, new HashMap<String, Double>());
 
+		boolean errorOccurred = false;
+
 		// Actual tests.
 		for (TestGroup.Entry<J,Object> entry : groups)
 		{
 			TestCaseRunner<J> runner = new TestCaseRunner<J>(entry.transformer, entry.serializer, value);
-
 			String name = entry.serializer.getName();
+			try {
 
-			/*
-			 * Should only warm things for the serializer that we test next: HotSpot JIT will
-			 * otherwise spent most of its time optimizing slower ones... Use
-			 * -XX:CompileThreshold=1 to hint the JIT to start immediately
-			 *
-			 * Actually: 1 is often not a good value -- threshold is the number
-			 * of samples needed to trigger inlining, and there's no point in
-			 * inlining everything. Default value is in thousands, so lowering
-			 * it to, say, 1000 is usually better.
-			 */
-			warmCreation(runner, warmupTime);
+				/*
+				 * Should only warm things for the serializer that we test next: HotSpot JIT will
+				 * otherwise spent most of its time optimizing slower ones... Use
+				 * -XX:CompileThreshold=1 to hint the JIT to start immediately
+				 *
+				 * Actually: 1 is often not a good value -- threshold is the number
+				 * of samples needed to trigger inlining, and there's no point in
+				 * inlining everything. Default value is in thousands, so lowering
+				 * it to, say, 1000 is usually better.
+				 */
+				warmCreation(runner, warmupTime);
 
-			doGc();
-			double timeCreate = runner.runTakeMin(trials, Create, iterations * 100); // do more iteration for object creation because of its short time
+				doGc();
+				double timeCreate = runner.runTakeMin(trials, Create, iterations * 100); // do more iteration for object creation because of its short time
 
-			warmSerialization(runner, warmupTime);
+				warmSerialization(runner, warmupTime);
 
-			doGc();
-			double timeSerializeDifferentObjects = runner.runTakeMin(trials, Serialize, iterations);
+				doGc();
+				double timeSerializeDifferentObjects = runner.runTakeMin(trials, Serialize, iterations);
 
-			doGc();
-			double timeSerializeSameObject = runner.runTakeMin(trials, SerializeSameObject, iterations);
+				doGc();
+				double timeSerializeSameObject = runner.runTakeMin(trials, SerializeSameObject, iterations);
 
-			warmDeserialization(runner, warmupTime);
+				warmDeserialization(runner, warmupTime);
 
-			doGc();
-			double timeDeserializeNoFieldAccess = runner.runTakeMin(trials, Deserialize, iterations);
+				doGc();
+				double timeDeserializeNoFieldAccess = runner.runTakeMin(trials, Deserialize, iterations);
 
-			doGc();
-			double timeDeserializeAndCheckShallow = runner.runTakeMin(trials, DeserializeAndCheckShallow, iterations);
+				doGc();
+				double timeDeserializeAndCheckShallow = runner.runTakeMin(trials, DeserializeAndCheckShallow, iterations);
 
-			doGc();
-			double timeDeserializeAndCheck = runner.runTakeMin(trials, DeserializeAndCheck, iterations);
+				doGc();
+				double timeDeserializeAndCheck = runner.runTakeMin(trials, DeserializeAndCheck, iterations);
 
-			double totalTime = timeSerializeDifferentObjects + timeDeserializeAndCheck;
+				double totalTime = timeSerializeDifferentObjects + timeDeserializeAndCheck;
 
-			byte[] array = entry.serializer.serialize(entry.transformer.forward(value));
+				byte[] array = entry.serializer.serialize(entry.transformer.forward(value));
 
-			byte[] compressDeflate = compressDeflate(array);
+				byte[] compressDeflate = compressDeflate(array);
 
-			System.out.printf("%-28s %6.0f %7.0f %7.0f %7.0f %7.0f %7.0f %7.0f %6d %5d\n",
-				name,
-				timeCreate,
-				timeSerializeDifferentObjects,
-				timeSerializeSameObject,
-				timeDeserializeNoFieldAccess,
-				timeDeserializeAndCheckShallow,
-				timeDeserializeAndCheck,
-				totalTime,
-				array.length,
-				compressDeflate.length);
+				System.out.printf("%-28s %6.0f %7.0f %7.0f %7.0f %7.0f %7.0f %7.0f %6d %5d\n",
+					name,
+					timeCreate,
+					timeSerializeDifferentObjects,
+					timeSerializeSameObject,
+					timeDeserializeNoFieldAccess,
+					timeDeserializeAndCheckShallow,
+					timeDeserializeAndCheck,
+					totalTime,
+					array.length,
+					compressDeflate.length);
 
-			addValue(values, name, timeCreate, timeSerializeDifferentObjects, timeSerializeSameObject,
-				timeDeserializeNoFieldAccess, timeDeserializeAndCheckShallow, timeDeserializeAndCheck, totalTime,
-				array.length, compressDeflate.length);
+				addValue(values, name, timeCreate, timeSerializeDifferentObjects, timeSerializeSameObject,
+					timeDeserializeNoFieldAccess, timeDeserializeAndCheckShallow, timeDeserializeAndCheck, totalTime,
+					array.length, compressDeflate.length);
+			}
+			catch (Exception ex) {
+				errorOccurred = true;
+				if (verbose) {
+					System.out.println("ERROR: \"" + name + "\" failed with an exception.");
+					if (verbose) ex.printStackTrace(System.out);
+				}
+			}
 		}
+
+		if (errorOccurred & !verbose) {
+			System.out.println("Errors occurred during testing.  Run with \"-verbose\" to see stack traces.");
+		}
+
 		return values;
 	}
 
@@ -696,25 +726,68 @@ public class BenchmarkRunner
 	 * Method that tries to validate correctness of serializer, using
 	 * round-trip (construct, serializer, deserialize; compare objects
 	 * after steps 1 and 3).
-	 * Currently only done for StdMediaDeserializer...
 	 */
-	private static <J> void checkCorrectness(Transformer<J,Object> transformer, Serializer<Object> serializer, J value)
+	private static <J> boolean checkCorrectness(boolean verbose, Transformer<J,Object> transformer, Serializer<Object> serializer, J value)
 		throws Exception
 	{
-		Object specialInput = transformer.forward(value);
-		byte[] array = serializer.serialize(specialInput);
-		Object specialOutput = serializer.deserialize(array);
-		J output = transformer.reverse(specialOutput);
+		Object specialInput;
+		
+		try {
+			specialInput = transformer.forward(value);
+		}
+		catch (Exception ex) {
+			System.out.println("ERROR: \"" + serializer.getName() + "\" failed during forward transformation.");
+			if (verbose) ex.printStackTrace(System.out);
+			return false;
+		}
+
+		byte[] array;
+		
+		try {
+			array = serializer.serialize(specialInput);
+		}
+		catch (Exception ex) {
+			System.out.println("ERROR: \"" + serializer.getName() + "\" failed during serialization.");
+			if (verbose) ex.printStackTrace(System.out);
+			return false;
+		}
+
+		Object specialOutput;
+		
+		try {
+			specialOutput = serializer.deserialize(array);
+		}
+		catch (Exception ex) {
+			System.out.println("ERROR: \"" + serializer.getName() + "\" failed during deserialization.");
+			if (verbose) ex.printStackTrace(System.out);
+			return false;
+		}
+
+		J output;
+		try {
+			output = transformer.reverse(specialOutput);
+		}
+		catch (Exception ex) {
+			System.out.println("ERROR: \"" + serializer.getName() + "\" failed during reverse transformation.");
+			if (verbose) ex.printStackTrace(System.out);
+			return false;
+		}
+
 
 		if (!value.equals(output)) {
 			/* Should throw an exception; but for now (that we have a few
 							 * failures) let's just whine...
 							 */
 			//throw new Exception("Error: "+msg);
-			System.err.println("WARN: serializer \"" + serializer.getName() + "\" failed round-trip test.");
-			System.err.println("ORIGINAL:  " + value);
-			System.err.println("ROUNDTRIP: " + output);
+			System.out.println("ERROR: \"" + serializer.getName() + "\" failed round-trip test.");
+			if (verbose) {
+				System.out.println("ORIGINAL:  " + value);
+				System.out.println("ROUNDTRIP: " + output);
+			}
+			return false;
 		}
+
+		return true;
 	}
 
 	private static void printImages(EnumMap<measurements, Map<String, Double>> values)
@@ -785,11 +858,6 @@ public class BenchmarkRunner
 			if (barThickness == 1) break;
 		}
 
-		if (height > maxHeight) {
-			System.err.println("WARNING: Not enough room to fit all bars in chart.");
-			height = maxHeight;
-		}
-
 		double scale = max * 1.1;
 		System.out.println("<img src='http://chart.apis.google.com/chart?chtt="
 			+ urlEncode(m.displayName)
@@ -799,6 +867,11 @@ public class BenchmarkRunner
 			+ "&chxt=y"
 			+ "&chxl=0:|" + names.substring(0, names.length() - 1)
 			+ "&chm=N *f*,000000,0,-1,10&lklk&chdlp=t&chco=660000|660033|660066|660099|6600CC|6600FF|663300|663333|663366|663399|6633CC|6633FF|666600|666633|666666&cht=bhg&chbh=" + barThickness + ",0," + barSpacing + "&nonsense=aaa.png'/>");
+
+		if (height > maxHeight) {
+			System.err.println("WARNING: Not enough room to fit all bars in chart.");
+			height = maxHeight;
+		}
 
 	}
 
