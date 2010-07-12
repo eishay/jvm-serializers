@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +32,8 @@ public class BenchmarkRunner
 	 */
 	final static long DEFAULT_WARMUP_MSECS = 3000;
 
+	private static final String ERROR_DIVIDER = "-------------------------------------------------------------------";
+
 	public static void main(String[] args)
 	{
 		// --------------------------------------------------
@@ -43,7 +47,6 @@ public class BenchmarkRunner
 		boolean printChart = false;
 		boolean prewarm = false;
 		String dataFileName = null;
-		boolean verbose = false;
 
 		Set<String> optionsSeen = new HashSet<String>();
 
@@ -174,14 +177,6 @@ public class BenchmarkRunner
 				assert !printChart;
 				printChart = true;
 			}
-			else if (option.equals("verbose")) {
-				if (value != null) {
-					System.err.println("The \"verbose\" option does not take a value: \"" + arg + "\"");
-					System.exit(1); return;
-				}
-				assert !verbose;
-				verbose = true;
-			}
 			else if (option.equals("help")) {
 				if (value != null) {
 					System.err.println("The \"help\" option does not take a value: \"" + arg + "\"");
@@ -203,7 +198,6 @@ public class BenchmarkRunner
 				System.out.println("  -chart");
 				System.out.println("  -include=impl1,impl2,impl3,...");
 				System.out.println("  -exclude=impl1,impl2,impl3,...");
-				System.out.println("  -verbose");
 				System.out.println("  -help");
 				System.out.println();
 				System.out.println("Example: run  -chart -include=protobuf,thrift  data/media.1.cks");
@@ -211,7 +205,7 @@ public class BenchmarkRunner
 				System.exit(0); return;
 			}
 			else {
-				System.err.println("Unknown option \"" + option + "\": \"" + arg + "\"");
+				System.err.println("Unknown option: \"" + arg + "\"");
 				System.err.println("Use \"-help\" for usage information.");
 				System.exit(1); return;
 			}
@@ -354,8 +348,10 @@ public class BenchmarkRunner
 		}
 
 		EnumMap<measurements, Map<String, Double>> values;
+		StringWriter errors = new StringWriter();
+		PrintWriter errorsPW = new PrintWriter(errors);
 		try {
-			values = start(verbose, iterations, trials, warmupTime, prewarm, matchingEntries, dataValue);
+			values = start(errorsPW, iterations, trials, warmupTime, prewarm, matchingEntries, dataValue);
 		}
 		catch (Exception ex) {
 			ex.printStackTrace(System.err);
@@ -364,6 +360,15 @@ public class BenchmarkRunner
 
 		if (printChart) {
 			printImages(values);
+		}
+
+		// Print errors after chart.  That way you can't miss it.
+		String errorsString = errors.toString();
+		if (errorsString.length() > 0) {
+			System.out.println(ERROR_DIVIDER);
+			System.out.println("Errors occurred during benchmarking:");
+			System.out.print(errorsString);
+			System.exit(1); return;
 		}
 	}
 
@@ -577,18 +582,13 @@ public class BenchmarkRunner
 	}
 
 	private static <J> EnumMap<measurements, Map<String, Double>>
-	start(boolean verbose, int iterations, int trials, long warmupTime, boolean prewarm, Iterable<TestGroup.Entry<J,Object>> groups, J value) throws Exception
+	start(PrintWriter errors, int iterations, int trials, long warmupTime, boolean prewarm, Iterable<TestGroup.Entry<J,Object>> groups, J value) throws Exception
 	{
 		// Check correctness first.
 		System.out.println("Checking correctness...");
-		boolean failed = false;
 		for (TestGroup.Entry<J,Object> entry : groups)
 		{
-			boolean ok = checkCorrectness(verbose, entry.transformer, entry.serializer, value);
-			if (!ok) failed = true;
-		}
-		if (failed && !verbose) {
-			System.out.println("Run with \"-verbose\" for more information about correctness failures.");
+			checkCorrectness(errors, entry.transformer, entry.serializer, value);
 		}
 		System.out.println("[done]");
 
@@ -623,8 +623,6 @@ public class BenchmarkRunner
 		EnumMap<measurements, Map<String, Double>> values = new EnumMap<measurements, Map<String, Double>>(measurements.class);
 		for (measurements m : measurements.values())
 			values.put(m, new HashMap<String, Double>());
-
-		boolean errorOccurred = false;
 
 		// Actual tests.
 		for (TestGroup.Entry<J,Object> entry : groups)
@@ -690,16 +688,11 @@ public class BenchmarkRunner
 					array.length, compressDeflate.length);
 			}
 			catch (Exception ex) {
-				errorOccurred = true;
-				if (verbose) {
-					System.out.println("ERROR: \"" + name + "\" failed with an exception.");
-					if (verbose) ex.printStackTrace(System.out);
-				}
+				System.out.println("ERROR: \"" + name + "\" crashed during benchmarking.");
+				errors.println(ERROR_DIVIDER);
+				errors.println("\"" + name + "\" crashed during benchmarking.");
+				ex.printStackTrace(errors);
 			}
-		}
-
-		if (errorOccurred & !verbose) {
-			System.out.println("Errors occurred during testing.  Run with \"-verbose\" to see stack traces.");
 		}
 
 		return values;
@@ -727,18 +720,21 @@ public class BenchmarkRunner
 	 * round-trip (construct, serializer, deserialize; compare objects
 	 * after steps 1 and 3).
 	 */
-	private static <J> boolean checkCorrectness(boolean verbose, Transformer<J,Object> transformer, Serializer<Object> serializer, J value)
+	private static <J> void checkCorrectness(PrintWriter errors, Transformer<J,Object> transformer, Serializer<Object> serializer, J value)
 		throws Exception
 	{
 		Object specialInput;
+		String name = serializer.getName();
 		
 		try {
 			specialInput = transformer.forward(value);
 		}
 		catch (Exception ex) {
-			System.out.println("ERROR: \"" + serializer.getName() + "\" failed during forward transformation.");
-			if (verbose) ex.printStackTrace(System.out);
-			return false;
+			System.out.println("ERROR: \"" + name + "\" crashed during forward transformation.");
+			errors.println(ERROR_DIVIDER);
+			errors.println("\"" + name + "\" crashed during forward transformation.");
+			ex.printStackTrace(errors);
+			return;
 		}
 
 		byte[] array;
@@ -747,9 +743,11 @@ public class BenchmarkRunner
 			array = serializer.serialize(specialInput);
 		}
 		catch (Exception ex) {
-			System.out.println("ERROR: \"" + serializer.getName() + "\" failed during serialization.");
-			if (verbose) ex.printStackTrace(System.out);
-			return false;
+			System.out.println("ERROR: \"" + name + "\" crashed during serialization.");
+			errors.println(ERROR_DIVIDER);
+			errors.println("\"" + name + "\" crashed during serialization.");
+			ex.printStackTrace(errors);
+			return;
 		}
 
 		Object specialOutput;
@@ -758,9 +756,11 @@ public class BenchmarkRunner
 			specialOutput = serializer.deserialize(array);
 		}
 		catch (Exception ex) {
-			System.out.println("ERROR: \"" + serializer.getName() + "\" failed during deserialization.");
-			if (verbose) ex.printStackTrace(System.out);
-			return false;
+			System.out.println("ERROR: \"" + name + "\" crashed during deserialization.");
+			errors.println(ERROR_DIVIDER);
+			errors.println("\"" + name + "\" crashed during deserialization.");
+			ex.printStackTrace(errors);
+			return;
 		}
 
 		J output;
@@ -768,26 +768,22 @@ public class BenchmarkRunner
 			output = transformer.reverse(specialOutput);
 		}
 		catch (Exception ex) {
-			System.out.println("ERROR: \"" + serializer.getName() + "\" failed during reverse transformation.");
-			if (verbose) ex.printStackTrace(System.out);
-			return false;
+			System.out.println("ERROR: \"" + name + "\" crashed during reverse transformation.");
+			errors.println(ERROR_DIVIDER);
+			errors.println("\"" + name + "\" crashed during reverse transformation.");
+			ex.printStackTrace(errors);
+			return;
 		}
 
 
 		if (!value.equals(output)) {
-			/* Should throw an exception; but for now (that we have a few
-							 * failures) let's just whine...
-							 */
-			//throw new Exception("Error: "+msg);
-			System.out.println("ERROR: \"" + serializer.getName() + "\" failed round-trip test.");
-			if (verbose) {
-				System.out.println("ORIGINAL:  " + value);
-				System.out.println("ROUNDTRIP: " + output);
-			}
-			return false;
+			System.out.println("ERROR: \"" + name + "\" failed round-trip check.");
+			errors.println(ERROR_DIVIDER);
+			errors.println("\"" + name + "\" failed round-trip check.");
+			errors.println("ORIGINAL:  " + value);
+			errors.println("ROUNDTRIP: " + output);
+			return;
 		}
-
-		return true;
 	}
 
 	private static void printImages(EnumMap<measurements, Map<String, Double>> values)
