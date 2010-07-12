@@ -32,6 +32,14 @@ public class BenchmarkRunner
 	 */
 	final static long DEFAULT_WARMUP_MSECS = 3000;
 
+	// These tests aren't included by default.  Use the "-hidden" flag to enable them.
+	private static final HashSet<String> HIDDEN = new HashSet<String>();
+	static {
+		// CKS is not included because it's not really publicly released.
+		HIDDEN.add("cks");
+		HIDDEN.add("cks-text");
+	}
+
 	private static final String ERROR_DIVIDER = "-------------------------------------------------------------------";
 
 	public static void main(String[] args)
@@ -47,6 +55,7 @@ public class BenchmarkRunner
 		boolean printChart = false;
 		boolean prewarm = false;
 		String dataFileName = null;
+		boolean enableHidden = false;
 
 		Set<String> optionsSeen = new HashSet<String>();
 
@@ -177,6 +186,14 @@ public class BenchmarkRunner
 				assert !printChart;
 				printChart = true;
 			}
+			else if (option.equals("hidden")) {
+				if (value != null) {
+					System.err.println("The \"hidden\" option does not take a value: \"" + arg + "\"");
+					System.exit(1); return;
+				}
+				assert !enableHidden;
+				enableHidden = true;
+			}
 			else if (option.equals("help")) {
 				if (value != null) {
 					System.err.println("The \"help\" option does not take a value: \"" + arg + "\"");
@@ -191,13 +208,14 @@ public class BenchmarkRunner
 				System.out.println("Usage: run [options] <data-file>");
 				System.out.println();
 				System.out.println("Options:");
-				System.out.println("  -iterations=n              [default=" + DEFAULT_ITERATIONS + "]");
-				System.out.println("  -trials=n                  [default=" + DEFAULT_TRIALS + "]");
-				System.out.println("  -warmup-time=milliseconds  [default=" + DEFAULT_WARMUP_MSECS + "]");
-				System.out.println("  -pre-warmup");
-				System.out.println("  -chart");
+				System.out.println("  -iterations=n         [default=" + DEFAULT_ITERATIONS + "]");
+				System.out.println("  -trials=n             [default=" + DEFAULT_TRIALS + "]");
+				System.out.println("  -warmup-time=millis   [default=" + DEFAULT_WARMUP_MSECS + "]");
+				System.out.println("  -pre-warmup           (warm all serializers before the first measurement)");
+				System.out.println("  -chart                (generate a Google Chart URL for the results)");
 				System.out.println("  -include=impl1,impl2,impl3,...");
 				System.out.println("  -exclude=impl1,impl2,impl3,...");
+				System.out.println("  -hidden               (enable \"hidden\" serializers)");
 				System.out.println("  -help");
 				System.out.println();
 				System.out.println("Example: run  -chart -include=protobuf,thrift  data/media.1.cks");
@@ -311,15 +329,32 @@ public class BenchmarkRunner
 
 		Set<String> matched = new HashSet<String>();
 
+		Iterable<TestGroup.Entry<Object,Object>> available;
+
+		if (enableHidden) {
+			// Use all of them.
+			available = group_.entries;
+		} else {
+			// Remove the hidden ones.
+			ArrayList<TestGroup.Entry<Object,Object>> unhidden = new ArrayList<TestGroup.Entry<Object,Object>>();
+			for (TestGroup.Entry<?,Object> entry_ : group.entries) {
+				@SuppressWarnings("unchecked")
+				TestGroup.Entry<Object,Object> entry = (TestGroup.Entry<Object,Object>) entry_;
+				String name = entry.serializer.getName();
+				if (!HIDDEN.contains(name)) unhidden.add(entry);
+			}
+			available = unhidden;
+		}
+
 		Iterable<TestGroup.Entry<Object,Object>> matchingEntries;
 		if (filterStrings == null) {
-			matchingEntries = group_.entries;
+			matchingEntries = available;
 		}
 		else {
 			ArrayList<TestGroup.Entry<Object,Object>> al = new ArrayList<TestGroup.Entry<Object,Object>>();
 			matchingEntries = al;
 
-			for (TestGroup.Entry<?,Object> entry_ : group.entries) {
+			for (TestGroup.Entry<?,Object> entry_ : available) {
 				@SuppressWarnings("unchecked")
 				TestGroup.Entry<Object,Object> entry = (TestGroup.Entry<Object,Object>) entry_;
 
@@ -344,6 +379,16 @@ public class BenchmarkRunner
 			unmatched.removeAll(matched);
 			for (String s : unmatched) {
 				System.err.println("Warning: there is no implementation name matching the pattern \"" + s + "\"");
+
+				if (!enableHidden) {
+					for (String hiddenName : HIDDEN) {
+						if (match(s, hiddenName)) {
+							System.err.println("(The \"" + hiddenName + "\", serializer is hidden by default.");
+							System.err.println(" Use the \"-hidden\" option to enable hidden serializers)");
+							break;
+						}
+					}
+				}
 			}
 		}
 
@@ -782,7 +827,6 @@ public class BenchmarkRunner
 			errors.println("\"" + name + "\" failed round-trip check.");
 			errors.println("ORIGINAL:  " + value);
 			errors.println("ROUNDTRIP: " + output);
-			return;
 		}
 	}
 
@@ -854,6 +898,12 @@ public class BenchmarkRunner
 			if (barThickness == 1) break;
 		}
 
+		boolean truncated = false;
+		if (height > maxHeight) {
+			truncated = true;
+			height = maxHeight;
+		}
+
 		double scale = max * 1.1;
 		System.out.println("<img src='http://chart.apis.google.com/chart?chtt="
 			+ urlEncode(m.displayName)
@@ -864,11 +914,9 @@ public class BenchmarkRunner
 			+ "&chxl=0:|" + names.substring(0, names.length() - 1)
 			+ "&chm=N *f*,000000,0,-1,10&lklk&chdlp=t&chco=660000|660033|660066|660099|6600CC|6600FF|663300|663333|663366|663399|6633CC|6633FF|666600|666633|666666&cht=bhg&chbh=" + barThickness + ",0," + barSpacing + "&nonsense=aaa.png'/>");
 
-		if (height > maxHeight) {
+		if (truncated) {
 			System.err.println("WARNING: Not enough room to fit all bars in chart.");
-			height = maxHeight;
 		}
-
 	}
 
 	private static void addValue(

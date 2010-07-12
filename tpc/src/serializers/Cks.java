@@ -1,6 +1,6 @@
 package serializers;
 
-import cakoose.util.Maybe;
+import cks.value.data.Maybe;
 import serializers.cks.media.*;
 
 import java.util.ArrayList;

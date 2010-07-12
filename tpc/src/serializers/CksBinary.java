@@ -1,10 +1,5 @@
 package serializers;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-
 import serializers.cks.media.MediaContent;
 
 public class CksBinary
@@ -21,17 +16,12 @@ public class CksBinary
 	{
 		public MediaContent deserialize(byte[] array) throws Exception
 		{
-			ByteArrayInputStream bais = new ByteArrayInputStream(array);
-			DataInputStream din = new DataInputStream(bais);
-			return MediaContent._BinaryReader.read(din);
+			return MediaContent._BinaryReader.readFromByteArray(array);
 		}
 
 		public byte[] serialize(MediaContent content) throws Exception
 		{
-			ByteArrayOutputStream baos = outputStream(content);
-			DataOutputStream dout = new DataOutputStream(baos);
-			MediaContent._BinaryWriter.write(dout, content);
-			return baos.toByteArray();
+			return MediaContent._BinaryWriter.writeToByteArray(content);
 		}
 
 		public String getName ()
