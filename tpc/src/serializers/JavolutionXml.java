@@ -18,21 +18,24 @@ public class JavolutionXml
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(JavaBuiltIn.MediaTransformer, new JavolutionSerializer<MediaContent>(MediaBinding, MediaContent.class));
+		groups.media.add(JavaBuiltIn.MediaTransformer, new JavolutionSerializer<MediaContent>("", MediaBinding, MediaContent.class));
+		groups.media.add(JavaBuiltIn.MediaTransformer, new JavolutionSerializer<MediaContent>("-abbrev", MediaBindingAbbreviated, MediaContent.class));
 	}
 
 	private static final class JavolutionSerializer<T> extends Serializer<T>
 	{
+		private final String append;
 		private final XMLBinding binding;
 		private final Class<T> clazz;
 
-		public JavolutionSerializer(XMLBinding binding, Class<T> clazz)
+		public JavolutionSerializer(String append, XMLBinding binding, Class<T> clazz)
 		{
+			this.append = append;
 			this.binding = binding;
 			this.clazz = clazz;
 		}
 
-		public String getName() { return "xml/javolution"; }
+		public String getName() { return "xml/javolution" + append; }
 
 		public T deserialize(byte[] array)
 			throws Exception
@@ -83,7 +86,132 @@ public class JavolutionXml
 			return super.getFormat(cls);
 		}
 
-		private final XMLFormat<Image> ImageConverter = new XMLFormat<Image>(Image.class)
+		private final XMLFormat<Image> ImageConverter = new XMLFormat<Image>(null)
+		{
+			@Override
+			public void write(Image image, XMLFormat.OutputElement xml) throws XMLStreamException
+			{
+				xml.setAttribute("uri", image.uri);
+				xml.setAttribute("title", image.title);
+				xml.setAttribute("width", image.width);
+				xml.setAttribute("height", image.height);
+				xml.setAttribute("size", image.size.ordinal());
+			}
+
+			@Override
+			public void read(XMLFormat.InputElement xml, Image image) throws XMLStreamException
+			{
+				image.uri = xml.getAttribute("uri").toString();
+				image.title = xml.getAttribute("title", null);
+				image.width = xml.getAttribute("width").toInt();
+				image.height = xml.getAttribute("height").toInt();
+				image.size = Image.Size.values()[xml.getAttribute("size", 0)];
+			}
+		};
+
+		private final XMLFormat<Media> MediaConverter = new XMLFormat<Media>(null)
+		{
+			@Override
+			public void write(Media media, XMLFormat.OutputElement xml) throws XMLStreamException
+			{
+				xml.setAttribute("uri", media.uri);
+				xml.setAttribute("title", media.title);
+				xml.setAttribute("width", media.width);
+				xml.setAttribute("height", media.height);
+				xml.setAttribute("format", media.format);
+				xml.setAttribute("duration", media.duration);
+				xml.setAttribute("size", media.size);
+				if (media.hasBitrate) xml.setAttribute("bitrate", media.bitrate);
+				xml.setAttribute("player", media.player.ordinal());
+				xml.setAttribute("copyright", media.copyright);
+
+				for (String p : media.persons) {
+					xml.add(p);
+				}
+			}
+
+			@Override
+			public void read(XMLFormat.InputElement xml, Media media) throws XMLStreamException
+			{
+				media.uri = xml.getAttribute("uri").toString();
+				media.title = xml.getAttribute("title", null);
+				media.width = xml.getAttribute("width").toInt();
+				media.height = xml.getAttribute("height").toInt();
+				media.format = xml.getAttribute("format").toString();
+				media.duration = xml.getAttribute("duration").toLong();
+				media.size = xml.getAttribute("size").toLong();
+				CharArray caBitrate = xml.getAttribute("bitrate");
+				media.hasBitrate = (caBitrate != null);
+				if (caBitrate != null)  media.bitrate = caBitrate.toInt();
+				media.player = Media.Player.values()[xml.getAttribute("player", 0)];
+				media.copyright = xml.getAttribute("copyright", null);
+
+				List<String> persons = new ArrayList<String>();
+				while (xml.hasNext()) {
+					persons.add((String)xml.getNext());
+				}
+				media.persons = persons;
+			}
+		};
+
+		private final XMLFormat<MediaContent> MediaContentConverter = new XMLFormat<MediaContent>(null)
+		{
+			@Override
+			public void write(MediaContent content, XMLFormat.OutputElement xml) throws XMLStreamException
+			{
+				xml.add(content.media);
+				for (Image image : content.images) {
+					xml.add(image);
+				}
+			}
+
+			@Override
+			public MediaContent newInstance(java.lang.Class<MediaContent> cls, XMLFormat.InputElement xml) throws XMLStreamException
+			{
+				Media media = (Media) xml.getNext();
+				List<Image> images = new ArrayList<Image>();
+				while (xml.hasNext()) {
+					images.add((Image) xml.getNext());
+				}
+				return new MediaContent(media, images);
+			}
+
+			@Override
+			public void read(javolution.xml.XMLFormat.InputElement arg0, MediaContent arg1)
+			{
+				// Do nothing; Object loaded by newInstance;
+			}
+		};
+	};
+
+	private static final XMLBinding MediaBindingAbbreviated = new XMLBinding()
+	{
+		{
+			setAlias(MediaContent.class, "mc");
+			setAlias(Image.class, "im");
+			setAlias(Media.class, "me");
+			setAlias(String.class, "str");
+		}
+
+		private <G,S> XMLFormat<G> toGeneric(XMLFormat<S> specific)
+		{
+			@SuppressWarnings("unchecked")
+			XMLFormat<G> generic = (XMLFormat<G>) specific;
+			return generic;
+		}
+
+		public <T> XMLFormat<T> getFormat(Class<T> cls)
+		{
+			if (MediaContent.class.equals(cls))
+				return toGeneric(MediaContentConverter);
+			if (Media.class.equals(cls))
+				return toGeneric(MediaConverter);
+			if (Image.class.equals(cls))
+				return toGeneric(ImageConverter);
+			return super.getFormat(cls);
+		}
+
+		private final XMLFormat<Image> ImageConverter = new XMLFormat<Image>(null)
 		{
 			@Override
 			public void write(Image image, XMLFormat.OutputElement xml) throws XMLStreamException
@@ -106,7 +234,7 @@ public class JavolutionXml
 			}
 		};
 
-		private final XMLFormat<Media> MediaConverter = new XMLFormat<Media>(Media.class)
+		private final XMLFormat<Media> MediaConverter = new XMLFormat<Media>(null)
 		{
 			@Override
 			public void write(Media media, XMLFormat.OutputElement xml) throws XMLStreamException
@@ -151,7 +279,7 @@ public class JavolutionXml
 			}
 		};
 
-		private final XMLFormat<MediaContent> MediaContentConverter = new XMLFormat<MediaContent>(MediaContent.class)
+		private final XMLFormat<MediaContent> MediaContentConverter = new XMLFormat<MediaContent>(null)
 		{
 			@Override
 			public void write(MediaContent content, XMLFormat.OutputElement xml) throws XMLStreamException
