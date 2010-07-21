@@ -191,8 +191,8 @@ public class JavolutionXml
 	{
 		{
 			setAlias(MediaContent.class, ROOT_ELEMENT);
-			setAlias(Image.class, FULL_FIELD_NAME_IMAGES);
-			setAlias(Media.class, FULL_FIELD_NAME_MEDIA);
+			setAlias(Image.class, FIELD_NAME_IMAGES);
+			setAlias(Media.class, FIELD_NAME_MEDIA);
 			setAlias(String.class, "str");
 		}
 
@@ -219,21 +219,21 @@ public class JavolutionXml
 			@Override
 			public void write(Image image, XMLFormat.OutputElement xml) throws XMLStreamException
 			{
-				xml.setAttribute(FULL_FIELD_NAME_URI, image.uri);
-				xml.setAttribute(FULL_FIELD_NAME_TITLE, image.title);
-				xml.setAttribute(FULL_FIELD_NAME_WIDTH, image.width);
-				xml.setAttribute(FULL_FIELD_NAME_HEIGHT, image.height);
-				xml.setAttribute(FULL_FIELD_NAME_SIZE, image.size.ordinal());
+				xml.setAttribute(FIELD_NAME_URI, image.uri);
+				xml.setAttribute(FIELD_NAME_TITLE, image.title);
+				xml.setAttribute(FIELD_NAME_WIDTH, image.width);
+				xml.setAttribute(FIELD_NAME_HEIGHT, image.height);
+				xml.setAttribute(FIELD_NAME_SIZE, image.size.ordinal());
 			}
 
 			@Override
 			public void read(XMLFormat.InputElement xml, Image image) throws XMLStreamException
 			{
-				image.uri = xml.getAttribute(FULL_FIELD_NAME_URI).toString();
-				image.title = xml.getAttribute(FULL_FIELD_NAME_TITLE, null);
-				image.width = xml.getAttribute(FULL_FIELD_NAME_WIDTH).toInt();
-				image.height = xml.getAttribute(FULL_FIELD_NAME_HEIGHT).toInt();
-				image.size = Image.Size.values()[xml.getAttribute(FULL_FIELD_NAME_SIZE, 0)];
+				image.uri = xml.getAttribute(FIELD_NAME_URI).toString();
+				image.title = xml.getAttribute(FIELD_NAME_TITLE, null);
+				image.width = xml.getAttribute(FIELD_NAME_WIDTH).toInt();
+				image.height = xml.getAttribute(FIELD_NAME_HEIGHT).toInt();
+				image.size = Image.Size.values()[xml.getAttribute(FIELD_NAME_SIZE, 0)];
 			}
 		};
 
@@ -242,16 +242,16 @@ public class JavolutionXml
 			@Override
 			public void write(Media media, XMLFormat.OutputElement xml) throws XMLStreamException
 			{
-				xml.setAttribute(FULL_FIELD_NAME_URI, media.uri);
-				xml.setAttribute(FULL_FIELD_NAME_TITLE, media.title);
-				xml.setAttribute(FULL_FIELD_NAME_WIDTH, media.width);
-				xml.setAttribute(FULL_FIELD_NAME_HEIGHT, media.height);
-				xml.setAttribute(FULL_FIELD_NAME_FORMAT, media.format);
-				xml.setAttribute(FULL_FIELD_NAME_DURATION, media.duration);
-				xml.setAttribute(FULL_FIELD_NAME_SIZE, media.size);
-				if (media.hasBitrate) xml.setAttribute(FULL_FIELD_NAME_BITRATE, media.bitrate);
-				xml.setAttribute(FULL_FIELD_NAME_PLAYER, media.player.ordinal());
-				xml.setAttribute(FULL_FIELD_NAME_COPYRIGHT, media.copyright);
+				xml.setAttribute(FIELD_NAME_URI, media.uri);
+				xml.setAttribute(FIELD_NAME_TITLE, media.title);
+				xml.setAttribute(FIELD_NAME_WIDTH, media.width);
+				xml.setAttribute(FIELD_NAME_HEIGHT, media.height);
+				xml.setAttribute(FIELD_NAME_FORMAT, media.format);
+				xml.setAttribute(FIELD_NAME_DURATION, media.duration);
+				xml.setAttribute(FIELD_NAME_SIZE, media.size);
+				if (media.hasBitrate) xml.setAttribute(FIELD_NAME_BITRATE, media.bitrate);
+				xml.setAttribute(FIELD_NAME_PLAYER, media.player.ordinal());
+				xml.setAttribute(FIELD_NAME_COPYRIGHT, media.copyright);
 				
 				for (String p : media.persons) {
 					xml.add(p);
@@ -261,18 +261,18 @@ public class JavolutionXml
 			@Override
 			public void read(XMLFormat.InputElement xml, Media media) throws XMLStreamException
 			{
-				media.uri = xml.getAttribute(FULL_FIELD_NAME_URI).toString();
-				media.title = xml.getAttribute(FULL_FIELD_NAME_TITLE, null);
-				media.width = xml.getAttribute(FULL_FIELD_NAME_WIDTH).toInt();
-				media.height = xml.getAttribute(FULL_FIELD_NAME_HEIGHT).toInt();
-				media.format = xml.getAttribute(FULL_FIELD_NAME_FORMAT).toString();
-				media.duration = xml.getAttribute(FULL_FIELD_NAME_DURATION).toLong();
-				media.size = xml.getAttribute(FULL_FIELD_NAME_SIZE).toLong();
-				CharArray caBitrate = xml.getAttribute(FULL_FIELD_NAME_BITRATE);
+				media.uri = xml.getAttribute(FIELD_NAME_URI).toString();
+				media.title = xml.getAttribute(FIELD_NAME_TITLE, null);
+				media.width = xml.getAttribute(FIELD_NAME_WIDTH).toInt();
+				media.height = xml.getAttribute(FIELD_NAME_HEIGHT).toInt();
+				media.format = xml.getAttribute(FIELD_NAME_FORMAT).toString();
+				media.duration = xml.getAttribute(FIELD_NAME_DURATION).toLong();
+				media.size = xml.getAttribute(FIELD_NAME_SIZE).toLong();
+				CharArray caBitrate = xml.getAttribute(FIELD_NAME_BITRATE);
 				media.hasBitrate = (caBitrate != null);
 				if (caBitrate != null)  media.bitrate = caBitrate.toInt();
-				media.player = Media.Player.values()[xml.getAttribute(FULL_FIELD_NAME_PLAYER, 0)];
-				media.copyright = xml.getAttribute(FULL_FIELD_NAME_COPYRIGHT, null);
+				media.player = Media.Player.values()[xml.getAttribute(FIELD_NAME_PLAYER, 0)];
+				media.copyright = xml.getAttribute(FIELD_NAME_COPYRIGHT, null);
 				
 				List<String> persons = new ArrayList<String>();
 				while (xml.hasNext()) {
