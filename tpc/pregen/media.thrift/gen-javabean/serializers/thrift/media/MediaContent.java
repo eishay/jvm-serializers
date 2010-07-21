@@ -194,7 +194,8 @@ public class MediaContent implements TBase<MediaContent._Fields>, java.io.Serial
     }
   }
 
-  public void setFieldValue(_Fields field, Object value) {
+  @SuppressWarnings("unchecked")
+public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case IMAGE:
       if (value == null) {

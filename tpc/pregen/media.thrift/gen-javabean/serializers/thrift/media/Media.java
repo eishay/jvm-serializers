@@ -494,7 +494,8 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
     }
   }
 
-  public void setFieldValue(_Fields field, Object value) {
+  @SuppressWarnings("unchecked")
+public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case URI:
       if (value == null) {
