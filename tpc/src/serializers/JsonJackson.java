@@ -18,18 +18,26 @@ public class JsonJackson
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(JavaBuiltIn.MediaTransformer, MediaSerializer);
-		groups.media.add(JavaBuiltIn.MediaTransformer, MediaSerializerAbbreviated);
+	    JsonFactory factory = new JsonFactory();
+		groups.media.add(JavaBuiltIn.MediaTransformer, new GenericSerializer("json/jackson-manual", factory));
+		groups.media.add(JavaBuiltIn.MediaTransformer, new AbbreviatedSerializer("json/jackson-manual-abbrev", factory));
 	}
-
-	private static final JsonFactory _factory = new JsonFactory();
 
 	// ------------------------------------------------------------
 	// Serializers
 
-	public static final Serializer<MediaContent> MediaSerializer = new Serializer<MediaContent>()
+	public static final class GenericSerializer extends Serializer<MediaContent>
 	{
-		public String getName() { return "json/jackson-manual"; }
+	    private final String name;
+	    private final JsonFactory _factory;
+	    
+	    public GenericSerializer(String name, JsonFactory jsonFactory)
+	    {
+	        this.name = name;
+	        _factory = jsonFactory;
+	    }
+	    
+		public String getName() { return name; }
 
 		public final byte[] serialize(MediaContent content) throws Exception
 		{
@@ -293,9 +301,18 @@ public class JsonJackson
 		}
 	};
 
-	public static final Serializer<MediaContent> MediaSerializerAbbreviated = new Serializer<MediaContent>()
+	public static final class AbbreviatedSerializer extends Serializer<MediaContent>
 	{
-		public String getName() { return "json/jackson-manual-abbrev"; }
+            private final String name;
+            private final JsonFactory _factory;
+
+            public AbbreviatedSerializer(String name, JsonFactory jsonFactory)
+            {
+                this.name = name;
+                _factory = jsonFactory;
+            }
+            
+            public String getName() { return name; }
 
 		public final byte[] serialize(MediaContent content) throws Exception
 		{

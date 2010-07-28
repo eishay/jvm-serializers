@@ -1,11 +1,9 @@
 package serializers;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import data.media.MediaContent;
 
-import org.codehaus.jackson.*;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
@@ -17,32 +15,37 @@ public class JsonJacksonDatabind
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(JavaBuiltIn.MediaTransformer, new GenericSerializer<MediaContent>(MediaContent.class));
+	        ObjectMapper mapper = new ObjectMapper();
+		groups.media.add(JavaBuiltIn.MediaTransformer,
+		        new GenericSerializer<MediaContent>("json/jackson-databind", mapper, MediaContent.class));
 	}
 
 	// ------------------------------------------------------------
 	// Serializer (just one)
-
-	private static final ObjectMapper _mapper = new ObjectMapper();
-
+	
 	public static class GenericSerializer<T> extends Serializer<T>
 	{
-		private final Class<T> clazz;
-		public GenericSerializer(Class<T> clazz)
+	        private final String name;
+	        private final ObjectMapper mapper;
+
+	        private final Class<T> clazz;
+		public GenericSerializer(String name, ObjectMapper mapper, Class<T> clazz)
 		{
-			this.clazz = clazz;
+		    this.name = name;
+		    this.mapper = mapper;
+		    this.clazz = clazz;
 		}
 
-		public String getName() { return "json/jackson-databind"; }
+		public String getName() { return name; }
 
 		public byte[] serialize(T data) throws IOException
 		{
-			return _mapper.writeValueAsBytes(data);
+			return mapper.writeValueAsBytes(data);
 		}
 
 		public T deserialize(byte[] array) throws Exception
 		{
-			return _mapper.readValue(array, 0, array.length, clazz);
+			return mapper.readValue(array, 0, array.length, clazz);
 		}
 	};
 }
