@@ -61,6 +61,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
  * @author wenboz@google.com Wenbo Zhu
  * @author kenton@google.com Kenton Varda
  */
+@SuppressWarnings({"serial", "unchecked"})
 public final class JsonFormat {
 
     /**

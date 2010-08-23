@@ -245,6 +245,9 @@ public class BenchmarkRunner
 		TestGroups groups = new TestGroups();
 
 		// Binary Formats
+		// start with baseline, Java defaults (to reduce first-run benefit for other impls)
+                JavaBuiltIn.register(groups);
+                JavaManual.register(groups);
 		Protobuf.register(groups);
 		Thrift.register(groups);
 		ActiveMQProtobuf.register(groups);
@@ -254,8 +257,6 @@ public class BenchmarkRunner
 		AvroGeneric.register(groups);
 		CksBinary.register(groups);
 		Hessian.register(groups);
-		JavaBuiltIn.register(groups);
-		JavaManual.register(groups);
 		Scala.register(groups);
 
 		// JSON-like formats.

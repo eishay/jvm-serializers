@@ -2,6 +2,7 @@ package data.media;
 
 import java.util.List;
 
+@SuppressWarnings("serial")
 public class MediaContent implements java.io.Serializable
 {
 	public Media media;

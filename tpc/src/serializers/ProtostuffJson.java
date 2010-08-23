@@ -5,8 +5,6 @@ import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
 import serializers.protostuff.media.MediaContent;
-import serializers.protostuff.media.Media;
-import serializers.protostuff.media.Image;
 
 /**
  * @author David Yu

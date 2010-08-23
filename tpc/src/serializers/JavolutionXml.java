@@ -62,6 +62,7 @@ public class JavolutionXml
 		}
 	}
 
+	@SuppressWarnings("serial")
 	private static final XMLBinding MediaBinding = new XMLBinding()
 	{
 		{
@@ -78,7 +79,10 @@ public class JavolutionXml
 			return generic;
 		}
 
-		public <T> XMLFormat<T> getFormat(Class<T> cls)
+		// silly javolution does not use generics properly....
+		@SuppressWarnings("unchecked")
+		@Override
+		public XMLFormat getFormat(Class cls) throws XMLStreamException
 		{
 			if (MediaContent.class.equals(cls))
 				return toGeneric(MediaContentConverter);
@@ -105,7 +109,7 @@ public class JavolutionXml
 			public void read(XMLFormat.InputElement xml, Image image) throws XMLStreamException
 			{
 				image.uri = xml.getAttribute(FULL_FIELD_NAME_URI).toString();
-				image.title = xml.getAttribute(FULL_FIELD_NAME_TITLE, null);
+				image.title = xml.getAttribute(FULL_FIELD_NAME_TITLE, (String) null);
 				image.width = xml.getAttribute(FULL_FIELD_NAME_WIDTH).toInt();
 				image.height = xml.getAttribute(FULL_FIELD_NAME_HEIGHT).toInt();
 				image.size = Image.Size.values()[xml.getAttribute(FULL_FIELD_NAME_SIZE, 0)];
@@ -137,7 +141,7 @@ public class JavolutionXml
 			public void read(XMLFormat.InputElement xml, Media media) throws XMLStreamException
 			{
 				media.uri = xml.getAttribute(FULL_FIELD_NAME_URI).toString();
-				media.title = xml.getAttribute(FULL_FIELD_NAME_TITLE, null);
+				media.title = xml.getAttribute(FULL_FIELD_NAME_TITLE, (String) null);
 				media.width = xml.getAttribute(FULL_FIELD_NAME_WIDTH).toInt();
 				media.height = xml.getAttribute(FULL_FIELD_NAME_HEIGHT).toInt();
 				media.format = xml.getAttribute(FULL_FIELD_NAME_FORMAT).toString();
@@ -147,7 +151,7 @@ public class JavolutionXml
 				media.hasBitrate = (caBitrate != null);
 				if (caBitrate != null)  media.bitrate = caBitrate.toInt();
 				media.player = Media.Player.values()[xml.getAttribute(FULL_FIELD_NAME_PLAYER, 0)];
-				media.copyright = xml.getAttribute(FULL_FIELD_NAME_COPYRIGHT, null);
+				media.copyright = xml.getAttribute(FULL_FIELD_NAME_COPYRIGHT, (String) null);
 
 				List<String> persons = new ArrayList<String>();
 				while (xml.hasNext()) {
@@ -187,6 +191,7 @@ public class JavolutionXml
 		};
 	};
 
+	@SuppressWarnings("serial")
 	private static final XMLBinding MediaBindingAbbreviated = new XMLBinding()
 	{
 		{
@@ -203,7 +208,8 @@ public class JavolutionXml
 			return generic;
 		}
 
-		public <T> XMLFormat<T> getFormat(Class<T> cls)
+		@SuppressWarnings("unchecked")
+                public XMLFormat getFormat(Class cls) throws XMLStreamException
 		{
 			if (MediaContent.class.equals(cls))
 				return toGeneric(MediaContentConverter);
@@ -230,7 +236,7 @@ public class JavolutionXml
 			public void read(XMLFormat.InputElement xml, Image image) throws XMLStreamException
 			{
 				image.uri = xml.getAttribute(FIELD_NAME_URI).toString();
-				image.title = xml.getAttribute(FIELD_NAME_TITLE, null);
+				image.title = xml.getAttribute(FIELD_NAME_TITLE, (String) null);
 				image.width = xml.getAttribute(FIELD_NAME_WIDTH).toInt();
 				image.height = xml.getAttribute(FIELD_NAME_HEIGHT).toInt();
 				image.size = Image.Size.values()[xml.getAttribute(FIELD_NAME_SIZE, 0)];
@@ -262,7 +268,7 @@ public class JavolutionXml
 			public void read(XMLFormat.InputElement xml, Media media) throws XMLStreamException
 			{
 				media.uri = xml.getAttribute(FIELD_NAME_URI).toString();
-				media.title = xml.getAttribute(FIELD_NAME_TITLE, null);
+				media.title = xml.getAttribute(FIELD_NAME_TITLE, (String) null);
 				media.width = xml.getAttribute(FIELD_NAME_WIDTH).toInt();
 				media.height = xml.getAttribute(FIELD_NAME_HEIGHT).toInt();
 				media.format = xml.getAttribute(FIELD_NAME_FORMAT).toString();
@@ -272,7 +278,7 @@ public class JavolutionXml
 				media.hasBitrate = (caBitrate != null);
 				if (caBitrate != null)  media.bitrate = caBitrate.toInt();
 				media.player = Media.Player.values()[xml.getAttribute(FIELD_NAME_PLAYER, 0)];
-				media.copyright = xml.getAttribute(FIELD_NAME_COPYRIGHT, null);
+				media.copyright = xml.getAttribute(FIELD_NAME_COPYRIGHT, (String) null);
 				
 				List<String> persons = new ArrayList<String>();
 				while (xml.hasNext()) {
