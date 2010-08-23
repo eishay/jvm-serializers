@@ -19,8 +19,9 @@ public class JsonJackson
 	public static void register(TestGroups groups)
 	{
 	    JsonFactory factory = new JsonFactory();
-		groups.media.add(JavaBuiltIn.MediaTransformer, new GenericSerializer("json/jackson-manual", factory));
-		groups.media.add(JavaBuiltIn.MediaTransformer, new AbbreviatedSerializer("json/jackson-manual-abbrev", factory));
+	    groups.media.add(JavaBuiltIn.MediaTransformer, new GenericSerializer("json/jackson-manual", factory));
+	    // 22-Aug-2010, tatu: No point in adding too many variants; abbreviation does not help a lot anyway:
+	    //groups.media.add(JavaBuiltIn.MediaTransformer, new AbbreviatedSerializer("json/jackson-manual-abbrev", factory));
 	}
 
 	// ------------------------------------------------------------
