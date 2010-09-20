@@ -16,7 +16,7 @@ base_dir=`dirname "$loc"`
 
 path_sep=":"
 case "`uname`" in
-	CYGWIN*) sep=";" ;;
+	CYGWIN*) path_sep=";" ;;
 esac
 
 cp=""

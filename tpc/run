@@ -3,7 +3,7 @@ set -e
 
 path_sep=":"
 case "`uname`" in
-	CYGWIN*) sep=";" ;;
+	CYGWIN*) path_sep=";" ;;
 esac
 
 cp=build/bytecode/main$path_sep$(cat build/gen-cp)$path_sep$(cat build/lib-cp)
