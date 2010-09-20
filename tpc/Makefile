@@ -20,8 +20,7 @@ empty :=
 space := $(empty) $(empty)
 
 # On Unix, ":" (colon), on Windows, ";" (semicolon)
-path_sep = $(eval path_sep := $(path_sep_gen))$(path_sep)
-path_sep_gen = $(shell if expr "$(uname -s)" : 'CYGWIN' >/dev/null ; then printf ';' ; else printf ':' ; fi)
+path_sep = $(shell if expr "$(uname -s)" : 'CYGWIN' >/dev/null ; then printf ';' ; else printf ':' ; fi)
 
 mkcp = $(subst $(space),$(path_sep),$(1))
 
@@ -31,7 +30,7 @@ activemqprotobuf_cp := $(call mkcp,$(wildcard lib/activemq-*.jar))
 activemqprotobuf_generator ?= java -cp "$(activemqprotobuf_cp)" org.apache.activemq.protobuf.compiler.AltJavaGenerator
 cks_generator ?= java -jar lib/cks-tool.jar
 avro_cp ?= $(call mkcp,$(wildcard lib/avro-*.jar lib/jackson-*.jar lib/jopt-simple-*.jar))
-avro_generator ?= java -cp $(avro_cp) org.apache.avro.tool.Main
+avro_generator ?= java -cp "$(avro_cp)" org.apache.avro.tool.Main
 protostuff_compiler ?= $(wildcard lib/protostuff-compiler-*.jar)
 
 # Default to 'no' because we might not have these tools available.
