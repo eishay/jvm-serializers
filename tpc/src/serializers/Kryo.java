@@ -37,7 +37,7 @@ public class Kryo
 		{
 			this.type = handler.type;
 			this.kryo = new com.esotericsoftware.kryo.Kryo();
-			this.objectBuffer = new com.esotericsoftware.kryo.ObjectBuffer(kryo, 1024);
+			this.objectBuffer = new com.esotericsoftware.kryo.ObjectBuffer(kryo, 2048);
 			handler.register(this.kryo);
 		}
 
