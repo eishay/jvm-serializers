@@ -58,9 +58,10 @@ public class XStream
 		// Adapt each of the STAX handlers to use XStream
 		for (Stax.Handler h : Stax.Handlers) {
 			// TODO: This doesn't work yet.  Need to properly handle optional fields in readMedia/readImage.
-			groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "",  EmptyConfiguration));
+            // commented-out by dyu: use the non-abbreviated version (+c) because the default sux.
+			//groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "",  EmptyConfiguration));
 			groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "+c", MediaConfiguration));
-			groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "+c-abbrev", MediaConfigurationAbbreviated));
+			//groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "+c-abbrev", MediaConfigurationAbbreviated));
 		}
 	}
 

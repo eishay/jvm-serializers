@@ -21,7 +21,8 @@ public class Stax
 	{
 		for (Handler h : Handlers) {
 			groups.media.add(JavaBuiltIn.MediaTransformer, new MediaSerializer(h));
-			groups.media.add(JavaBuiltIn.MediaTransformer, new MediaSerializerAbbreviated(h));
+            // commented-out by dyu: use only non-abbreviated versions.
+			//groups.media.add(JavaBuiltIn.MediaTransformer, new MediaSerializerAbbreviated(h));
 		}
 	}
 
