@@ -31,13 +31,14 @@ public class XStream
 	public static void register(TestGroups groups)
 	{
 		// The default XStream serializer.
-		groups.media.add(JavaBuiltIn.MediaTransformer, new ConverterSerializer<MediaContent>("xml/xstream",
+        // commented-out by dyu: the perf of the default sux.
+		/*groups.media.add(JavaBuiltIn.MediaTransformer, new ConverterSerializer<MediaContent>("xml/xstream",
 			new com.thoughtworks.xstream.XStream(new XppDriver() {
 				public HierarchicalStreamWriter createWriter(Writer out) {
 					//return new PrettyPrintWriter(out, xmlFriendlyReplacer());
 					return new CompactWriter(out, xmlFriendlyReplacer());
 				}
-			}), EmptyConfiguration));
+			}), EmptyConfiguration));*/
 
 		groups.media.add(JavaBuiltIn.MediaTransformer, new ConverterSerializer<MediaContent>("xml/xstream+c",
 			new com.thoughtworks.xstream.XStream(new XppDriver() {
@@ -59,7 +60,7 @@ public class XStream
 		// Adapt each of the STAX handlers to use XStream
 		for (Stax.Handler h : Stax.Handlers) {
 			// TODO: This doesn't work yet.  Need to properly handle optional fields in readMedia/readImage.
-            // commented-out by dyu: use the non-abbreviated version (+c) because the default sux.
+            // commented-out by dyu: use the non-abbreviated version (+c) because the perf of the default sux.
 			//groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "",  EmptyConfiguration));
 			groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "+c", MediaConfiguration));
 			//groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "+c-abbrev", MediaConfigurationAbbreviated));
