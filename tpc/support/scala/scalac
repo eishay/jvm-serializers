@@ -14,11 +14,16 @@ done
 
 base_dir=`dirname "$loc"`
 
+path_sep=":"
+case "`uname`" in
+	CYGWIN*) path_sep=";" ;;
+esac
+
 cp=""
 sep=""
 for jar in "$base_dir"/scala-compiler-*.jar "$base_dir/../../lib"/scala-library-*.jar; do
 	cp="$cp$sep$jar"
-	sep=":"
+	sep="$path_sep"
 done
 
 java -cp "$cp" scala.tools.nsc.Main "$@"
