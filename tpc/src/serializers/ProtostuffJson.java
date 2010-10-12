@@ -1,6 +1,8 @@
 package serializers;
 
+import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.JsonIOUtil;
+import com.dyuproject.protostuff.JsonXIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
@@ -30,13 +32,13 @@ public final class ProtostuffJson
         public MediaContent deserialize(byte[] array) throws Exception
         {
             MediaContent mc = new MediaContent();
-            JsonIOUtil.mergeFrom(array, mc, false);
+            JsonIOUtil.mergeFrom(array, mc, mc.cachedSchema(), false);
             return mc;
         }
 
         public byte[] serialize(MediaContent content) throws Exception
         {
-            return JsonIOUtil.toByteArray(content, false);
+            return JsonIOUtil.toByteArray(content, content.cachedSchema(), false);
         }
         
         public String getName()
@@ -50,16 +52,25 @@ public final class ProtostuffJson
         new Serializer<MediaContent>()
     {
 
+        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
+
         public MediaContent deserialize(byte[] array) throws Exception
         {
             MediaContent mc = new MediaContent();
-            JsonIOUtil.mergeFrom(array, mc, true);
+            JsonIOUtil.mergeFrom(array, mc, mc.cachedSchema(), true);
             return mc;
         }
 
         public byte[] serialize(MediaContent content) throws Exception
         {
-            return JsonIOUtil.toByteArray(content, true);
+            try
+            {
+                return JsonXIOUtil.toByteArray(content, content.cachedSchema(), true, buffer);
+            }
+            finally
+            {
+                buffer.clear();
+            }
         }
         
         public String getName()
@@ -98,7 +109,9 @@ public final class ProtostuffJson
         new Serializer<data.media.MediaContent>()
     {
 
-	final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
+        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
+
+	    final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
 
         public data.media.MediaContent deserialize(byte[] array) throws Exception
         {
@@ -109,7 +122,14 @@ public final class ProtostuffJson
 
         public byte[] serialize(data.media.MediaContent content) throws Exception
         {
-            return JsonIOUtil.toByteArray(content, schema, true);
+            try
+            {
+                return JsonXIOUtil.toByteArray(content, schema, true, buffer);
+            }
+            finally
+            {
+                buffer.clear();
+            }
         }
         
         public String getName()

@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.dyuproject.protostuff.IOUtil;
 import com.dyuproject.protostuff.LinkedBuffer;
+import com.dyuproject.protostuff.ProtobufIOUtil;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
@@ -18,14 +19,14 @@ public final class Protostuff
     
     public static void register(TestGroups groups)
     {
-        groups.media.add(MediaTransformer, MediaSerializer);
-        groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeMediaSerializer);
+        groups.media.add(MediaTransformer, ProtostuffMediaSerializer);
+        groups.media.add(JavaBuiltIn.MediaTransformer, ProtostuffRuntimeMediaSerializer);
         
-        groups.media.add(MediaTransformer, MediaSerializerGE);
-        groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeMediaSerializerGE);
+        groups.media.add(MediaTransformer, ProtobufMediaSerializer);
+        groups.media.add(JavaBuiltIn.MediaTransformer, ProtobufRuntimeMediaSerializer);
     }
     
-    public static final Serializer<MediaContent> MediaSerializer = 
+    public static final Serializer<MediaContent> ProtostuffMediaSerializer = 
         new Serializer<MediaContent>()
     {
         final LinkedBuffer buffer = LinkedBuffer.allocate(512);
@@ -33,7 +34,7 @@ public final class Protostuff
         public MediaContent deserialize(byte[] array) throws Exception
         {
             final MediaContent mc = new MediaContent();
-            IOUtil.mergeFrom(array, mc);
+            ProtostuffIOUtil.mergeFrom(array, mc, mc.cachedSchema());
             return mc;
         }
 
@@ -41,7 +42,38 @@ public final class Protostuff
         {
             try
             {
-                return IOUtil.toByteArray(content, buffer);
+                return ProtostuffIOUtil.toByteArray(content, content.cachedSchema(), buffer);
+            }
+            finally
+            {
+                buffer.clear();
+            }
+        }
+        
+        public String getName()
+        {
+            return "protostuff";
+        }
+        
+    };
+
+    public static final Serializer<MediaContent> ProtobufMediaSerializer = 
+        new Serializer<MediaContent>()
+    {
+        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
+
+        public MediaContent deserialize(byte[] array) throws Exception
+        {
+            final MediaContent mc = new MediaContent();
+            ProtobufIOUtil.mergeFrom(array, mc, mc.cachedSchema());
+            return mc;
+        }
+
+        public byte[] serialize(MediaContent content) throws Exception
+        {
+            try
+            {
+                return ProtobufIOUtil.toByteArray(content, content.cachedSchema(), buffer);
             }
             finally
             {
@@ -56,38 +88,7 @@ public final class Protostuff
         
     };
 
-    public static final Serializer<MediaContent> MediaSerializerGE = 
-        new Serializer<MediaContent>()
-    {
-        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
-
-        public MediaContent deserialize(byte[] array) throws Exception
-        {
-            final MediaContent mc = new MediaContent();
-            IOUtil.mergeFrom(array, 0, array.length, mc, mc.cachedSchema(), true);
-            return mc;
-        }
-
-        public byte[] serialize(MediaContent content) throws Exception
-        {
-            try
-            {
-                return IOUtil.toByteArray(content, content.cachedSchema(), buffer, true);
-            }
-            finally
-            {
-                buffer.clear();
-            }
-        }
-        
-        public String getName()
-        {
-            return "protostuff-core-ge";
-        }
-        
-    };
-
-    public static final Serializer<data.media.MediaContent> RuntimeMediaSerializer = 
+    public static final Serializer<data.media.MediaContent> ProtostuffRuntimeMediaSerializer = 
         new Serializer<data.media.MediaContent>()
     {
 
@@ -97,7 +98,7 @@ public final class Protostuff
         public data.media.MediaContent deserialize(byte[] array) throws Exception
         {
             data.media.MediaContent mc = new data.media.MediaContent();
-            IOUtil.mergeFrom(array, mc, schema);
+            ProtostuffIOUtil.mergeFrom(array, mc, schema);
             return mc;
         }
 
@@ -105,7 +106,40 @@ public final class Protostuff
         {
             try
             {
-                return IOUtil.toByteArray(content, schema, buffer);
+                return ProtostuffIOUtil.toByteArray(content, schema, buffer);
+            }
+            finally
+            {
+                buffer.clear();
+            }
+        }
+        
+        public String getName()
+        {
+            return "protostuff-runtime";
+        }
+        
+    };
+
+    public static final Serializer<data.media.MediaContent> ProtobufRuntimeMediaSerializer = 
+        new Serializer<data.media.MediaContent>()
+    {
+
+	    final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
+        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
+
+        public data.media.MediaContent deserialize(byte[] array) throws Exception
+        {
+            data.media.MediaContent mc = new data.media.MediaContent();
+            ProtobufIOUtil.mergeFrom(array, mc, schema);
+            return mc;
+        }
+
+        public byte[] serialize(data.media.MediaContent content) throws Exception
+        {
+            try
+            {
+                return ProtobufIOUtil.toByteArray(content, schema, buffer);
             }
             finally
             {
@@ -119,41 +153,6 @@ public final class Protostuff
         }
         
     };
-
-    public static final Serializer<data.media.MediaContent> RuntimeMediaSerializerGE = 
-        new Serializer<data.media.MediaContent>()
-    {
-
-	    final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
-        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
-
-        public data.media.MediaContent deserialize(byte[] array) throws Exception
-        {
-            final data.media.MediaContent mc = new data.media.MediaContent();
-            IOUtil.mergeFrom(array, 0, array.length, mc, schema, true);
-            return mc;
-        }
-
-        public byte[] serialize(data.media.MediaContent content) throws Exception
-        {
-            try
-            {
-                return IOUtil.toByteArray(content, schema, buffer, true);
-            }
-            finally
-            {
-                buffer.clear();
-            }
-        }
-        
-        public String getName()
-        {
-            return "protostuff-runtime-ge";
-        }
-        
-    };
-    
-
     
     public static final Transformer<data.media.MediaContent,MediaContent> MediaTransformer = new Transformer<data.media.MediaContent,MediaContent>()
     {

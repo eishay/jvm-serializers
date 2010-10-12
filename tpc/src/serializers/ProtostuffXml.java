@@ -25,13 +25,13 @@ public final class ProtostuffXml
         public MediaContent deserialize(byte[] array) throws Exception
         {
             MediaContent mc = new MediaContent();
-            XmlIOUtil.mergeFrom(array, mc);
+            XmlIOUtil.mergeFrom(array, mc, mc.cachedSchema());
             return mc;
         }
 
         public byte[] serialize(MediaContent content) throws Exception
         {
-            return XmlIOUtil.toByteArray(content);
+            return XmlIOUtil.toByteArray(content, content.cachedSchema());
         }
         
         public String getName()
