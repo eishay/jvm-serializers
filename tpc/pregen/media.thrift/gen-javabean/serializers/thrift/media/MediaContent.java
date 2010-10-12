@@ -16,15 +16,18 @@ import java.util.HashSet;
 import java.util.EnumSet;
 import java.util.Collections;
 import java.util.BitSet;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.apache.thrift.*;
+import org.apache.thrift.async.*;
 import org.apache.thrift.meta_data.*;
+import org.apache.thrift.transport.*;
 import org.apache.thrift.protocol.*;
 
-public class MediaContent implements TBase<MediaContent._Fields>, java.io.Serializable, Cloneable, Comparable<MediaContent> {
+public class MediaContent implements TBase<MediaContent, MediaContent._Fields>, java.io.Serializable, Cloneable {
   private static final TStruct STRUCT_DESC = new TStruct("MediaContent");
 
   private static final TField IMAGE_FIELD_DESC = new TField("image", TType.LIST, (short)1);
@@ -38,12 +41,10 @@ public class MediaContent implements TBase<MediaContent._Fields>, java.io.Serial
     IMAGE((short)1, "image"),
     MEDIA((short)2, "media");
 
-    private static final Map<Integer, _Fields> byId = new HashMap<Integer, _Fields>();
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
     static {
       for (_Fields field : EnumSet.allOf(_Fields.class)) {
-        byId.put((int)field._thriftId, field);
         byName.put(field.getFieldName(), field);
       }
     }
@@ -52,7 +53,14 @@ public class MediaContent implements TBase<MediaContent._Fields>, java.io.Serial
      * Find the _Fields constant that matches fieldId, or null if its not found.
      */
     public static _Fields findByThriftId(int fieldId) {
-      return byId.get(fieldId);
+      switch(fieldId) {
+        case 1: // IMAGE
+          return IMAGE;
+        case 2: // MEDIA
+          return MEDIA;
+        default:
+          return null;
+      }
     }
 
     /**
@@ -91,19 +99,28 @@ public class MediaContent implements TBase<MediaContent._Fields>, java.io.Serial
 
   // isset id assignments
 
-  public static final Map<_Fields, FieldMetaData> metaDataMap = Collections.unmodifiableMap(new EnumMap<_Fields, FieldMetaData>(_Fields.class) {{
-    put(_Fields.IMAGE, new FieldMetaData("image", TFieldRequirementType.OPTIONAL, 
+  public static final Map<_Fields, FieldMetaData> metaDataMap;
+  static {
+    Map<_Fields, FieldMetaData> tmpMap = new EnumMap<_Fields, FieldMetaData>(_Fields.class);
+    tmpMap.put(_Fields.IMAGE, new FieldMetaData("image", TFieldRequirementType.REQUIRED, 
         new ListMetaData(TType.LIST, 
             new StructMetaData(TType.STRUCT, Image.class))));
-    put(_Fields.MEDIA, new FieldMetaData("media", TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.MEDIA, new FieldMetaData("media", TFieldRequirementType.REQUIRED, 
         new StructMetaData(TType.STRUCT, Media.class)));
-  }});
-
-  static {
+    metaDataMap = Collections.unmodifiableMap(tmpMap);
     FieldMetaData.addStructMetaDataMap(MediaContent.class, metaDataMap);
   }
 
   public MediaContent() {
+  }
+
+  public MediaContent(
+    List<Image> image,
+    Media media)
+  {
+    this();
+    this.image = image;
+    this.media = media;
   }
 
   /**
@@ -131,6 +148,12 @@ public class MediaContent implements TBase<MediaContent._Fields>, java.io.Serial
     return new MediaContent(this);
   }
 
+  @Override
+  public void clear() {
+    this.image = null;
+    this.media = null;
+  }
+
   public int getImageSize() {
     return (this.image == null) ? 0 : this.image.size();
   }
@@ -150,9 +173,8 @@ public class MediaContent implements TBase<MediaContent._Fields>, java.io.Serial
     return this.image;
   }
 
-  public MediaContent setImage(List<Image> image) {
+  public void setImage(List<Image> image) {
     this.image = image;
-    return this;
   }
 
   public void unsetImage() {
@@ -174,9 +196,8 @@ public class MediaContent implements TBase<MediaContent._Fields>, java.io.Serial
     return this.media;
   }
 
-  public MediaContent setMedia(Media media) {
+  public void setMedia(Media media) {
     this.media = media;
-    return this;
   }
 
   public void unsetMedia() {
@@ -194,8 +215,7 @@ public class MediaContent implements TBase<MediaContent._Fields>, java.io.Serial
     }
   }
 
-  @SuppressWarnings("unchecked")
-public void setFieldValue(_Fields field, Object value) {
+  public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case IMAGE:
       if (value == null) {
@@ -310,21 +330,23 @@ public void setFieldValue(_Fields field, Object value) {
     int lastComparison = 0;
     MediaContent typedOther = (MediaContent)other;
 
-    lastComparison = Boolean.valueOf(isSetImage()).compareTo(isSetImage());
+    lastComparison = Boolean.valueOf(isSetImage()).compareTo(typedOther.isSetImage());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = TBaseHelper.compareTo(image, typedOther.image);
+    if (isSetImage()) {      lastComparison = TBaseHelper.compareTo(this.image, typedOther.image);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetMedia()).compareTo(typedOther.isSetMedia());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = Boolean.valueOf(isSetMedia()).compareTo(isSetMedia());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = TBaseHelper.compareTo(media, typedOther.media);
-    if (lastComparison != 0) {
-      return lastComparison;
+    if (isSetMedia()) {      lastComparison = TBaseHelper.compareTo(this.media, typedOther.media);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
     }
     return 0;
   }
@@ -338,40 +360,37 @@ public void setFieldValue(_Fields field, Object value) {
       if (field.type == TType.STOP) { 
         break;
       }
-      _Fields fieldId = _Fields.findByThriftId(field.id);
-      if (fieldId == null) {
-        TProtocolUtil.skip(iprot, field.type);
-      } else {
-        switch (fieldId) {
-          case IMAGE:
-            if (field.type == TType.LIST) {
+      switch (field.id) {
+        case 1: // IMAGE
+          if (field.type == TType.LIST) {
+            {
+              TList _list4 = iprot.readListBegin();
+              this.image = new ArrayList<Image>(_list4.size);
+              for (int _i5 = 0; _i5 < _list4.size; ++_i5)
               {
-                TList _list4 = iprot.readListBegin();
-                this.image = new ArrayList<Image>(_list4.size);
-                for (int _i5 = 0; _i5 < _list4.size; ++_i5)
-                {
-                  Image _elem6;
-                  _elem6 = new Image();
-                  _elem6.read(iprot);
-                  this.image.add(_elem6);
-                }
-                iprot.readListEnd();
+                Image _elem6;
+                _elem6 = new Image();
+                _elem6.read(iprot);
+                this.image.add(_elem6);
               }
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
+              iprot.readListEnd();
             }
-            break;
-          case MEDIA:
-            if (field.type == TType.STRUCT) {
-              this.media = new Media();
-              this.media.read(iprot);
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-        }
-        iprot.readFieldEnd();
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 2: // MEDIA
+          if (field.type == TType.STRUCT) {
+            this.media = new Media();
+            this.media.read(iprot);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        default:
+          TProtocolUtil.skip(iprot, field.type);
       }
+      iprot.readFieldEnd();
     }
     iprot.readStructEnd();
     validate();
@@ -382,25 +401,21 @@ public void setFieldValue(_Fields field, Object value) {
 
     oprot.writeStructBegin(STRUCT_DESC);
     if (this.image != null) {
-      if (isSetImage()) {
-        oprot.writeFieldBegin(IMAGE_FIELD_DESC);
+      oprot.writeFieldBegin(IMAGE_FIELD_DESC);
+      {
+        oprot.writeListBegin(new TList(TType.STRUCT, this.image.size()));
+        for (Image _iter7 : this.image)
         {
-          oprot.writeListBegin(new TList(TType.STRUCT, this.image.size()));
-          for (Image _iter7 : this.image)
-          {
-            _iter7.write(oprot);
-          }
-          oprot.writeListEnd();
+          _iter7.write(oprot);
         }
-        oprot.writeFieldEnd();
+        oprot.writeListEnd();
       }
+      oprot.writeFieldEnd();
     }
     if (this.media != null) {
-      if (isSetMedia()) {
-        oprot.writeFieldBegin(MEDIA_FIELD_DESC);
-        this.media.write(oprot);
-        oprot.writeFieldEnd();
-      }
+      oprot.writeFieldBegin(MEDIA_FIELD_DESC);
+      this.media.write(oprot);
+      oprot.writeFieldEnd();
     }
     oprot.writeFieldStop();
     oprot.writeStructEnd();
@@ -411,31 +426,35 @@ public void setFieldValue(_Fields field, Object value) {
     StringBuilder sb = new StringBuilder("MediaContent(");
     boolean first = true;
 
-    if (isSetImage()) {
-      sb.append("image:");
-      if (this.image == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.image);
-      }
-      first = false;
+    sb.append("image:");
+    if (this.image == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.image);
     }
-    if (isSetMedia()) {
-      if (!first) sb.append(", ");
-      sb.append("media:");
-      if (this.media == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.media);
-      }
-      first = false;
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("media:");
+    if (this.media == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.media);
     }
+    first = false;
     sb.append(")");
     return sb.toString();
   }
 
   public void validate() throws TException {
     // check for required fields
+    if (!isSetImage()) {
+      throw new TProtocolException("Required field 'image' is unset! Struct:" + toString());
+    }
+
+    if (!isSetMedia()) {
+      throw new TProtocolException("Required field 'media' is unset! Struct:" + toString());
+    }
+
   }
 
 }

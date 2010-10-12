@@ -16,18 +16,21 @@ import java.util.HashSet;
 import java.util.EnumSet;
 import java.util.Collections;
 import java.util.BitSet;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.apache.thrift.*;
+import org.apache.thrift.async.*;
 import org.apache.thrift.meta_data.*;
+import org.apache.thrift.transport.*;
 import org.apache.thrift.protocol.*;
 
 /**
  * Some comment...
  */
-public class Image implements TBase<Image._Fields>, java.io.Serializable, Cloneable, Comparable<Image> {
+public class Image implements TBase<Image, Image._Fields>, java.io.Serializable, Cloneable {
   private static final TStruct STRUCT_DESC = new TStruct("Image");
 
   private static final TField URI_FIELD_DESC = new TField("uri", TType.STRING, (short)1);
@@ -54,12 +57,10 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
      */
     SIZE((short)5, "size");
 
-    private static final Map<Integer, _Fields> byId = new HashMap<Integer, _Fields>();
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
     static {
       for (_Fields field : EnumSet.allOf(_Fields.class)) {
-        byId.put((int)field._thriftId, field);
         byName.put(field.getFieldName(), field);
       }
     }
@@ -68,7 +69,20 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
      * Find the _Fields constant that matches fieldId, or null if its not found.
      */
     public static _Fields findByThriftId(int fieldId) {
-      return byId.get(fieldId);
+      switch(fieldId) {
+        case 1: // URI
+          return URI;
+        case 2: // TITLE
+          return TITLE;
+        case 3: // WIDTH
+          return WIDTH;
+        case 4: // HEIGHT
+          return HEIGHT;
+        case 5: // SIZE
+          return SIZE;
+        default:
+          return null;
+      }
     }
 
     /**
@@ -110,20 +124,20 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
   private static final int __HEIGHT_ISSET_ID = 1;
   private BitSet __isset_bit_vector = new BitSet(2);
 
-  public static final Map<_Fields, FieldMetaData> metaDataMap = Collections.unmodifiableMap(new EnumMap<_Fields, FieldMetaData>(_Fields.class) {{
-    put(_Fields.URI, new FieldMetaData("uri", TFieldRequirementType.DEFAULT, 
-        new FieldValueMetaData(TType.STRING)));
-    put(_Fields.TITLE, new FieldMetaData("title", TFieldRequirementType.OPTIONAL, 
-        new FieldValueMetaData(TType.STRING)));
-    put(_Fields.WIDTH, new FieldMetaData("width", TFieldRequirementType.OPTIONAL, 
-        new FieldValueMetaData(TType.I32)));
-    put(_Fields.HEIGHT, new FieldMetaData("height", TFieldRequirementType.OPTIONAL, 
-        new FieldValueMetaData(TType.I32)));
-    put(_Fields.SIZE, new FieldMetaData("size", TFieldRequirementType.OPTIONAL, 
-        new EnumMetaData(TType.ENUM, Size.class)));
-  }});
-
+  public static final Map<_Fields, FieldMetaData> metaDataMap;
   static {
+    Map<_Fields, FieldMetaData> tmpMap = new EnumMap<_Fields, FieldMetaData>(_Fields.class);
+    tmpMap.put(_Fields.URI, new FieldMetaData("uri", TFieldRequirementType.DEFAULT, 
+        new FieldValueMetaData(TType.STRING)));
+    tmpMap.put(_Fields.TITLE, new FieldMetaData("title", TFieldRequirementType.OPTIONAL, 
+        new FieldValueMetaData(TType.STRING)));
+    tmpMap.put(_Fields.WIDTH, new FieldMetaData("width", TFieldRequirementType.REQUIRED, 
+        new FieldValueMetaData(TType.I32        , "int")));
+    tmpMap.put(_Fields.HEIGHT, new FieldMetaData("height", TFieldRequirementType.REQUIRED, 
+        new FieldValueMetaData(TType.I32        , "int")));
+    tmpMap.put(_Fields.SIZE, new FieldMetaData("size", TFieldRequirementType.REQUIRED, 
+        new EnumMetaData(TType.ENUM, Size.class)));
+    metaDataMap = Collections.unmodifiableMap(tmpMap);
     FieldMetaData.addStructMetaDataMap(Image.class, metaDataMap);
   }
 
@@ -131,10 +145,18 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
   }
 
   public Image(
-    String uri)
+    String uri,
+    int width,
+    int height,
+    Size size)
   {
     this();
     this.uri = uri;
+    this.width = width;
+    setWidthIsSet(true);
+    this.height = height;
+    setHeightIsSet(true);
+    this.size = size;
   }
 
   /**
@@ -165,13 +187,23 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
     return new Image(this);
   }
 
+  @Override
+  public void clear() {
+    this.uri = null;
+    this.title = null;
+    setWidthIsSet(false);
+    this.width = 0;
+    setHeightIsSet(false);
+    this.height = 0;
+    this.size = null;
+  }
+
   public String getUri() {
     return this.uri;
   }
 
-  public Image setUri(String uri) {
+  public void setUri(String uri) {
     this.uri = uri;
-    return this;
   }
 
   public void unsetUri() {
@@ -193,9 +225,8 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
     return this.title;
   }
 
-  public Image setTitle(String title) {
+  public void setTitle(String title) {
     this.title = title;
-    return this;
   }
 
   public void unsetTitle() {
@@ -217,10 +248,9 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
     return this.width;
   }
 
-  public Image setWidth(int width) {
+  public void setWidth(int width) {
     this.width = width;
     setWidthIsSet(true);
-    return this;
   }
 
   public void unsetWidth() {
@@ -240,10 +270,9 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
     return this.height;
   }
 
-  public Image setHeight(int height) {
+  public void setHeight(int height) {
     this.height = height;
     setHeightIsSet(true);
-    return this;
   }
 
   public void unsetHeight() {
@@ -271,9 +300,8 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
    * 
    * @see Size
    */
-  public Image setSize(Size size) {
+  public void setSize(Size size) {
     this.size = size;
-    return this;
   }
 
   public void unsetSize() {
@@ -417,8 +445,8 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
         return false;
     }
 
-    boolean this_present_width = true && this.isSetWidth();
-    boolean that_present_width = true && that.isSetWidth();
+    boolean this_present_width = true;
+    boolean that_present_width = true;
     if (this_present_width || that_present_width) {
       if (!(this_present_width && that_present_width))
         return false;
@@ -426,8 +454,8 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
         return false;
     }
 
-    boolean this_present_height = true && this.isSetHeight();
-    boolean that_present_height = true && that.isSetHeight();
+    boolean this_present_height = true;
+    boolean that_present_height = true;
     if (this_present_height || that_present_height) {
       if (!(this_present_height && that_present_height))
         return false;
@@ -461,12 +489,12 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
     if (present_title)
       builder.append(title);
 
-    boolean present_width = true && (isSetWidth());
+    boolean present_width = true;
     builder.append(present_width);
     if (present_width)
       builder.append(width);
 
-    boolean present_height = true && (isSetHeight());
+    boolean present_height = true;
     builder.append(present_height);
     if (present_height)
       builder.append(height);
@@ -487,45 +515,50 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
     int lastComparison = 0;
     Image typedOther = (Image)other;
 
-    lastComparison = Boolean.valueOf(isSetUri()).compareTo(isSetUri());
+    lastComparison = Boolean.valueOf(isSetUri()).compareTo(typedOther.isSetUri());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = TBaseHelper.compareTo(uri, typedOther.uri);
+    if (isSetUri()) {      lastComparison = TBaseHelper.compareTo(this.uri, typedOther.uri);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetTitle()).compareTo(typedOther.isSetTitle());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = Boolean.valueOf(isSetTitle()).compareTo(isSetTitle());
+    if (isSetTitle()) {      lastComparison = TBaseHelper.compareTo(this.title, typedOther.title);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetWidth()).compareTo(typedOther.isSetWidth());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = TBaseHelper.compareTo(title, typedOther.title);
+    if (isSetWidth()) {      lastComparison = TBaseHelper.compareTo(this.width, typedOther.width);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetHeight()).compareTo(typedOther.isSetHeight());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = Boolean.valueOf(isSetWidth()).compareTo(isSetWidth());
+    if (isSetHeight()) {      lastComparison = TBaseHelper.compareTo(this.height, typedOther.height);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetSize()).compareTo(typedOther.isSetSize());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = TBaseHelper.compareTo(width, typedOther.width);
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = Boolean.valueOf(isSetHeight()).compareTo(isSetHeight());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = TBaseHelper.compareTo(height, typedOther.height);
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = Boolean.valueOf(isSetSize()).compareTo(isSetSize());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = TBaseHelper.compareTo(size, typedOther.size);
-    if (lastComparison != 0) {
-      return lastComparison;
+    if (isSetSize()) {      lastComparison = TBaseHelper.compareTo(this.size, typedOther.size);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
     }
     return 0;
   }
@@ -539,51 +572,48 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
       if (field.type == TType.STOP) { 
         break;
       }
-      _Fields fieldId = _Fields.findByThriftId(field.id);
-      if (fieldId == null) {
-        TProtocolUtil.skip(iprot, field.type);
-      } else {
-        switch (fieldId) {
-          case URI:
-            if (field.type == TType.STRING) {
-              this.uri = iprot.readString();
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-          case TITLE:
-            if (field.type == TType.STRING) {
-              this.title = iprot.readString();
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-          case WIDTH:
-            if (field.type == TType.I32) {
-              this.width = iprot.readI32();
-              setWidthIsSet(true);
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-          case HEIGHT:
-            if (field.type == TType.I32) {
-              this.height = iprot.readI32();
-              setHeightIsSet(true);
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-          case SIZE:
-            if (field.type == TType.I32) {
-              this.size = Size.findByValue(iprot.readI32());
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-        }
-        iprot.readFieldEnd();
+      switch (field.id) {
+        case 1: // URI
+          if (field.type == TType.STRING) {
+            this.uri = iprot.readString();
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 2: // TITLE
+          if (field.type == TType.STRING) {
+            this.title = iprot.readString();
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 3: // WIDTH
+          if (field.type == TType.I32) {
+            this.width = iprot.readI32();
+            setWidthIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 4: // HEIGHT
+          if (field.type == TType.I32) {
+            this.height = iprot.readI32();
+            setHeightIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 5: // SIZE
+          if (field.type == TType.I32) {
+            this.size = Size.findByValue(iprot.readI32());
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        default:
+          TProtocolUtil.skip(iprot, field.type);
       }
+      iprot.readFieldEnd();
     }
     iprot.readStructEnd();
     validate();
@@ -605,22 +635,16 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
         oprot.writeFieldEnd();
       }
     }
-    if (isSetWidth()) {
-      oprot.writeFieldBegin(WIDTH_FIELD_DESC);
-      oprot.writeI32(this.width);
-      oprot.writeFieldEnd();
-    }
-    if (isSetHeight()) {
-      oprot.writeFieldBegin(HEIGHT_FIELD_DESC);
-      oprot.writeI32(this.height);
-      oprot.writeFieldEnd();
-    }
+    oprot.writeFieldBegin(WIDTH_FIELD_DESC);
+    oprot.writeI32(this.width);
+    oprot.writeFieldEnd();
+    oprot.writeFieldBegin(HEIGHT_FIELD_DESC);
+    oprot.writeI32(this.height);
+    oprot.writeFieldEnd();
     if (this.size != null) {
-      if (isSetSize()) {
-        oprot.writeFieldBegin(SIZE_FIELD_DESC);
-        oprot.writeI32(this.size.getValue());
-        oprot.writeFieldEnd();
-      }
+      oprot.writeFieldBegin(SIZE_FIELD_DESC);
+      oprot.writeI32(this.size.getValue());
+      oprot.writeFieldEnd();
     }
     oprot.writeFieldStop();
     oprot.writeStructEnd();
@@ -648,42 +672,40 @@ public class Image implements TBase<Image._Fields>, java.io.Serializable, Clonea
       }
       first = false;
     }
-    if (isSetWidth()) {
-      if (!first) sb.append(", ");
-      sb.append("width:");
-      sb.append(this.width);
-      first = false;
+    if (!first) sb.append(", ");
+    sb.append("width:");
+    sb.append(this.width);
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("height:");
+    sb.append(this.height);
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("size:");
+    if (this.size == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.size);
     }
-    if (isSetHeight()) {
-      if (!first) sb.append(", ");
-      sb.append("height:");
-      sb.append(this.height);
-      first = false;
-    }
-    if (isSetSize()) {
-      if (!first) sb.append(", ");
-      sb.append("size:");
-      if (this.size == null) {
-        sb.append("null");
-      } else {
-        String size_name = size.name();
-        if (size_name != null) {
-          sb.append(size_name);
-          sb.append(" (");
-        }
-        sb.append(this.size);
-        if (size_name != null) {
-          sb.append(")");
-        }
-      }
-      first = false;
-    }
+    first = false;
     sb.append(")");
     return sb.toString();
   }
 
   public void validate() throws TException {
     // check for required fields
+    if (!isSetWidth()) {
+      throw new TProtocolException("Required field 'width' is unset! Struct:" + toString());
+    }
+
+    if (!isSetHeight()) {
+      throw new TProtocolException("Required field 'height' is unset! Struct:" + toString());
+    }
+
+    if (!isSetSize()) {
+      throw new TProtocolException("Required field 'size' is unset! Struct:" + toString());
+    }
+
   }
 
 }

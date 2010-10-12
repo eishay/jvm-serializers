@@ -9,15 +9,10 @@ package serializers.thrift.media;
 import java.util.Map;
 import java.util.HashMap;
 import org.apache.thrift.TEnum;
-public enum Size implements TEnum{
-    SMALL(1),
-    LARGE(2);
 
-  private static final Map<Integer, Size> BY_VALUE = new HashMap<Integer,Size>() {{
-    for(Size val : Size.values()) {
-      put(val.getValue(), val);
-    }
-  }};
+public enum Size implements TEnum {
+  SMALL(0),
+  LARGE(1);
 
   private final int value;
 
@@ -37,6 +32,13 @@ public enum Size implements TEnum{
    * @return null if the value is not found.
    */
   public static Size findByValue(int value) { 
-    return BY_VALUE.get(value);
+    switch (value) {
+      case 0:
+        return SMALL;
+      case 1:
+        return LARGE;
+      default:
+        return null;
+    }
   }
 }

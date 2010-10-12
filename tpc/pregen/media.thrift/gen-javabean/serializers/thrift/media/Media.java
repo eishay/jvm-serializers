@@ -16,15 +16,18 @@ import java.util.HashSet;
 import java.util.EnumSet;
 import java.util.Collections;
 import java.util.BitSet;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.apache.thrift.*;
+import org.apache.thrift.async.*;
 import org.apache.thrift.meta_data.*;
+import org.apache.thrift.transport.*;
 import org.apache.thrift.protocol.*;
 
-public class Media implements TBase<Media._Fields>, java.io.Serializable, Cloneable, Comparable<Media> {
+public class Media implements TBase<Media, Media._Fields>, java.io.Serializable, Cloneable {
   private static final TStruct STRUCT_DESC = new TStruct("Media");
 
   private static final TField URI_FIELD_DESC = new TField("uri", TType.STRING, (short)1);
@@ -69,12 +72,10 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
     PLAYER((short)10, "player"),
     COPYRIGHT((short)11, "copyright");
 
-    private static final Map<Integer, _Fields> byId = new HashMap<Integer, _Fields>();
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
     static {
       for (_Fields field : EnumSet.allOf(_Fields.class)) {
-        byId.put((int)field._thriftId, field);
         byName.put(field.getFieldName(), field);
       }
     }
@@ -83,7 +84,32 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
      * Find the _Fields constant that matches fieldId, or null if its not found.
      */
     public static _Fields findByThriftId(int fieldId) {
-      return byId.get(fieldId);
+      switch(fieldId) {
+        case 1: // URI
+          return URI;
+        case 2: // TITLE
+          return TITLE;
+        case 3: // WIDTH
+          return WIDTH;
+        case 4: // HEIGHT
+          return HEIGHT;
+        case 5: // FORMAT
+          return FORMAT;
+        case 6: // DURATION
+          return DURATION;
+        case 7: // SIZE
+          return SIZE;
+        case 8: // BITRATE
+          return BITRATE;
+        case 9: // PERSON
+          return PERSON;
+        case 10: // PLAYER
+          return PLAYER;
+        case 11: // COPYRIGHT
+          return COPYRIGHT;
+        default:
+          return null;
+      }
     }
 
     /**
@@ -128,33 +154,33 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
   private static final int __BITRATE_ISSET_ID = 4;
   private BitSet __isset_bit_vector = new BitSet(5);
 
-  public static final Map<_Fields, FieldMetaData> metaDataMap = Collections.unmodifiableMap(new EnumMap<_Fields, FieldMetaData>(_Fields.class) {{
-    put(_Fields.URI, new FieldMetaData("uri", TFieldRequirementType.DEFAULT, 
+  public static final Map<_Fields, FieldMetaData> metaDataMap;
+  static {
+    Map<_Fields, FieldMetaData> tmpMap = new EnumMap<_Fields, FieldMetaData>(_Fields.class);
+    tmpMap.put(_Fields.URI, new FieldMetaData("uri", TFieldRequirementType.DEFAULT, 
         new FieldValueMetaData(TType.STRING)));
-    put(_Fields.TITLE, new FieldMetaData("title", TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.TITLE, new FieldMetaData("title", TFieldRequirementType.OPTIONAL, 
         new FieldValueMetaData(TType.STRING)));
-    put(_Fields.WIDTH, new FieldMetaData("width", TFieldRequirementType.OPTIONAL, 
-        new FieldValueMetaData(TType.I32)));
-    put(_Fields.HEIGHT, new FieldMetaData("height", TFieldRequirementType.OPTIONAL, 
-        new FieldValueMetaData(TType.I32)));
-    put(_Fields.FORMAT, new FieldMetaData("format", TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.WIDTH, new FieldMetaData("width", TFieldRequirementType.REQUIRED, 
+        new FieldValueMetaData(TType.I32        , "int")));
+    tmpMap.put(_Fields.HEIGHT, new FieldMetaData("height", TFieldRequirementType.REQUIRED, 
+        new FieldValueMetaData(TType.I32        , "int")));
+    tmpMap.put(_Fields.FORMAT, new FieldMetaData("format", TFieldRequirementType.REQUIRED, 
         new FieldValueMetaData(TType.STRING)));
-    put(_Fields.DURATION, new FieldMetaData("duration", TFieldRequirementType.OPTIONAL, 
-        new FieldValueMetaData(TType.I64)));
-    put(_Fields.SIZE, new FieldMetaData("size", TFieldRequirementType.OPTIONAL, 
-        new FieldValueMetaData(TType.I64)));
-    put(_Fields.BITRATE, new FieldMetaData("bitrate", TFieldRequirementType.OPTIONAL, 
-        new FieldValueMetaData(TType.I32)));
-    put(_Fields.PERSON, new FieldMetaData("person", TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.DURATION, new FieldMetaData("duration", TFieldRequirementType.REQUIRED, 
+        new FieldValueMetaData(TType.I64        , "long")));
+    tmpMap.put(_Fields.SIZE, new FieldMetaData("size", TFieldRequirementType.REQUIRED, 
+        new FieldValueMetaData(TType.I64        , "long")));
+    tmpMap.put(_Fields.BITRATE, new FieldMetaData("bitrate", TFieldRequirementType.OPTIONAL, 
+        new FieldValueMetaData(TType.I32        , "int")));
+    tmpMap.put(_Fields.PERSON, new FieldMetaData("person", TFieldRequirementType.REQUIRED, 
         new ListMetaData(TType.LIST, 
             new FieldValueMetaData(TType.STRING))));
-    put(_Fields.PLAYER, new FieldMetaData("player", TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.PLAYER, new FieldMetaData("player", TFieldRequirementType.REQUIRED, 
         new EnumMetaData(TType.ENUM, Player.class)));
-    put(_Fields.COPYRIGHT, new FieldMetaData("copyright", TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.COPYRIGHT, new FieldMetaData("copyright", TFieldRequirementType.OPTIONAL, 
         new FieldValueMetaData(TType.STRING)));
-  }});
-
-  static {
+    metaDataMap = Collections.unmodifiableMap(tmpMap);
     FieldMetaData.addStructMetaDataMap(Media.class, metaDataMap);
   }
 
@@ -162,10 +188,28 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
   }
 
   public Media(
-    String uri)
+    String uri,
+    int width,
+    int height,
+    String format,
+    long duration,
+    long size,
+    List<String> person,
+    Player player)
   {
     this();
     this.uri = uri;
+    this.width = width;
+    setWidthIsSet(true);
+    this.height = height;
+    setHeightIsSet(true);
+    this.format = format;
+    this.duration = duration;
+    setDurationIsSet(true);
+    this.size = size;
+    setSizeIsSet(true);
+    this.person = person;
+    this.player = player;
   }
 
   /**
@@ -212,13 +256,32 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
     return new Media(this);
   }
 
+  @Override
+  public void clear() {
+    this.uri = null;
+    this.title = null;
+    setWidthIsSet(false);
+    this.width = 0;
+    setHeightIsSet(false);
+    this.height = 0;
+    this.format = null;
+    setDurationIsSet(false);
+    this.duration = 0;
+    setSizeIsSet(false);
+    this.size = 0;
+    setBitrateIsSet(false);
+    this.bitrate = 0;
+    this.person = null;
+    this.player = null;
+    this.copyright = null;
+  }
+
   public String getUri() {
     return this.uri;
   }
 
-  public Media setUri(String uri) {
+  public void setUri(String uri) {
     this.uri = uri;
-    return this;
   }
 
   public void unsetUri() {
@@ -240,9 +303,8 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
     return this.title;
   }
 
-  public Media setTitle(String title) {
+  public void setTitle(String title) {
     this.title = title;
-    return this;
   }
 
   public void unsetTitle() {
@@ -264,10 +326,9 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
     return this.width;
   }
 
-  public Media setWidth(int width) {
+  public void setWidth(int width) {
     this.width = width;
     setWidthIsSet(true);
-    return this;
   }
 
   public void unsetWidth() {
@@ -287,10 +348,9 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
     return this.height;
   }
 
-  public Media setHeight(int height) {
+  public void setHeight(int height) {
     this.height = height;
     setHeightIsSet(true);
-    return this;
   }
 
   public void unsetHeight() {
@@ -310,9 +370,8 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
     return this.format;
   }
 
-  public Media setFormat(String format) {
+  public void setFormat(String format) {
     this.format = format;
-    return this;
   }
 
   public void unsetFormat() {
@@ -334,10 +393,9 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
     return this.duration;
   }
 
-  public Media setDuration(long duration) {
+  public void setDuration(long duration) {
     this.duration = duration;
     setDurationIsSet(true);
-    return this;
   }
 
   public void unsetDuration() {
@@ -357,10 +415,9 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
     return this.size;
   }
 
-  public Media setSize(long size) {
+  public void setSize(long size) {
     this.size = size;
     setSizeIsSet(true);
-    return this;
   }
 
   public void unsetSize() {
@@ -380,10 +437,9 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
     return this.bitrate;
   }
 
-  public Media setBitrate(int bitrate) {
+  public void setBitrate(int bitrate) {
     this.bitrate = bitrate;
     setBitrateIsSet(true);
-    return this;
   }
 
   public void unsetBitrate() {
@@ -418,9 +474,8 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
     return this.person;
   }
 
-  public Media setPerson(List<String> person) {
+  public void setPerson(List<String> person) {
     this.person = person;
-    return this;
   }
 
   public void unsetPerson() {
@@ -450,9 +505,8 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
    * 
    * @see Player
    */
-  public Media setPlayer(Player player) {
+  public void setPlayer(Player player) {
     this.player = player;
-    return this;
   }
 
   public void unsetPlayer() {
@@ -474,9 +528,8 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
     return this.copyright;
   }
 
-  public Media setCopyright(String copyright) {
+  public void setCopyright(String copyright) {
     this.copyright = copyright;
-    return this;
   }
 
   public void unsetCopyright() {
@@ -494,8 +547,7 @@ public class Media implements TBase<Media._Fields>, java.io.Serializable, Clonea
     }
   }
 
-  @SuppressWarnings("unchecked")
-public void setFieldValue(_Fields field, Object value) {
+  public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case URI:
       if (value == null) {
@@ -699,8 +751,8 @@ public void setFieldValue(_Fields field, Object value) {
         return false;
     }
 
-    boolean this_present_width = true && this.isSetWidth();
-    boolean that_present_width = true && that.isSetWidth();
+    boolean this_present_width = true;
+    boolean that_present_width = true;
     if (this_present_width || that_present_width) {
       if (!(this_present_width && that_present_width))
         return false;
@@ -708,8 +760,8 @@ public void setFieldValue(_Fields field, Object value) {
         return false;
     }
 
-    boolean this_present_height = true && this.isSetHeight();
-    boolean that_present_height = true && that.isSetHeight();
+    boolean this_present_height = true;
+    boolean that_present_height = true;
     if (this_present_height || that_present_height) {
       if (!(this_present_height && that_present_height))
         return false;
@@ -726,8 +778,8 @@ public void setFieldValue(_Fields field, Object value) {
         return false;
     }
 
-    boolean this_present_duration = true && this.isSetDuration();
-    boolean that_present_duration = true && that.isSetDuration();
+    boolean this_present_duration = true;
+    boolean that_present_duration = true;
     if (this_present_duration || that_present_duration) {
       if (!(this_present_duration && that_present_duration))
         return false;
@@ -735,8 +787,8 @@ public void setFieldValue(_Fields field, Object value) {
         return false;
     }
 
-    boolean this_present_size = true && this.isSetSize();
-    boolean that_present_size = true && that.isSetSize();
+    boolean this_present_size = true;
+    boolean that_present_size = true;
     if (this_present_size || that_present_size) {
       if (!(this_present_size && that_present_size))
         return false;
@@ -797,12 +849,12 @@ public void setFieldValue(_Fields field, Object value) {
     if (present_title)
       builder.append(title);
 
-    boolean present_width = true && (isSetWidth());
+    boolean present_width = true;
     builder.append(present_width);
     if (present_width)
       builder.append(width);
 
-    boolean present_height = true && (isSetHeight());
+    boolean present_height = true;
     builder.append(present_height);
     if (present_height)
       builder.append(height);
@@ -812,12 +864,12 @@ public void setFieldValue(_Fields field, Object value) {
     if (present_format)
       builder.append(format);
 
-    boolean present_duration = true && (isSetDuration());
+    boolean present_duration = true;
     builder.append(present_duration);
     if (present_duration)
       builder.append(duration);
 
-    boolean present_size = true && (isSetSize());
+    boolean present_size = true;
     builder.append(present_size);
     if (present_size)
       builder.append(size);
@@ -853,93 +905,104 @@ public void setFieldValue(_Fields field, Object value) {
     int lastComparison = 0;
     Media typedOther = (Media)other;
 
-    lastComparison = Boolean.valueOf(isSetUri()).compareTo(isSetUri());
+    lastComparison = Boolean.valueOf(isSetUri()).compareTo(typedOther.isSetUri());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = TBaseHelper.compareTo(uri, typedOther.uri);
+    if (isSetUri()) {      lastComparison = TBaseHelper.compareTo(this.uri, typedOther.uri);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetTitle()).compareTo(typedOther.isSetTitle());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = Boolean.valueOf(isSetTitle()).compareTo(isSetTitle());
+    if (isSetTitle()) {      lastComparison = TBaseHelper.compareTo(this.title, typedOther.title);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetWidth()).compareTo(typedOther.isSetWidth());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = TBaseHelper.compareTo(title, typedOther.title);
+    if (isSetWidth()) {      lastComparison = TBaseHelper.compareTo(this.width, typedOther.width);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetHeight()).compareTo(typedOther.isSetHeight());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = Boolean.valueOf(isSetWidth()).compareTo(isSetWidth());
+    if (isSetHeight()) {      lastComparison = TBaseHelper.compareTo(this.height, typedOther.height);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetFormat()).compareTo(typedOther.isSetFormat());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = TBaseHelper.compareTo(width, typedOther.width);
+    if (isSetFormat()) {      lastComparison = TBaseHelper.compareTo(this.format, typedOther.format);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetDuration()).compareTo(typedOther.isSetDuration());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = Boolean.valueOf(isSetHeight()).compareTo(isSetHeight());
+    if (isSetDuration()) {      lastComparison = TBaseHelper.compareTo(this.duration, typedOther.duration);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetSize()).compareTo(typedOther.isSetSize());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = TBaseHelper.compareTo(height, typedOther.height);
+    if (isSetSize()) {      lastComparison = TBaseHelper.compareTo(this.size, typedOther.size);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetBitrate()).compareTo(typedOther.isSetBitrate());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = Boolean.valueOf(isSetFormat()).compareTo(isSetFormat());
+    if (isSetBitrate()) {      lastComparison = TBaseHelper.compareTo(this.bitrate, typedOther.bitrate);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetPerson()).compareTo(typedOther.isSetPerson());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = TBaseHelper.compareTo(format, typedOther.format);
+    if (isSetPerson()) {      lastComparison = TBaseHelper.compareTo(this.person, typedOther.person);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetPlayer()).compareTo(typedOther.isSetPlayer());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = Boolean.valueOf(isSetDuration()).compareTo(isSetDuration());
+    if (isSetPlayer()) {      lastComparison = TBaseHelper.compareTo(this.player, typedOther.player);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetCopyright()).compareTo(typedOther.isSetCopyright());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    lastComparison = TBaseHelper.compareTo(duration, typedOther.duration);
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = Boolean.valueOf(isSetSize()).compareTo(isSetSize());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = TBaseHelper.compareTo(size, typedOther.size);
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = Boolean.valueOf(isSetBitrate()).compareTo(isSetBitrate());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = TBaseHelper.compareTo(bitrate, typedOther.bitrate);
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = Boolean.valueOf(isSetPerson()).compareTo(isSetPerson());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = TBaseHelper.compareTo(person, typedOther.person);
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = Boolean.valueOf(isSetPlayer()).compareTo(isSetPlayer());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = TBaseHelper.compareTo(player, typedOther.player);
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = Boolean.valueOf(isSetCopyright()).compareTo(isSetCopyright());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    lastComparison = TBaseHelper.compareTo(copyright, typedOther.copyright);
-    if (lastComparison != 0) {
-      return lastComparison;
+    if (isSetCopyright()) {      lastComparison = TBaseHelper.compareTo(this.copyright, typedOther.copyright);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
     }
     return 0;
   }
@@ -953,106 +1016,103 @@ public void setFieldValue(_Fields field, Object value) {
       if (field.type == TType.STOP) { 
         break;
       }
-      _Fields fieldId = _Fields.findByThriftId(field.id);
-      if (fieldId == null) {
-        TProtocolUtil.skip(iprot, field.type);
-      } else {
-        switch (fieldId) {
-          case URI:
-            if (field.type == TType.STRING) {
-              this.uri = iprot.readString();
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-          case TITLE:
-            if (field.type == TType.STRING) {
-              this.title = iprot.readString();
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-          case WIDTH:
-            if (field.type == TType.I32) {
-              this.width = iprot.readI32();
-              setWidthIsSet(true);
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-          case HEIGHT:
-            if (field.type == TType.I32) {
-              this.height = iprot.readI32();
-              setHeightIsSet(true);
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-          case FORMAT:
-            if (field.type == TType.STRING) {
-              this.format = iprot.readString();
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-          case DURATION:
-            if (field.type == TType.I64) {
-              this.duration = iprot.readI64();
-              setDurationIsSet(true);
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-          case SIZE:
-            if (field.type == TType.I64) {
-              this.size = iprot.readI64();
-              setSizeIsSet(true);
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-          case BITRATE:
-            if (field.type == TType.I32) {
-              this.bitrate = iprot.readI32();
-              setBitrateIsSet(true);
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-          case PERSON:
-            if (field.type == TType.LIST) {
+      switch (field.id) {
+        case 1: // URI
+          if (field.type == TType.STRING) {
+            this.uri = iprot.readString();
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 2: // TITLE
+          if (field.type == TType.STRING) {
+            this.title = iprot.readString();
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 3: // WIDTH
+          if (field.type == TType.I32) {
+            this.width = iprot.readI32();
+            setWidthIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 4: // HEIGHT
+          if (field.type == TType.I32) {
+            this.height = iprot.readI32();
+            setHeightIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 5: // FORMAT
+          if (field.type == TType.STRING) {
+            this.format = iprot.readString();
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 6: // DURATION
+          if (field.type == TType.I64) {
+            this.duration = iprot.readI64();
+            setDurationIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 7: // SIZE
+          if (field.type == TType.I64) {
+            this.size = iprot.readI64();
+            setSizeIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 8: // BITRATE
+          if (field.type == TType.I32) {
+            this.bitrate = iprot.readI32();
+            setBitrateIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 9: // PERSON
+          if (field.type == TType.LIST) {
+            {
+              TList _list0 = iprot.readListBegin();
+              this.person = new ArrayList<String>(_list0.size);
+              for (int _i1 = 0; _i1 < _list0.size; ++_i1)
               {
-                TList _list0 = iprot.readListBegin();
-                this.person = new ArrayList<String>(_list0.size);
-                for (int _i1 = 0; _i1 < _list0.size; ++_i1)
-                {
-                  String _elem2;
-                  _elem2 = iprot.readString();
-                  this.person.add(_elem2);
-                }
-                iprot.readListEnd();
+                String _elem2;
+                _elem2 = iprot.readString();
+                this.person.add(_elem2);
               }
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
+              iprot.readListEnd();
             }
-            break;
-          case PLAYER:
-            if (field.type == TType.I32) {
-              this.player = Player.findByValue(iprot.readI32());
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-          case COPYRIGHT:
-            if (field.type == TType.STRING) {
-              this.copyright = iprot.readString();
-            } else { 
-              TProtocolUtil.skip(iprot, field.type);
-            }
-            break;
-        }
-        iprot.readFieldEnd();
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 10: // PLAYER
+          if (field.type == TType.I32) {
+            this.player = Player.findByValue(iprot.readI32());
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 11: // COPYRIGHT
+          if (field.type == TType.STRING) {
+            this.copyright = iprot.readString();
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        default:
+          TProtocolUtil.skip(iprot, field.type);
       }
+      iprot.readFieldEnd();
     }
     iprot.readStructEnd();
     validate();
@@ -1074,58 +1134,44 @@ public void setFieldValue(_Fields field, Object value) {
         oprot.writeFieldEnd();
       }
     }
-    if (isSetWidth()) {
-      oprot.writeFieldBegin(WIDTH_FIELD_DESC);
-      oprot.writeI32(this.width);
-      oprot.writeFieldEnd();
-    }
-    if (isSetHeight()) {
-      oprot.writeFieldBegin(HEIGHT_FIELD_DESC);
-      oprot.writeI32(this.height);
-      oprot.writeFieldEnd();
-    }
+    oprot.writeFieldBegin(WIDTH_FIELD_DESC);
+    oprot.writeI32(this.width);
+    oprot.writeFieldEnd();
+    oprot.writeFieldBegin(HEIGHT_FIELD_DESC);
+    oprot.writeI32(this.height);
+    oprot.writeFieldEnd();
     if (this.format != null) {
-      if (isSetFormat()) {
-        oprot.writeFieldBegin(FORMAT_FIELD_DESC);
-        oprot.writeString(this.format);
-        oprot.writeFieldEnd();
-      }
-    }
-    if (isSetDuration()) {
-      oprot.writeFieldBegin(DURATION_FIELD_DESC);
-      oprot.writeI64(this.duration);
+      oprot.writeFieldBegin(FORMAT_FIELD_DESC);
+      oprot.writeString(this.format);
       oprot.writeFieldEnd();
     }
-    if (isSetSize()) {
-      oprot.writeFieldBegin(SIZE_FIELD_DESC);
-      oprot.writeI64(this.size);
-      oprot.writeFieldEnd();
-    }
+    oprot.writeFieldBegin(DURATION_FIELD_DESC);
+    oprot.writeI64(this.duration);
+    oprot.writeFieldEnd();
+    oprot.writeFieldBegin(SIZE_FIELD_DESC);
+    oprot.writeI64(this.size);
+    oprot.writeFieldEnd();
     if (isSetBitrate()) {
       oprot.writeFieldBegin(BITRATE_FIELD_DESC);
       oprot.writeI32(this.bitrate);
       oprot.writeFieldEnd();
     }
     if (this.person != null) {
-      if (isSetPerson()) {
-        oprot.writeFieldBegin(PERSON_FIELD_DESC);
+      oprot.writeFieldBegin(PERSON_FIELD_DESC);
+      {
+        oprot.writeListBegin(new TList(TType.STRING, this.person.size()));
+        for (String _iter3 : this.person)
         {
-          oprot.writeListBegin(new TList(TType.STRING, this.person.size()));
-          for (String _iter3 : this.person)
-          {
-            oprot.writeString(_iter3);
-          }
-          oprot.writeListEnd();
+          oprot.writeString(_iter3);
         }
-        oprot.writeFieldEnd();
+        oprot.writeListEnd();
       }
+      oprot.writeFieldEnd();
     }
     if (this.player != null) {
-      if (isSetPlayer()) {
-        oprot.writeFieldBegin(PLAYER_FIELD_DESC);
-        oprot.writeI32(this.player.getValue());
-        oprot.writeFieldEnd();
-      }
+      oprot.writeFieldBegin(PLAYER_FIELD_DESC);
+      oprot.writeI32(this.player.getValue());
+      oprot.writeFieldEnd();
     }
     if (this.copyright != null) {
       if (isSetCopyright()) {
@@ -1160,74 +1206,52 @@ public void setFieldValue(_Fields field, Object value) {
       }
       first = false;
     }
-    if (isSetWidth()) {
-      if (!first) sb.append(", ");
-      sb.append("width:");
-      sb.append(this.width);
-      first = false;
+    if (!first) sb.append(", ");
+    sb.append("width:");
+    sb.append(this.width);
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("height:");
+    sb.append(this.height);
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("format:");
+    if (this.format == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.format);
     }
-    if (isSetHeight()) {
-      if (!first) sb.append(", ");
-      sb.append("height:");
-      sb.append(this.height);
-      first = false;
-    }
-    if (isSetFormat()) {
-      if (!first) sb.append(", ");
-      sb.append("format:");
-      if (this.format == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.format);
-      }
-      first = false;
-    }
-    if (isSetDuration()) {
-      if (!first) sb.append(", ");
-      sb.append("duration:");
-      sb.append(this.duration);
-      first = false;
-    }
-    if (isSetSize()) {
-      if (!first) sb.append(", ");
-      sb.append("size:");
-      sb.append(this.size);
-      first = false;
-    }
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("duration:");
+    sb.append(this.duration);
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("size:");
+    sb.append(this.size);
+    first = false;
     if (isSetBitrate()) {
       if (!first) sb.append(", ");
       sb.append("bitrate:");
       sb.append(this.bitrate);
       first = false;
     }
-    if (isSetPerson()) {
-      if (!first) sb.append(", ");
-      sb.append("person:");
-      if (this.person == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.person);
-      }
-      first = false;
+    if (!first) sb.append(", ");
+    sb.append("person:");
+    if (this.person == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.person);
     }
-    if (isSetPlayer()) {
-      if (!first) sb.append(", ");
-      sb.append("player:");
-      if (this.player == null) {
-        sb.append("null");
-      } else {
-        String player_name = player.name();
-        if (player_name != null) {
-          sb.append(player_name);
-          sb.append(" (");
-        }
-        sb.append(this.player);
-        if (player_name != null) {
-          sb.append(")");
-        }
-      }
-      first = false;
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("player:");
+    if (this.player == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.player);
     }
+    first = false;
     if (isSetCopyright()) {
       if (!first) sb.append(", ");
       sb.append("copyright:");
@@ -1244,6 +1268,34 @@ public void setFieldValue(_Fields field, Object value) {
 
   public void validate() throws TException {
     // check for required fields
+    if (!isSetWidth()) {
+      throw new TProtocolException("Required field 'width' is unset! Struct:" + toString());
+    }
+
+    if (!isSetHeight()) {
+      throw new TProtocolException("Required field 'height' is unset! Struct:" + toString());
+    }
+
+    if (!isSetFormat()) {
+      throw new TProtocolException("Required field 'format' is unset! Struct:" + toString());
+    }
+
+    if (!isSetDuration()) {
+      throw new TProtocolException("Required field 'duration' is unset! Struct:" + toString());
+    }
+
+    if (!isSetSize()) {
+      throw new TProtocolException("Required field 'size' is unset! Struct:" + toString());
+    }
+
+    if (!isSetPerson()) {
+      throw new TProtocolException("Required field 'person' is unset! Struct:" + toString());
+    }
+
+    if (!isSetPlayer()) {
+      throw new TProtocolException("Required field 'player' is unset! Struct:" + toString());
+    }
+
   }
 
 }

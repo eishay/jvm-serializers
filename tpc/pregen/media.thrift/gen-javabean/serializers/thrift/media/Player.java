@@ -9,15 +9,10 @@ package serializers.thrift.media;
 import java.util.Map;
 import java.util.HashMap;
 import org.apache.thrift.TEnum;
-public enum Player implements TEnum{
-    JAVA(0),
-    FLASH(1);
 
-  private static final Map<Integer, Player> BY_VALUE = new HashMap<Integer,Player>() {{
-    for(Player val : Player.values()) {
-      put(val.getValue(), val);
-    }
-  }};
+public enum Player implements TEnum {
+  JAVA(0),
+  FLASH(1);
 
   private final int value;
 
@@ -37,6 +32,13 @@ public enum Player implements TEnum{
    * @return null if the value is not found.
    */
   public static Player findByValue(int value) { 
-    return BY_VALUE.get(value);
+    switch (value) {
+      case 0:
+        return JAVA;
+      case 1:
+        return FLASH;
+      default:
+        return null;
+    }
   }
 }
