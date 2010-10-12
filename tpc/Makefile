@@ -113,7 +113,7 @@ build/gen/$(2).gen: schema/$(2)
 ifneq ($(findstring .activemq.proto,$(2)),)
 	$(p1)$(activemqprotobuf_generator) --out=build/gen/$(2) $$<
 else ifneq ($(findstring .protostuff.proto,$(2)),)
-	$(p1)java -Dsource=$$< -Doutput=java_bean -Doptions=builder_pattern,alphanumeric,generate_field_map,separate_schema -DoutputDir=build/gen/$(2) -jar $(protostuff_compiler)
+	$(p1)java -Dsource=$$< -Doutput=java_bean -Doptions=builder_pattern,generate_field_map,separate_schema -DoutputDir=build/gen/$(2) -jar $(protostuff_compiler)
 else ifneq ($(findstring .proto,$(2)),)
 	$(p1)$(protobuf_generator) --java_out=build/gen/$(2) $$<
 else ifneq ($(findstring .thrift,$(2)),)
