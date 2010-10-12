@@ -22,7 +22,8 @@ public class JavolutionXml
 	public static void register(TestGroups groups)
 	{
 		groups.media.add(JavaBuiltIn.MediaTransformer, new JavolutionSerializer<MediaContent>("", MediaBinding, MediaContent.class));
-		groups.media.add(JavaBuiltIn.MediaTransformer, new JavolutionSerializer<MediaContent>("-abbrev", MediaBindingAbbreviated, MediaContent.class));
+        // commented-out by dyu: use the non-abbreviated version
+		//groups.media.add(JavaBuiltIn.MediaTransformer, new JavolutionSerializer<MediaContent>("-abbrev", MediaBindingAbbreviated, MediaContent.class));
 	}
 
 	private static final class JavolutionSerializer<T> extends Serializer<T>
