@@ -5,5 +5,11 @@ Requirements:
 To compile:
   make
 
+To run:
+  ./run -help
+
+To run and generate charts with all serializers:
+  ./run -chart -include=`cat serializers.txt | tr "\\n" ","`  data/media.1.cks
+
 To generate bindings for schema files, see top of "Makefile" for
 instructions on what to put into "Config.mk".
