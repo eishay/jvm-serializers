@@ -108,7 +108,7 @@ public class Kryo
 
 		public String getName()
 		{
-			return "kryo-custom";
+			return "kryo-manual";
 		}
 	}
 
