@@ -23,13 +23,22 @@ public final class Protostuff
     
     public static void register(TestGroups groups)
     {
+        // generated code
         groups.media.add(MediaTransformer, ProtostuffMediaSerializer);
-        groups.media.add(JavaBuiltIn.MediaTransformer, ProtostuffRuntimeMediaSerializer);
-        
-        groups.media.add(MediaTransformer, ProtobufMediaSerializer);
-        groups.media.add(JavaBuiltIn.MediaTransformer, ProtobufRuntimeMediaSerializer);
 
+        // manual (hand-coded)
         groups.media.add(JavaBuiltIn.MediaTransformer, ProtostuffManualMediaSerializer);
+
+        // runtime (reflection)
+        groups.media.add(JavaBuiltIn.MediaTransformer, ProtostuffRuntimeMediaSerializer);
+
+        // protobuf serialization + generated code
+        groups.media.add(MediaTransformer, ProtobufMediaSerializer);
+        
+        /*protostuff has too many entries
+        
+        // protobuf serialization + runtime
+        groups.media.add(JavaBuiltIn.MediaTransformer, ProtobufRuntimeMediaSerializer);*/
     }
     
     public static final Serializer<MediaContent> ProtostuffMediaSerializer = 

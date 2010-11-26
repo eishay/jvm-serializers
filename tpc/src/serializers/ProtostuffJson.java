@@ -1,5 +1,7 @@
 package serializers;
 
+import static serializers.Protostuff.MEDIA_CONTENT_SCHEMA;
+
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.JsonIOUtil;
 import com.dyuproject.protostuff.JsonXIOUtil;
@@ -18,11 +20,24 @@ public final class ProtostuffJson
 
     public static void register(TestGroups groups)
     {
+        // generated code
         groups.media.add(Protostuff.MediaTransformer, JsonMediaSerializer);
+        // generated code (numeric)
         groups.media.add(Protostuff.MediaTransformer, JsonMediaSerializerNumeric);
-        // protostuff has too many entries
-        //groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeJsonMediaSerializer);
-        //groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeJsonMediaSerializerNumeric);
+
+        /* protostuff has too many entries
+        
+        // manual (hand-coded)
+        groups.media.add(JavaBuiltIn.MediaTransformer, JsonManualMediaSerializer);
+        
+        // manual (hand-coded + numeric)
+        groups.media.add(JavaBuiltIn.MediaTransformer, JsonManualMediaSerializerNumeric);
+
+        // runtime (reflection)
+        groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeJsonMediaSerializer);
+
+        // runtime (reflection + numeric)
+        groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeJsonMediaSerializerNumeric);*/
     }
 
     public static final Serializer<MediaContent> JsonMediaSerializer = 
@@ -135,6 +150,61 @@ public final class ProtostuffJson
         public String getName()
         {
             return "json/protostuff-runtime+numeric";
+        }
+        
+    };
+
+    public static final Serializer<data.media.MediaContent> JsonManualMediaSerializer = 
+        new Serializer<data.media.MediaContent>()
+    {
+
+        public data.media.MediaContent deserialize(byte[] array) throws Exception
+        {
+            data.media.MediaContent mc = new data.media.MediaContent();
+            JsonIOUtil.mergeFrom(array, mc, MEDIA_CONTENT_SCHEMA, false);
+            return mc;
+        }
+
+        public byte[] serialize(data.media.MediaContent content) throws Exception
+        {
+            return JsonIOUtil.toByteArray(content, MEDIA_CONTENT_SCHEMA, false);
+        }
+        
+        public String getName()
+        {
+            return "json/protostuff-manual";
+        }
+        
+    };
+
+    public static final Serializer<data.media.MediaContent> JsonManualMediaSerializerNumeric = 
+        new Serializer<data.media.MediaContent>()
+    {
+
+        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
+
+        public data.media.MediaContent deserialize(byte[] array) throws Exception
+        {
+            data.media.MediaContent mc = new data.media.MediaContent();
+            JsonIOUtil.mergeFrom(array, mc, MEDIA_CONTENT_SCHEMA, true);
+            return mc;
+        }
+
+        public byte[] serialize(data.media.MediaContent content) throws Exception
+        {
+            try
+            {
+                return JsonXIOUtil.toByteArray(content, MEDIA_CONTENT_SCHEMA, true, buffer);
+            }
+            finally
+            {
+                buffer.clear();
+            }
+        }
+        
+        public String getName()
+        {
+            return "json/protostuff-manual+numeric";
         }
         
     };
