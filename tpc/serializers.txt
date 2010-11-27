@@ -5,10 +5,9 @@ thrift
 thrift-compact
 protobuf/activemq+alt
 protostuff
-protostuff-runtime
 protostuff-manual
+protostuff-runtime
 protobuf/protostuff
-protobuf/protostuff-runtime
 kryo
 kryo-opt
 kryo-manual
