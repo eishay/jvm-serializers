@@ -259,6 +259,10 @@ public class BenchmarkRunner
 		Hessian.register(groups);
 		Scala.register(groups);
 
+		// BSON-like formats.
+		BsonJackson.register(groups);
+		BsonJacksonDatabind.register(groups);
+
 		// JSON-like formats.
 		JsonJackson.register(groups);
 		JsonJacksonDatabind.register(groups);
