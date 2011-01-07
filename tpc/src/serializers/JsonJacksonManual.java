@@ -14,7 +14,7 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 
-public class JsonJackson
+public class JsonJacksonManual
 {
 	public static void register(TestGroups groups)
 	{

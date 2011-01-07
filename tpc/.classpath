@@ -13,7 +13,6 @@
 	<classpathentry kind="lib" path="lib/snakeyaml-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/aalto-gpl-0.9.5.jar"/>
 	<classpathentry kind="lib" path="lib/xpp3_min-1.1.4c.jar"/>
-	<classpathentry kind="lib" path="/home/magro/proj/jvm-serializers/tpc/lib/avro-1.3.2.jar"/>
 	<classpathentry kind="lib" path="lib/paranamer-1.5.jar"/>
 	<classpathentry kind="lib" path="lib/activemq-protobuf-1.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/activemq-util-6.0-SNAPSHOT.jar"/>
@@ -27,9 +26,7 @@
 	<classpathentry kind="lib" path="lib/cks-text-writer.jar"/>
 	<classpathentry kind="lib" path="lib/cks-tool.jar"/>
 	<classpathentry kind="lib" path="lib/FastInfoset-1.2.6.jar"/>
-	<classpathentry kind="lib" path="lib/gson-1.5.jar"/>
 	<classpathentry kind="lib" path="lib/hessian-4.0.3.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-all-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/javolution-5.5.1.jar"/>
 	<classpathentry kind="lib" path="lib/jopt-simple-3.2.jar"/>
 	<classpathentry kind="lib" path="lib/kryo-1.03.jar"/>
@@ -47,5 +44,7 @@
 	<classpathentry kind="lib" path="lib/slf4j-api-1.5.10.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-nop-1.5.10.jar"/>
 	<classpathentry kind="lib" path="lib/woodstox-core-asl-4.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/gson-1.6.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-all-1.7.0.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

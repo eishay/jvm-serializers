@@ -244,29 +244,34 @@ public class BenchmarkRunner
 
 		TestGroups groups = new TestGroups();
 
-		// Binary Formats
-		// start with baseline, Java defaults (to reduce first-run benefit for other impls)
+		// Binary Formats; first language-specific ones
                 JavaBuiltIn.register(groups);
                 JavaManual.register(groups);
-		Protobuf.register(groups);
-		Thrift.register(groups);
+                Scala.register(groups);
+                Hessian.register(groups);
+
+                // Binary formats, generic: protobuf, thrift, avro, kryo, CKS
+                Protobuf.register(groups);
 		ActiveMQProtobuf.register(groups);
 		Protostuff.register(groups);
-		Kryo.register(groups);
+                Thrift.register(groups);
 		AvroSpecific.register(groups);
 		AvroGeneric.register(groups);
+                Kryo.register(groups);
 		CksBinary.register(groups);
-		Hessian.register(groups);
-		Scala.register(groups);
 
-		// JSON-like formats.
-		JsonJackson.register(groups);
+		// JSON-like formats; starting with JSON
+		JsonJacksonManual.register(groups);
 		JsonJacksonDatabind.register(groups);
 		JsonTwoLattes.register(groups);
 		ProtostuffJson.register(groups);
 		ProtobufJson.register(groups);
-		CksText.register(groups);
 		Gson.register(groups);
+                // CKS text is json-like
+                CksText.register(groups);
+                // smile is "binary json" -- does it belong in 'binary' or 'json[like]' section?
+                JacksonSmileManual.register(groups);
+                JacksonSmileDatabind.register(groups);
 
 		// XML-based formats.
 		Stax.register(groups);
