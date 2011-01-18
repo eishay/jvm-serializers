@@ -262,6 +262,7 @@ public class BenchmarkRunner
 		// BSON-like formats.
 		BsonJackson.register(groups);
 		BsonJacksonDatabind.register(groups);
+		MongoDB.register(groups);
 
 		// JSON-like formats.
 		JsonJackson.register(groups);

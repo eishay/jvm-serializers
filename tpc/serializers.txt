@@ -18,6 +18,7 @@ scala/java-built-in
 scala/sbinary
 bson/jackson-manual
 bson/jackson-databind
+bson/mongodb
 json/jackson-manual
 json/jackson-databind
 json/protostuff
