@@ -1,12 +1,8 @@
 package serializers;
 
-import java.io.IOException;
-
 import data.media.MediaContent;
 
-import org.codehaus.jackson.map.*;
-import org.codehaus.jackson.map.type.TypeFactory;
-import org.codehaus.jackson.type.JavaType;
+import org.codehaus.jackson.map.ObjectMapper;
 import de.undercouch.bson4jackson.BsonFactory;
 
 /**
@@ -23,11 +19,5 @@ public class BsonJacksonDatabind
 		groups.media.add(JavaBuiltIn.MediaTransformer,
 			new JsonJacksonDatabind.GenericSerializer<MediaContent>(
 				"bson/jackson-databind", mapper, MediaContent.class));
-		
-		BsonFactory factory2 = new BsonFactory();
-		ObjectMapper mapper2 = new ObjectMapper(factory2);
-		groups.media.add(JavaBuiltIn.MediaTransformer,
-			new JsonJacksonDatabind.GenericSerializer<MediaContent>(
-				"bson/jackson-databind-streaming", mapper2, MediaContent.class));
 	}
 }

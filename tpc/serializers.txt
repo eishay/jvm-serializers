@@ -17,9 +17,7 @@ hessian
 scala/java-built-in
 scala/sbinary
 bson/jackson-manual
-bson/jackson-manual-streaming
 bson/jackson-databind
-bson/jackson-databind-streaming
 json/jackson-manual
 json/jackson-databind
 json/protostuff
