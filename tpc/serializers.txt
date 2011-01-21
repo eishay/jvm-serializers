@@ -18,12 +18,14 @@ kryo-opt
 kryo-manual
 json/jackson-manual
 json/jackson-databind
-json/protostuff
-json/protostuff+numeric
+json/protostuff-manual
+json/protostuff-runtime
 json/protobuf
 json/google-gson
 smile/jackson-manual
 smile/jackson-databind
+smile/protostuff-manual
+smile/protostuff-runtime
 xml/manual-woodstox
 xml/manual-aalto
 xml/manual-fastinfo

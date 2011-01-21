@@ -26,7 +26,7 @@ public final class Protostuff
         // generated code
         groups.media.add(MediaTransformer, ProtostuffMediaSerializer);
 
-        // manual (hand-coded)
+        // manual (hand-coded schema, no autoboxing)
         groups.media.add(JavaBuiltIn.MediaTransformer, ProtostuffManualMediaSerializer);
 
         // runtime (reflection)
@@ -231,9 +231,8 @@ public final class Protostuff
 
         public void mergeFrom(Input input, data.media.MediaContent message) throws IOException
         {
-            while(true)
+            for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
             {
-                final int number = input.readFieldNumber(this);
                 switch(number)
                 {
                     case 0:
@@ -241,13 +240,11 @@ public final class Protostuff
                     case 1:
                         if(message.images == null)
                             message.images = new ArrayList<data.media.Image>();
-                        message.images.add(input.mergeObject(new data.media.Image(), IMAGE_SCHEMA));
+                        message.images.add(input.mergeObject(null, IMAGE_SCHEMA));
                         break;
 
                     case 2:
-                        if(message.media == null)
-                            message.media = new data.media.Media();
-                        input.mergeObject(message.media, MEDIA_SCHEMA);
+                        message.media = input.mergeObject(message.media, MEDIA_SCHEMA);
                         break;
 
                     default:
@@ -320,9 +317,8 @@ public final class Protostuff
 
         public void mergeFrom(Input input, data.media.Media message) throws IOException
         {
-            while(true)
+            for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
             {
-                final int number = input.readFieldNumber(this);
                 switch(number)
                 {
                     case 0:
@@ -473,9 +469,8 @@ public final class Protostuff
 
         public void mergeFrom(Input input, data.media.Image message) throws IOException
         {
-            while(true)
+            for(int number = input.readFieldNumber(this);; number = input.readFieldNumber(this))
             {
-                final int number = input.readFieldNumber(this);
                 switch(number)
                 {
                     case 0:

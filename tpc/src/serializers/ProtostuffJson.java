@@ -20,24 +20,24 @@ public final class ProtostuffJson
 
     public static void register(TestGroups groups)
     {
+        // manual (hand-coded schema, no autoboxing)
+        groups.media.add(JavaBuiltIn.MediaTransformer, JsonManualMediaSerializer);
+        // runtime (reflection)
+        groups.media.add(JavaBuiltIn.MediaTransformer, JsonRuntimeMediaSerializer);
+
+        /* protostuff has too many entries
+
         // generated code
         groups.media.add(Protostuff.MediaTransformer, JsonMediaSerializer);
+
         // generated code (numeric)
         groups.media.add(Protostuff.MediaTransformer, JsonMediaSerializerNumeric);
 
-        /* protostuff has too many entries
-        
-        // manual (hand-coded)
-        groups.media.add(JavaBuiltIn.MediaTransformer, JsonManualMediaSerializer);
-        
         // manual (hand-coded + numeric)
         groups.media.add(JavaBuiltIn.MediaTransformer, JsonManualMediaSerializerNumeric);
 
-        // runtime (reflection)
-        groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeJsonMediaSerializer);
-
         // runtime (reflection + numeric)
-        groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeJsonMediaSerializerNumeric);*/
+        groups.media.add(JavaBuiltIn.MediaTransformer, JsonRuntimeMediaSerializerNumeric);*/
     }
 
     public static final Serializer<MediaContent> JsonMediaSerializer = 
@@ -95,7 +95,7 @@ public final class ProtostuffJson
         
     };
 
-    public static final Serializer<data.media.MediaContent> RuntimeJsonMediaSerializer = 
+    public static final Serializer<data.media.MediaContent> JsonRuntimeMediaSerializer = 
         new Serializer<data.media.MediaContent>()
     {
 
@@ -120,7 +120,7 @@ public final class ProtostuffJson
         
     };
 
-    public static final Serializer<data.media.MediaContent> RuntimeJsonMediaSerializerNumeric = 
+    public static final Serializer<data.media.MediaContent> JsonRuntimeMediaSerializerNumeric = 
         new Serializer<data.media.MediaContent>()
     {
 

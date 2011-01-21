@@ -272,6 +272,7 @@ public class BenchmarkRunner
                 // smile is "binary json" -- does it belong in 'binary' or 'json[like]' section?
                 JacksonSmileManual.register(groups);
                 JacksonSmileDatabind.register(groups);
+                ProtostuffSmile.register(groups);
 
 		// XML-based formats.
 		Stax.register(groups);
