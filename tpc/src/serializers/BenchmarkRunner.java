@@ -244,11 +244,13 @@ public class BenchmarkRunner
 
 		TestGroups groups = new TestGroups();
 
-		// Binary Formats; first language-specific ones
+		// Binary Formats; language-specific ones
                 JavaBuiltIn.register(groups);
                 JavaManual.register(groups);
                 Scala.register(groups);
+		// hessian and kryo are Java object serializations
                 Hessian.register(groups);
+                Kryo.register(groups);
 
                 // Binary formats, generic: protobuf, thrift, avro, kryo, CKS
                 Protobuf.register(groups);
@@ -257,19 +259,24 @@ public class BenchmarkRunner
                 Thrift.register(groups);
 		AvroSpecific.register(groups);
 		AvroGeneric.register(groups);
-                Kryo.register(groups);
 		CksBinary.register(groups);
 
-		// JSON-like formats; starting with JSON
+		// JSON
 		JsonJacksonManual.register(groups);
 		JsonJacksonDatabind.register(groups);
 		JsonTwoLattes.register(groups);
 		ProtostuffJson.register(groups);
 		ProtobufJson.register(groups);
 		Gson.register(groups);
-                // CKS text is json-like
+		// Then JSON-like
+                // CKS text is textual JSON-like format
                 CksText.register(groups);
-                // smile is "binary json" -- does it belong in 'binary' or 'json[like]' section?
+		// then binary variants
+		// BSON is binary JSON-like format
+		BsonJackson.register(groups);
+		BsonJacksonDatabind.register(groups);
+		MongoDB.register(groups);
+		// Smile is 1-to-1 binary representation of JSON
                 JacksonSmileManual.register(groups);
                 JacksonSmileDatabind.register(groups);
                 ProtostuffSmile.register(groups);
