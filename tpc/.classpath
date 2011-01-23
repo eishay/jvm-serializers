@@ -32,12 +32,6 @@
 	<classpathentry kind="lib" path="lib/kryo-1.03.jar"/>
 	<classpathentry kind="lib" path="lib/minlog-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/protobuf-java-2.3.0.jar"/>
-	<classpathentry kind="lib" path="lib/protostuff-api-1.0.0.M5.jar"/>
-	<classpathentry kind="lib" path="lib/protostuff-compiler-1.0.0.M5-jarjar.jar"/>
-	<classpathentry kind="lib" path="lib/protostuff-core-1.0.0.M5.jar"/>
-	<classpathentry kind="lib" path="lib/protostuff-json-1.0.0.M5.jar"/>
-	<classpathentry kind="lib" path="lib/protostuff-runtime-1.0.0.M5.jar"/>
-	<classpathentry kind="lib" path="lib/protostuff-xml-1.0.0.M5.jar"/>
 	<classpathentry kind="lib" path="lib/reflectasm-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/sbinary-0.3.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/scala-library-2.8.0-rc1.jar"/>
@@ -45,6 +39,16 @@
 	<classpathentry kind="lib" path="lib/slf4j-nop-1.5.10.jar"/>
 	<classpathentry kind="lib" path="lib/woodstox-core-asl-4.0.7.jar"/>
 	<classpathentry kind="lib" path="lib/gson-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-all-1.7.0.jar"/>
+	<classpathentry kind="lib" path="lib/bson4jackson-1.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-all-1.7.1.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-xml-databind-0.5.2.jar"/>
+	<classpathentry kind="lib" path="lib/mongo-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/msgpack-0.4.0-devel.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff-api-1.0.0.M7.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff-compiler-1.0.0.M7-jarjar.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff-core-1.0.0.M7.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff-json-1.0.0.M7.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff-runtime-1.0.0.M7.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff-xml-1.0.0.M7.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

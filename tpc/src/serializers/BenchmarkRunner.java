@@ -284,6 +284,7 @@ public class BenchmarkRunner
 		// XML-based formats.
 		Stax.register(groups);
 		XStream.register(groups);
+		JacksonXmlDatabind.register(groups);
 		JavolutionXml.register(groups);
 
 		// --------------------------------------------------
