@@ -920,7 +920,7 @@ public class BenchmarkRunner
 		}
 
 		double scale = max * 1.1;
-		System.out.println("<img src='http://chart.apis.google.com/chart?chtt="
+		System.out.println("<img src='https://chart.googleapis.com/chart?chtt="
 			+ urlEncode(m.displayName)
 			+ "&chf=c||lg||0||FFFFFF||1||76A4FB||0|bg||s||EFEFEF&chs="+width+"x"+height+"&chd=t:"
 			+ valSb.toString().substring(0, valSb.length() - 1)
