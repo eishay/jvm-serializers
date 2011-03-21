@@ -628,9 +628,9 @@ public class BenchmarkRunner
 
 	enum measurements
 	{
-		timeCreate("create"), timeSerializeDifferentObjects("ser"), timeSerializeSameObject("ser+same"),
-		timeDeserializeNoFieldAccess("deser"), timeDeserializeAndCheck("deser+deep"), timeDeserializeAndCheckShallow("deser+shal"),
-		totalTime("total"), length("size"), lengthDeflate("size+dfl"),
+		timeCreate("create (nanos)"), timeSerializeDifferentObjects("ser (nanos)"), timeSerializeSameObject("ser+same (nanos)"),
+		timeDeserializeNoFieldAccess("deser (nanos)"), timeDeserializeAndCheck("deser+deep (nanos)"), timeDeserializeAndCheckShallow("deser+shal (nanos)"),
+		totalTime("total (nanos)"), length("size (bytes)"), lengthDeflate("size+dfl (bytes)"),
 		;
 
 		public final String displayName;
