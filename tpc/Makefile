@@ -29,7 +29,7 @@ thrift_generator ?= thrift
 activemqprotobuf_cp := $(call mkcp,$(wildcard lib/activemq-*.jar))
 activemqprotobuf_generator ?= java -cp "$(activemqprotobuf_cp)" org.apache.activemq.protobuf.compiler.AltJavaGenerator
 cks_generator ?= java -jar lib/cks-tool.jar
-avro_cp ?= $(call mkcp,$(wildcard lib/avro-*.jar lib/jackson-*.jar lib/jopt-simple-*.jar))
+avro_cp ?= $(call mkcp,$(wildcard lib/avro-*.jar lib/jackson-*.jar lib/jopt-simple-*.jar lib/velocity-*.jar lib/slf4j-*.jar))
 avro_generator ?= java -cp "$(avro_cp)" org.apache.avro.tool.Main
 protostuff_compiler ?= $(wildcard lib/protostuff-compiler-*.jar)
 

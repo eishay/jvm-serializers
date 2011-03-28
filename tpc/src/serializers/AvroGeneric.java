@@ -7,9 +7,10 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.io.DecoderFactory;
-import org.apache.avro.util.Utf8;
+import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.BinaryDecoder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,7 +28,10 @@ public class AvroGeneric
 	// ------------------------------------------------------------
 	// Serializer (just one class)
 
-	private static final DecoderFactory FACTORY = DecoderFactory.defaultFactory();
+	private static final DecoderFactory DECODER_FACTORY
+          = DecoderFactory.get();
+	private static final EncoderFactory ENCODER_FACTORY
+          = EncoderFactory.get();
 
 	public static class GenericSerializer extends Serializer<GenericRecord>
 	{
@@ -35,6 +39,9 @@ public class AvroGeneric
 
 		private final GenericDatumWriter<GenericRecord> WRITER;
 		private final GenericDatumReader<GenericRecord> READER;
+
+                private BinaryEncoder encoder;
+                private BinaryDecoder decoder;
 
 		public GenericSerializer(Schema schema)
 		{
@@ -44,14 +51,17 @@ public class AvroGeneric
 
 		public GenericRecord deserialize(byte[] array) throws Exception
 		{
-			return READER.read(null, FACTORY.createBinaryDecoder(array, null));
+                  decoder = DECODER_FACTORY.binaryDecoder(array, decoder);
+                  return READER.read(null, decoder);
 		}
 
 		public byte[] serialize(GenericRecord data) throws IOException
 		{
-			ByteArrayOutputStream out = outputStream(data);
-			WRITER.write(data, new BinaryEncoder(out));
-			return out.toByteArray();
+                  ByteArrayOutputStream out = outputStream(data);
+                  encoder = ENCODER_FACTORY.binaryEncoder(out, encoder);
+                  WRITER.write(data, encoder);
+                  encoder.flush();
+                  return out.toByteArray();
 		}
 	}
 
@@ -89,19 +99,19 @@ public class AvroGeneric
 		private GenericRecord forwardMedia(Media media)
 		{
 			GenericRecord m = new GenericData.Record(Avro.Media.sMedia);
-			m.put("uri", new Utf8(media.uri));
-			m.put("format", new Utf8(media.format));
+			m.put("uri", media.uri);
+			m.put("format", media.format);
 			if (media.title != null) {
-				m.put("title", new Utf8(media.title));
+				m.put("title", media.title);
 			}
 			m.put("duration", media.duration);
 			if (media.hasBitrate) {
 				m.put("bitrate", media.bitrate);
 			}
 
-			GenericData.Array<Utf8> persons =  new GenericData.Array<Utf8>(media.persons.size(), Avro.Media.sPersons);
+			GenericData.Array<CharSequence> persons =  new GenericData.Array<CharSequence>(media.persons.size(), Avro.Media.sPersons);
 			for (String p : media.persons) {
-				persons.add(new Utf8(p));
+                          persons.add(p);
 			}
 
 			m.put("persons", persons);
@@ -110,7 +120,7 @@ public class AvroGeneric
 			m.put("width", media.width);
 			m.put("size", media.size);
 			if (media.copyright != null) {
-				m.put("copyright", new Utf8(media.copyright));
+				m.put("copyright", media.copyright);
 			}
 
 			return m;
@@ -129,12 +139,12 @@ public class AvroGeneric
 		private GenericRecord forwardImage(Image image)
 		{
 			GenericRecord i = new GenericData.Record(Avro.Media.sImage);
-			i.put("uri", new Utf8(image.uri));
+			i.put("uri", image.uri);
 			i.put("width", image.width);
 			i.put("height", image.height);
 			i.put("size", forwardSize(image.size));
 			if (image.title != null) {
-				i.put("title", new Utf8(image.title));
+                          i.put("title",  image.title);
 			}
 			return i;
 		}
@@ -169,23 +179,23 @@ public class AvroGeneric
 			// Media
 
 			@SuppressWarnings("unchecked")
-			GenericData.Array<Utf8> gpersons = (GenericData.Array<Utf8>) media.get("persons");
+			GenericData.Array<CharSequence> gpersons = (GenericData.Array<CharSequence>) media.get("persons");
 			List<String> persons = new ArrayList<String>((int) gpersons.size());
-			for (Utf8 person : gpersons) {
+			for (CharSequence person : gpersons) {
 				persons.add(person.toString());
 			}
 
 			// Optional fields.
-			Utf8 title = (Utf8) media.get("title");
+			CharSequence title = (CharSequence) media.get("title");
 			Integer bitrate = (Integer) media.get("bitrate");
-			Utf8 copyright = (Utf8) media.get("copyright");
+			CharSequence copyright = (CharSequence) media.get("copyright");
 
 			return new Media(
-				((Utf8) media.get("uri")).toString(),
+				((CharSequence) media.get("uri")).toString(),
 				title != null ? title.toString() : null,
 				(Integer) media.get("width"),
 				(Integer) media.get("height"),
-				((Utf8) media.get("format")).toString(),
+				((CharSequence) media.get("format")).toString(),
 				(Long) media.get("duration"),
 				(Long) media.get("size"),
 				bitrate != null ? bitrate : 0,
@@ -207,9 +217,9 @@ public class AvroGeneric
 
 		private Image reverseImage(GenericRecord image)
 		{
-			Utf8 title = (Utf8) image.get("title");
+			CharSequence title = (CharSequence) image.get("title");
 			return new Image(
-				((Utf8) image.get("uri")).toString(),
+				((CharSequence) image.get("uri")).toString(),
 				title == null ? null : title.toString(),
 				(Integer) image.get("width"),
 				(Integer) image.get("height"),

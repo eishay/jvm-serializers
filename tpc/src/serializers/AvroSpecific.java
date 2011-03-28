@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
-import org.apache.avro.util.Utf8;
 import serializers.avro.media.*;
 
 public class AvroSpecific
@@ -25,7 +26,10 @@ public class AvroSpecific
 	// ------------------------------------------------------------
 	// Serializers
 
-	private static final DecoderFactory FACTORY = DecoderFactory.defaultFactory();
+	private static final DecoderFactory DECODER_FACTORY
+          = DecoderFactory.get();
+	private static final EncoderFactory ENCODER_FACTORY
+          = EncoderFactory.get();
 
 	public static final class GenericSerializer<T> extends Serializer<T>
 	{
@@ -33,6 +37,9 @@ public class AvroSpecific
 
 		private final SpecificDatumReader<T> READER;
 		private final SpecificDatumWriter<T> WRITER;
+
+                private BinaryEncoder encoder;
+                private BinaryDecoder decoder;
 
 		public GenericSerializer(Class<T> clazz)
 		{
@@ -42,13 +49,16 @@ public class AvroSpecific
 
 
 		public T deserialize(byte[] array) throws Exception {
-			return READER.read(null, FACTORY.createBinaryDecoder(array, null));
+                  decoder = DECODER_FACTORY.binaryDecoder(array, decoder);
+                  return READER.read(null, decoder);
 		}
 
 		public byte[] serialize(T content) throws Exception {
-			ByteArrayOutputStream out = outputStream(content);
-			WRITER.write(content, new BinaryEncoder(out));
-			return out.toByteArray();
+                  ByteArrayOutputStream out = outputStream(content);
+                  encoder = ENCODER_FACTORY.binaryEncoder(out, encoder);
+                  WRITER.write(content, encoder);
+                  encoder.flush();
+                  return out.toByteArray();
 		}
 	}
 
@@ -77,23 +87,23 @@ public class AvroSpecific
 		{
 			Media m = new Media();
 
-			m.uri = new Utf8(media.uri);
-			m.title = media.title != null ? new Utf8(media.title) : null;
+			m.uri = media.uri;
+			m.title = media.title;
 			m.width = media.width;
 			m.height = media.height;
-			m.format = new Utf8(media.format);
+			m.format = media.format;
 			m.duration = media.duration;
 			m.size = media.size;
 			if (media.hasBitrate) m.bitrate = media.bitrate;
 
-			GenericArray<Utf8> persons = new GenericData.Array<Utf8>(media.persons.size(), Avro.Media.sPersons);
+			GenericArray<CharSequence> persons = new GenericData.Array<CharSequence>(media.persons.size(), Avro.Media.sPersons);
 			for (String s : media.persons) {
-				persons.add(new Utf8(s));
+                          persons.add(s);
 			}
 			m.persons = persons;
 
 			m.player = forwardPlayer(media.player);
-			if (media.copyright != null) m.copyright = new Utf8(media.copyright);
+			m.copyright = media.copyright;
 
 			return m;
 		}
@@ -110,8 +120,8 @@ public class AvroSpecific
 		private Image forwardImage(data.media.Image image)
 		{
 			Image i = new Image();
-			i.uri = new Utf8(image.uri);
-			if (image.title != null) i.title = new Utf8(image.title);
+			i.uri = image.uri;
+			i.title = image.title;
 			i.width = image.width;
 			i.height = image.height;
 			i.size = forwardSize(image.size);
@@ -145,7 +155,7 @@ public class AvroSpecific
 		{
 			// Media
 			List<String> persons = new ArrayList<String>();
-			for (Utf8 p : media.persons) {
+			for (CharSequence p : media.persons) {
 				persons.add(p.toString());
 			}
 
