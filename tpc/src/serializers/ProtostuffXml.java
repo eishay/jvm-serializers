@@ -1,5 +1,7 @@
 package serializers;
 
+import static serializers.Protostuff.MEDIA_CONTENT_SCHEMA;
+
 import com.dyuproject.protostuff.XmlIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
@@ -13,9 +15,15 @@ public final class ProtostuffXml
 
     public static void register(TestGroups groups)
     {
-        groups.media.add(Protostuff.MediaTransformer, XmlMediaSerializer);
-        // protostuff has too many entries
-        //groups.media.add(JavaBuiltIn.MediaTransformer, RuntimeXmlMediaSerializer);
+        // manual (hand-coded schema, no autoboxing)
+        groups.media.add(JavaBuiltIn.MediaTransformer, XmlManualMediaSerializer);
+        // runtime (reflection)
+        groups.media.add(JavaBuiltIn.MediaTransformer, XmlRuntimeMediaSerializer);
+
+        /* protostuff has too many entries
+
+        // generated code
+        groups.media.add(Protostuff.MediaTransformer, XmlMediaSerializer);*/
     }
 
     public static final Serializer<MediaContent> XmlMediaSerializer = 
@@ -41,11 +49,11 @@ public final class ProtostuffXml
         
     };
 
-    public static final Serializer<data.media.MediaContent> RuntimeXmlMediaSerializer = 
+    public static final Serializer<data.media.MediaContent> XmlRuntimeMediaSerializer = 
         new Serializer<data.media.MediaContent>()
     {
 
-	final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
+	    final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
 
         public data.media.MediaContent deserialize(byte[] array) throws Exception
         {
@@ -62,6 +70,29 @@ public final class ProtostuffXml
         public String getName()
         {
             return "xml/protostuff-runtime";
+        }
+        
+    };
+
+    public static final Serializer<data.media.MediaContent> XmlManualMediaSerializer = 
+        new Serializer<data.media.MediaContent>()
+    {
+
+        public data.media.MediaContent deserialize(byte[] array) throws Exception
+        {
+            data.media.MediaContent mc = new data.media.MediaContent();
+            XmlIOUtil.mergeFrom(array, mc, MEDIA_CONTENT_SCHEMA);
+            return mc;
+        }
+
+        public byte[] serialize(data.media.MediaContent content) throws Exception
+        {
+            return XmlIOUtil.toByteArray(content, MEDIA_CONTENT_SCHEMA);
+        }
+        
+        public String getName()
+        {
+            return "xml/protostuff-manual";
         }
         
     };
