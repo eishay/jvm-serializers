@@ -5,7 +5,6 @@ import java.io.IOException;
 import data.media.MediaContent;
 
 import org.codehaus.jackson.map.*;
-import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 
 /**
@@ -37,7 +36,7 @@ public class JsonJacksonDatabind
 		{
 		    this.name = name;
 		    this.mapper = mapper;
-		    this.type = TypeFactory.type(clazz);
+		    this.type = mapper.getTypeFactory().constructType(clazz);
 		}
 
 		public String getName() { return name; }

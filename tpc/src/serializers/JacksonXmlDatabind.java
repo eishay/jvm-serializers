@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
-import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 
 import com.fasterxml.aalto.stax.InputFactoryImpl;
@@ -38,8 +37,8 @@ public class JacksonXmlDatabind<T> extends Serializer<T>
             XMLInputFactory inputF, XMLOutputFactory outputF)
     {
         this.name = name;
-        type = TypeFactory.type(clazz);
         mapper = new XmlMapper(new XmlFactory(null, inputF, outputF));
+        type = mapper.getTypeFactory().constructType(clazz);
     }
 
     public String getName() { return name; }
