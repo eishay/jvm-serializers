@@ -1,7 +1,6 @@
 package serializers;
 
 import de.undercouch.bson4jackson.BsonFactory;
-import de.undercouch.bson4jackson.BsonGenerator;
 
 public class BsonJackson
 {
