@@ -267,7 +267,8 @@ public class BenchmarkRunner
 		JsonTwoLattes.register(groups);
 		ProtostuffJson.register(groups);
 		ProtobufJson.register(groups);
-		Gson.register(groups);
+		GsonManual.register(groups);
+                Gson.register(groups);
 		// Then JSON-like
                 // CKS text is textual JSON-like format
                 CksText.register(groups);
