@@ -1,6 +1,9 @@
 package data.media;
 
 import java.util.List;
+
+import org.msgpack.annotation.Optional;
+
 import static data.ReprUtil.repr;
 
 @SuppressWarnings("serial")
@@ -10,6 +13,7 @@ public class Media implements java.io.Serializable {
 	}
 
 	public String uri;
+        @Optional // msgpack requires this
 	public String title;        // Can be unset.
 	public int width;
 	public int height;
@@ -19,7 +23,10 @@ public class Media implements java.io.Serializable {
 	public int bitrate;         // Can be unset.
 	public boolean hasBitrate;
 	public List<String> persons;
+	
 	public Player player;
+
+	@Optional // msgpack requires this
 	public String copyright;    // Can be unset.
 
 	public Media() {}

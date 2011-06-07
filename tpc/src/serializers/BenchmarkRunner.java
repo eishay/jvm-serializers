@@ -243,7 +243,7 @@ public class BenchmarkRunner
 		// Load serializers.
 
 		TestGroups groups = new TestGroups();
-
+		
 		// Binary Formats; language-specific ones
                 JavaBuiltIn.register(groups);
                 JavaManual.register(groups);
@@ -251,8 +251,8 @@ public class BenchmarkRunner
 		// hessian and kryo are Java object serializations
                 Hessian.register(groups);
                 Kryo.register(groups);
-
-                // Binary formats, generic: protobuf, thrift, avro, kryo, CKS
+                
+                // Binary formats, generic: protobuf, thrift, avro, kryo, CKS, msgpack
                 Protobuf.register(groups);
 		ActiveMQProtobuf.register(groups);
 		Protostuff.register(groups);
@@ -260,6 +260,7 @@ public class BenchmarkRunner
 		AvroSpecific.register(groups);
 		AvroGeneric.register(groups);
 		CksBinary.register(groups);
+                MsgPack.register(groups);
 
 		// JSON
 		JsonJacksonManual.register(groups);
