@@ -22,6 +22,7 @@ json/protostuff-manual
 json/protostuff-runtime
 json/protobuf
 json/google-gson
+json/svenson-databind
 bson/jackson-manual
 bson/jackson-databind
 bson/mongodb
