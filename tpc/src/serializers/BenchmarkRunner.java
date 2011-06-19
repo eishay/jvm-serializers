@@ -271,6 +271,7 @@ public class BenchmarkRunner
 		GsonManual.register(groups);
                 Gson.register(groups);
                 SvensonJsonDatabind.register(groups);
+                JsonLibJsonDatabind.register(groups);
 		// Then JSON-like
                 // CKS text is textual JSON-like format
                 CksText.register(groups);
