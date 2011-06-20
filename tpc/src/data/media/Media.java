@@ -106,4 +106,93 @@ public class Media implements java.io.Serializable {
 		sb.append("]");
 		return sb.toString();
 	}
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
+    public void setBitrate(int bitrate) {
+        this.bitrate = bitrate;
+        this.hasBitrate = true;
+    }
+
+    public void setPersons(List<String> persons) {
+        this.persons = persons;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public void setCopyright(String copyright) {
+        this.copyright = copyright;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public int getBitrate() {
+        return bitrate;
+    }
+
+    public List<String> getPersons() {
+        return persons;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public String getCopyright() {
+        return copyright;
+    }
 }
