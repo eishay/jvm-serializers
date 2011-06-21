@@ -58,5 +58,6 @@
 	<classpathentry kind="lib" path="lib/fastjson-1.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/json_simple-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/json-smart-1.0.8.jar"/>
+	<classpathentry kind="lib" path="lib/json.org-ref-2011.06.21.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

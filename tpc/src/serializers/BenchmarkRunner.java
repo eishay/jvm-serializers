@@ -275,6 +275,7 @@ public class BenchmarkRunner
                 FastJSONDatabind.register(groups);
                 JsonSimpleSemiManual.register(groups);
                 JsonSmartSemiManual.register(groups);
+                JsonDotOrgSemiManual.register(groups);
 		// Then JSON-like
                 // CKS text is textual JSON-like format
                 CksText.register(groups);
