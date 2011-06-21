@@ -7,7 +7,6 @@ import data.media.Media;
 import data.media.MediaContent;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
 /**
@@ -46,11 +45,8 @@ public class FastJSONDatabind
 
     public byte[] serialize(T data) throws IOException
     {
-      ByteArrayOutputStream baos = outputStream(data);
-      OutputStreamWriter w = new OutputStreamWriter(baos, "UTF-8");
-      JSONSerializer.write(w, data);
-      w.close();
-      return baos.toByteArray();
+      String jsonString = JSON.toJSONString(data, SerializerFeature.WriteEnumUsingToString);
+      return jsonString.getBytes("UTF-8");
     }
   }
 }
