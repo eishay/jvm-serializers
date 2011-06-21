@@ -35,19 +35,16 @@ public class Gson
     	        
     	        public T deserialize(byte[] array) throws Exception
     	        {
-    	                Reader r = new InputStreamReader(new ByteArrayInputStream(array), "UTF-8");
-    	                T result = _gson.fromJson(r, type);
-    	                r.close();
-    	                return result;
+                        T result = _gson.fromJson(new String(array, "UTF-8"), type);
+                        return result;
     	        }
     
     	        public byte[] serialize(T data) throws IOException
     	        {
-    	                ByteArrayOutputStream baos = outputStream(data);
-    	                OutputStreamWriter w = new OutputStreamWriter(baos, "UTF-8");
-    	                _gson.toJson(data, w);
-    	                w.close();
-    	                return baos.toByteArray();
+                        StringWriter w = new StringWriter();
+                        _gson.toJson(data, w);
+                        w.flush();
+                        return w.toString().getBytes("UTF-8");
     	        }
     	}
 }

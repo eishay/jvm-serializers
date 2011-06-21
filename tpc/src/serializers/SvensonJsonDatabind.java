@@ -40,19 +40,13 @@ public class SvensonJsonDatabind
 
     public T deserialize(byte[] array) throws Exception
     {
-      org.svenson.tokenize.JSONCharacterSource source = 
-        new org.svenson.tokenize.InputStreamSource(new ByteArrayInputStream(array), true);
-      T result = _jsonParser.parse(type, source);
-      return result;
+      return _jsonParser.parse(type, new String(array, "UTF-8"));
     }
 
     public byte[] serialize(T data) throws IOException
     {
-      ByteArrayOutputStream baos = outputStream(data);
-      OutputStreamWriter w = new OutputStreamWriter(baos, "UTF-8");
-      _jsonWriter.writeJSONToWriter(data, w);
-      w.close();
-      return baos.toByteArray();
+      String result = _jsonWriter.forValue(data);
+      return result.getBytes();
     }
   }
 }
