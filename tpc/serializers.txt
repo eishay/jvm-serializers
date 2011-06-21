@@ -25,6 +25,8 @@ json/google-gson
 json/svenson-databind
 json/json-lib-databind
 json/FastJSON-databind
+json/JSON.simple/semi-manual
+json/json-smart/semi-manual
 bson/jackson-manual
 bson/jackson-databind
 bson/mongodb
