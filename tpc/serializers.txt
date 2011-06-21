@@ -24,6 +24,7 @@ json/protobuf
 json/google-gson
 json/svenson-databind
 json/json-lib-databind
+json/FastJSON-databind
 bson/jackson-manual
 bson/jackson-databind
 bson/mongodb

@@ -55,5 +55,6 @@
 	<classpathentry kind="lib" path="lib/svenson-1.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/json-lib-2.4-jdk15.jar"/>
 	<classpathentry kind="lib" path="lib/ezmorph-1.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/fastjson-1.0.5.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
