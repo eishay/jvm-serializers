@@ -98,11 +98,10 @@ public class JsonLibJsonDatabind
 
     public byte[] serialize(T data) throws IOException
     {
-      ByteArrayOutputStream baos = outputStream(data);
-      OutputStreamWriter w = new OutputStreamWriter(baos, "UTF-8");
+      StringWriter w = new StringWriter();
       net.sf.json.JSONSerializer.toJSON(data, _jsonConfig).write(w);
-      w.close();
-      return baos.toByteArray();
+      w.flush();
+      return w.toString().getBytes("UTF-8");
     }
   }
 }
