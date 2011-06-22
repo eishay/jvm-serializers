@@ -3,6 +3,7 @@ package data.media;
 import java.util.List;
 
 import org.msgpack.annotation.Optional;
+import jsonij.json.annotation.JSONIgnore;
 
 import static data.ReprUtil.repr;
 
@@ -21,6 +22,7 @@ public class Media implements java.io.Serializable {
 	public long duration;
 	public long size;
 	public int bitrate;         // Can be unset.
+	@JSONIgnore // required by JSONiJ
 	public boolean hasBitrate;
 	public List<String> persons;
 	

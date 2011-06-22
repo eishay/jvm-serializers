@@ -17,7 +17,7 @@ public class FastJSONDatabind
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.MediaTransformer,
-        new GenericSerializer<MediaContent>("json/FastJSON-databind", MediaContent.class));
+        new GenericSerializer<MediaContent>("json/fastjson-databind", MediaContent.class));
   }
 
   static class GenericSerializer<T> extends Serializer<T>
