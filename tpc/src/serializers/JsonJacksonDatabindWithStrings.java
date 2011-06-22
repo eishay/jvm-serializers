@@ -48,11 +48,11 @@ public class JsonJacksonDatabindWithStrings
         }
 
         @SuppressWarnings("unchecked")
-                public T deserialize(byte[] array) throws Exception
-                {
+        public T deserialize(byte[] array) throws Exception
+        {
             // return (T) mapper.readValue(array, 0, array.length, type);
             String input = new String(array, "UTF-8");
-            return mapper.readValue(input, type);
+            return (T) mapper.readValue(input, type);
         }
     };
 }
