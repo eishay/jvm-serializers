@@ -265,6 +265,7 @@ public class BenchmarkRunner
 		// JSON
 		JsonJacksonManual.register(groups);
 		JsonJacksonDatabind.register(groups);
+		JsonJacksonDatabindWithStrings.register(groups);
 		JsonTwoLattes.register(groups);
 		ProtostuffJson.register(groups);
 		ProtobufJson.register(groups);
@@ -273,9 +274,12 @@ public class BenchmarkRunner
                 SvensonJsonDatabind.register(groups);
                 JsonLibJsonDatabind.register(groups);
                 FastJSONDatabind.register(groups);
-                JsonSimpleSemiManual.register(groups);
-                JsonSmartSemiManual.register(groups);
-                JsonDotOrgSemiManual.register(groups);
+                JsonSimpleManualTree.register(groups);
+                JsonSmartManualTree.register(groups);
+                JsonDotOrgManualTree.register(groups);
+                JsonijJpath.register(groups);
+                JsonijManualTree.register(groups);
+                ArgoManualTree.register(groups);
 		// Then JSON-like
                 // CKS text is textual JSON-like format
                 CksText.register(groups);
