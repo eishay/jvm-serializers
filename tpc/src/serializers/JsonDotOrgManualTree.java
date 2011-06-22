@@ -15,19 +15,19 @@ import data.media.MediaContent;
 /**
  * Driver that uses the json.org reference JSON implementation in Java, with semi-manual parsing.
  */
-public class JsonDotOrgSemiManual
+public class JsonDotOrgManualTree
 {
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.MediaTransformer,
-        new SemiManualSerializer("json/org.json/semi-manual"));
+        new ManualTreeSerializer("json/org.json/manual/tree"));
   }
 
-  static class SemiManualSerializer extends Serializer<MediaContent>
+  static class ManualTreeSerializer extends Serializer<MediaContent>
   {
     private final String name;
 
-    public SemiManualSerializer(String name)
+    public ManualTreeSerializer(String name)
     {
       this.name = name;
     }

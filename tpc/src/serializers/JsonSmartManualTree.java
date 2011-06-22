@@ -6,34 +6,34 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 
 import data.media.Image;
 import data.media.Media;
 import data.media.MediaContent;
 
 /**
- * Driver that uses JSON.simple [http://code.google.com/p/json-simple/], with semi-manual parsing.
+ * Driver that uses json-smart [http://code.google.com/p/json-smart/], with manual tree parsing.
  */
-public class JsonSimpleSemiManual
+public class JsonSmartManualTree
 {
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.MediaTransformer,
-        new SemiManualSerializer("json/JSON.simple/semi-manual"));
+        new ManualTreeSerializer("json/json-smart/manual/tree"));
   }
 
-  static class SemiManualSerializer extends Serializer<MediaContent>
+  static class ManualTreeSerializer extends Serializer<MediaContent>
   {
     private final String name;
     private final JSONParser parser;
 
-    public SemiManualSerializer(String name)
+    public ManualTreeSerializer(String name)
     {
       this.name = name;
-      parser = new JSONParser();
+      parser = new JSONParser(JSONParser.MODE_RFC4627);
     }
 
     public String getName()
@@ -65,15 +65,15 @@ public class JsonSimpleSemiManual
     {
       Media media = new Media();
       Object bitrate = mediaJsonObject.get("bitrate");
-      if (bitrate != null && bitrate instanceof Long)
+      if (bitrate != null && bitrate instanceof Integer)
       {
-        media.bitrate = ((Long) bitrate).intValue();
+        media.bitrate = ((Integer) bitrate).intValue();
         media.hasBitrate = true;
       }
       media.copyright = (String) mediaJsonObject.get("copyright");
-      media.duration = ((Long) mediaJsonObject.get("duration")).longValue();
+      media.duration = ((Integer) mediaJsonObject.get("duration")).longValue();
       media.format = (String) mediaJsonObject.get("format");
-      media.height = ((Long) mediaJsonObject.get("height")).intValue();
+      media.height = ((Integer) mediaJsonObject.get("height")).intValue();
       List<String> persons = new ArrayList<String>();
       JSONArray personsJsonArray = (JSONArray) mediaJsonObject.get("persons");
       for (int i = 0, size = personsJsonArray.size(); i < size; i++)
@@ -82,13 +82,13 @@ public class JsonSimpleSemiManual
       }
       media.persons = persons;
       media.player = Media.Player.valueOf((String) mediaJsonObject.get("player"));
-      media.size = ((Long) mediaJsonObject.get("size")).longValue();
+      media.size = ((Integer) mediaJsonObject.get("size")).longValue();
       media.title = (String) mediaJsonObject.get("title");
       media.uri = (String) mediaJsonObject.get("uri");
-      media.width = ((Long) mediaJsonObject.get("width")).intValue();
+      media.width = ((Integer) mediaJsonObject.get("width")).intValue();
       return media;
     }
-
+    
     static MediaContent readMediaContent(JSONParser parser, String mediaContentJsonInput) throws Exception
     {
       JSONObject mediaContentJsonObject = (JSONObject) parser.parse(mediaContentJsonInput);
@@ -97,34 +97,34 @@ public class JsonSimpleSemiManual
       mediaContent.media = readMedia(parser, (JSONObject) mediaContentJsonObject.get("media"));
       return mediaContent;
     }
-
+    
     static Image readImage(JSONParser parser, String imageJsonInput) throws Exception
     {
       JSONObject imageJsonObject = (JSONObject) parser.parse(imageJsonInput);
       return readImage(parser, imageJsonObject);
     }
-
+    
     static Image readImage(JSONParser parser, JSONObject imageJsonObject) throws Exception
     {
       Image image = new Image();
-      image.height = ((Long) imageJsonObject.get("height")).intValue();
+      image.height = ((Integer) imageJsonObject.get("height")).intValue();
       image.size = Image.Size.valueOf((String) imageJsonObject.get("size"));
       image.title = (String) imageJsonObject.get("title");
       image.uri = (String) imageJsonObject.get("uri");
-      image.width = ((Long) imageJsonObject.get("width")).intValue();
+      image.width = ((Integer) imageJsonObject.get("width")).intValue();
       return image;
     }
-
+    
     static List<Image> readImages(JSONParser parser, String imagesJsonInput) throws Exception
     {
       JSONArray imagesJsonArray = (JSONArray) parser.parse(imagesJsonInput);
       return readImages(parser, imagesJsonArray);
     }
-
+    
     static List<Image> readImages(JSONParser parser, JSONArray imagesJsonArray) throws Exception
     {
       int size = imagesJsonArray.size();
-      List<Image> images = new ArrayList<Image>(size);
+      List<Image> images = new ArrayList<Image> (size);
       for (int i = 0; i < size; i++)
       {
         images.add(readImage(parser, (JSONObject) imagesJsonArray.get(i)));
@@ -132,7 +132,6 @@ public class JsonSimpleSemiManual
       return images;
     }
 
-    @SuppressWarnings("unchecked")
     static JSONObject createJsonObject(Media media)
     {
       JSONObject jsonObject = new JSONObject();
@@ -158,20 +157,19 @@ public class JsonSimpleSemiManual
       jsonObject.put("width", media.width);
       return jsonObject;
     }
-
+    
     static void writeMedia(Writer writer, Media media) throws Exception
     {
       JSONObject jsonObject = createJsonObject(media);
       jsonObject.writeJSONString(writer);
     }
-
+    
     static void writeImage(Writer writer, Image image) throws Exception
     {
       JSONObject jsonObject = createJsonObject(image);
       jsonObject.writeJSONString(writer);
     }
 
-    @SuppressWarnings("unchecked")
     static JSONObject createJsonObject(Image image)
     {
       JSONObject jsonObject = new JSONObject();
@@ -182,8 +180,7 @@ public class JsonSimpleSemiManual
       jsonObject.put("width", image.width);
       return jsonObject;
     }
-
-    @SuppressWarnings("unchecked")
+    
     static void writeMediaContent(Writer writer, MediaContent mediaContent) throws IOException
     {
       JSONObject jsonObject = new JSONObject();
@@ -191,8 +188,7 @@ public class JsonSimpleSemiManual
       jsonObject.put("images", createJsonArray(mediaContent.images));
       jsonObject.writeJSONString(writer);
     }
-
-    @SuppressWarnings("unchecked")
+    
     static JSONArray createJsonArray(List<Image> images)
     {
       JSONArray jsonArray = new JSONArray();
@@ -202,7 +198,7 @@ public class JsonSimpleSemiManual
       }
       return jsonArray;
     }
-
+    
     static void writeImages(Writer writer, List<Image> images) throws Exception
     {
       JSONArray jsonArray = createJsonArray(images);
