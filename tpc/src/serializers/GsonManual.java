@@ -39,7 +39,7 @@ public class GsonManual
         
         public MediaContent deserialize(byte[] array) throws Exception
         {
-            Reader r = new InputStreamReader(new ByteArrayInputStream(array), "UTF-8");
+            Reader r = new StringReader(new String(array, "UTF-8"));
             JsonReader reader = new JsonReader(r);
             MediaContent content = readMediaContent(reader);            
             r.close();
@@ -48,12 +48,12 @@ public class GsonManual
 
         public byte[] serialize(MediaContent data) throws IOException
         {
-            ByteArrayOutputStream baos = outputStream(data);
-            OutputStreamWriter w = new OutputStreamWriter(baos, "UTF-8");
+            StringWriter w = new StringWriter();
             JsonWriter writer = new JsonWriter(w);
             writeMediaContent(writer, data);
             writer.close();
-            return baos.toByteArray();
+            w.flush();
+            return w.toString().getBytes("UTF-8");
         }
 
         // // // Read methods
