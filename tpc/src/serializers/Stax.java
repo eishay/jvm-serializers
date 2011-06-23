@@ -62,7 +62,7 @@ public class Stax
 	{
 		private final Handler handler;
 
-		public String getName() { return "xml/manual-"+handler.name; }
+		public String getName() { return "xml/"+handler.name+"-manual"; }
 
 		public MediaSerializer(Handler handler)
 		{

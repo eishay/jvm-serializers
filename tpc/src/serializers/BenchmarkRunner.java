@@ -905,7 +905,7 @@ public class BenchmarkRunner
 
 		int maxPixels = 300 * 1000; // Limit set by Google's Chart API.
 		
-		int maxHeight = 500;
+		int maxHeight = 600;
         int width = maxPixels / maxHeight;
 
 		int barThickness = 10;
