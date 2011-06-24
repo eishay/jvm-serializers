@@ -280,6 +280,7 @@ public class BenchmarkRunner
                 JsonijJpath.register(groups);
                 JsonijManualTree.register(groups);
                 ArgoManualTree.register(groups);
+                JsonPathDeserializerOnly.register(groups);
 		// Then JSON-like
                 // CKS text is textual JSON-like format
                 CksText.register(groups);

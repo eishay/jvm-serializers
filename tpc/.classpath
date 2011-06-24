@@ -61,5 +61,6 @@
 	<classpathentry kind="lib" path="lib/json.org-ref-2011.06.21.jar"/>
 	<classpathentry kind="lib" path="lib/jsonij-0.2.7.jar"/>
 	<classpathentry kind="lib" path="lib/argo-2.10.jar"/>
+	<classpathentry kind="lib" path="lib/jsonpath-2011.06.23.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
