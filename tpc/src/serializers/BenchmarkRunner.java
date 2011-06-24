@@ -270,6 +270,7 @@ public class BenchmarkRunner
 		ProtostuffJson.register(groups);
 		ProtobufJson.register(groups);
 		GsonManual.register(groups);
+		GsonManualTree.register(groups);
                 Gson.register(groups);
                 SvensonJsonDatabind.register(groups);
                 JsonLibJsonDatabind.register(groups);
