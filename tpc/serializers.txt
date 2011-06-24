@@ -23,6 +23,7 @@ json/protostuff-manual
 json/protostuff-runtime
 json/protobuf
 json/google-gson
+json/google-gson/manual/tree
 json/svenson-databind
 json/json-lib-databind
 json/fastjson-databind
