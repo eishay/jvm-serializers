@@ -32,6 +32,7 @@ json/org.json/manual/tree
 json/jsonij-jpath
 json/jsonij-manual/tree
 json/argo-manual/tree
+json/jsonpath/json.simple
 bson/jackson-manual
 bson/jackson-databind
 bson/mongodb
