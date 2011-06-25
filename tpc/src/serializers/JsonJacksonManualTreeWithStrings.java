@@ -1,16 +1,14 @@
 package serializers;
 
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 
 import data.media.Image;
@@ -18,7 +16,7 @@ import data.media.Media;
 import data.media.MediaContent;
 
 /**
- * Driver that uses Jackson for manual tree processing (to/from byte[]).
+ * Driver that uses Jackson for manual tree processing (to/from String).
  */
 public class JsonJacksonManualTreeWithStrings
 {
@@ -45,38 +43,36 @@ public class JsonJacksonManualTreeWithStrings
     public MediaContent deserialize(byte[] array) throws Exception
     {
       String mediaContentJsonInput = new String(array, "UTF-8");
-      JsonParser parser = jsonFactory.createJsonParser(mediaContentJsonInput);
-      return readMediaContent(parser);
+      return readMediaContent(mediaContentJsonInput);
     }
 
     public byte[] serialize(MediaContent mediaContent) throws Exception
     {
       StringWriter writer = new StringWriter();
-      JsonGenerator generator = jsonFactory.createJsonGenerator(writer);
+      JsonGenerator generator = mapper.getJsonFactory().createJsonGenerator(writer);
       writeMediaContent(generator, mediaContent);
       writer.flush();
       generator.close();
       return writer.toString().getBytes("UTF-8");
     }
 
-    private static JsonFactory jsonFactory = new JsonFactory(new ObjectMapper());
-    private static JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
+    private static final ObjectMapper mapper = new ObjectMapper();
 
-    private static Image readImage(JsonParser parser) throws Exception
+    private static Image readImage(InputStream json) throws Exception
     {
-      JsonNode root = parser.readValueAsTree();
+      JsonNode root = mapper.readTree(json);
       return readImage(root);
     }
 
-    private static Media readMedia(JsonParser parser) throws Exception
+    private static Media readMedia(InputStream json) throws Exception
     {
-      JsonNode root = parser.readValueAsTree();
+      JsonNode root = mapper.readTree(json);
       return readMedia(root);
     }
 
-    private static List<Image> readImages(JsonParser parser) throws Exception
+    private static List<Image> readImages(InputStream json) throws Exception
     {
-      ArrayNode root = (ArrayNode) parser.readValueAsTree();
+      ArrayNode root = (ArrayNode) mapper.readTree(json);
       return readImages(root);
     }
 
@@ -102,9 +98,9 @@ public class JsonJacksonManualTreeWithStrings
       return images;
     }
 
-    private static MediaContent readMediaContent(JsonParser parser) throws Exception
+    private static MediaContent readMediaContent(String json) throws Exception
     {
-      JsonNode root = parser.readValueAsTree();
+      JsonNode root = mapper.readTree(json);
       MediaContent mediaContent = new MediaContent();
       mediaContent.media = readMedia(root.get("media"));
       mediaContent.images = readImages((ArrayNode) root.get("images"));
@@ -146,7 +142,7 @@ public class JsonJacksonManualTreeWithStrings
 
     private static ObjectNode createObjectNode(Image image)
     {
-      ObjectNode node = nodeFactory.objectNode();
+      ObjectNode node = mapper.createObjectNode();
       node.put("height", image.height);
       node.put("size", image.size.name());
       node.put("title", image.title);
@@ -157,7 +153,7 @@ public class JsonJacksonManualTreeWithStrings
 
     private static ArrayNode createArrayNode(List<Image> images)
     {
-      ArrayNode node = nodeFactory.arrayNode();
+      ArrayNode node = mapper.createArrayNode();
       for (Image image : images)
       {
         node.add(createObjectNode(image));
@@ -167,53 +163,53 @@ public class JsonJacksonManualTreeWithStrings
 
     private static ObjectNode createObjectNode(Media media)
     {
-      ObjectNode mediaNode = nodeFactory.objectNode();
+      ObjectNode node = mapper.createObjectNode();
       if (media.hasBitrate)
       {
-        mediaNode.put("bitrate", media.bitrate);
+        node.put("bitrate", media.bitrate);
       }
-      mediaNode.put("copyright", media.copyright);
-      mediaNode.put("duration", media.duration);
-      mediaNode.put("format", media.format);
-      mediaNode.put("height", media.height);
-      ArrayNode persons = nodeFactory.arrayNode();
+      node.put("copyright", media.copyright);
+      node.put("duration", media.duration);
+      node.put("format", media.format);
+      node.put("height", media.height);
+      ArrayNode persons = mapper.createArrayNode();
       for (String person : media.persons)
       {
         persons.add(person);
       }
-      mediaNode.put("persons", persons);
-      mediaNode.put("player", media.player.name());
-      mediaNode.put("size", media.size);
-      mediaNode.put("title", media.title);
-      mediaNode.put("uri", media.uri);
-      mediaNode.put("width", media.width);
-      return mediaNode;
+      node.put("persons", persons);
+      node.put("player", media.player.name());
+      node.put("size", media.size);
+      node.put("title", media.title);
+      node.put("uri", media.uri);
+      node.put("width", media.width);
+      return node;
     }
 
     private static void writeMediaContent(JsonGenerator generator, MediaContent mediaContent) throws Exception
     {
-      ObjectNode node = nodeFactory.objectNode();
+      ObjectNode node = mapper.createObjectNode();
       node.put("media", createObjectNode(mediaContent.media));
       node.put("images", createArrayNode(mediaContent.images));
-      generator.writeTree(node);
+      mapper.writeTree(generator, node);
     }
 
     private static void writeMedia(JsonGenerator generator, Media media) throws Exception
     {
       ObjectNode node = createObjectNode(media);
-      generator.writeTree(node);
+      mapper.writeTree(generator, node);
     }
 
     private static void writeImage(JsonGenerator generator, Image image) throws Exception
     {
       ObjectNode node = createObjectNode(image);
-      generator.writeTree(node);
+      mapper.writeTree(generator, node);
     }
 
     private static void writeImages(JsonGenerator generator, List<Image> images) throws Exception
     {
       ArrayNode node = createArrayNode(images);
-      generator.writeTree(node);
+      mapper.writeTree(generator, node);
     }
   }
 }
