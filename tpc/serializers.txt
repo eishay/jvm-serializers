@@ -17,6 +17,8 @@ thrift-compact
 avro
 avro-generic
 json/jackson-manual
+json/jackson-manual/tree
+json/jackson-manual/tree-strings
 json/jackson-databind
 json/jackson-databind-strings
 json/protostuff-manual
