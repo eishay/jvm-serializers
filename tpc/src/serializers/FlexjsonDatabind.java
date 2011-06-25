@@ -41,7 +41,7 @@ public class FlexjsonDatabind
 
     public byte[] serialize(T data) throws IOException
     {
-      String jsonString = new JSONSerializer().exclude("*.class").include("media.persons", "images").serialize(data);
+      String jsonString = new JSONSerializer().exclude("*.class").deepSerialize(data);
       return jsonString.getBytes("UTF-8");
     }
   }
