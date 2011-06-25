@@ -264,6 +264,8 @@ public class BenchmarkRunner
 
 		// JSON
 		JsonJacksonManual.register(groups);
+		JsonJacksonManualTree.register(groups);
+		JsonJacksonManualTreeWithStrings.register(groups);
 		JsonJacksonDatabind.register(groups);
 		JsonJacksonDatabindWithStrings.register(groups);
 		JsonTwoLattes.register(groups);
