@@ -275,6 +275,7 @@ public class BenchmarkRunner
 		GsonManualTree.register(groups);
                 Gson.register(groups);
                 SvensonJsonDatabind.register(groups);
+                FlexjsonDatabind.register(groups);
                 JsonLibJsonDatabind.register(groups);
                 FastJSONDatabind.register(groups);
                 JsonSimpleManualTree.register(groups);
