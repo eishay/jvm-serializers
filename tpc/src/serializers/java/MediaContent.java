@@ -7,15 +7,15 @@ import java.util.List;
 import com.twolattes.json.Entity;
 import com.twolattes.json.Value;
 
+import data.media.FieldMapping;
+
 @Entity
 public class MediaContent  implements Serializable
 {
   private static final long serialVersionUID = 1L;
 
-  // Note: use FIELD_NAME_IMAGES
-  private @Value(name = "im") List<Image> _images;
-  // Note: use FIELD_NAME_MEDIA
-  private @Value(name = "md") Media _media;
+  private @Value(name = FieldMapping.FULL_FIELD_NAME_IMAGES) List<Image> _images;
+  private @Value(name = FieldMapping.FULL_FIELD_NAME_MEDIA) Media _media;
   
     public MediaContent() { }
 

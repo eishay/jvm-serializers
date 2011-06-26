@@ -5,6 +5,8 @@ import java.io.Serializable;
 import com.twolattes.json.Entity;
 import com.twolattes.json.Value;
 
+import data.media.FieldMapping;
+
 @Entity
 public class Image implements Serializable
 {
@@ -15,15 +17,13 @@ public class Image implements Serializable
     SMALL, LARGE
   }
 
-    // Note: field names must match FIELD_NAME_xxx
-  private @Value(name = "ul") String _uri;
-  private @Value(name = "tl") String _title;
-  private @Value(name = "wd") int _width;
-  private @Value(name = "hg") int _height;
-  private @Value(name = "sz", ordinal = true) Size _size;
+  private @Value(name=FieldMapping.FULL_FIELD_NAME_URI) String _uri;
+  private @Value(name=FieldMapping.FULL_FIELD_NAME_TITLE) String _title;
+  private @Value(name=FieldMapping.FULL_FIELD_NAME_WIDTH) int _width;
+  private @Value(name=FieldMapping.FULL_FIELD_NAME_HEIGHT) int _height;
+  private @Value(name=FieldMapping.FULL_FIELD_NAME_SIZE, ordinal = true) Size _size;
 
   public Image(){}
-
   
   public Image (int height, String title, String uri, int width, Size size)
   {
