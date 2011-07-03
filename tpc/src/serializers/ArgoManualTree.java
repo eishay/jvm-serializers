@@ -1,24 +1,26 @@
 package serializers;
 
-import static argo.jdom.JsonNodeBuilders.aNullBuilder;
-import static argo.jdom.JsonNodeBuilders.aNumberBuilder;
-import static argo.jdom.JsonNodeBuilders.aStringBuilder;
-import static argo.jdom.JsonNodeBuilders.anArrayBuilder;
-import static argo.jdom.JsonNodeBuilders.anObjectBuilder;
+import static argo.jdom.JsonNodeFactories.aJsonArray;
+import static argo.jdom.JsonNodeFactories.aJsonNull;
+import static argo.jdom.JsonNodeFactories.aJsonNumber;
+import static argo.jdom.JsonNodeFactories.aJsonObject;
+import static argo.jdom.JsonNodeFactories.aJsonString;
+import static argo.jdom.JsonNodeType.NULL;
+import static java.lang.Integer.parseInt;
+import static java.lang.Long.parseLong;
+import static java.util.Arrays.asList;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import argo.format.CompactJsonFormatter;
 import argo.format.JsonFormatter;
 import argo.jdom.JdomParser;
-import argo.jdom.JsonArrayNodeBuilder;
+import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
-import argo.jdom.JsonObjectNodeBuilder;
-import argo.jdom.JsonRootNode;
-
+import argo.jdom.JsonStringNode;
 import data.media.Image;
 import data.media.Media;
 import data.media.MediaContent;
@@ -56,174 +58,138 @@ public class ArgoManualTree
 
     public byte[] serialize(MediaContent mediaContent) throws IOException
     {
-      StringWriter writer = new StringWriter();
-      writeMediaContent(writer, mediaContent);
-      writer.flush();
-      return writer.toString().getBytes("UTF-8");
+      return writeMediaContent(mediaContent).getBytes("UTF-8");
     }
 
     private static final JsonFormatter JSON_FORMATTER = new CompactJsonFormatter();
     private static final JdomParser JDOM_PARSER = new JdomParser();
 
-    private static Image readImage(JsonNode node)
+    private static final JsonStringNode MEDIA_KEY = aJsonString("media");
+    private static final JsonStringNode IMAGES_KEY = aJsonString("images");
+    private static final JsonStringNode URI_KEY = aJsonString("uri");
+    private static final JsonStringNode WIDTH_KEY = aJsonString("width");
+    private static final JsonStringNode HEIGHT_KEY = aJsonString("height");
+    private static final JsonStringNode SIZE_KEY = aJsonString("size");
+    private static final JsonStringNode COPYRIGHT_KEY = aJsonString("copyright");
+    private static final JsonStringNode DURATION_KEY = aJsonString("duration");
+    private static final JsonStringNode TITLE_KEY = aJsonString("title");
+    private static final JsonStringNode PLAYER_KEY = aJsonString("player");
+    private static final JsonStringNode FORMAT_KEY = aJsonString("format");
+    private static final JsonStringNode PERSONS_KEY = aJsonString("persons");
+    private static final JsonStringNode BIT_RATE_KEY = aJsonString("bitrate");
+
+    private String writeMediaContent(MediaContent mediaContent)
     {
-      Image image = new Image();
-      image.height = Integer.parseInt(node.getNumberValue("height"));
-      image.size = Image.Size.valueOf(node.getStringValue("size"));
-      image.title = node.getNullableStringValue("title");
-      image.uri = node.getNullableStringValue("uri");
-      image.width = Integer.parseInt(node.getNumberValue("width"));
-      return image;
+      return JSON_FORMATTER.format(
+                aJsonObject(
+                        new JsonField(MEDIA_KEY, createMediaObject(mediaContent.media)),
+                        new JsonField(IMAGES_KEY, createImagesArray(mediaContent.images))
+                ));
     }
 
-    private static Image readImage(String imageJsonInput) throws Exception
+    private JsonNode createImagesArray(List<Image> images)
     {
-      JsonRootNode root = JDOM_PARSER.parse(imageJsonInput);
-      return readImage(root);
-    }
-
-    private static List<Image> readImages(String imagesJsonInput) throws Exception
-    {
-      JsonRootNode root = JDOM_PARSER.parse(imagesJsonInput);
-      return readImages(root);
-    }
-
-    private static List<Image> readImages(JsonNode node)
-    {
-      List<JsonNode> nodes = node.getElements();
-      int size = nodes.size();
-      List<Image> images = new ArrayList<Image>(size);
-      for (int i = 0; i < size; i++)
+      List<JsonNode> jsonNodes = new ArrayList<JsonNode>(images.size() * 2);
+      for (Image image : images)
       {
-        images.add(readImage(nodes.get(i)));
+        jsonNodes.add(aJsonObject(
+                    new JsonField(HEIGHT_KEY, aJsonNumber(String.valueOf(image.height))),
+                    new JsonField(SIZE_KEY, aJsonString(image.size.name())),
+                    new JsonField(TITLE_KEY, aJsonString(image.title)),
+                    new JsonField(URI_KEY, aJsonString(image.uri)),
+                    new JsonField(WIDTH_KEY, aJsonNumber(String.valueOf(image.width)))
+            ));
       }
-      return images;
+      return aJsonArray(jsonNodes);
     }
 
-    private static MediaContent readMediaContent(String mediaContentJsonInput) throws Exception
+    private JsonNode createMediaObject(Media media)
     {
-      JsonRootNode root = JDOM_PARSER.parse(mediaContentJsonInput);
+      List<JsonNode> persons = new ArrayList<JsonNode>(media.persons.size() * 2);
+      for (String person : media.persons)
+      {
+        persons.add(aJsonString(person));
+      }
+      JsonNode value = media.copyright == null ? aJsonNull() : aJsonString(media.copyright);
+      List<JsonField> jsonFields = new ArrayList<JsonField>(asList(
+                new JsonField(URI_KEY, aJsonString(media.uri)),
+                new JsonField(TITLE_KEY, aJsonString(media.title)),
+                new JsonField(WIDTH_KEY, aJsonNumber(String.valueOf(media.width))),
+                new JsonField(HEIGHT_KEY, aJsonNumber(String.valueOf(media.height))),
+                new JsonField(FORMAT_KEY, aJsonString(media.format)),
+                new JsonField(DURATION_KEY, aJsonNumber(String.valueOf(media.duration))),
+                new JsonField(SIZE_KEY, aJsonNumber(String.valueOf(media.size))),
+                new JsonField(PLAYER_KEY, aJsonString(media.player.name())),
+                new JsonField(COPYRIGHT_KEY, value),
+                new JsonField(PERSONS_KEY, aJsonArray(persons))
+          ));
+      if (media.hasBitrate)
+      {
+        jsonFields.add(new JsonField(BIT_RATE_KEY, aJsonNumber(String.valueOf(media.bitrate))));
+      }
+      return aJsonObject(jsonFields);
+    }
+
+    MediaContent readMediaContent(String mediaContentJsonInput) throws Exception
+    {
       MediaContent mediaContent = new MediaContent();
-      mediaContent.media = readMedia(root.getNode("media"));
-      mediaContent.images = readImages(root.getNode("images"));
+      Map<JsonStringNode, JsonNode> fields = JDOM_PARSER.parse(mediaContentJsonInput).getFields();
+      mediaContent.media = readMedia(fields.get(MEDIA_KEY));
+      mediaContent.images = readImages(fields.get(IMAGES_KEY));
       return mediaContent;
     }
 
-    private static Media readMedia(JsonNode node)
+    private Media readMedia(JsonNode jsonNode)
     {
       Media media = new Media();
-      String bitrate = node.getNullableNumberValue("bitrate");
-      if (bitrate != null && bitrate.length() > 0)
+      Map<JsonStringNode, JsonNode> fields = jsonNode.getFields();
+      media.copyright = getValueOrNull(fields.get(COPYRIGHT_KEY));
+      media.duration = parseLong(fields.get(DURATION_KEY).getText());
+      media.format = getValueOrNull(fields.get(FORMAT_KEY));
+      media.player = Media.Player.valueOf(fields.get(PLAYER_KEY).getText());
+      media.title = getValueOrNull(fields.get(TITLE_KEY));
+      media.uri = getValueOrNull(fields.get(URI_KEY));
+      media.size = parseLong(fields.get(SIZE_KEY).getText());
+      media.height = parseInt(fields.get(HEIGHT_KEY).getText());
+      media.width = parseInt(fields.get(WIDTH_KEY).getText());
+
+      List<JsonNode> personNodesElements = fields.get(PERSONS_KEY).getElements();
+      List<String> persons = new ArrayList<String>(personNodesElements.size() * 2);
+      for (JsonNode personNode : personNodesElements)
       {
-        media.bitrate = Integer.parseInt(bitrate);
-        media.hasBitrate = true;
-      }
-      media.copyright = node.getNullableStringValue("copyright");
-      media.duration = Long.parseLong(node.getNumberValue("duration"));
-      media.format = node.getNullableStringValue("format");
-      media.height = Integer.parseInt(node.getNumberValue("height"));
-      List<JsonNode> personJsonNodes = node.getArrayNode("persons");
-      int size = personJsonNodes.size();
-      List<String> persons = new ArrayList<String>(size);
-      for (int i = 0; i < size; i++)
-      {
-        persons.add(personJsonNodes.get(i).getText());
+        persons.add(personNode.getText());
       }
       media.persons = persons;
-      media.player = Media.Player.valueOf(node.getStringValue("player"));
-      media.size = Long.parseLong(node.getNumberValue("size"));
-      media.title = node.getNullableStringValue("title");
-      media.uri = node.getNullableStringValue("uri");
-      media.width = Integer.parseInt(node.getNumberValue("width"));
+      JsonNode bitRate = fields.get(BIT_RATE_KEY);
+      if (bitRate != null && bitRate.getType() != NULL)
+      {
+        media.bitrate = parseInt(bitRate.getText());
+        media.hasBitrate = true;
+      }
       return media;
     }
 
-    private static Media readMedia(String mediaJsonInput) throws Exception
+    private static String getValueOrNull(JsonNode textNode)
     {
-      JsonRootNode root = JDOM_PARSER.parse(mediaJsonInput);
-      return readMedia(root);
+      return textNode.getType() == NULL ? null : textNode.getText();
     }
 
-    private static void writeImages(StringWriter imagesWriter, List<Image> images)
+    private List<Image> readImages(JsonNode node)
     {
-      JsonArrayNodeBuilder arrayBuilder = createImagesArrayBuilder(images);
-      JsonRootNode json = arrayBuilder.build();
-      imagesWriter.write(JSON_FORMATTER.format(json));
-    }
-
-    private static JsonArrayNodeBuilder createImagesArrayBuilder(List<Image> images)
-    {
-      JsonArrayNodeBuilder arrayBuilder = anArrayBuilder();
-      for (Image image : images)
+      List<JsonNode> elements = node.getElements();
+      List<Image> images = new ArrayList<Image>(elements.size() * 2);
+      for (JsonNode jsonNode : elements)
       {
-        arrayBuilder.withElement(createImageObjectBuilder(image));
+        Map<JsonStringNode, JsonNode> fields = jsonNode.getFields();
+        images.add(new Image(
+                  fields.get(URI_KEY).getText(),
+                  fields.get(TITLE_KEY).getText(),
+                  parseInt(fields.get(WIDTH_KEY).getText()),
+                  parseInt(fields.get(HEIGHT_KEY).getText()),
+                  Image.Size.valueOf(fields.get(SIZE_KEY).getText())
+            ));
       }
-      return arrayBuilder;
-    }
-    
-    private static void writeMediaContent(StringWriter mediaContentWriter, MediaContent mediaContent)
-    {
-      JsonObjectNodeBuilder builder = anObjectBuilder()
-          .withField("media", createMediaObjectBuilder(mediaContent.media))
-          .withField("images", createImagesArrayBuilder(mediaContent.images));
-      JsonRootNode json = builder.build();
-      mediaContentWriter.write(JSON_FORMATTER.format(json));
-    }
-
-    private static void writeMedia(StringWriter mediaWriter, Media media)
-    {
-      JsonObjectNodeBuilder builder = createMediaObjectBuilder(media);
-      JsonRootNode json = builder.build();
-      mediaWriter.write(JSON_FORMATTER.format(json));
-    }
-    
-    private static JsonObjectNodeBuilder createMediaObjectBuilder(Media media)
-    {
-      JsonObjectNodeBuilder builder = anObjectBuilder()
-          .withField("uri", aStringBuilder(media.uri))
-          .withField("title", aStringBuilder(media.title))
-          .withField("width", aNumberBuilder(String.valueOf(media.width)))
-          .withField("height", aNumberBuilder(String.valueOf(media.height)))
-          .withField("format", aStringBuilder(media.format))
-          .withField("duration", aNumberBuilder(String.valueOf(media.duration)))
-          .withField("size", aNumberBuilder(String.valueOf(media.size)));
-      if (media.hasBitrate)
-      {
-        builder.withField("bitrate", aNumberBuilder(String.valueOf(media.bitrate)));
-      }
-      builder.withField("player", aStringBuilder(media.player.name()));
-      if (media.copyright != null)
-      {
-        builder.withField("copyright", aStringBuilder(media.copyright));
-      }
-      else
-      {
-        builder.withField("copyright", aNullBuilder());
-      }
-      JsonArrayNodeBuilder arrayBuilder = anArrayBuilder();
-      for (String person : media.persons)
-      {
-        arrayBuilder.withElement(aStringBuilder(person));
-      }
-      builder.withField("persons", arrayBuilder);
-      return builder;
-    }
-
-    private static JsonObjectNodeBuilder createImageObjectBuilder(Image image)
-    {
-      return anObjectBuilder()
-          .withField("height", aNumberBuilder(String.valueOf(image.height)))
-          .withField("size", aStringBuilder(image.size.name()))
-          .withField("title", aStringBuilder(image.title))
-          .withField("uri", aStringBuilder(image.uri))
-          .withField("width", aNumberBuilder(String.valueOf(image.width)));
-    }
-
-    private static void writeImage(StringWriter imageWriter, Image image)
-    {
-      JsonObjectNodeBuilder builder = createImageObjectBuilder(image);
-      JsonRootNode json = builder.build();
-      imageWriter.write(JSON_FORMATTER.format(json));
+      return images;
     }
   }
 }
