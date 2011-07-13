@@ -278,6 +278,7 @@ public class BenchmarkRunner
                 FlexjsonDatabind.register(groups);
                 JsonLibJsonDatabind.register(groups);
                 FastJSONDatabind.register(groups);
+                JsonSimpleWithContentHandler.register(groups);
                 JsonSimpleManualTree.register(groups);
                 JsonSmartManualTree.register(groups);
                 JsonDotOrgManualTree.register(groups);
