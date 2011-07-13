@@ -33,6 +33,9 @@ public final class Protostuff
         // runtime (reflection)
         groups.media.add(JavaBuiltIn.MediaTransformer, ProtostuffRuntimeMediaSerializer);
         
+        // protobuf serialization + generated code
+        groups.media.add(MediaTransformer, ProtobufMediaSerializer);
+
         /*protostuff has too many entries
 
         // graph+manual
@@ -40,9 +43,6 @@ public final class Protostuff
 
         // graph+runtime
         groups.media.add(JavaBuiltIn.MediaTransformer, ProtostuffGraphRuntimeMediaSerializer);
-
-        // protobuf serialization + generated code
-        groups.media.add(MediaTransformer, ProtobufMediaSerializer);
         
         // protobuf serialization + runtime
         groups.media.add(JavaBuiltIn.MediaTransformer, ProtobufRuntimeMediaSerializer);*/
