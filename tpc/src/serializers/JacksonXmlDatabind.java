@@ -1,11 +1,6 @@
 package serializers;
 
-import java.io.IOException;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
-
-import org.codehaus.jackson.type.JavaType;
+import serializers.jackson.StdJacksonDataBind;
 
 import com.fasterxml.aalto.stax.InputFactoryImpl;
 import com.fasterxml.aalto.stax.OutputFactoryImpl;
@@ -20,38 +15,14 @@ import data.media.MediaContent;
  * (https://github.com/FasterXML/jackson-xml-databind)
  * with Aalto Stax XML parser.
  */
-public class JacksonXmlDatabind<T> extends Serializer<T>
+public class JacksonXmlDatabind
 {
     public static void register(TestGroups groups)
     {
+        XmlMapper mapper = new XmlMapper(new XmlFactory(null,
+                new InputFactoryImpl(), new OutputFactoryImpl()));
         groups.media.add(JavaBuiltIn.MediaTransformer,
-                new JacksonXmlDatabind<MediaContent>("xml/jackson-databind/aalto", MediaContent.class,
-                        new InputFactoryImpl(), new OutputFactoryImpl()));
+                new StdJacksonDataBind<MediaContent>("xml/jackson-databind/aalto",
+                        MediaContent.class, mapper));
     }
-
-    private final String name;
-    private final JavaType type;
-    private final XmlMapper mapper;
-
-    public JacksonXmlDatabind(String name,Class<T> clazz,
-            XMLInputFactory inputF, XMLOutputFactory outputF)
-    {
-        this.name = name;
-        mapper = new XmlMapper(new XmlFactory(null, inputF, outputF));
-        type = mapper.getTypeFactory().constructType(clazz);
-    }
-
-    public String getName() { return name; }
-
-    public byte[] serialize(T data) throws IOException
-    {
-            return mapper.writeValueAsBytes(data);
-    }
-
-    @SuppressWarnings("unchecked")
-    public T deserialize(byte[] array) throws Exception
-    {
-        return (T) mapper.readValue(array, 0, array.length, type);
-    }
-    
 }

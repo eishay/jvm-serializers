@@ -1,46 +1,31 @@
-package serializers;
+package serializers.jackson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import data.media.MediaContent;
-
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.map.*;
+import org.codehaus.jackson.map.ObjectMapper;
 
-import serializers.jackson.BaseJacksonDataBind;
-
-/**
- * This serializer uses Jackson in full automated data binding mode, which
- * can handle typical Java POJOs (esp. beans; otherwise may need to annotate
- * to configure)
- */
-public class JsonJacksonDatabindWithStrings<T> extends BaseJacksonDataBind<T>
+public final class StdJacksonDataBind<T> extends BaseJacksonDataBind<T>
 {
-    public static void register(TestGroups groups)
-    {
-        groups.media.add(JavaBuiltIn.MediaTransformer,
-                new JsonJacksonDatabindWithStrings<MediaContent>(MediaContent.class));
+    public StdJacksonDataBind(String name, Class<T> clazz, ObjectMapper mapper) {
+        super(name, clazz, mapper);
     }
 
-    public JsonJacksonDatabindWithStrings(Class<T> clz) {
-        super("json/jackson-databind-strings", clz, new ObjectMapper());
-    }
-
+    @Override
     public byte[] serialize(T data) throws IOException
     {
-        return mapper.writeValueAsString(data).getBytes(("UTF-8"));
+            return mapper.writeValueAsBytes(data);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public T deserialize(byte[] array) throws IOException
     {
-        // return (T) mapper.readValue(array, 0, array.length, type);
-        String input = new String(array, "UTF-8");
-        return (T) mapper.readValue(input, type);
+        return (T) mapper.readValue(array, 0, array.length, type);
     }
-    
+
     // // Future extensions for testing performance for item sequences
     
     // @Override

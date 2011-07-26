@@ -3,6 +3,8 @@ package serializers;
 import data.media.MediaContent;
 
 import org.codehaus.jackson.map.ObjectMapper;
+
+import serializers.jackson.StdJacksonDataBind;
 import de.undercouch.bson4jackson.BsonFactory;
 
 /**
@@ -14,10 +16,9 @@ public class BsonJacksonDatabind
 {
 	public static void register(TestGroups groups)
 	{
-		BsonFactory factory = new BsonFactory();
-		ObjectMapper mapper = new ObjectMapper(factory);
-		groups.media.add(JavaBuiltIn.MediaTransformer,
-			new JsonJacksonDatabind.GenericSerializer<MediaContent>(
-				"bson/jackson-databind", mapper, MediaContent.class));
+	    ObjectMapper mapper = new ObjectMapper(new BsonFactory());
+	    groups.media.add(JavaBuiltIn.MediaTransformer,
+	            new StdJacksonDataBind<MediaContent>(
+	                    "bson/jackson-databind", MediaContent.class, mapper));
 	}
 }
