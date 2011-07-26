@@ -27,6 +27,8 @@ import data.media.MediaContent;
 
 /**
  * Driver that uses Argo [http://argo.sourceforge.net], with manual tree processing.
+ * 
+ * Implementation provided by Mark Slater, admin and committer on the Argo project.
  */
 public class ArgoManualTree
 {

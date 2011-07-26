@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.dyuproject.protostuff.GraphIOUtil;
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.Output;
@@ -31,11 +32,17 @@ public final class Protostuff
 
         // runtime (reflection)
         groups.media.add(JavaBuiltIn.MediaTransformer, ProtostuffRuntimeMediaSerializer);
-
+        
         // protobuf serialization + generated code
         groups.media.add(MediaTransformer, ProtobufMediaSerializer);
-        
+
         /*protostuff has too many entries
+
+        // graph+manual
+        groups.media.add(JavaBuiltIn.MediaTransformer, ProtostuffGraphMediaSerializer);
+
+        // graph+runtime
+        groups.media.add(JavaBuiltIn.MediaTransformer, ProtostuffGraphRuntimeMediaSerializer);
         
         // protobuf serialization + runtime
         groups.media.add(JavaBuiltIn.MediaTransformer, ProtobufRuntimeMediaSerializer);*/
@@ -196,6 +203,69 @@ public final class Protostuff
         public String getName()
         {
             return "protostuff-manual";
+        }
+        
+    };
+
+    public static final Serializer<data.media.MediaContent> ProtostuffGraphMediaSerializer = 
+        new Serializer<data.media.MediaContent>()
+    {
+        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
+
+        public data.media.MediaContent deserialize(byte[] array) throws Exception
+        {
+            data.media.MediaContent mc = new data.media.MediaContent();
+            GraphIOUtil.mergeFrom(array, mc, MEDIA_CONTENT_SCHEMA);
+            return mc;
+        }
+
+        public byte[] serialize(data.media.MediaContent content) throws Exception
+        {
+            try
+            {
+                return GraphIOUtil.toByteArray(content, MEDIA_CONTENT_SCHEMA, buffer);
+            }
+            finally
+            {
+                buffer.clear();
+            }
+        }
+        
+        public String getName()
+        {
+            return "protostuff-graph-manual";
+        }
+        
+    };
+
+    public static final Serializer<data.media.MediaContent> ProtostuffGraphRuntimeMediaSerializer = 
+        new Serializer<data.media.MediaContent>()
+    {
+        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
+        final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
+
+        public data.media.MediaContent deserialize(byte[] array) throws Exception
+        {
+            data.media.MediaContent mc = new data.media.MediaContent();
+            GraphIOUtil.mergeFrom(array, mc, schema);
+            return mc;
+        }
+
+        public byte[] serialize(data.media.MediaContent content) throws Exception
+        {
+            try
+            {
+                return GraphIOUtil.toByteArray(content, schema, buffer);
+            }
+            finally
+            {
+                buffer.clear();
+            }
+        }
+        
+        public String getName()
+        {
+            return "protostuff-graph-runtime";
         }
         
     };
