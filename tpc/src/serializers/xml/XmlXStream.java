@@ -1,4 +1,4 @@
-package serializers;
+package serializers.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,13 +20,18 @@ import data.media.Image.Size;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroups;
+
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.io.xml.CompactWriter;
 
-public class XStream
+public class XmlXStream
 {
 	public static void register(TestGroups groups)
 	{
@@ -58,16 +63,16 @@ public class XStream
 			}), MediaConfigurationAbbreviated));*/
 
 		// Adapt each of the STAX handlers to use XStream
-		for (Stax.Handler h : Stax.Handlers) {
+		for (XmlStax.Handler h : XmlStax.HANDLERS) {
 			// TODO: This doesn't work yet.  Need to properly handle optional fields in readMedia/readImage.
             // commented-out by dyu: use the non-abbreviated version (+c) because the perf of the default sux.
 			//groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "",  EmptyConfiguration));
-			groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "+c", MediaConfiguration));
+			groups.media.add(JavaBuiltIn.MediaTransformer, XmlXStream.<MediaContent>mkStaxSerializer(h, "+c", MediaConfiguration));
 			//groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "+c-abbrev", MediaConfigurationAbbreviated));
 		}
 	}
 
-	private static <T> ConverterSerializer<T> mkStaxSerializer(final Stax.Handler handler, String suffix, Configuration config)
+	private static <T> ConverterSerializer<T> mkStaxSerializer(final XmlStax.Handler handler, String suffix, Configuration config)
 	{
 		return new ConverterSerializer<T>("xml/xstream" + suffix + "-" + handler.name,
 			new com.thoughtworks.xstream.XStream(new StaxDriver() {

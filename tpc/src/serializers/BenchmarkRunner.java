@@ -7,6 +7,12 @@ import java.util.regex.Pattern;
 import java.util.zip.DeflaterOutputStream;
 
 import serializers.jackson.*;
+import serializers.protostuff.Protostuff;
+import serializers.protostuff.ProtostuffJson;
+import serializers.protostuff.ProtostuffSmile;
+import serializers.xml.XmlJavolution;
+import serializers.xml.XmlStax;
+import serializers.xml.XmlXStream;
 
 public class BenchmarkRunner
 {
@@ -287,10 +293,10 @@ public class BenchmarkRunner
                 ProtostuffSmile.register(groups);
 
 		// XML-based formats.
-		Stax.register(groups);
-		XStream.register(groups);
+		XmlStax.register(groups);
+		XmlXStream.register(groups);
 		JacksonXmlDatabind.register(groups);
-		JavolutionXml.register(groups);
+		XmlJavolution.register(groups);
 
 		// --------------------------------------------------
 		// Load data value.

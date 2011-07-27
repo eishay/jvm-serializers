@@ -1,6 +1,6 @@
-package serializers;
+package serializers.protostuff;
 
-import static serializers.Protostuff.MEDIA_CONTENT_SCHEMA;
+import static serializers.protostuff.Protostuff.MEDIA_CONTENT_SCHEMA;
 
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.JsonIOUtil;
@@ -8,6 +8,9 @@ import com.dyuproject.protostuff.JsonXIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroups;
 import serializers.protostuff.media.MediaContent;
 
 /**

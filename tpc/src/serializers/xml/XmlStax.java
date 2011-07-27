@@ -1,4 +1,4 @@
-package serializers;
+package serializers.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,48 +12,50 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroups;
+
 import data.media.*;
 import static data.media.FieldMapping.*;
 
-public class Stax
+public class XmlStax
 {
-	public static void register(TestGroups groups)
-	{
-		for (Handler h : Handlers) {
-			groups.media.add(JavaBuiltIn.MediaTransformer, new MediaSerializer(h));
-            // commented-out by dyu: use only non-abbreviated versions.
-			//groups.media.add(JavaBuiltIn.MediaTransformer, new MediaSerializerAbbreviated(h));
-		}
-	}
+    public static final Handler[] HANDLERS = new Handler[] {
+        new Handler("woodstox",
+                new com.ctc.wstx.stax.WstxInputFactory(),
+                new com.ctc.wstx.stax.WstxOutputFactory()),
+        new Handler("aalto",
+                new com.fasterxml.aalto.stax.InputFactoryImpl(),
+                new com.fasterxml.aalto.stax.OutputFactoryImpl()),
+        new Handler("fastinfo",
+                new com.sun.xml.fastinfoset.stax.factory.StAXInputFactory(),
+                new com.sun.xml.fastinfoset.stax.factory.StAXOutputFactory()),
+    };
+    
+    public static void register(TestGroups groups)
+    {
+        for (Handler h : HANDLERS) {
+            groups.media.add(JavaBuiltIn.MediaTransformer, new MediaSerializer(h));
+        }
+    }
 
-	// -------------------------------------------------------------------
-	// Implementations
+    // -------------------------------------------------------------------
+    // Implementations
 
-	public static final class Handler
-	{
-		public final String name;
-		public final XMLInputFactory inFactory;
-		public final XMLOutputFactory outFactory;
+    public static final class Handler
+    {
+        protected final String name;
+        protected final XMLInputFactory inFactory;
+        protected final XMLOutputFactory outFactory;
 
-		protected Handler(String name, XMLInputFactory inFactory, XMLOutputFactory outFactory)
-		{
-			this.name = name;
-			this.inFactory = inFactory;
-			this.outFactory = outFactory;
-		}
-	}
-
-	public static final Handler[] Handlers = new Handler[] {
-		new Handler("woodstox",
-			new com.ctc.wstx.stax.WstxInputFactory(),
-			new com.ctc.wstx.stax.WstxOutputFactory()),
-		new Handler("aalto",
-			new com.fasterxml.aalto.stax.InputFactoryImpl(),
-			new com.fasterxml.aalto.stax.OutputFactoryImpl()),
-                new Handler("fastinfo",
-                        new com.sun.xml.fastinfoset.stax.factory.StAXInputFactory(),
-                        new com.sun.xml.fastinfoset.stax.factory.StAXOutputFactory()),
-	};
+        protected Handler(String name, XMLInputFactory inFactory, XMLOutputFactory outFactory)
+        {
+            this.name = name;
+            this.inFactory = inFactory;
+            this.outFactory = outFactory;
+        }
+    }
 
 	// -------------------------------------------------------------------
 	// Serializers

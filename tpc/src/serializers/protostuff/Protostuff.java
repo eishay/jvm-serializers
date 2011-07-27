@@ -1,4 +1,4 @@
-package serializers;
+package serializers.protostuff;
 
 import java.io.IOException;
 
@@ -15,6 +15,10 @@ import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroups;
+import serializers.Transformer;
 import serializers.protostuff.media.MediaContent;
 import serializers.protostuff.media.Media;
 import serializers.protostuff.media.Image;
