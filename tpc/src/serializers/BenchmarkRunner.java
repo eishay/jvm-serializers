@@ -250,11 +250,11 @@ public class BenchmarkRunner
                 MsgPack.register(groups);
 
 		// JSON
-		JsonJacksonManual.register(groups);
-		JsonJacksonManualTree.register(groups);
-		JsonJacksonManualTreeWithStrings.register(groups);
-		JsonJacksonDatabind.register(groups);
-		JsonJacksonDatabindWithStrings.register(groups);
+		JacksonJsonManual.register(groups);
+		JacksonJsonTree.register(groups);
+		JacksonJsonTreeWithStrings.register(groups);
+		JacksonJsonDatabind.register(groups);
+		JacksonJsonDatabindWithStrings.register(groups);
 		JsonTwoLattes.register(groups);
 		ProtostuffJson.register(groups);
 		ProtobufJson.register(groups);
@@ -278,8 +278,8 @@ public class BenchmarkRunner
                 CksText.register(groups);
 		// then binary variants
 		// BSON is binary JSON-like format
-		BsonJackson.register(groups);
-		BsonJacksonDatabind.register(groups);
+		JacksonBsonManual.register(groups);
+		JacksonBsonDatabind.register(groups);
 		MongoDB.register(groups);
 		// Smile is 1-to-1 binary representation of JSON
                 JacksonSmileManual.register(groups);

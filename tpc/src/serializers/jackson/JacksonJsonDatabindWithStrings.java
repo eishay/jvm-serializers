@@ -17,15 +17,15 @@ import serializers.TestGroups;
  * can handle typical Java POJOs (esp. beans; otherwise may need to annotate
  * to configure)
  */
-public class JsonJacksonDatabindWithStrings<T> extends BaseJacksonDataBind<T>
+public class JacksonJsonDatabindWithStrings<T> extends BaseJacksonDataBind<T>
 {
     public static void register(TestGroups groups)
     {
         groups.media.add(JavaBuiltIn.MediaTransformer,
-                new JsonJacksonDatabindWithStrings<MediaContent>(MediaContent.class));
+                new JacksonJsonDatabindWithStrings<MediaContent>(MediaContent.class));
     }
 
-    public JsonJacksonDatabindWithStrings(Class<T> clz) {
+    public JacksonJsonDatabindWithStrings(Class<T> clz) {
         super("json/jackson-databind-strings", clz, new ObjectMapper());
     }
 

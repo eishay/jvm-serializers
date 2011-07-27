@@ -13,7 +13,7 @@ import de.undercouch.bson4jackson.BsonFactory;
  * can handle typical Java POJOs (esp. beans; otherwise may need to annotate
  * to configure)
  */
-public class BsonJacksonDatabind
+public class JacksonBsonDatabind
 {
 	public static void register(TestGroups groups)
 	{

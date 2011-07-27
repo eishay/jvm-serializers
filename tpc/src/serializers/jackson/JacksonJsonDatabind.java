@@ -11,7 +11,7 @@ import org.codehaus.jackson.map.*;
  * can handle typical Java POJOs (esp. beans; otherwise may need to annotate
  * to configure)
  */
-public class JsonJacksonDatabind
+public class JacksonJsonDatabind
 {
     public static void register(TestGroups groups)
     {

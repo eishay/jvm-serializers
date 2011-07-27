@@ -18,7 +18,7 @@ import serializers.JavaBuiltIn;
 import serializers.Serializer;
 import serializers.TestGroups;
 
-public class JsonJacksonManual
+public class JacksonJsonManual
 {
 	public static void register(TestGroups groups)
 	{
