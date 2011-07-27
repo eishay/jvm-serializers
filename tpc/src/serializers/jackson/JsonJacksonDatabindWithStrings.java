@@ -1,4 +1,4 @@
-package serializers;
+package serializers.jackson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,7 +9,8 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.*;
 
-import serializers.jackson.BaseJacksonDataBind;
+import serializers.JavaBuiltIn;
+import serializers.TestGroups;
 
 /**
  * This serializer uses Jackson in full automated data binding mode, which

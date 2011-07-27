@@ -1,7 +1,8 @@
-package serializers;
+package serializers.jackson;
 
 import data.media.MediaContent;
-import serializers.jackson.StdJacksonDataBind;
+import serializers.JavaBuiltIn;
+import serializers.TestGroups;
 
 import org.codehaus.jackson.map.*;
 

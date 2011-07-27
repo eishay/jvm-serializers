@@ -1,8 +1,7 @@
-package serializers;
+package serializers.jackson;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,19 +11,23 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroups;
+
 import data.media.Image;
 import data.media.Media;
 import data.media.MediaContent;
 
 /**
- * Driver that uses Jackson for manual tree processing (to/from byte[]).
+ * Driver that uses Jackson for manual tree processing (to/from String).
  */
-public class JsonJacksonManualTree
+public class JsonJacksonManualTreeWithStrings
 {
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.MediaTransformer,
-        new ManualTreeSerializer("json/jackson-manual/tree"));
+        new ManualTreeSerializer("json/jackson-manual/tree-strings"));
   }
 
   static class ManualTreeSerializer extends Serializer<MediaContent>
@@ -43,16 +46,18 @@ public class JsonJacksonManualTree
 
     public MediaContent deserialize(byte[] array) throws Exception
     {
-      return readMediaContent(new ByteArrayInputStream(array));
+      String mediaContentJsonInput = new String(array, "UTF-8");
+      return readMediaContent(mediaContentJsonInput);
     }
 
     public byte[] serialize(MediaContent mediaContent) throws Exception
     {
-      ByteArrayOutputStream baos = outputStream(mediaContent);
-      JsonGenerator generator = mapper.getJsonFactory().createJsonGenerator(baos);
+      StringWriter writer = new StringWriter();
+      JsonGenerator generator = mapper.getJsonFactory().createJsonGenerator(writer);
       writeMediaContent(generator, mediaContent);
+      writer.flush();
       generator.close();
-      return baos.toByteArray();
+      return writer.toString().getBytes("UTF-8");
     }
 
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -97,7 +102,7 @@ public class JsonJacksonManualTree
       return images;
     }
 
-    private static MediaContent readMediaContent(InputStream json) throws Exception
+    private static MediaContent readMediaContent(String json) throws Exception
     {
       JsonNode root = mapper.readTree(json);
       MediaContent mediaContent = new MediaContent();

@@ -1,4 +1,4 @@
-package serializers;
+package serializers.jackson;
 
 import data.media.*;
 import static data.media.FieldMapping.*;
@@ -13,6 +13,10 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
+
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroups;
 
 public class JsonJacksonManual
 {
@@ -35,8 +39,8 @@ public class JsonJacksonManual
 	        this.name = name;
 	        _factory = jsonFactory;
 	    }
-	    
-		public String getName() { return name; }
+
+	    public String getName() { return name; }
 
 		public final byte[] serialize(MediaContent content) throws Exception
 		{
@@ -55,6 +59,29 @@ public class JsonJacksonManual
 			return mc;
 		}
 
+                public byte[] serializeItems(MediaContent[] items) throws Exception
+                {
+                    ByteArrayOutputStream baos = outputStream(items[0]);
+                    JsonGenerator generator = constructGenerator(baos);
+                    // JSON allows simple sequences, so:
+                    for (int i = 0, len = items.length; i < len; ++i) {
+                        writeMediaContent(generator, items[i]);
+                    }
+                    generator.close();
+                    return baos.toByteArray();
+                }
+
+		public MediaContent[] deserializeItems(byte[] input, int numberOfItems) throws Exception 
+	        {
+		    MediaContent[] result = new MediaContent[numberOfItems];
+                    JsonParser parser = constructParser(input);
+                    for (int i = 0; i < numberOfItems; ++i) {
+                        result[i] = readMediaContent(parser);
+                    }
+                    parser.close();
+                    return result;
+	        }
+		
 		// // // Internal methods
 
 		protected JsonParser constructParser(byte[] data) throws IOException

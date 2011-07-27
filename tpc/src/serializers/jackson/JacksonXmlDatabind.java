@@ -1,6 +1,7 @@
-package serializers;
+package serializers.jackson;
 
-import serializers.jackson.StdJacksonDataBind;
+import serializers.JavaBuiltIn;
+import serializers.TestGroups;
 
 import com.fasterxml.aalto.stax.InputFactoryImpl;
 import com.fasterxml.aalto.stax.OutputFactoryImpl;

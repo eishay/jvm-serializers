@@ -1,7 +1,11 @@
-package serializers;
+package serializers.jackson;
 
 import org.codehaus.jackson.smile.SmileFactory;
 import org.codehaus.jackson.smile.SmileGenerator;
+
+import serializers.JavaBuiltIn;
+import serializers.TestGroups;
+import serializers.jackson.JsonJacksonManual.GenericSerializer;
 
 public class JacksonSmileManual
 {

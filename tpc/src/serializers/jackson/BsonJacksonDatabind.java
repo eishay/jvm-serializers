@@ -1,10 +1,11 @@
-package serializers;
+package serializers.jackson;
 
 import data.media.MediaContent;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import serializers.jackson.StdJacksonDataBind;
+import serializers.JavaBuiltIn;
+import serializers.TestGroups;
 import de.undercouch.bson4jackson.BsonFactory;
 
 /**

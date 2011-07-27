@@ -15,4 +15,9 @@ public abstract class Serializer<S>
  	     */
  	    return new ByteArrayOutputStream(500);
  	}
+
+ 	// Multi-item interfaces
+ 	
+// 	public abstract S[] deserializeItems(byte[] input, int numberOfItems) throws Exception;
+// 	public abstract byte[] serializeItems(S[] items) throws Exception;
 }

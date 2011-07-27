@@ -1,10 +1,11 @@
-package serializers;
+package serializers.jackson;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.smile.SmileFactory;
 import org.codehaus.jackson.smile.SmileGenerator;
 
-import serializers.jackson.StdJacksonDataBind;
+import serializers.JavaBuiltIn;
+import serializers.TestGroups;
 
 import data.media.MediaContent;
 
