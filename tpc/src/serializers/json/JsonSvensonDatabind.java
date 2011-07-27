@@ -1,6 +1,10 @@
-package serializers;
+package serializers.json;
 
 import java.io.*;
+
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroups;
 
 import data.media.Image;
 import data.media.MediaContent;
@@ -8,7 +12,7 @@ import data.media.MediaContent;
 /**
  * This serializer uses svenson for JSON data binding.
  */
-public class SvensonJsonDatabind
+public class JsonSvensonDatabind
 {
   public static void register(TestGroups groups)
   {

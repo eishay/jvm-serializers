@@ -1,4 +1,4 @@
-package serializers;
+package serializers.json;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -11,6 +11,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ContentHandler;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroups;
 
 import data.media.Image;
 import data.media.Media;

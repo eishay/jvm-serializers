@@ -1,6 +1,10 @@
-package serializers;
+package serializers.json;
 
 import java.io.*;
+
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroups;
 
 import data.media.Image;
 import data.media.Media;

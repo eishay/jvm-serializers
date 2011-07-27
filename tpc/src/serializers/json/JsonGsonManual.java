@@ -1,10 +1,14 @@
-package serializers;
+package serializers.json;
 
 import static data.media.FieldMapping.*;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroups;
 
 import com.google.gson.stream.*;
 
@@ -16,7 +20,7 @@ import data.media.MediaContent;
  * Driver that uses the new streaming parser of GSON, with fully
  * manual data binding for optimal performance.
  */
-public class GsonManual
+public class JsonGsonManual
 {
     public static void register(TestGroups groups)
     {

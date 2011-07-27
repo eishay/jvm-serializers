@@ -1,9 +1,13 @@
-package serializers;
+package serializers.json;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroups;
 
 import jsonij.json.JPath;
 import jsonij.json.JSON;

@@ -1,4 +1,4 @@
-package serializers;
+package serializers.json;
 
 import static argo.jdom.JsonNodeFactories.aJsonArray;
 import static argo.jdom.JsonNodeFactories.aJsonNull;
@@ -15,6 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroups;
+
 import argo.format.CompactJsonFormatter;
 import argo.format.JsonFormatter;
 import argo.jdom.JdomParser;
@@ -30,7 +34,7 @@ import data.media.MediaContent;
  * 
  * Implementation provided by Mark Slater, admin and committer on the Argo project.
  */
-public class ArgoManualTree
+public class JsonArgoTree
 {
   public static void register(TestGroups groups)
   {

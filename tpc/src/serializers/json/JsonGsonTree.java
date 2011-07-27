@@ -1,9 +1,13 @@
-package serializers;
+package serializers.json;
 
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroups;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -18,7 +22,7 @@ import data.media.MediaContent;
 /**
  * Driver that uses Gson for manual tree processing.
  */
-public class GsonManualTree
+public class JsonGsonTree
 {
   public static void register(TestGroups groups)
   {

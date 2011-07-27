@@ -7,6 +7,21 @@ import java.util.regex.Pattern;
 import java.util.zip.DeflaterOutputStream;
 
 import serializers.jackson.*;
+import serializers.json.JsonArgoTree;
+import serializers.json.FastJSONDatabind;
+import serializers.json.FlexjsonDatabind;
+import serializers.json.JsonGsonManual;
+import serializers.json.JsonGsonTree;
+import serializers.json.JsonDotOrgManualTree;
+import serializers.json.JsonLibJsonDatabind;
+import serializers.json.JsonPathDeserializerOnly;
+import serializers.json.JsonSimpleManualTree;
+import serializers.json.JsonSimpleWithContentHandler;
+import serializers.json.JsonSmartManualTree;
+import serializers.json.JsonTwoLattes;
+import serializers.json.JsonijJpath;
+import serializers.json.JsonijManualTree;
+import serializers.json.JsonSvensonDatabind;
 import serializers.protostuff.Protostuff;
 import serializers.protostuff.ProtostuffJson;
 import serializers.protostuff.ProtostuffSmile;
@@ -264,10 +279,10 @@ public class BenchmarkRunner
 		JsonTwoLattes.register(groups);
 		ProtostuffJson.register(groups);
 		ProtobufJson.register(groups);
-		GsonManual.register(groups);
-		GsonManualTree.register(groups);
+		JsonGsonManual.register(groups);
+		JsonGsonTree.register(groups);
                 Gson.register(groups);
-                SvensonJsonDatabind.register(groups);
+                JsonSvensonDatabind.register(groups);
                 FlexjsonDatabind.register(groups);
                 JsonLibJsonDatabind.register(groups);
                 FastJSONDatabind.register(groups);
@@ -277,7 +292,7 @@ public class BenchmarkRunner
                 JsonDotOrgManualTree.register(groups);
                 JsonijJpath.register(groups);
                 JsonijManualTree.register(groups);
-                ArgoManualTree.register(groups);
+                JsonArgoTree.register(groups);
                 JsonPathDeserializerOnly.register(groups);
 		// Then JSON-like
                 // CKS text is textual JSON-like format

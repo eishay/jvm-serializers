@@ -1,7 +1,10 @@
-package serializers;
+package serializers.json;
 
 import java.io.*;
 import java.nio.charset.Charset;
+
+import serializers.Serializer;
+import serializers.TestGroups;
 
 import com.twolattes.json.Json;
 import com.twolattes.json.Marshaller;
