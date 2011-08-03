@@ -64,7 +64,7 @@ public class JacksonJsonDatabindWithStrings<T> extends BaseJacksonDataBind<T>
         T[] result = (T[]) new Object[numberOfItems];
         JsonParser parser = constructParser(input);
         for (int i = 0; i < numberOfItems; ++i) {
-            result[i] = mapper.readValue(parser, type);
+            result[i] = (T) mapper.readValue(parser, type);
         }
         parser.close();
         return result;
