@@ -6,8 +6,6 @@ import serializers.JavaBuiltIn;
 import serializers.Serializer;
 import serializers.TestGroups;
 
-import data.media.Image;
-import data.media.Media;
 import data.media.MediaContent;
 
 import com.alibaba.fastjson.JSON;
