@@ -24,7 +24,7 @@ public class JacksonJsonTree extends Serializer<MediaContent>
 {
   public static void register(TestGroups groups)
   {
-    groups.media.add(JavaBuiltIn.MediaTransformer, new JacksonJsonTree("json/jackson-manual/tree"));
+    groups.media.add(JavaBuiltIn.MediaTransformer, new JacksonJsonTree("json/jackson/tree"));
   }
 
   protected static final ObjectMapper mapper = new ObjectMapper();
@@ -130,7 +130,7 @@ public class JacksonJsonTree extends Serializer<MediaContent>
     protected static ArrayNode addImages(List<Image> images, ArrayNode node)
     {
       for (Image image : images) {
-        node.add(addImage(image, node.addObject()));
+        addImage(image, node.addObject());
       }
       return node;
     }

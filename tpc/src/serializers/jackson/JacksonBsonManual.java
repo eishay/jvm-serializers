@@ -10,6 +10,6 @@ public class JacksonBsonManual
 	{
 		BsonFactory factory = new BsonFactory();
 		groups.media.add(JavaBuiltIn.MediaTransformer,
-			new JacksonJsonManual.GenericSerializer("bson/jackson-manual", factory));
+			new JacksonJsonManual.GenericSerializer("bson/jackson/manual", factory));
 	}
 }

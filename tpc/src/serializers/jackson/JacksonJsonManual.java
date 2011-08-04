@@ -23,7 +23,7 @@ public class JacksonJsonManual
 	public static void register(TestGroups groups)
 	{
 	    JsonFactory factory = new JsonFactory();
-	    groups.media.add(JavaBuiltIn.MediaTransformer, new GenericSerializer("json/jackson-manual", factory));
+	    groups.media.add(JavaBuiltIn.MediaTransformer, new GenericSerializer("json/jackson/manual", factory));
 	}
 
 	// ------------------------------------------------------------
@@ -50,6 +50,7 @@ public class JacksonJsonManual
 			generator.close();
 			return baos.toByteArray();
 		}
+                static boolean done = false;
 
 		public final MediaContent deserialize(byte[] array) throws Exception
 		{
@@ -106,7 +107,7 @@ public class JacksonJsonManual
 			generator.writeEndArray();
 			generator.writeEndObject();
 		}
-
+		
 		private void writeMedia(JsonGenerator generator, Media media) throws IOException
 		{
 			generator.writeFieldName(FULL_FIELD_NAME_MEDIA);
@@ -166,7 +167,7 @@ public class JacksonJsonManual
 								reportIllegal(parser, JsonToken.START_ARRAY);
 							}
 							List<Image> images = new ArrayList<Image>();
-							while (parser.nextToken() == JsonToken.START_OBJECT) {
+							while (parser.nextToken() != JsonToken.END_ARRAY) {
 								images.add(readImage(parser));
 							}
 							mc.images = images;

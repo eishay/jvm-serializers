@@ -26,7 +26,7 @@ public class JacksonJsonDatabindWithStrings<T> extends BaseJacksonDataBind<T>
     }
 
     public JacksonJsonDatabindWithStrings(Class<T> clz) {
-        super("json/jackson-databind-strings", clz, new ObjectMapper());
+        super("json/jackson/databind-strings", clz, new ObjectMapper());
     }
 
     public byte[] serialize(T data) throws IOException

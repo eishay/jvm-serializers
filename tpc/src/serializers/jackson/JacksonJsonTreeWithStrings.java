@@ -14,7 +14,7 @@ public class JacksonJsonTreeWithStrings extends JacksonJsonTree
 {
   public static void register(TestGroups groups)
   {
-    groups.media.add(JavaBuiltIn.MediaTransformer, new JacksonJsonTreeWithStrings("json/jackson-manual/tree-strings"));
+    groups.media.add(JavaBuiltIn.MediaTransformer, new JacksonJsonTreeWithStrings("json/jackson/tree-strings"));
   }
 
     public JacksonJsonTreeWithStrings(String name) {

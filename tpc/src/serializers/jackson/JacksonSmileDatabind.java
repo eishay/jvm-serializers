@@ -20,7 +20,7 @@ public class JacksonSmileDatabind
         ObjectMapper mapper = new ObjectMapper(factory);
         
         groups.media.add(JavaBuiltIn.MediaTransformer,
-                new StdJacksonDataBind<MediaContent>("smile/jackson-databind",
+                new StdJacksonDataBind<MediaContent>("smile/jackson/databind",
                         MediaContent.class, mapper));
     }
 
