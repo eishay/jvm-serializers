@@ -40,9 +40,8 @@ public class FastJSONDatabind
 
     public T deserialize(byte[] array) throws Exception
     {
-      String jsonInput = new String(array, "UTF-8");
-      T result = JSON.parseObject(jsonInput, type);
-      return result;
+	// fastjson can parse from byte array, yay:
+	return JSON.parseObject(array, type);
     }
 
     public byte[] serialize(T data) throws IOException
