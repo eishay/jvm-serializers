@@ -1,4 +1,4 @@
-package serializers.wobly.optimized;
+package serializers.wobly.compact;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +11,7 @@ import data.media.MediaContent;
 import serializers.Serializer;
 import serializers.Transformer;
 
-public class WoblyOptimizedUtils {
+public class WoblyCompactUtils {
 	public static WMedia forwardMedia(Media a) {
 		return new WMedia(a.uri, a.title, a.width, a.height, a.format, a.duration, a.size, a.bitrate, a.persons, a.player, a.copyright);
 	}
@@ -72,7 +72,7 @@ public class WoblyOptimizedUtils {
 
 		@Override
 		public String getName() {
-			return "wobly-size-optimized";
+			return "wobly-compact";
 		}
 	}
 

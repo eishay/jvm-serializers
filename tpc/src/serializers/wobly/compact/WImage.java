@@ -1,4 +1,4 @@
-package serializers.wobly.optimized;
+package serializers.wobly.compact;
 
 import com.wowd.wobly.WoblyUtils.Format;
 import com.wowd.wobly.WoblyImpl;

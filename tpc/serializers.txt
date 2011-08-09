@@ -6,7 +6,7 @@ kryo
 kryo-opt
 kryo-manual
 wobly
-wobly-size-optimized
+wobly-compact
 hessian
 protobuf
 protobuf/activemq+alt

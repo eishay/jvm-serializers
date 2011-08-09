@@ -1,4 +1,4 @@
-package serializers.wobly.optimized;
+package serializers.wobly.compact;
 
 import java.util.List;
 
