@@ -259,6 +259,7 @@ public class BenchmarkRunner
 		// hessian and kryo are Java object serializations
                 Hessian.register(groups);
                 Kryo.register(groups);
+                Wobly.register(groups);
                 
                 // Binary formats, generic: protobuf, thrift, avro, kryo, CKS, msgpack
                 Protobuf.register(groups);
