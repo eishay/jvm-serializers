@@ -5,6 +5,8 @@ scala/sbinary
 kryo
 kryo-opt
 kryo-manual
+wobly
+wobly-compact
 hessian
 protobuf
 protobuf/activemq+alt
