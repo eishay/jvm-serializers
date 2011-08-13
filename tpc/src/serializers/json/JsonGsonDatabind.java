@@ -1,6 +1,10 @@
-package serializers;
+package serializers.json;
 
 import java.io.*;
+
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroups;
 
 import data.media.MediaContent;
 
@@ -8,7 +12,7 @@ import data.media.MediaContent;
  * This serializer uses Google-gson for data binding.
  * to configure)
  */
-public class Gson
+public class JsonGsonDatabind
 {
 	public static void register(TestGroups groups)
 	{

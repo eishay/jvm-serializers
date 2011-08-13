@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import java.util.zip.DeflaterOutputStream;
 
 import serializers.jackson.*;
+import serializers.json.JsonGsonDatabind;
 import serializers.json.JsonArgoTree;
 import serializers.json.FastJSONDatabind;
 import serializers.json.FlexjsonDatabind;
@@ -282,7 +283,7 @@ public class BenchmarkRunner
 		ProtobufJson.register(groups);
 		JsonGsonManual.register(groups);
 		JsonGsonTree.register(groups);
-                Gson.register(groups);
+                JsonGsonDatabind.register(groups);
                 JsonSvensonDatabind.register(groups);
                 FlexjsonDatabind.register(groups);
                 JsonLibJsonDatabind.register(groups);
