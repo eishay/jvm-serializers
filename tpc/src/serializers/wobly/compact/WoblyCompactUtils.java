@@ -1,6 +1,8 @@
 package serializers.wobly.compact;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,6 +60,8 @@ public class WoblyCompactUtils {
 	}
 	public static final class WoblySerializer extends Serializer<WMediaContent>
 	{
+		private static final ByteBuffer buffer = ByteBuffer.allocate(2048);
+
 		@Override
 		public WMediaContent deserialize(byte[] array)
 				throws Exception {
@@ -67,7 +71,9 @@ public class WoblyCompactUtils {
 		@Override
 		public byte[] serialize(WMediaContent content)
 				throws Exception {
-			return content.toByteArray();
+			buffer.clear();
+			content.write(buffer);
+			return Arrays.copyOf(buffer.array(), buffer.position());
 		}
 
 		@Override
@@ -75,5 +81,4 @@ public class WoblyCompactUtils {
 			return "wobly-compact";
 		}
 	}
-
 }
