@@ -2,6 +2,7 @@ package data.media;
 
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.msgpack.annotation.Optional;
 import jsonij.json.annotation.JSONIgnore;
 
@@ -22,7 +23,9 @@ public class Media implements java.io.Serializable {
 	public long duration;
 	public long size;
 	public int bitrate;         // Can be unset.
+
 	@JSONIgnore // required by JSONiJ
+	@JsonIgnore // by Jackson
 	public boolean hasBitrate;
 	public List<String> persons;
 	

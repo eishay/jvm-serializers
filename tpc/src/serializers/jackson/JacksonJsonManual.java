@@ -13,6 +13,7 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
+import org.codehaus.jackson.io.SerializedString;
 
 import serializers.JavaBuiltIn;
 import serializers.Serializer;
@@ -26,9 +27,28 @@ public class JacksonJsonManual
 	    groups.media.add(JavaBuiltIn.MediaTransformer, new GenericSerializer("json/jackson/manual", factory));
 	}
 
-	// ------------------------------------------------------------
-	// Serializers
+        protected final static SerializedString FIELD_IMAGES = new SerializedString(FULL_FIELD_NAME_IMAGES);
 
+        protected final static SerializedString FIELD_MEDIA = new SerializedString(FULL_FIELD_NAME_MEDIA);
+        protected final static SerializedString FIELD_PLAYER = new SerializedString(FULL_FIELD_NAME_PLAYER);
+
+        protected final static SerializedString FIELD_URI = new SerializedString(FULL_FIELD_NAME_URI);
+        protected final static SerializedString FIELD_TITLE = new SerializedString(FULL_FIELD_NAME_TITLE);
+        protected final static SerializedString FIELD_WIDTH = new SerializedString(FULL_FIELD_NAME_WIDTH);
+        protected final static SerializedString FIELD_HEIGHT = new SerializedString(FULL_FIELD_NAME_HEIGHT);
+        protected final static SerializedString FIELD_FORMAT = new SerializedString(FULL_FIELD_NAME_FORMAT);
+        protected final static SerializedString FIELD_DURATION = new SerializedString(FULL_FIELD_NAME_DURATION);
+        protected final static SerializedString FIELD_SIZE = new SerializedString(FULL_FIELD_NAME_SIZE);
+        protected final static SerializedString FIELD_BITRATE = new SerializedString(FULL_FIELD_NAME_BITRATE);
+        protected final static SerializedString FIELD_COPYRIGHT = new SerializedString(FULL_FIELD_NAME_COPYRIGHT);
+        protected final static SerializedString FIELD_PERSONS = new SerializedString(FULL_FIELD_NAME_PERSONS);
+
+        /*
+        protected final static SerializedString FIELD_ = new SerializedString(FULL_FIELD_NAME_);
+        protected final static SerializedString FIELD_ = new SerializedString(FULL_FIELD_NAME_);
+        protected final static SerializedString FIELD_ = new SerializedString(FULL_FIELD_NAME_);
+*/
+        
 	public static final class GenericSerializer extends Serializer<MediaContent>
 	{
 	    private final String name;
@@ -42,64 +62,61 @@ public class JacksonJsonManual
 
 	    public String getName() { return name; }
 
-		public final byte[] serialize(MediaContent content) throws Exception
-		{
-			ByteArrayOutputStream baos = outputStream(content);
-			JsonGenerator generator = constructGenerator(baos);
-			writeMediaContent(generator, content);
-			generator.close();
-			return baos.toByteArray();
-		}
-                static boolean done = false;
+	    public final byte[] serialize(MediaContent content) throws Exception
+	    {
+	        ByteArrayOutputStream baos = outputStream(content);
+	        JsonGenerator generator = constructGenerator(baos);
+	        writeMediaContent(generator, content);
+	        generator.close();
+	        return baos.toByteArray();
+	    }
 
-		public final MediaContent deserialize(byte[] array) throws Exception
-		{
-			JsonParser parser = constructParser(array);
-			MediaContent mc = readMediaContent(parser);
-			parser.close();
-			return mc;
-		}
+	    public final MediaContent deserialize(byte[] array) throws Exception
+	    {
+	        JsonParser parser = constructParser(array);
+	        MediaContent mc = readMediaContent(parser);
+	        parser.close();
+	        return mc;
+	    }
 
-                public byte[] serializeItems(MediaContent[] items) throws Exception
-                {
-                    ByteArrayOutputStream baos = outputStream(items[0]);
-                    JsonGenerator generator = constructGenerator(baos);
-                    // JSON allows simple sequences, so:
-                    for (int i = 0, len = items.length; i < len; ++i) {
-                        writeMediaContent(generator, items[i]);
-                    }
-                    generator.close();
-                    return baos.toByteArray();
-                }
-
-		public MediaContent[] deserializeItems(byte[] input, int numberOfItems) throws Exception 
-	        {
-		    MediaContent[] result = new MediaContent[numberOfItems];
-                    JsonParser parser = constructParser(input);
-                    for (int i = 0; i < numberOfItems; ++i) {
-                        result[i] = readMediaContent(parser);
-                    }
-                    parser.close();
-                    return result;
+	    public byte[] serializeItems(MediaContent[] items) throws Exception
+	    {
+	        ByteArrayOutputStream baos = outputStream(items[0]);
+	        JsonGenerator generator = constructGenerator(baos);
+	        // JSON allows simple sequences, so:
+	        for (int i = 0, len = items.length; i < len; ++i) {
+	            writeMediaContent(generator, items[i]);
 	        }
+	        generator.close();
+	        return baos.toByteArray();
+	    }
+
+	    public MediaContent[] deserializeItems(byte[] input, int numberOfItems) throws Exception 
+	    {
+	        MediaContent[] result = new MediaContent[numberOfItems];
+	        JsonParser parser = constructParser(input);
+	        for (int i = 0; i < numberOfItems; ++i) {
+	            result[i] = readMediaContent(parser);
+	        }
+	        parser.close();
+	        return result;
+	    }
 		
-		// // // Internal methods
+	    // // // Internal methods
 
-		protected JsonParser constructParser(byte[] data) throws IOException
-		{
-			return _factory.createJsonParser(data, 0, data.length);
-		}
+	    protected JsonParser constructParser(byte[] data) throws IOException {
+	        return _factory.createJsonParser(data, 0, data.length);
+	    }
 
-		protected JsonGenerator constructGenerator(ByteArrayOutputStream baos) throws IOException
-		{
-			return _factory.createJsonGenerator(baos, JsonEncoding.UTF8);
-		}
-
+	    protected JsonGenerator constructGenerator(ByteArrayOutputStream baos) throws IOException {
+	        return _factory.createJsonGenerator(baos, JsonEncoding.UTF8);
+	    }
+		
 		protected void writeMediaContent(JsonGenerator generator, MediaContent content) throws IOException
 		{
 			generator.writeStartObject();
 			writeMedia(generator, content.media);
-			generator.writeFieldName(FULL_FIELD_NAME_IMAGES);
+			generator.writeFieldName(FIELD_IMAGES);
 			generator.writeStartArray();
 			for (Image i : content.images) {
 				writeImage(generator, i);
@@ -110,22 +127,38 @@ public class JacksonJsonManual
 		
 		private void writeMedia(JsonGenerator generator, Media media) throws IOException
 		{
-			generator.writeFieldName(FULL_FIELD_NAME_MEDIA);
+			generator.writeFieldName(FIELD_MEDIA);
 			generator.writeStartObject();
-			generator.writeStringField(FULL_FIELD_NAME_PLAYER, media.player.name());
-			generator.writeStringField(FULL_FIELD_NAME_URI, media.uri);
-			if (media.title != null) generator.writeStringField(FULL_FIELD_NAME_TITLE, media.title);
-			generator.writeNumberField(FULL_FIELD_NAME_WIDTH, media.width);
-			generator.writeNumberField(FULL_FIELD_NAME_HEIGHT, media.height);
-			generator.writeStringField(FULL_FIELD_NAME_FORMAT, media.format);
-			generator.writeNumberField(FULL_FIELD_NAME_DURATION, media.duration);
-			generator.writeNumberField(FULL_FIELD_NAME_SIZE, media.size);
-			if (media.hasBitrate) generator.writeNumberField(FULL_FIELD_NAME_BITRATE, media.bitrate);
-			if (media.copyright != null) generator.writeStringField(FULL_FIELD_NAME_COPYRIGHT, media.copyright);
-			generator.writeFieldName(FULL_FIELD_NAME_PERSONS);
+                        generator.writeFieldName(FIELD_PLAYER);
+			generator.writeString(media.player.name());
+                        generator.writeFieldName(FIELD_URI);
+			generator.writeString(media.uri);
+			if (media.title != null) {
+			    generator.writeFieldName(FIELD_TITLE);
+			    generator.writeString(media.title);
+			}
+                        generator.writeFieldName(FIELD_WIDTH);
+			generator.writeNumber(media.width);
+                        generator.writeFieldName(FIELD_HEIGHT);
+			generator.writeNumber(media.height);
+                        generator.writeFieldName(FIELD_FORMAT);
+			generator.writeString(media.format);
+                        generator.writeFieldName(FIELD_DURATION);
+			generator.writeNumber(media.duration);
+                        generator.writeFieldName(FIELD_SIZE);
+			generator.writeNumber(media.size);
+			if (media.hasBitrate) {
+			    generator.writeFieldName(FIELD_BITRATE);
+			    generator.writeNumber(media.bitrate);
+			}
+			if (media.copyright != null) {
+			    generator.writeFieldName(FIELD_COPYRIGHT);
+			    generator.writeString(media.copyright);
+			}
+			generator.writeFieldName(FIELD_PERSONS);
 			generator.writeStartArray();
 			for (String person : media.persons) {
-				generator.writeString(person);
+			    generator.writeString(person);
 			}
 			generator.writeEndArray();
 			generator.writeEndObject();
@@ -134,11 +167,18 @@ public class JacksonJsonManual
 		private void writeImage(JsonGenerator generator, Image image) throws IOException
 		{
 			generator.writeStartObject();
-			generator.writeStringField(FULL_FIELD_NAME_URI, image.uri);
-			if (image.title != null) generator.writeStringField(FULL_FIELD_NAME_TITLE, image.title);
-			generator.writeNumberField(FULL_FIELD_NAME_WIDTH, image.width);
-			generator.writeNumberField(FULL_FIELD_NAME_HEIGHT, image.height);
-			generator.writeStringField(FULL_FIELD_NAME_SIZE, image.size.name());
+                        generator.writeFieldName(FIELD_URI);
+			generator.writeString(image.uri);
+			if (image.title != null) {
+			    generator.writeFieldName(FIELD_TITLE);
+			    generator.writeString(image.title);
+			}
+                        generator.writeFieldName(FIELD_WIDTH);
+			generator.writeNumber(image.width);
+                        generator.writeFieldName(FIELD_HEIGHT);
+			generator.writeNumber(image.height);
+                        generator.writeFieldName(FIELD_SIZE);
+			generator.writeString(image.size.name());
 			generator.writeEndObject();
 		}
 
@@ -146,7 +186,7 @@ public class JacksonJsonManual
 		{
 			MediaContent mc = new MediaContent();
 			if (parser.nextToken() != JsonToken.START_OBJECT) {
-				reportIllegal(parser, JsonToken.START_OBJECT);
+			    reportIllegal(parser, JsonToken.START_OBJECT);
 			}
 			// loop for main-level fields
 			JsonToken t;
@@ -177,7 +217,7 @@ public class JacksonJsonManual
 				throw new IllegalStateException("Unexpected field '"+field+"'");
 			}
 
-			if (mc.media == null) throw new IllegalStateException("Missing field: " + FULL_FIELD_NAME_MEDIA);
+			if (mc.media == null) throw new IllegalStateException("Missing field: " + FIELD_MEDIA);
 			if (mc.images == null) mc.images = new ArrayList<Image>();
 
 			return mc;
@@ -256,14 +296,14 @@ public class JacksonJsonManual
 				throw new IllegalStateException("Unexpected field '"+field+"'");
 			}
 
-			if (media.uri == null) throw new IllegalStateException("Missing field: " + FULL_FIELD_NAME_URI);
-			if (!haveWidth) throw new IllegalStateException("Missing field: " + FULL_FIELD_NAME_WIDTH);
-			if (!haveHeight) throw new IllegalStateException("Missing field: " + FULL_FIELD_NAME_HEIGHT);
-			if (media.format == null) throw new IllegalStateException("Missing field: " + FULL_FIELD_NAME_FORMAT);
-			if (!haveDuration) throw new IllegalStateException("Missing field: " + FULL_FIELD_NAME_DURATION);
-			if (!haveSize) throw new IllegalStateException("Missing field: " + FULL_FIELD_NAME_SIZE);
+			if (media.uri == null) throw new IllegalStateException("Missing field: " + FIELD_URI);
+			if (!haveWidth) throw new IllegalStateException("Missing field: " + FIELD_WIDTH);
+			if (!haveHeight) throw new IllegalStateException("Missing field: " + FIELD_HEIGHT);
+			if (media.format == null) throw new IllegalStateException("Missing field: " + FIELD_FORMAT);
+			if (!haveDuration) throw new IllegalStateException("Missing field: " + FIELD_DURATION);
+			if (!haveSize) throw new IllegalStateException("Missing field: " + FIELD_SIZE);
 			if (media.persons == null) media.persons = new ArrayList<String>();
-			if (media.player == null) throw new IllegalStateException("Missing field: " + FULL_FIELD_NAME_PLAYER);
+			if (media.player == null) throw new IllegalStateException("Missing field: " + FIELD_PLAYER);
 
 			return media;
 		}
@@ -308,10 +348,10 @@ public class JacksonJsonManual
 				throw new IllegalStateException("Unexpected field '"+field+"'");
 			}
 
-			if (image.uri == null) throw new IllegalStateException("Missing field: " + FULL_FIELD_NAME_URI);
-			if (!haveWidth) throw new IllegalStateException("Missing field: " + FULL_FIELD_NAME_WIDTH);
-			if (!haveHeight) throw new IllegalStateException("Missing field: " + FULL_FIELD_NAME_HEIGHT);
-			if (image.size == null) throw new IllegalStateException("Missing field: " + FULL_FIELD_NAME_SIZE);
+			if (image.uri == null) throw new IllegalStateException("Missing field: " + FIELD_URI);
+			if (!haveWidth) throw new IllegalStateException("Missing field: " + FIELD_WIDTH);
+			if (!haveHeight) throw new IllegalStateException("Missing field: " + FIELD_HEIGHT);
+			if (image.size == null) throw new IllegalStateException("Missing field: " + FIELD_SIZE);
 
 			return image;
 		}
@@ -326,5 +366,5 @@ public class JacksonJsonManual
 			}
 			throw new IllegalStateException(msg);
 		}
-	};
+	}
 }
