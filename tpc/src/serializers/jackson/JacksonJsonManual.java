@@ -42,12 +42,6 @@ public class JacksonJsonManual
         protected final static SerializedString FIELD_BITRATE = new SerializedString(FULL_FIELD_NAME_BITRATE);
         protected final static SerializedString FIELD_COPYRIGHT = new SerializedString(FULL_FIELD_NAME_COPYRIGHT);
         protected final static SerializedString FIELD_PERSONS = new SerializedString(FULL_FIELD_NAME_PERSONS);
-
-        /*
-        protected final static SerializedString FIELD_ = new SerializedString(FULL_FIELD_NAME_);
-        protected final static SerializedString FIELD_ = new SerializedString(FULL_FIELD_NAME_);
-        protected final static SerializedString FIELD_ = new SerializedString(FULL_FIELD_NAME_);
-*/
         
 	public static final class GenericSerializer extends Serializer<MediaContent>
 	{
