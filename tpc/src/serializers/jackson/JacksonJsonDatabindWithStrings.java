@@ -1,7 +1,6 @@
 package serializers.jackson;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 import data.media.MediaContent;
 
@@ -44,25 +43,23 @@ public class JacksonJsonDatabindWithStrings<T> extends BaseJacksonDataBind<T>
     
     // // Future extensions for testing performance for item sequences
     
-    // @Override
-    public byte[] serializeItems(T[] items) throws IOException
+    @Override
+    public void serializeItems(T[] items, OutputStream out) throws Exception
     {
-        ByteArrayOutputStream baos = outputStream(items[0]);
-        JsonGenerator generator = constructGenerator(baos);
+        JsonGenerator generator = constructGenerator(out);
         // JSON allows simple sequences, so:
         for (int i = 0, len = items.length; i < len; ++i) {
             mapper.writeValue(generator, items[i]);
         }
         generator.close();
-        return baos.toByteArray();
     }
 
-    // @Override
+    @Override
     @SuppressWarnings("unchecked")
-    public T[] deserializeItems(byte[] input, int numberOfItems) throws IOException 
+    public T[] deserializeItems(InputStream in, int numberOfItems) throws IOException 
     {
         T[] result = (T[]) new Object[numberOfItems];
-        JsonParser parser = constructParser(input);
+        JsonParser parser = constructParser(in);
         for (int i = 0; i < numberOfItems; ++i) {
             result[i] = (T) mapper.readValue(parser, type);
         }

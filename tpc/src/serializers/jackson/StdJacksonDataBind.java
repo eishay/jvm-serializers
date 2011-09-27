@@ -2,6 +2,8 @@ package serializers.jackson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser;
@@ -16,7 +18,7 @@ public final class StdJacksonDataBind<T> extends BaseJacksonDataBind<T>
     @Override
     public byte[] serialize(T data) throws IOException
     {
-            return mapper.writeValueAsBytes(data);
+        return mapper.writeValueAsBytes(data);
     }
 
     @Override
@@ -28,8 +30,8 @@ public final class StdJacksonDataBind<T> extends BaseJacksonDataBind<T>
 
     // // Future extensions for testing performance for item sequences
     
-    // @Override
-    public byte[] serializeItems(T[] items) throws IOException
+    @Override
+    public void serializeItems(T[] items, OutputStream out) throws IOException
     {
         ByteArrayOutputStream baos = outputStream(items[0]);
         JsonGenerator generator = constructGenerator(baos);
@@ -38,15 +40,14 @@ public final class StdJacksonDataBind<T> extends BaseJacksonDataBind<T>
             mapper.writeValue(generator, items[i]);
         }
         generator.close();
-        return baos.toByteArray();
     }
 
-    // @Override
+    @Override
     @SuppressWarnings("unchecked")
-    public T[] deserializeItems(byte[] input, int numberOfItems) throws IOException 
+    public T[] deserializeItems(InputStream in, int numberOfItems) throws IOException 
     {
         T[] result = (T[]) new Object[numberOfItems];
-        JsonParser parser = constructParser(input);
+        JsonParser parser = constructParser(in);
         for (int i = 0; i < numberOfItems; ++i) {
             result[i] = (T) mapper.readValue(parser, type);
         }

@@ -18,6 +18,6 @@ public abstract class Serializer<S>
 
  	// Multi-item interfaces
  	
-// 	public abstract S[] deserializeItems(byte[] input, int numberOfItems) throws Exception;
-// 	public abstract byte[] serializeItems(S[] items) throws Exception;
+// 	public abstract S[] deserializeItems(InputStream in, int numberOfItems) throws Exception;
+// 	public abstract void serializeItems(S[] items, OutputStream out) throws Exception;
 }

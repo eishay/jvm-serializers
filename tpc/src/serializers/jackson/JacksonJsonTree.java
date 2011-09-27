@@ -4,13 +4,12 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import serializers.JavaBuiltIn;
-import serializers.Serializer;
 import serializers.TestGroups;
 
 import data.media.Image;
@@ -20,36 +19,53 @@ import data.media.MediaContent;
 /**
  * Driver that uses Jackson for manual tree processing (to/from byte[]).
  */
-public class JacksonJsonTree extends Serializer<MediaContent>
+public class JacksonJsonTree extends BaseJacksonDataBind<MediaContent>
 {
   public static void register(TestGroups groups)
   {
-    groups.media.add(JavaBuiltIn.MediaTransformer, new JacksonJsonTree("json/jackson/tree"));
+    groups.media.add(JavaBuiltIn.MediaTransformer, new JacksonJsonTree(
+            "json/jackson/tree",new ObjectMapper()));
   }
 
-  protected static final ObjectMapper mapper = new ObjectMapper();
-
-  private final String name;
-
-  public JacksonJsonTree(String name) {
-      this.name = name;
+  public JacksonJsonTree(String name, ObjectMapper mapper) {
+      super(name, MediaContent.class, mapper);
   }
 
-  public String getName() {
-      return name;
-  }
-
-  public MediaContent deserialize(byte[] array) throws Exception
+  @Override
+  public MediaContent deserialize(byte[] array) throws IOException
   {
       return readMediaContent(mapper.readTree(new ByteArrayInputStream(array)));
   }
 
-  public byte[] serialize(MediaContent mediaContent) throws Exception
+  public byte[] serialize(MediaContent mediaContent) throws IOException
   {
       JsonNode root = asTree(mediaContent, mapper.createObjectNode());
       return mapper.writeValueAsBytes(root);
   }
 
+  @Override
+  public void serializeItems(MediaContent[] items, OutputStream out) throws IOException
+  {
+      JsonGenerator generator = constructGenerator(out);
+      // JSON allows simple sequences, so:
+      for (int i = 0, len = items.length; i < len; ++i) {
+          mapper.writeValue(generator, asTree(items[i], mapper.createObjectNode()));
+      }
+      generator.close();
+  }
+
+  @Override
+  public MediaContent[] deserializeItems(InputStream in, int numberOfItems) throws IOException 
+  {
+      JsonParser parser = constructParser(in);
+      MediaContent[] result = new MediaContent[numberOfItems];
+      for (int i = 0; i < numberOfItems; ++i) {
+          result[i] = readMediaContent(mapper.readTree(parser));
+      }
+      parser.close();
+      return result;
+  }
+  
     // // // Methods for deserializing using intermediate Tree representation
     
     protected static Image readImage(JsonNode node)
@@ -73,7 +89,7 @@ public class JacksonJsonTree extends Serializer<MediaContent>
       return images;
     }
 
-    protected static MediaContent readMediaContent(JsonNode root) throws Exception
+    protected static MediaContent readMediaContent(JsonNode root) throws IOException
     {
       MediaContent mediaContent = new MediaContent();
       mediaContent.media = readMedia(root.get("media"));
@@ -110,7 +126,7 @@ public class JacksonJsonTree extends Serializer<MediaContent>
 
     // // // Methods for serializing using intermediate Tree representation
     
-    protected static JsonNode asTree(MediaContent mediaContent, ObjectNode node) throws Exception
+    protected static JsonNode asTree(MediaContent mediaContent, ObjectNode node) throws IOException
     {
         addMedia(mediaContent.media, node.putObject("media"));
         addImages(mediaContent.images, node.putArray("images"));
@@ -144,7 +160,7 @@ public class JacksonJsonTree extends Serializer<MediaContent>
       node.put("duration", media.duration);
       node.put("format", media.format);
       node.put("height", media.height);
-      ArrayNode persons = mapper.createArrayNode();
+      ArrayNode persons = node.arrayNode();
       for (String person : media.persons) {
         persons.add(person);
       }

@@ -14,7 +14,7 @@ public class JacksonSmileManual
 	factory.configure(SmileGenerator.Feature.CHECK_SHARED_NAMES, true);
 //	factory.configure(SmileGenerator.Feature.CHECK_SHARED_STRING_VALUES, true);
 	factory.configure(SmileGenerator.Feature.CHECK_SHARED_STRING_VALUES, false);
-        groups.media.add(JavaBuiltIn.MediaTransformer, new JacksonJsonManual.GenericSerializer("smile/jackson/manual", factory));
+        groups.media.add(JavaBuiltIn.MediaTransformer, new JacksonJsonManual("smile/jackson/manual", factory));
     }
 
 }
