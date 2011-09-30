@@ -64,109 +64,24 @@ abstract class BenchmarkBase
         public String dataExtension;
     }
     
-    // ------------------------------------------------------------------------------------
-    // Test case objects
-    // ------------------------------------------------------------------------------------
-
-    protected final TestCase Create = new TestCase()
-    {
-            public <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception
-            {
-                    long start = System.nanoTime();
-                    for (int i = 0; i < iterations; i++)
-                    {
-                            transformer.forward(value);
-                    }
-                    return iterationTime(System.nanoTime() - start, iterations);
-            }
-    };
-
-    protected final TestCase Serialize = new TestCase()
-    {
-            public <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception
-            {
-                    long start = System.nanoTime();
-                    for (int i = 0; i < iterations; i++)
-                    {
-                            Object obj = transformer.forward(value);
-                            serializer.serialize(obj);
-                    }
-                    return iterationTime(System.nanoTime() - start, iterations);
-            }
-    };
-
-    protected final TestCase SerializeSameObject = new TestCase()
-    {
-            public <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception
-            {
-                    // let's reuse same instance to reduce overhead
-                    Object obj = transformer.forward(value);
-                    long start = System.nanoTime();
-                    for (int i = 0; i < iterations; i++)
-                    {
-                            serializer.serialize(obj);
-                            //if (i % 1000 == 0)
-                            //      doGc();
-                    }
-                    return iterationTime(System.nanoTime() - start, iterations);
-            }
-    };
-
-    protected final TestCase Deserialize = new TestCase()
-    {
-            public <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception
-            {
-                    byte[] array = serializer.serialize(transformer.forward(value));
-                    long start = System.nanoTime();
-                    for (int i = 0; i < iterations; i++)
-                    {
-                            serializer.deserialize(array);
-                    }
-                    return iterationTime(System.nanoTime() - start, iterations);
-            }
-    };
-
-    protected final TestCase DeserializeAndCheck = new TestCase()
-    {
-            public <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception
-            {
-                    byte[] array = serializer.serialize(transformer.forward(value));
-                    long start = System.nanoTime();
-                    for (int i = 0; i < iterations; i++)
-                    {
-                            Object obj = serializer.deserialize(array);
-                            transformer.reverse(obj);
-                    }
-                    return iterationTime(System.nanoTime() - start, iterations);
-            }
-    };
-
-    protected final TestCase DeserializeAndCheckShallow = new TestCase()
-    {
-            public <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception
-            {
-                    byte[] array = serializer.serialize(transformer.forward(value));
-                    long start = System.nanoTime();
-                    for (int i = 0; i < iterations; i++)
-                    {
-                            Object obj = serializer.deserialize(array);
-                            transformer.shallowReverse(obj);
-                    }
-                    return iterationTime(System.nanoTime() - start, iterations);
-            }
-    };
 
     // ------------------------------------------------------------------------------------
     // Actual benchmark flow
     // ------------------------------------------------------------------------------------
 
-    protected void runBenchmark(String[] args)
-    {
+    protected void runBenchmark(String[] args,
+            TestCase testCreate,
+            TestCase testSerialize, TestCase testSerializeSameObject,
+            TestCase testDeserialize, TestCase testDeserializeAndCheck, TestCase testDeserializeAndCheckShallow)
+        {
         Params params = new Params();
         findParameters(args, params);
         TestGroups groups = new TestGroups();
         addTests(groups);
-        runTests(groups, params);
+        runTests(groups, params,
+                testCreate,
+                testSerialize, testSerializeSameObject,
+                testDeserialize, testDeserializeAndCheck, testDeserializeAndCheckShallow);
     }
 
     /**
@@ -371,7 +286,10 @@ abstract class BenchmarkBase
     /**
      * Method called to run individual test cases
      */
-    protected void runTests(TestGroups groups, Params params)
+    protected void runTests(TestGroups groups, Params params,
+            TestCase testCreate,
+            TestCase testSerialize, TestCase testSerializeSameObject,
+            TestCase testDeserialize, TestCase testDeserializeAndCheck, TestCase testDeserializeAndCheckShallow)
     {
         TestGroup<?> bootstrapGroup = findGroupForTestData(groups, params);
         Object testData = loadTestData(bootstrapGroup, params);
@@ -381,7 +299,12 @@ abstract class BenchmarkBase
         StringWriter errors = new StringWriter();
         PrintWriter errorsPW = new PrintWriter(errors);
         try {
-            EnumMap<measurements, Map<String, Double>> values = start(errorsPW, params, matchingEntries, testData);
+            EnumMap<measurements, Map<String, Double>> values = runMeasurements(errorsPW, params, matchingEntries, testData,
+                    testCreate,
+                    testSerialize, testSerializeSameObject,
+                    testDeserialize, testDeserializeAndCheck, testDeserializeAndCheckShallow
+            );
+                    
             if (params.printChart) {
                 printImages(values);
             }
@@ -502,9 +425,12 @@ abstract class BenchmarkBase
         return matchingEntries;
     }
 
-    protected <J> EnumMap<measurements, Map<String, Double>>
-    start(PrintWriter errors, Params params,
-            Iterable<TestGroup.Entry<J,Object>> groups, J value) throws Exception
+    protected <J> EnumMap<measurements, Map<String, Double>> runMeasurements(PrintWriter errors,
+            Params params, Iterable<TestGroup.Entry<J,Object>> groups, J value,
+            TestCase testCreate,
+            TestCase testSerialize, TestCase testSerializeSameObject,
+            TestCase testDeserialize, TestCase testDeserializeAndCheck, TestCase testDeserializeAndCheckShallow
+    ) throws Exception
     {
                 // Check correctness first.
                 System.out.println("Checking correctness...");
@@ -523,9 +449,9 @@ abstract class BenchmarkBase
                                 String name = entry.serializer.getName();
                                 System.out.print(" " + name);
 
-                                warmCreation(runner, params.warmupTime);
-                                warmSerialization(runner, params.warmupTime);
-                                warmDeserialization(runner, params.warmupTime);
+                                warmTest(runner, params.warmupTime, testCreate);
+                                warmTest(runner, params.warmupTime, testSerialize);
+                                warmTest(runner, params.warmupTime, testDeserializeAndCheck);
                         }
                         System.out.println();
                         System.out.println("[done]");
@@ -556,29 +482,29 @@ abstract class BenchmarkBase
                                  * Should only warm things for the serializer that we test next: HotSpot JIT will
                                  * otherwise spent most of its time optimizing slower ones...
                                  */
-                                warmCreation(runner, params.warmupTime);
+                                warmTest(runner, params.warmupTime, testCreate);
 
                                 doGc();
-                                double timeCreate = runner.runTakeMin(params.trials, Create, params.iterations * 100); // do more iteration for object creation because of its short time
+                                double timeCreate = runner.runTakeMin(params.trials, testCreate, params.iterations * 100); // do more iteration for object creation because of its short time
 
-                                warmSerialization(runner, params.warmupTime);
-
-                                doGc();
-                                double timeSerializeDifferentObjects = runner.runTakeMin(params.trials, Serialize, params.iterations);
+                                warmTest(runner, params.warmupTime, testSerialize);
 
                                 doGc();
-                                double timeSerializeSameObject = runner.runTakeMin(params.trials, SerializeSameObject, params.iterations);
-
-                                warmDeserialization(runner, params.warmupTime);
+                                double timeSerializeDifferentObjects = runner.runTakeMin(params.trials, testSerialize, params.iterations);
 
                                 doGc();
-                                double timeDeserializeNoFieldAccess = runner.runTakeMin(params.trials, Deserialize, params.iterations);
+                                double timeSerializeSameObject = runner.runTakeMin(params.trials, testSerializeSameObject, params.iterations);
+
+                                warmTest(runner, params.warmupTime, testDeserializeAndCheck);
 
                                 doGc();
-                                double timeDeserializeAndCheckShallow = runner.runTakeMin(params.trials, DeserializeAndCheckShallow, params.iterations);
+                                double timeDeserializeNoFieldAccess = runner.runTakeMin(params.trials, testDeserialize, params.iterations);
 
                                 doGc();
-                                double timeDeserializeAndCheck = runner.runTakeMin(params.trials, DeserializeAndCheck, params.iterations);
+                                double timeDeserializeAndCheckShallow = runner.runTakeMin(params.trials, testDeserializeAndCheckShallow, params.iterations);
+
+                                doGc();
+                                double timeDeserializeAndCheck = runner.runTakeMin(params.trials, testDeserializeAndCheck, params.iterations);
 
                                 double totalTime = timeSerializeDifferentObjects + timeDeserializeAndCheck;
 
@@ -640,30 +566,12 @@ abstract class BenchmarkBase
     // Helper methods for test warmup
     // ------------------------------------------------------------------------------------
     
-    protected <J> void warmCreation(TestCaseRunner<J> runner, long warmupTime) throws Exception
+    protected <J> void warmTest(TestCaseRunner<J> runner, long warmupTime, TestCase test) throws Exception
     {
         // Instead of fixed counts, let's try to prime by running for N seconds
         long endTime = System.currentTimeMillis() + warmupTime;
         do {
-            runner.run(Create, 10);
-        }
-        while (System.currentTimeMillis() < endTime);
-    }
-
-    protected <J> void warmSerialization(TestCaseRunner<J> runner, long warmupTime) throws Exception
-    {
-        long endTime = System.currentTimeMillis() + warmupTime;
-        do {
-            runner.run(Serialize, 10);
-        }
-        while (System.currentTimeMillis() < endTime);
-    }
-
-    protected <J> void warmDeserialization(TestCaseRunner<J> runner, long warmupTime) throws Exception
-    {
-        long endTime = System.currentTimeMillis() + warmupTime;
-        do {
-            runner.run(DeserializeAndCheck, 10);
+            runner.run(test, 10);
         }
         while (System.currentTimeMillis() < endTime);
     }
