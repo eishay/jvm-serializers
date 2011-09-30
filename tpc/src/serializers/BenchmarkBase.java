@@ -64,40 +64,6 @@ abstract class BenchmarkBase
         public String dataExtension;
     }
     
-    protected static abstract class TestCase
-    {
-        public abstract <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception;
-    }
-
-    protected static final class TestCaseRunner<J>
-    {
-            private final Transformer<J,Object> transformer;
-            private final Serializer<Object> serializer;
-            private final J value;
-
-            public TestCaseRunner(Transformer<J,Object> transformer, Serializer<Object> serializer, J value)
-            {
-                    this.transformer = transformer;
-                    this.serializer = serializer;
-                    this.value = value;
-            }
-
-            public double run(TestCase tc, int iterations) throws Exception
-            {
-                    return tc.run(transformer, serializer, value, iterations);
-            }
-
-            public double runTakeMin(int trials, TestCase tc, int iterations) throws Exception
-            {
-                    double minTime = Double.MAX_VALUE;
-                    for (int i = 0; i < trials; i++) {
-                            double time = tc.run(transformer, serializer, value, iterations);
-                            minTime = Math.min(minTime, time);
-                    }
-                    return minTime;
-            }
-    }
-    
     // ------------------------------------------------------------------------------------
     // Test case objects
     // ------------------------------------------------------------------------------------
@@ -208,6 +174,15 @@ abstract class BenchmarkBase
      */
     protected abstract void addTests(TestGroups groups);
 
+    /**
+     * Method that tries to validate correctness of serializer, using
+     * round-trip (construct, serializer, deserialize; compare objects
+     * after steps 1 and 3).
+     */
+    protected abstract <J> void checkCorrectness(PrintWriter errors, Transformer<J,Object> transformer,
+            Serializer<Object> serializer, J value)
+        throws Exception;
+    
     protected void findParameters(String[] args, Params params)
     {
         Set<String> optionsSeen = new HashSet<String>();
@@ -697,76 +672,6 @@ abstract class BenchmarkBase
     // Helper methods, validation,  result graph generation
     // ------------------------------------------------------------------------------------
 
-    /**
-     * Method that tries to validate correctness of serializer, using
-     * round-trip (construct, serializer, deserialize; compare objects
-     * after steps 1 and 3).
-     */
-    protected static <J> void checkCorrectness(PrintWriter errors, Transformer<J,Object> transformer,
-            Serializer<Object> serializer, J value)
-        throws Exception
-    {
-        Object specialInput;
-        String name = serializer.getName();
-        try {
-            specialInput = transformer.forward(value);
-        }
-        catch (Exception ex) {
-            System.out.println("ERROR: \"" + name + "\" crashed during forward transformation.");
-            errors.println(ERROR_DIVIDER);
-            errors.println("\"" + name + "\" crashed during forward transformation.");
-            ex.printStackTrace(errors);
-            return;
-        }
-
-        byte[] array;
-        try {
-            array = serializer.serialize(specialInput);
-        }
-        catch (Exception ex) {
-            System.out.println("ERROR: \"" + name + "\" crashed during serialization.");
-            errors.println(ERROR_DIVIDER);
-            errors.println("\"" + name + "\" crashed during serialization.");
-            ex.printStackTrace(errors);
-            return;
-        }
-
-        Object specialOutput;
-
-        try {
-            specialOutput = serializer.deserialize(array);
-        }
-        catch (Exception ex) {              
-            System.out.println("ERROR: \"" + name + "\" crashed during deserialization.");
-            errors.println(ERROR_DIVIDER);
-            errors.println("\"" + name + "\" crashed during deserialization.");
-            ex.printStackTrace(errors);
-            return;
-        }
-
-        J output;
-        try {
-            output = transformer.reverse(specialOutput);
-        }
-        catch (Exception ex) {
-            System.out.println("ERROR: \"" + name + "\" crashed during reverse transformation.");
-            errors.println(ERROR_DIVIDER);
-            errors.println("\"" + name + "\" crashed during reverse transformation.");
-            ex.printStackTrace(errors);
-            return;
-        }
-        if (!value.equals(output)) {
-            System.out.println("ERROR: \"" + name + "\" failed round-trip check.");
-            errors.println(ERROR_DIVIDER);
-            errors.println("\"" + name + "\" failed round-trip check.");
-            errors.println("ORIGINAL:  " + value);
-            errors.println("ROUNDTRIP: " + output);
-
-            System.err.println("ORIGINAL:  " + value);
-            System.err.println("ROUNDTRIP: " + output);
-                    
-        }
-    }
     
     protected static void printImages(EnumMap<measurements, Map<String, Double>> values)
     {

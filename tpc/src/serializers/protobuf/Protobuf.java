@@ -1,10 +1,14 @@
-package serializers;
+package serializers.protobuf;
 
 import static serializers.protobuf.media.MediaContentHolder.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import serializers.Serializer;
+import serializers.TestGroups;
+import serializers.Transformer;
 
 public class Protobuf
 {

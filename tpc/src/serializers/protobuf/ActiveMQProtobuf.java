@@ -1,9 +1,12 @@
-package serializers;
+package serializers.protobuf;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import serializers.Serializer;
+import serializers.TestGroups;
+import serializers.Transformer;
 import serializers.activemq.media.MediaContentHolder.Image;
 import serializers.activemq.media.MediaContentHolder.Media;
 import serializers.activemq.media.MediaContentHolder.MediaContent;

@@ -1,5 +1,7 @@
-package serializers;
+package serializers.cks;
 
+import serializers.Serializer;
+import serializers.TestGroups;
 import serializers.cks.media.MediaContent;
 
 public class CksText
