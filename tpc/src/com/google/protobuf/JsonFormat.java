@@ -61,7 +61,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
  * @author wenboz@google.com Wenbo Zhu
  * @author kenton@google.com Kenton Varda
  */
-@SuppressWarnings({"serial", "unchecked"})
+@SuppressWarnings({"serial"})
 public final class JsonFormat {
 
     /**
@@ -174,7 +174,7 @@ public final class JsonFormat {
         if (field.isRepeated()) {
             // Repeated field. Print each element.
             generator.print("[");
-            for (Iterator iter = ((List) value).iterator(); iter.hasNext();) {
+            for (Iterator<?> iter = ((List<?>) value).iterator(); iter.hasNext();) {
                 printFieldValue(field, iter.next(), generator);
                 if (iter.hasNext()) {
                     generator.print(",");
@@ -245,7 +245,7 @@ public final class JsonFormat {
 
     private static void printUnknownFields(UnknownFieldSet unknownFields, JsonGenerator generator) throws IOException {
         for (Map.Entry<Integer, UnknownFieldSet.Field> entry : unknownFields.asMap().entrySet()) {
-            String prefix = entry.getKey().toString() + ": ";
+//            String prefix = entry.getKey().toString() + ": ";
             UnknownFieldSet.Field field = entry.getValue();
 
             for (long value : field.getVarintList()) {
@@ -364,6 +364,7 @@ public final class JsonFormat {
         /**
          * Appends text to the output stream without starting a new line after it.
          */
+        @SuppressWarnings("unused")
         public void append(CharSequence text) throws IOException {
             int size = text.length();
             int pos = 0;

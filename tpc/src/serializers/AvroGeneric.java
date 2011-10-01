@@ -72,10 +72,13 @@ public class AvroGeneric
 
 	public static final Transformer<MediaContent,GenericRecord> MediaTransformer = new Transformer<MediaContent,GenericRecord>()
 	{
+		@SuppressWarnings("unused")
 		private final Schema sImage = serializers.avro.media.Image.SCHEMA$;
 		private final Schema sMedia = serializers.avro.media.Media.SCHEMA$;
 
+                @SuppressWarnings("unused")
 		private final Schema sImages = sMediaContent.getField("images").schema();
+                @SuppressWarnings("unused")
 		private final Schema sPersons = sMedia.getField("persons").schema();
 
 		// ----------------------------------------------------------
