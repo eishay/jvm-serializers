@@ -48,8 +48,6 @@ public class BenchmarkRunner extends MediaItemBenchmark
     @Override
     protected void addTests(TestGroups groups)
     {
-        JacksonSmileManual.register(groups);
-
         // Binary Formats; language-specific ones
         JavaBuiltIn.register(groups);
         JavaManual.register(groups);
@@ -103,7 +101,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         JacksonBsonManual.register(groups);
         JacksonBsonDatabind.register(groups);
         MongoDB.register(groups);
-//        JacksonSmileManual.register(groups);
+        JacksonSmileManual.register(groups);
         JacksonSmileDatabind.register(groups);
         ProtostuffSmile.register(groups);
 
