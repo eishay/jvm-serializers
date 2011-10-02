@@ -31,13 +31,13 @@ public class Protobuf
     {
         public String getName() { return "protobuf"; }
 
-        public MediaContent deserialize (byte[] array) throws Exception
-        {
+        @Override
+        public MediaContent deserialize (byte[] array) throws Exception {
             return MediaContent.parseFrom(array);
         }
 
-        public byte[] serialize(MediaContent content)
-        {
+        @Override
+        public byte[] serialize(MediaContent content) {
             return content.toByteArray();
         }
 

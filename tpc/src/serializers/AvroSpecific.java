@@ -4,6 +4,10 @@ import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,12 +47,14 @@ public class AvroSpecific
                 private BinaryEncoder encoder;
                 private BinaryDecoder decoder;
 
+                private final Class<T> clazz;
+                
 		public GenericSerializer(Class<T> clazz)
 		{
-			this.READER = new SpecificDatumReader<T>(clazz);
-			this.WRITER = new SpecificDatumWriter<T>(clazz);
+		    this.clazz = clazz;
+		    this.READER = new SpecificDatumReader<T>(clazz);
+		    this.WRITER = new SpecificDatumWriter<T>(clazz);
 		}
-
 
 		public T deserialize(byte[] array) throws Exception {
                   decoder = DECODER_FACTORY.binaryDecoder(array, decoder);
@@ -62,6 +68,29 @@ public class AvroSpecific
                   encoder.flush();
                   return out.toByteArray();
 		}
+
+		@Override
+	        public void serializeItems(T[] items, OutputStream out) throws IOException
+	        {
+		    encoder = ENCODER_FACTORY.binaryEncoder(out, encoder);
+		    for (T item : items) {
+		        WRITER.write(item, encoder);
+		    }
+		    encoder.flush();
+	        }
+
+	        @Override
+	        public T[] deserializeItems(InputStream in0, int numberOfItems) throws IOException 
+	        {
+	            decoder = DECODER_FACTORY.binaryDecoder(in0, decoder);
+	            @SuppressWarnings("unchecked")
+	            T[] result = (T[]) Array.newInstance(clazz, numberOfItems);
+	            T item = null;
+	            for (int i = 0; i < numberOfItems; ++i) {
+	                result[i] = READER.read(item, decoder);
+	            }
+	            return result;
+	        }
 	}
 
 	// ------------------------------------------------------------

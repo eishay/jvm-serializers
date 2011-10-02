@@ -35,6 +35,7 @@ public class MediaStreamBenchmark extends BenchmarkBase
 
         // Binary formats, generic: protobuf, thrift, avro, CKS, msgpack
         Protobuf.register(groups);
+        AvroSpecific.register(groups);
  
         // JSON
         JacksonJsonManual.register(groups);
