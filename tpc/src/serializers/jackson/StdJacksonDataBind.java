@@ -33,8 +33,7 @@ public final class StdJacksonDataBind<T> extends BaseJacksonDataBind<T>
     @Override
     public void serializeItems(T[] items, OutputStream out) throws IOException
     {
-        ByteArrayOutputStream baos = outputStream(items[0]);
-        JsonGenerator generator = constructGenerator(baos);
+        JsonGenerator generator = constructGenerator(out);
         // JSON allows simple sequences, so:
         for (int i = 0, len = items.length; i < len; ++i) {
             mapper.writeValue(generator, items[i]);

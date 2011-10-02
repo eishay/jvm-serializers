@@ -40,11 +40,11 @@ public class MediaStreamBenchmark extends BenchmarkBase
         // JSON
         JacksonJsonManual.register(groups);
 //        JacksonJsonTree.register(groups);
-//        JacksonJsonDatabind.register(groups);
+        JacksonJsonDatabind.register(groups);
 
         // JSON-like
         JacksonSmileManual.register(groups);
-//        JacksonSmileDatabind.register(groups);
+        JacksonSmileDatabind.register(groups);
 
         // this one needed to read in test data, too:
         CksText.register(groups);
