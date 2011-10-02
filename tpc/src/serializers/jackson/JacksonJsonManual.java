@@ -199,6 +199,7 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
                 return mc;
             }
         }
+        
         // and fallback if order was changed
         for (; parser.getCurrentToken() == JsonToken.FIELD_NAME; parser.nextToken()) {
             String field = parser.getCurrentName();
@@ -262,6 +263,8 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
                                                 media.copyright = parser.nextTextValue();
                                                 if (parser.nextFieldName(FIELD_PERSONS)) {
                                                     media.persons = readPersons(parser);
+                                                    parser.nextToken();
+                                                    verifyCurrent(parser, JsonToken.END_OBJECT);
                                                     return media;
                                                 }
                                             }
@@ -274,6 +277,7 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
                 }
             }
         }
+        
         // and if something reorder or missing, general loop:
         
         for (; parser.getCurrentToken() == JsonToken.FIELD_NAME; parser.nextToken()) {
@@ -282,7 +286,7 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
             if (I != null) {
                 switch (I) {
                 case FIELD_IX_PLAYER:
-                    media.player = Media.Player.valueOf(parser.getText());
+                    media.player = Media.Player.find(parser.nextTextValue());
                     continue;
                 case FIELD_IX_URI:
                     media.uri = parser.nextTextValue();
@@ -423,6 +427,8 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
         if (!haveWidth) throw new IllegalStateException("Missing field: " + FIELD_WIDTH);
         if (!haveHeight) throw new IllegalStateException("Missing field: " + FIELD_HEIGHT);
         if (image.size == null) throw new IllegalStateException("Missing field: " + FIELD_SIZE);
+
+        verifyCurrent(parser, JsonToken.END_OBJECT);
         
         return image;
     }
