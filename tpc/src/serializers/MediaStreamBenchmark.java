@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 
 import serializers.cks.CksText;
 import serializers.jackson.*;
+import serializers.protobuf.Protobuf;
 import serializers.xml.XmlStax;
 
 /**
@@ -32,6 +33,9 @@ public class MediaStreamBenchmark extends BenchmarkBase
         // Binary Formats; language-specific ones
         JavaManual.register(groups);
 
+        // Binary formats, generic: protobuf, thrift, avro, CKS, msgpack
+        Protobuf.register(groups);
+ 
         // JSON
         JacksonJsonManual.register(groups);
 //        JacksonJsonTree.register(groups);
@@ -65,12 +69,13 @@ public class MediaStreamBenchmark extends BenchmarkBase
         return loader.transformer.reverseAll(deserialized);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected <J> byte[] serializeForSize(Transformer<J,Object> transformer, Serializer<Object> serializer, J value)
         throws Exception
     {
-        return serializer.serializeAsBytes((J[]) value);
+        @SuppressWarnings("unchecked")
+        Object[] result = transformer.forwardAll((J[]) value);
+        return serializer.serializeAsBytes(result);
     }
     
     @Override

@@ -225,210 +225,210 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
 
     private Media readMedia(JsonParser parser) throws IOException
     {
-		    if (parser.nextToken() != JsonToken.START_OBJECT) {
-		        reportIllegal(parser, JsonToken.START_OBJECT);
-		    }
-		    Media media = new Media();
-		    boolean haveWidth = false;
-		    boolean haveHeight = false;
-		    boolean haveDuration = false;
-		    boolean haveSize = false;
+        if (parser.nextToken() != JsonToken.START_OBJECT) {
+            reportIllegal(parser, JsonToken.START_OBJECT);
+        }
+        Media media = new Media();
+        boolean haveWidth = false;
+        boolean haveHeight = false;
+        boolean haveDuration = false;
+        boolean haveSize = false;
 
-		    // As with above, first fast path
-		    if (parser.nextFieldName(FIELD_PLAYER)) {
-		        media.player = Media.Player.valueOf(parser.nextTextValue());
-		        if (parser.nextFieldName(FIELD_URI)) {
-                                media.uri = parser.nextTextValue();
-                                if (parser.nextFieldName(FIELD_TITLE)) {
-                                    media.title = parser.nextTextValue();
-                                    if (parser.nextFieldName(FIELD_WIDTH)) {
-                                        haveWidth = true;
-                                        media.width = parser.nextIntValue(-1);
-                                        if (parser.nextFieldName(FIELD_HEIGHT)) {
-                                            haveHeight = true;
-                                            media.height = parser.nextIntValue(-1);
-                                            if (parser.nextFieldName(FIELD_FORMAT)) {
-                                                media.format = parser.nextTextValue();
-                                                if (parser.nextFieldName(FIELD_DURATION)) {
-                                                    haveDuration = true;
-                                                    media.duration = parser.nextLongValue(-1L);
-                                                    if (parser.nextFieldName(FIELD_SIZE)) {
-                                                        haveSize = true;
-                                                        media.size = parser.nextLongValue(-1L);
-                                                        if (parser.nextFieldName(FIELD_BITRATE)) {
-                                                            media.bitrate = parser.nextIntValue(-1);
-                                                            media.hasBitrate = true;
-                                                            if (parser.nextFieldName(FIELD_COPYRIGHT)) {
-                                                                media.copyright = parser.nextTextValue();
-                                                                if (parser.nextFieldName(FIELD_PERSONS)) {
-                                                                    media.persons = readPersons(parser);
-                                                                    return media;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
+        // As with above, first fast path
+        if (parser.nextFieldName(FIELD_PLAYER)) {
+            media.player = Media.Player.valueOf(parser.nextTextValue());
+            if (parser.nextFieldName(FIELD_URI)) {
+                media.uri = parser.nextTextValue();
+                if (parser.nextFieldName(FIELD_TITLE)) {
+                    media.title = parser.nextTextValue();
+                    if (parser.nextFieldName(FIELD_WIDTH)) {
+                        haveWidth = true;
+                        media.width = parser.nextIntValue(-1);
+                        if (parser.nextFieldName(FIELD_HEIGHT)) {
+                            haveHeight = true;
+                            media.height = parser.nextIntValue(-1);
+                            if (parser.nextFieldName(FIELD_FORMAT)) {
+                                media.format = parser.nextTextValue();
+                                if (parser.nextFieldName(FIELD_DURATION)) {
+                                    haveDuration = true;
+                                    media.duration = parser.nextLongValue(-1L);
+                                    if (parser.nextFieldName(FIELD_SIZE)) {
+                                        haveSize = true;
+                                        media.size = parser.nextLongValue(-1L);
+                                        if (parser.nextFieldName(FIELD_BITRATE)) {
+                                            media.bitrate = parser.nextIntValue(-1);
+                                            media.hasBitrate = true;
+                                            if (parser.nextFieldName(FIELD_COPYRIGHT)) {
+                                                media.copyright = parser.nextTextValue();
+                                                if (parser.nextFieldName(FIELD_PERSONS)) {
+                                                    media.persons = readPersons(parser);
+                                                    return media;
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
-		    }
-		    // and if something reorder or missing, general loop:
-
-		    for (; parser.getCurrentToken() == JsonToken.FIELD_NAME; parser.nextToken()) {
-		        String field = parser.getCurrentName();
-		        Integer I = fullFieldToIndex.get(field);
-		        if (I != null) {
-		            switch (I) {
-                                case FIELD_IX_PLAYER:
-                                    media.player = Media.Player.valueOf(parser.getText());
-                                    continue;
-                                case FIELD_IX_URI:
-                                    media.uri = parser.nextTextValue();
-                                    continue;
-                                case FIELD_IX_TITLE:
-                                    media.title = parser.nextTextValue();
-                                    continue;
-                                case FIELD_IX_WIDTH:
-                                    media.width = parser.nextIntValue(-1);
-                                    haveWidth = true;
-                                    continue;
-                                case FIELD_IX_HEIGHT:
-                                    media.height = parser.nextIntValue(-1);
-                                    haveHeight = true;
-                                    continue;
-                                case FIELD_IX_FORMAT:
-                                    media.format = parser.nextTextValue();
-                                    continue;
-                                case FIELD_IX_DURATION:
-                                    media.duration = parser.nextLongValue(-1L);
-                                    haveDuration = true;
-                                    continue;
-                                case FIELD_IX_SIZE:
-                                    media.size = parser.nextLongValue(-1L);
-                                    haveSize = true;
-                                    continue;
-                                case FIELD_IX_BITRATE:
-                                    media.bitrate = parser.nextIntValue(-1);
-                                    media.hasBitrate = true;
-                                    continue;
-                                case FIELD_IX_PERSONS:
-                                    media.persons = readPersons(parser);
-                                    continue;
-                                case FIELD_IX_COPYRIGHT:
-                                    media.copyright = parser.nextTextValue();
-                                    continue;
-                                }
-		        }
-		        throw new IllegalStateException("Unexpected field '"+field+"'");
-		    }
-		    verifyCurrent(parser, JsonToken.END_OBJECT);
-
-		    if (media.uri == null) throw new IllegalStateException("Missing field: " + FIELD_URI);
-		    if (!haveWidth) throw new IllegalStateException("Missing field: " + FIELD_WIDTH);
-		    if (!haveHeight) throw new IllegalStateException("Missing field: " + FIELD_HEIGHT);
-		    if (media.format == null) throw new IllegalStateException("Missing field: " + FIELD_FORMAT);
-		    if (!haveDuration) throw new IllegalStateException("Missing field: " + FIELD_DURATION);
-		    if (!haveSize) throw new IllegalStateException("Missing field: " + FIELD_SIZE);
-		    if (media.persons == null) media.persons = new ArrayList<String>();
-		    if (media.player == null) throw new IllegalStateException("Missing field: " + FIELD_PLAYER);
-
-		    return media;
-		}
-
-                private List<Image> readImages(JsonParser parser) throws IOException
-                {
-                    if (parser.nextToken() != JsonToken.START_ARRAY) {
-                        reportIllegal(parser, JsonToken.START_ARRAY);
+                        }
                     }
-                    List<Image> images = new ArrayList<Image>();
-                    while (parser.nextToken() == JsonToken.START_OBJECT) {
-                        images.add(readImage(parser));
-                    }
-                    verifyCurrent(parser, JsonToken.END_ARRAY);
-                    return images;
                 }
+            }
+        }
+        // and if something reorder or missing, general loop:
+        
+        for (; parser.getCurrentToken() == JsonToken.FIELD_NAME; parser.nextToken()) {
+            String field = parser.getCurrentName();
+            Integer I = fullFieldToIndex.get(field);
+            if (I != null) {
+                switch (I) {
+                case FIELD_IX_PLAYER:
+                    media.player = Media.Player.valueOf(parser.getText());
+                    continue;
+                case FIELD_IX_URI:
+                    media.uri = parser.nextTextValue();
+                    continue;
+                case FIELD_IX_TITLE:
+                    media.title = parser.nextTextValue();
+                    continue;
+                case FIELD_IX_WIDTH:
+                    media.width = parser.nextIntValue(-1);
+                    haveWidth = true;
+                    continue;
+                case FIELD_IX_HEIGHT:
+                    media.height = parser.nextIntValue(-1);
+                    haveHeight = true;
+                    continue;
+                case FIELD_IX_FORMAT:
+                    media.format = parser.nextTextValue();
+                    continue;
+                case FIELD_IX_DURATION:
+                    media.duration = parser.nextLongValue(-1L);
+                    haveDuration = true;
+                    continue;
+                case FIELD_IX_SIZE:
+                    media.size = parser.nextLongValue(-1L);
+                    haveSize = true;
+                    continue;
+                case FIELD_IX_BITRATE:
+                    media.bitrate = parser.nextIntValue(-1);
+                    media.hasBitrate = true;
+                    continue;
+                case FIELD_IX_PERSONS:
+                    media.persons = readPersons(parser);
+                    continue;
+                case FIELD_IX_COPYRIGHT:
+                    media.copyright = parser.nextTextValue();
+                    continue;
+                }
+            }
+            throw new IllegalStateException("Unexpected field '"+field+"'");
+        }
+        verifyCurrent(parser, JsonToken.END_OBJECT);
+        
+        if (media.uri == null) throw new IllegalStateException("Missing field: " + FIELD_URI);
+        if (!haveWidth) throw new IllegalStateException("Missing field: " + FIELD_WIDTH);
+        if (!haveHeight) throw new IllegalStateException("Missing field: " + FIELD_HEIGHT);
+        if (media.format == null) throw new IllegalStateException("Missing field: " + FIELD_FORMAT);
+        if (!haveDuration) throw new IllegalStateException("Missing field: " + FIELD_DURATION);
+        if (!haveSize) throw new IllegalStateException("Missing field: " + FIELD_SIZE);
+        if (media.persons == null) media.persons = new ArrayList<String>();
+        if (media.player == null) throw new IllegalStateException("Missing field: " + FIELD_PLAYER);
+        
+        return media;
+    }
 
-                private List<String> readPersons(JsonParser parser) throws IOException
-                {
-                    if (parser.nextToken() != JsonToken.START_ARRAY) {
-                        reportIllegal(parser, JsonToken.START_ARRAY);
-                    }
-                    List<String> persons = new ArrayList<String>();
-                    String str;
-                    while ((str = parser.nextTextValue()) != null) {
-                        persons.add(str);
-                    }
-                    verifyCurrent(parser, JsonToken.END_ARRAY);
-                    return persons;
-                }                
-
-                private Image readImage(JsonParser parser) throws IOException
-		{
-                    boolean haveWidth = false;
-                    boolean haveHeight = false;
-                    Image image = new Image();
-                    if (parser.nextFieldName(FIELD_URI)) {
-                        image.uri = parser.nextTextValue();
-                        if (parser.nextFieldName(FIELD_TITLE)) {
-                            image.title = parser.nextTextValue();
-                            if (parser.nextFieldName(FIELD_WIDTH)) {
-                                image.width = parser.nextIntValue(-1);
-                                haveWidth = true;
-                                if (parser.nextFieldName(FIELD_HEIGHT)) {
-                                    image.height = parser.nextIntValue(-1);
-                                    haveHeight = true;
-                                    if (parser.nextFieldName(FIELD_SIZE)) {
-                                        image.size = Image.Size.valueOf(parser.nextTextValue());
-                                        parser.nextToken();
-                                        verifyCurrent(parser, JsonToken.END_OBJECT);
-                                        return image;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    for (; parser.getCurrentToken() == JsonToken.FIELD_NAME; parser.nextToken()) {
-                        String field = parser.getCurrentName();
-                        // read value token (or START_ARRAY)
-                        parser.nextToken();
-                        Integer I = fullFieldToIndex.get(field);
-                        if (I != null) {
-                            switch (I) {
-						case FIELD_IX_URI:
-							image.uri = parser.getText();
-							continue;
-						case FIELD_IX_TITLE:
-							image.title = parser.getText();
-							continue;
-						case FIELD_IX_WIDTH:
-							image.width = parser.getIntValue();
-							haveWidth = true;
-							continue;
-						case FIELD_IX_HEIGHT:
-							image.height = parser.getIntValue();
-							haveHeight = true;
-							continue;
-						case FIELD_IX_SIZE:
-							image.size = Image.Size.valueOf(parser.getText());
-							continue;
-                            }
-                        }
-                        throw new IllegalStateException("Unexpected field '"+field+"'");
-                    }
-
-                    if (image.uri == null) throw new IllegalStateException("Missing field: " + FIELD_URI);
-                    if (!haveWidth) throw new IllegalStateException("Missing field: " + FIELD_WIDTH);
-                    if (!haveHeight) throw new IllegalStateException("Missing field: " + FIELD_HEIGHT);
-                    if (image.size == null) throw new IllegalStateException("Missing field: " + FIELD_SIZE);
-
-                    return image;
-		}
-		
-    private final void verifyCurrent(JsonParser parser, JsonToken expToken) throws IOException
+    private List<Image> readImages(JsonParser parser) throws IOException
     {
+        if (parser.nextToken() != JsonToken.START_ARRAY) {
+            reportIllegal(parser, JsonToken.START_ARRAY);
+        }
+        List<Image> images = new ArrayList<Image>();
+        while (parser.nextToken() == JsonToken.START_OBJECT) {
+            images.add(readImage(parser));
+        }
+        verifyCurrent(parser, JsonToken.END_ARRAY);
+        return images;
+    }
+
+    private List<String> readPersons(JsonParser parser) throws IOException
+    {
+        if (parser.nextToken() != JsonToken.START_ARRAY) {
+            reportIllegal(parser, JsonToken.START_ARRAY);
+        }
+        List<String> persons = new ArrayList<String>();
+        String str;
+        while ((str = parser.nextTextValue()) != null) {
+            persons.add(str);
+        }
+        verifyCurrent(parser, JsonToken.END_ARRAY);
+        return persons;
+    }                
+    
+    private Image readImage(JsonParser parser) throws IOException
+    {
+        boolean haveWidth = false;
+        boolean haveHeight = false;
+        Image image = new Image();
+        if (parser.nextFieldName(FIELD_URI)) {
+            image.uri = parser.nextTextValue();
+            if (parser.nextFieldName(FIELD_TITLE)) {
+                image.title = parser.nextTextValue();
+                if (parser.nextFieldName(FIELD_WIDTH)) {
+                    image.width = parser.nextIntValue(-1);
+                    haveWidth = true;
+                    if (parser.nextFieldName(FIELD_HEIGHT)) {
+                        image.height = parser.nextIntValue(-1);
+                        haveHeight = true;
+                        if (parser.nextFieldName(FIELD_SIZE)) {
+                            image.size = Image.Size.valueOf(parser.nextTextValue());
+                            parser.nextToken();
+                            verifyCurrent(parser, JsonToken.END_OBJECT);
+                            return image;
+                        }
+                    }
+                }
+            }
+        }
+        
+        for (; parser.getCurrentToken() == JsonToken.FIELD_NAME; parser.nextToken()) {
+            String field = parser.getCurrentName();
+            // read value token (or START_ARRAY)
+            parser.nextToken();
+            Integer I = fullFieldToIndex.get(field);
+            if (I != null) {
+                switch (I) {
+                case FIELD_IX_URI:
+                    image.uri = parser.getText();
+                    continue;
+                case FIELD_IX_TITLE:
+                    image.title = parser.getText();
+                    continue;
+                case FIELD_IX_WIDTH:
+                    image.width = parser.getIntValue();
+                    haveWidth = true;
+                    continue;
+                case FIELD_IX_HEIGHT:
+                    image.height = parser.getIntValue();
+                    haveHeight = true;
+                    continue;
+                case FIELD_IX_SIZE:
+                    image.size = Image.Size.valueOf(parser.getText());
+                    continue;
+                }
+            }
+            throw new IllegalStateException("Unexpected field '"+field+"'");
+        }
+        
+        if (image.uri == null) throw new IllegalStateException("Missing field: " + FIELD_URI);
+        if (!haveWidth) throw new IllegalStateException("Missing field: " + FIELD_WIDTH);
+        if (!haveHeight) throw new IllegalStateException("Missing field: " + FIELD_HEIGHT);
+        if (image.size == null) throw new IllegalStateException("Missing field: " + FIELD_SIZE);
+        
+        return image;
+    }
+    
+    private final void verifyCurrent(JsonParser parser, JsonToken expToken) throws IOException
+    {   
         if (parser.getCurrentToken() != expToken) {
             reportIllegal(parser, expToken);
         }

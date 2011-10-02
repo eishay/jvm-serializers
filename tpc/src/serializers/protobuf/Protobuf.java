@@ -2,6 +2,7 @@ package serializers.protobuf;
 
 import static serializers.protobuf.media.MediaContentHolder.*;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,44 +12,73 @@ import data.media.MediaTransformer;
 import serializers.Serializer;
 import serializers.TestGroups;
 
+/**
+ *<p>
+ * Note on stream test case: as per [http://code.google.com/apis/protocolbuffers/docs/techniques.html]
+ * we will have to external framing; we just use very simple length prefix, which should work
+ * reasonably well.
+ */
 public class Protobuf
 {
-	public static void register(TestGroups groups)
-	{
-		groups.media.add(mediaTransformer, MediaSerializer);
-	}
+    public static void register(TestGroups groups) {
+        groups.media.add(new Transformer(), new PBSerializer());
+    }
 
-	// ------------------------------------------------------------
-	// Serializers
+    // ------------------------------------------------------------
+    // Serializers
 
-	public static final Serializer<MediaContent> MediaSerializer = new Serializer<MediaContent>()
-	{
-		public MediaContent deserialize (byte[] array) throws Exception
-		{
-			return MediaContent.parseFrom(array);
-		}
+    static final class PBSerializer extends Serializer<MediaContent>
+    {
+        public String getName() { return "protobuf"; }
 
-		public byte[] serialize(MediaContent content)
-		{
-			return content.toByteArray();
-		}
+        public MediaContent deserialize (byte[] array) throws Exception
+        {
+            return MediaContent.parseFrom(array);
+        }
 
-		public String getName()
-		{
-			return "protobuf";
-		}
-	};
+        public byte[] serialize(MediaContent content)
+        {
+            return content.toByteArray();
+        }
 
-	// ------------------------------------------------------------
-	// Transformers
+        @Override
+        public final void serializeItems(MediaContent[] items, OutputStream out0) throws IOException
+        {
+            DataOutputStream out = new DataOutputStream(out0);
+            for (MediaContent item : items) {
+                byte[] data = item.toByteArray();
+                out.writeInt(data.length);
+                out.write(data);
+            }
+            // should we write end marker (length of 0) or not? For now, omit it
+            out.flush();
+        }
 
-	public static final MediaTransformer<MediaContent> mediaTransformer = new MediaTransformer<MediaContent>()
-	{
-            @Override
-            public MediaContent[] resultArray(int size) { return new MediaContent[size]; }
+        @Override
+        public MediaContent[] deserializeItems(InputStream in0, int numberOfItems) throws IOException 
+        {
+            DataInputStream in = new DataInputStream(in0);
+            MediaContent[] result = new MediaContent[numberOfItems];
+            for (int i = 0; i < numberOfItems; ++i) {
+                int len = in.readInt();
+                byte[] data = new byte[len];
+                in.readFully(data);
+                result[i] = MediaContent.parseFrom(data);
+            }
+            return result;
+        }
+    }
 
-	    // ----------------------------------------------------------
-		// Forward
+    // ------------------------------------------------------------
+    // Transformers
+
+    static final class Transformer  extends MediaTransformer<MediaContent>
+    {
+        @Override
+        public MediaContent[] resultArray(int size) { return new MediaContent[size]; }
+
+        // ----------------------------------------------------------
+        // Forward
 
 		public MediaContent forward(data.media.MediaContent mc)
 		{
@@ -181,5 +211,5 @@ public class Protobuf
 		{
 			return new data.media.MediaContent(reverseMedia(mc.getMedia()), Collections.<data.media.Image>emptyList());
 		}
-	};
+    }
 }
