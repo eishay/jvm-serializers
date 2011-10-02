@@ -69,7 +69,7 @@
                 Bitrate = Set: 192000
                 Persons = ["Sergei Brin", "Steve Jobs", "Just Kiddin"]
                 Player = Java
-                Copyright = Probably
+                Copyright = Set: "Probably"
         }
         Images = [ {
                         Uri = "http://google.com/icon-large.jpg"
@@ -156,7 +156,7 @@
                 Bitrate = Set: 192000
                 Persons = ["Sergei Brin", "Steve Jobs", "Just Kiddin"]
                 Player = Java
-                Copyright = Probably
+                Copyright = Set: "Probably"
         }
         Images = [ {
                         Uri = "http://google.com/icon-large.jpg"
@@ -244,7 +244,7 @@
                 Bitrate = Set: 192000
                 Persons = ["Sergei Brin", "Steve Jobs", "Just Kiddin"]
                 Player = Java
-                Copyright = Probably
+                Copyright = Set: "Probably"
         }
         Images = [ {
                         Uri = "http://google.com/icon-large.jpg"
