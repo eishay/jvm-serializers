@@ -12,10 +12,10 @@ import serializers.xml.XmlStax;
  * Alternative benchmark which uses a sequence of data items for testing,
  * instead of a single item that main test uses.
  */
-public class DataStreamBenchmark extends BenchmarkBase
+public class MediaStreamBenchmark extends BenchmarkBase
 {
     public static void main(String[] args) {
-        new DataStreamBenchmark().runBenchmark(args);
+        new MediaStreamBenchmark().runBenchmark(args);
     }
 
     private void runBenchmark(String[] args) {

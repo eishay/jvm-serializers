@@ -6,6 +6,9 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.zip.DeflaterOutputStream;
 
+/**
+ * Common base class for various benchmark implementations.
+ */
 abstract class BenchmarkBase
 {
     public final static int DEFAULT_ITERATIONS = 2000;
