@@ -11,7 +11,16 @@ import static data.ReprUtil.repr;
 @SuppressWarnings("serial")
 public class Media implements java.io.Serializable {
 	public enum Player {
-		JAVA, FLASH
+		JAVA, FLASH;
+		
+		public static Player find(String str) {
+		    if (str == "JAVA") return JAVA;
+		    if (str == "FLASH") return FLASH;
+		    if ("JAVA".equals(str)) return JAVA;
+		    if ("FLASH".equals(str)) return FLASH;
+		    String desc = (str == null) ? "NULL" : String.format("'%s'", str);
+		    throw new IllegalArgumentException("No Player value of "+desc);
+		}
 	}
 
 	public String uri;

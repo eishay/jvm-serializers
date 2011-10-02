@@ -236,7 +236,7 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
 
         // As with above, first fast path
         if (parser.nextFieldName(FIELD_PLAYER)) {
-            media.player = Media.Player.valueOf(parser.nextTextValue());
+            media.player = Media.Player.find(parser.nextTextValue());
             if (parser.nextFieldName(FIELD_URI)) {
                 media.uri = parser.nextTextValue();
                 if (parser.nextFieldName(FIELD_TITLE)) {
