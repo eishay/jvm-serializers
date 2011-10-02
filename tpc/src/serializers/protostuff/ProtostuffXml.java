@@ -19,9 +19,9 @@ public final class ProtostuffXml
     public static void register(TestGroups groups)
     {
         // manual (hand-coded schema, no autoboxing)
-        groups.media.add(JavaBuiltIn.MediaTransformer, XmlManualMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, XmlManualMediaSerializer);
         // runtime (reflection)
-        groups.media.add(JavaBuiltIn.MediaTransformer, XmlRuntimeMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, XmlRuntimeMediaSerializer);
 
         /* protostuff has too many entries
 

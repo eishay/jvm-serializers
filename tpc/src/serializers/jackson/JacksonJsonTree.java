@@ -23,7 +23,7 @@ public class JacksonJsonTree extends BaseJacksonDataBind<MediaContent>
 {
   public static void register(TestGroups groups)
   {
-    groups.media.add(JavaBuiltIn.MediaTransformer, new JacksonJsonTree(
+    groups.media.add(JavaBuiltIn.mediaTransformer, new JacksonJsonTree(
             "json/jackson/tree",new ObjectMapper()));
   }
 

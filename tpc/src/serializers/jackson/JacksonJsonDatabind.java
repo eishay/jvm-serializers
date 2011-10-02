@@ -17,7 +17,7 @@ public class JacksonJsonDatabind
     {
         ObjectMapper mapper = new ObjectMapper();
         // note: could also force static typing; left out to keep defaults
-        groups.media.add(JavaBuiltIn.MediaTransformer,
+        groups.media.add(JavaBuiltIn.mediaTransformer,
                 new StdJacksonDataBind<MediaContent>("json/jackson/databind", MediaContent.class, mapper));
     }
 }

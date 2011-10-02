@@ -60,8 +60,9 @@ abstract class BenchmarkBase
 
         // Information in input data file:
         public String dataFileName;
-        public String dataType;
-        public String dataExtension;
+        public String dataType; // from first part of file name (comma-separated)
+        public String dataExtra; // from second part
+        public String dataExtension; // from last part of file name
     }
     
 
@@ -88,15 +89,6 @@ abstract class BenchmarkBase
      * Method called to find add actual test codecs
      */
     protected abstract void addTests(TestGroups groups);
-
-    /**
-     * Method that tries to validate correctness of serializer, using
-     * round-trip (construct, serializer, deserialize; compare objects
-     * after steps 1 and 3).
-     */
-    protected abstract <J> void checkCorrectness(PrintWriter errors, Transformer<J,Object> transformer,
-            Serializer<Object> serializer, J value)
-        throws Exception;
     
     protected void findParameters(String[] args, Params params)
     {
@@ -280,6 +272,7 @@ abstract class BenchmarkBase
             System.exit(1);
         }
         params.dataType = parts[0];
+        params.dataExtra = parts[1];
         params.dataExtension = parts[parts.length-1];
     }
 
@@ -335,6 +328,9 @@ abstract class BenchmarkBase
         return group;
     }
 
+    protected abstract Object convertTestData(TestGroup.Entry<?,Object> loader, Params params, byte[] data)
+        throws Exception;
+
     protected Object loadTestData(TestGroup<?> bootstrapGroup, Params params)
     {
         TestGroup.Entry<?,Object> loader = bootstrapGroup.extensionMap.get(params.dataExtension);
@@ -344,17 +340,22 @@ abstract class BenchmarkBase
                     + "\" and file extension \"." + params.dataExtension + "\"");
             System.exit(1);
         }
-        Object deserialized = null;
+        byte[] fileBytes;
         try {
-            byte[] fileBytes = readFile(new File(params.dataFileName)); // Load entire file into a byte array.
-            deserialized = loader.serializer.deserialize(fileBytes);
+            fileBytes = readFile(new File(params.dataFileName)); // Load entire file into a byte array.
         }
         catch (Exception ex) {
             System.err.println("Error loading data from file \"" + params.dataFileName + "\".");
             System.err.println(ex.getMessage());
-            System.exit(1);
+            System.exit(1); return null;
         }
-        return loader.transformer.reverse(deserialized);
+        try {
+            return convertTestData(loader, params, fileBytes);
+        } catch (Exception ex) {
+            System.err.println("Error converting test data from file \"" + params.dataFileName + "\".");
+            System.err.println(ex.getMessage());
+            System.exit(1); return null;
+        }
     }
     
     /**
@@ -508,8 +509,7 @@ abstract class BenchmarkBase
 
                                 double totalTime = timeSerializeDifferentObjects + timeDeserializeAndCheck;
 
-                                byte[] array = entry.serializer.serialize(entry.transformer.forward(value));
-
+                                byte[] array = serializeForSize(entry.transformer, entry.serializer, value);
                                 byte[] compressDeflate = compressDeflate(array);
 
                                 System.out.printf("%-32s %6.0f %7.0f %7.0f %7.0f %7.0f %7.0f %7.0f %6d %5d\n",
@@ -537,7 +537,10 @@ abstract class BenchmarkBase
                 }
 
                 return values;
-        }
+    }
+
+    protected abstract <J> byte[] serializeForSize(Transformer<J,Object> tranformer, Serializer<Object> serializer, J value)
+        throws Exception;
     
     protected static void addValue(
             EnumMap<measurements, Map<String, Double>> values,
@@ -580,6 +583,84 @@ abstract class BenchmarkBase
     // Helper methods, validation,  result graph generation
     // ------------------------------------------------------------------------------------
 
+    /**
+     * Method that tries to validate correctness of serializer, using
+     * round-trip (construct, serializer, deserialize; compare objects
+     * after steps 1 and 3).
+     */
+    protected abstract <J> void checkCorrectness(PrintWriter errors, Transformer<J,Object> transformer,
+            Serializer<Object> serializer, J value)
+        throws Exception;
+    
+    protected <J> void checkSingleItem(PrintWriter errors, Transformer<J,Object> transformer,
+            Serializer<Object> serializer, J value)
+        throws Exception
+    {
+        Object specialInput;
+        String name = serializer.getName();
+        try {
+            specialInput = transformer.forward(value);
+        }
+        catch (Exception ex) {
+            System.out.println("ERROR: \"" + name + "\" crashed during forward transformation.");
+            errors.println(ERROR_DIVIDER);
+            errors.println("\"" + name + "\" crashed during forward transformation.");
+            ex.printStackTrace(errors);
+            return;
+        }
+
+        byte[] array;
+        try {
+            array = serializer.serialize(specialInput);
+        }
+        catch (Exception ex) {
+            System.out.println("ERROR: \"" + name + "\" crashed during serialization.");
+            errors.println(ERROR_DIVIDER);
+            errors.println("\"" + name + "\" crashed during serialization.");
+            ex.printStackTrace(errors);
+            return;
+        }
+
+        Object specialOutput;
+
+        try {
+            specialOutput = serializer.deserialize(array);
+        }
+        catch (Exception ex) {              
+            System.out.println("ERROR: \"" + name + "\" crashed during deserialization.");
+            errors.println(ERROR_DIVIDER);
+            errors.println("\"" + name + "\" crashed during deserialization.");
+            ex.printStackTrace(errors);
+            return;
+        }
+
+        J output;
+        try {
+            output = transformer.reverse(specialOutput);
+        }
+        catch (Exception ex) {
+            System.out.println("ERROR: \"" + name + "\" crashed during reverse transformation.");
+            errors.println(ERROR_DIVIDER);
+            errors.println("\"" + name + "\" crashed during reverse transformation.");
+            ex.printStackTrace(errors);
+            return;
+        }
+        if (!value.equals(output)) {
+            System.out.println("ERROR: \"" + name + "\" failed round-trip check.");
+            errors.println(ERROR_DIVIDER);
+            errors.println("\"" + name + "\" failed round-trip check.");
+            errors.println("ORIGINAL:  " + value);
+            errors.println("ROUNDTRIP: " + output);
+
+            System.err.println("ORIGINAL:  " + value);
+            System.err.println("ROUNDTRIP: " + output);
+                    
+        }
+    }
+    
+    // ------------------------------------------------------------------------------------
+    // Helper methods, result graph generation
+    // ------------------------------------------------------------------------------------
     
     protected static void printImages(EnumMap<measurements, Map<String, Double>> values)
     {

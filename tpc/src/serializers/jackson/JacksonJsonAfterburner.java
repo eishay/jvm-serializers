@@ -23,10 +23,10 @@ public class JacksonJsonAfterburner
         ObjectMapper smileMapper = new ObjectMapper(f);
         smileMapper.registerModule(new AfterburnerModule());
 
-        groups.media.add(JavaBuiltIn.MediaTransformer,
+        groups.media.add(JavaBuiltIn.mediaTransformer,
                 new StdJacksonDataBind<MediaContent>("smile/jackson/afterburner", MediaContent.class, smileMapper));
 
-        groups.media.add(JavaBuiltIn.MediaTransformer,
+        groups.media.add(JavaBuiltIn.mediaTransformer,
                 new StdJacksonDataBind<MediaContent>("json/jackson/afterburner", MediaContent.class, mapper));
 
     }

@@ -11,12 +11,13 @@ import java.util.Collections;
 import data.media.Image;
 import data.media.Media;
 import data.media.MediaContent;
+import data.media.MediaTransformer;
 
 public class JavaBuiltIn
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(MediaTransformer, new GenericSerializer<MediaContent>("java-built-in"));
+		groups.media.add(mediaTransformer, new GenericSerializer<MediaContent>("java-built-in"));
 	}
 
 	// ------------------------------------------------------------
@@ -55,8 +56,11 @@ public class JavaBuiltIn
 	// ------------------------------------------------------------
 	// MediaTransformer
 
-	public static final Transformer<MediaContent,MediaContent> MediaTransformer = new Transformer<MediaContent,MediaContent>()
+	public static final MediaTransformer<MediaContent> mediaTransformer = new MediaTransformer<MediaContent>()
 	{
+                @Override
+                public MediaContent[] resultArray(int size) { return new MediaContent[size]; }
+	    
 		public MediaContent forward(MediaContent mc)
 		{
 			return copy(mc);

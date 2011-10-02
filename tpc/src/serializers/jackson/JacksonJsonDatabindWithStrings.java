@@ -20,7 +20,7 @@ public class JacksonJsonDatabindWithStrings<T> extends BaseJacksonDataBind<T>
 {
     public static void register(TestGroups groups)
     {
-        groups.media.add(JavaBuiltIn.MediaTransformer,
+        groups.media.add(JavaBuiltIn.mediaTransformer,
                 new JacksonJsonDatabindWithStrings<MediaContent>(MediaContent.class));
     }
 

@@ -27,7 +27,7 @@ public class JsonSimpleWithContentHandler
 {
   public static void register(TestGroups groups)
   {
-    groups.media.add(JavaBuiltIn.MediaTransformer,
+    groups.media.add(JavaBuiltIn.mediaTransformer,
         new SemiManualSerializer("json/json.simple/manual"));
   }
 

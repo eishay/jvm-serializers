@@ -1,0 +1,10 @@
+#! /usr/bin/env bash
+set -e
+
+path_sep=":"
+case "`uname`" in
+	CYGWIN*) path_sep=";" ;;
+esac
+
+cp=build/bytecode/main$path_sep$(cat build/gen-cp)$path_sep$(cat build/lib-cp)
+exec java -Xmx64m -server -cp "$cp" serializers.DataStreamBenchmark "$@"

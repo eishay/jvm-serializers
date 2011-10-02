@@ -19,7 +19,7 @@ public class JacksonSmileDatabind
 //	factory.configure(SmileGenerator.Feature.CHECK_SHARED_STRING_VALUES, true);
         ObjectMapper mapper = new ObjectMapper(factory);
         
-        groups.media.add(JavaBuiltIn.MediaTransformer,
+        groups.media.add(JavaBuiltIn.mediaTransformer,
                 new StdJacksonDataBind<MediaContent>("smile/jackson/databind",
                         MediaContent.class, mapper));
     }

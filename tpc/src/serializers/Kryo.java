@@ -25,7 +25,7 @@ public class Kryo
 {
 	public static void register(TestGroups groups)
 	{
-		register(groups.media, JavaBuiltIn.MediaTransformer, MediaTypeHandler);
+		register(groups.media, JavaBuiltIn.mediaTransformer, MediaTypeHandler);
 	}
 
 	private static <T,S> void register(TestGroup<T> group, Transformer<T,S> transformer, TypeHandler<S> handler)

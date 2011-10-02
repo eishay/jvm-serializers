@@ -23,9 +23,9 @@ public final class ProtostuffSmile
     public static void register(TestGroups groups)
     {
         // manual (hand-coded schema, no autoboxing)
-        groups.media.add(JavaBuiltIn.MediaTransformer, SmileManualMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, SmileManualMediaSerializer);
         // runtime (reflection)
-        groups.media.add(JavaBuiltIn.MediaTransformer, SmileRuntimeMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, SmileRuntimeMediaSerializer);
 
         /* protostuff has too many entries
 

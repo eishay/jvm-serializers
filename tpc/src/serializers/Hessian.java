@@ -11,7 +11,7 @@ public class Hessian
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(JavaBuiltIn.MediaTransformer, Hessian.<MediaContent>GenericSerializer());
+		groups.media.add(JavaBuiltIn.mediaTransformer, Hessian.<MediaContent>GenericSerializer());
 	}
 
 	public static <T> Serializer<T> GenericSerializer()

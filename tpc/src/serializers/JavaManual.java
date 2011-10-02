@@ -5,64 +5,76 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import data.media.*;
 
-public class JavaManual
+public final class JavaManual
 {
-	public static void register(TestGroups groups)
-	{
-		groups.media.add(JavaBuiltIn.MediaTransformer, MediaContentSerializer);
-	}
+    public static void register(TestGroups groups) {
+        groups.media.add(JavaBuiltIn.mediaTransformer, new MediaContentSerializer());
+    }
 
-	// ------------------------------------------------------------
-	// Serializer (just one)
+    // ------------------------------------------------------------
+    // Serializer (just one)
 
-	private static final Serializer<MediaContent> MediaContentSerializer = new MediaContentSerializer();
+    private static final class MediaContentSerializer extends Serializer<MediaContent>
+    {
+        public MediaContentSerializer() { super(); }
 
-	private static final class MediaContentSerializer extends Serializer<MediaContent>
-	{
-		public MediaContentSerializer()
-		{
-			super();
-		}
+        public String getName() { return "java-manual"; }
 
-		public String getName() { return "java-manual"; }
+        public MediaContent deserialize(byte[] array) throws IOException {
+            return readMediaContent(new DataInputStream(new ByteArrayInputStream(array)));
+        }
 
-		public MediaContent deserialize(byte[] array)
-			throws IOException
-		{
-			DataInputStream in = new DataInputStream(new ByteArrayInputStream(array));
-			return readMediaContent(in);
-		}
+        public byte[] serialize(MediaContent data) throws IOException
+        {
+            ByteArrayOutputStream baos = outputStream(data);
+            DataOutputStream oos = new DataOutputStream(baos);
+            writeMediaContent(oos, data);
+            oos.flush();
+            return baos.toByteArray();
+        }
 
-		public byte[] serialize(MediaContent data)
-			throws IOException
-		{
-			ByteArrayOutputStream baos = outputStream(data);
-			DataOutputStream oos = new DataOutputStream(baos);
-			writeMediaContent(oos, data);
-			oos.flush();
-			return baos.toByteArray();
-		}
+        @Override
+        public final void serializeItems(MediaContent[] items, OutputStream out0) throws IOException
+        {
+            DataOutputStream out = new DataOutputStream(out0);
+            for (int i = 0, len = items.length; i < len; ++i) {
+                writeMediaContent(out, items[i]);
+            }
+            out.flush();
+        }
+	
+        @Override
+        public MediaContent[] deserializeItems(InputStream in0, int numberOfItems) throws IOException 
+        {
+            DataInputStream in = new DataInputStream(in0);
+            MediaContent[] result = new MediaContent[numberOfItems];
+            for (int i = 0; i < numberOfItems; ++i) {
+                result[i] = readMediaContent(in);
+            }
+            return result;
+        }
 
-		// MediaContent
+        // MediaContent
 
-		private static MediaContent readMediaContent(DataInputStream in)
-			throws IOException
-		{
-			Media media = readMedia(in);
-			int numImages = in.readInt();
-			ArrayList<Image> images = new ArrayList<Image>(numImages);
-			for (int i = 0; i < numImages; i++) {
-				images.add(readImage(in));
-			}
-			return new MediaContent(media, images);
-		}
+        private static MediaContent readMediaContent(DataInputStream in) throws IOException
+        {
+            Media media = readMedia(in);
+            int numImages = in.readInt();
+            ArrayList<Image> images = new ArrayList<Image>(numImages);
+            for (int i = 0; i < numImages; i++) {
+                images.add(readImage(in));
+            }
+            return new MediaContent(media, images);
+        }
 
-		private static void writeMediaContent(DataOutputStream out, MediaContent m)
-			throws IOException
+        private static void writeMediaContent(DataOutputStream out, MediaContent m)
+                throws IOException
 		{
 			writeMedia(out, m.media);
 			out.writeInt(m.images.size());

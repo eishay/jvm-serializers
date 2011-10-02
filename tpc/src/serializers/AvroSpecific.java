@@ -14,13 +14,15 @@ import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
+
+import data.media.MediaTransformer;
 import serializers.avro.media.*;
 
 public class AvroSpecific
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(MediaTransformer, new GenericSerializer<MediaContent>(MediaContent.class));
+		groups.media.add(mediaTransformer, new GenericSerializer<MediaContent>(MediaContent.class));
 	}
 
 	// ------------------------------------------------------------
@@ -65,8 +67,11 @@ public class AvroSpecific
 	// ------------------------------------------------------------
 	// Transformers
 
-	public static final Transformer<data.media.MediaContent,MediaContent> MediaTransformer = new Transformer<data.media.MediaContent,MediaContent>()
+	public static final MediaTransformer<MediaContent> mediaTransformer = new MediaTransformer<MediaContent>()
 	{
+	        @Override
+	        public MediaContent[] resultArray(int size) { return new MediaContent[size]; }
+	    
 		// ----------------------------------------------------------
 		// Forward
 

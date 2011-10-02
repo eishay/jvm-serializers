@@ -15,10 +15,11 @@ import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
+import data.media.MediaTransformer;
+
 import serializers.JavaBuiltIn;
 import serializers.Serializer;
 import serializers.TestGroups;
-import serializers.Transformer;
 import serializers.protostuff.media.MediaContent;
 import serializers.protostuff.media.Media;
 import serializers.protostuff.media.Image;
@@ -29,16 +30,16 @@ public final class Protostuff
     public static void register(TestGroups groups)
     {
         // generated code
-        groups.media.add(MediaTransformer, ProtostuffMediaSerializer);
+        groups.media.add(mediaTransformer, ProtostuffMediaSerializer);
 
         // manual (hand-coded schema, no autoboxing)
-        groups.media.add(JavaBuiltIn.MediaTransformer, ProtostuffManualMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, ProtostuffManualMediaSerializer);
 
         // runtime (reflection)
-        groups.media.add(JavaBuiltIn.MediaTransformer, ProtostuffRuntimeMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, ProtostuffRuntimeMediaSerializer);
         
         // protobuf serialization + generated code
-        groups.media.add(MediaTransformer, ProtobufMediaSerializer);
+        groups.media.add(mediaTransformer, ProtobufMediaSerializer);
 
         /*protostuff has too many entries
 
@@ -614,8 +615,11 @@ public final class Protostuff
         }
     };
     
-    public static final Transformer<data.media.MediaContent,MediaContent> MediaTransformer = new Transformer<data.media.MediaContent,MediaContent>()
+    public static final MediaTransformer<MediaContent> mediaTransformer = new MediaTransformer<MediaContent>()
     {
+        @Override
+        public MediaContent[] resultArray(int size) { return new MediaContent[size]; }
+        
             // ----------------------------------------------------------
             // Forward
 

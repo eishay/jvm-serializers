@@ -18,7 +18,7 @@ public class FastJSONDatabind
 {
   public static void register(TestGroups groups)
   {
-    groups.media.add(JavaBuiltIn.MediaTransformer,
+    groups.media.add(JavaBuiltIn.mediaTransformer,
         new GenericSerializer<MediaContent>("json/fastjson/databind", MediaContent.class));
   }
 

@@ -23,7 +23,7 @@ public class JsonDotOrgManualTree
 {
   public static void register(TestGroups groups)
   {
-    groups.media.add(JavaBuiltIn.MediaTransformer,
+    groups.media.add(JavaBuiltIn.mediaTransformer,
         new ManualTreeSerializer("json/org.json/manual/tree"));
   }
 

@@ -45,7 +45,7 @@ public class XmlXStream
 				}
 			}), EmptyConfiguration));*/
 
-		groups.media.add(JavaBuiltIn.MediaTransformer, new ConverterSerializer<MediaContent>("xml/xstream+c",
+		groups.media.add(JavaBuiltIn.mediaTransformer, new ConverterSerializer<MediaContent>("xml/xstream+c",
 			new com.thoughtworks.xstream.XStream(new XppDriver() {
 				public HierarchicalStreamWriter createWriter(Writer out) {
 					//return new PrettyPrintWriter(out, xmlFriendlyReplacer());
@@ -67,7 +67,7 @@ public class XmlXStream
 			// TODO: This doesn't work yet.  Need to properly handle optional fields in readMedia/readImage.
             // commented-out by dyu: use the non-abbreviated version (+c) because the perf of the default sux.
 			//groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "",  EmptyConfiguration));
-			groups.media.add(JavaBuiltIn.MediaTransformer, XmlXStream.<MediaContent>mkStaxSerializer(h, "+c", MediaConfiguration));
+			groups.media.add(JavaBuiltIn.mediaTransformer, XmlXStream.<MediaContent>mkStaxSerializer(h, "+c", MediaConfiguration));
 			//groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "+c-abbrev", MediaConfigurationAbbreviated));
 		}
 	}

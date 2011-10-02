@@ -22,7 +22,7 @@ public class JacksonXmlDatabind
     {
         XmlMapper mapper = new XmlMapper(new XmlFactory(null,
                 new InputFactoryImpl(), new OutputFactoryImpl()));
-        groups.media.add(JavaBuiltIn.MediaTransformer,
+        groups.media.add(JavaBuiltIn.mediaTransformer,
                 new StdJacksonDataBind<MediaContent>("xml/jackson/databind-aalto",
                         MediaContent.class, mapper));
     }

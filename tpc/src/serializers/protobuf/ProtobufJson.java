@@ -13,7 +13,7 @@ public class ProtobufJson
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(Protobuf.MediaTransformer, MediaSerializer);
+		groups.media.add(Protobuf.mediaTransformer, MediaSerializer);
 	}
 
 	private static final Charset _charset = Charset.forName("UTF-8");

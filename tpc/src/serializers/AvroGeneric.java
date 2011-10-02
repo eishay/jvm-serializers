@@ -70,7 +70,7 @@ public class AvroGeneric
 
 	public static final Schema sMediaContent = serializers.avro.media.MediaContent.SCHEMA$;
 
-	public static final Transformer<MediaContent,GenericRecord> MediaTransformer = new Transformer<MediaContent,GenericRecord>()
+	public static final Transformer<MediaContent,GenericRecord> MediaTransformer = new MediaTransformer<GenericRecord>()
 	{
 		@SuppressWarnings("unused")
 		private final Schema sImage = serializers.avro.media.Image.SCHEMA$;
@@ -81,6 +81,10 @@ public class AvroGeneric
                 @SuppressWarnings("unused")
 		private final Schema sPersons = sMedia.getField("persons").schema();
 
+                public GenericRecord[] resultArray(int size) {
+                    return new GenericRecord[size];
+                }
+                
 		// ----------------------------------------------------------
 		// Forward
 
@@ -98,7 +102,7 @@ public class AvroGeneric
 
 			return content;
 		}
-
+		
 		private GenericRecord forwardMedia(Media media)
 		{
 			GenericRecord m = new GenericData.Record(Avro.Media.sMedia);

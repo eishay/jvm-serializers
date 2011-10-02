@@ -7,9 +7,9 @@ import java.util.List;
 import data.media.Image;
 import data.media.Media;
 import data.media.MediaContent;
+import data.media.MediaTransformer;
 
 import serializers.Serializer;
-import serializers.Transformer;
 
 public class WoblyCompactUtils {
 	public static WMedia forwardMedia(Media a) {
@@ -39,7 +39,9 @@ public class WoblyCompactUtils {
 		return images;
 	}	
 	
-	public static final class WoblyTransformer extends Transformer<MediaContent, WMediaContent> {
+	public static final class WoblyTransformer extends MediaTransformer<WMediaContent> {
+                @Override
+                public WMediaContent[] resultArray(int size) { return new WMediaContent[size]; }
 
 		@Override
 		public WMediaContent forward(MediaContent a) {

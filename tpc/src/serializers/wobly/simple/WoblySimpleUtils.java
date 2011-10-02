@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.List;
 
 import serializers.Serializer;
-import serializers.Transformer;
 import data.media.Image;
 import data.media.Media;
 import data.media.MediaContent;
+import data.media.MediaTransformer;
 
 public class WoblySimpleUtils {
 	public static WMedia forwardMedia(Media a) {
@@ -38,8 +38,11 @@ public class WoblySimpleUtils {
 		return images;
 	}	
 	
-	public static final class WoblyTransformer extends Transformer<MediaContent, WMediaContent> {
-
+	public static final class WoblyTransformer extends MediaTransformer<WMediaContent>
+	{
+            @Override
+            public WMediaContent[] resultArray(int size) { return new WMediaContent[size]; }
+	    
 		@Override
 		public WMediaContent forward(MediaContent a) {
 			return new WMediaContent(forwardImages(a.images), forwardMedia(a.media));

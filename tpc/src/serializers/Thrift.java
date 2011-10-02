@@ -10,14 +10,16 @@ import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TProtocolFactory;
 
+import data.media.MediaTransformer;
+
 import serializers.thrift.media.*;
 
 public class Thrift
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(MediaTransformer, new MediaSerializer(ProtocolSpec.DefaultBinary));
-		groups.media.add(MediaTransformer, new MediaSerializer(ProtocolSpec.CompactBinary));
+		groups.media.add(mediaTransformer, new MediaSerializer(ProtocolSpec.DefaultBinary));
+		groups.media.add(mediaTransformer, new MediaSerializer(ProtocolSpec.CompactBinary));
 	}
 
 	// ------------------------------------------------------------
@@ -68,9 +70,12 @@ public class Thrift
 	// ------------------------------------------------------------
 	// Transformers
 
-	public static final Transformer<data.media.MediaContent,MediaContent> MediaTransformer = new Transformer<data.media.MediaContent,MediaContent>()
+	public static final MediaTransformer<MediaContent> mediaTransformer = new MediaTransformer<MediaContent>()
 	{
-		// ----------------------------------------------------------
+            @Override
+            public MediaContent[] resultArray(int size) { return new MediaContent[size]; }
+
+	    // ----------------------------------------------------------
 		// Forward
 
 		public MediaContent forward(data.media.MediaContent mc)

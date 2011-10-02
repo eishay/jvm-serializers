@@ -13,7 +13,7 @@ public class MsgPack
     public static void register(TestGroups groups)
     {
         GenericSerializer<MediaContent> ser = new GenericSerializer<MediaContent>(MediaContent.class);
-        groups.media.add(JavaBuiltIn.MediaTransformer, ser);
+        groups.media.add(JavaBuiltIn.mediaTransformer, ser);
         /* Must either register or use @MessagePackMessage annotation; this is
          * bit less intrusive.
          * But we do need to add some @Optional's, otherwise msgpack craps on nulls,

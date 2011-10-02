@@ -18,7 +18,7 @@ public class Jaxb<T> extends Serializer<T>
 {
     public static void register(TestGroups groups)
     {
-        groups.media.add(JavaBuiltIn.MediaTransformer,
+        groups.media.add(JavaBuiltIn.mediaTransformer,
                 new Jaxb<MediaContent>("JAXB/aalto", MediaContent.class,
                         new InputFactoryImpl(), new OutputFactoryImpl()));
     }

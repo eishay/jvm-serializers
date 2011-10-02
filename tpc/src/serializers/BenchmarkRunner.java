@@ -115,6 +115,29 @@ public class BenchmarkRunner extends BenchmarkBase
         XmlJavolution.register(groups);
     }
 
+    @Override
+    protected Object convertTestData(TestGroup.Entry<?,Object> loader, Params params, byte[] data)
+            throws Exception
+    {
+        Object deserialized = loader.serializer.deserialize(data);
+        return loader.transformer.reverse(deserialized);
+    }
+
+    @Override
+    protected <J> byte[] serializeForSize(Transformer<J,Object> transformer, Serializer<Object> serializer, J value)
+        throws Exception
+    {
+        return serializer.serialize(transformer.forward(value));
+    }
+    
+    @Override
+    protected <J> void checkCorrectness(PrintWriter errors, Transformer<J,Object> transformer,
+            Serializer<Object> serializer, J value)
+        throws Exception
+    {
+        checkSingleItem(errors, transformer, serializer, value);
+    }
+    
     // ------------------------------------------------------------------------------------
     // Test case objects
     // ------------------------------------------------------------------------------------
@@ -204,71 +227,4 @@ public class BenchmarkRunner extends BenchmarkBase
                     return iterationTime(System.nanoTime() - start, iterations);
             }
     };
-    
-    @Override
-    protected <J> void checkCorrectness(PrintWriter errors, Transformer<J,Object> transformer,
-            Serializer<Object> serializer, J value)
-        throws Exception
-    {
-        Object specialInput;
-        String name = serializer.getName();
-        try {
-            specialInput = transformer.forward(value);
-        }
-        catch (Exception ex) {
-            System.out.println("ERROR: \"" + name + "\" crashed during forward transformation.");
-            errors.println(ERROR_DIVIDER);
-            errors.println("\"" + name + "\" crashed during forward transformation.");
-            ex.printStackTrace(errors);
-            return;
-        }
-
-        byte[] array;
-        try {
-            array = serializer.serialize(specialInput);
-        }
-        catch (Exception ex) {
-            System.out.println("ERROR: \"" + name + "\" crashed during serialization.");
-            errors.println(ERROR_DIVIDER);
-            errors.println("\"" + name + "\" crashed during serialization.");
-            ex.printStackTrace(errors);
-            return;
-        }
-
-        Object specialOutput;
-
-        try {
-            specialOutput = serializer.deserialize(array);
-        }
-        catch (Exception ex) {              
-            System.out.println("ERROR: \"" + name + "\" crashed during deserialization.");
-            errors.println(ERROR_DIVIDER);
-            errors.println("\"" + name + "\" crashed during deserialization.");
-            ex.printStackTrace(errors);
-            return;
-        }
-
-        J output;
-        try {
-            output = transformer.reverse(specialOutput);
-        }
-        catch (Exception ex) {
-            System.out.println("ERROR: \"" + name + "\" crashed during reverse transformation.");
-            errors.println(ERROR_DIVIDER);
-            errors.println("\"" + name + "\" crashed during reverse transformation.");
-            ex.printStackTrace(errors);
-            return;
-        }
-        if (!value.equals(output)) {
-            System.out.println("ERROR: \"" + name + "\" failed round-trip check.");
-            errors.println(ERROR_DIVIDER);
-            errors.println("\"" + name + "\" failed round-trip check.");
-            errors.println("ORIGINAL:  " + value);
-            errors.println("ROUNDTRIP: " + output);
-
-            System.err.println("ORIGINAL:  " + value);
-            System.err.println("ROUNDTRIP: " + output);
-                    
-        }
-    }
 }

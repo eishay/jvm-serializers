@@ -24,9 +24,9 @@ public final class ProtostuffJson
     public static void register(TestGroups groups)
     {
         // manual (hand-coded schema, no autoboxing)
-        groups.media.add(JavaBuiltIn.MediaTransformer, JsonManualMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, JsonManualMediaSerializer);
         // runtime (reflection)
-        groups.media.add(JavaBuiltIn.MediaTransformer, JsonRuntimeMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, JsonRuntimeMediaSerializer);
 
         /* protostuff has too many entries
 

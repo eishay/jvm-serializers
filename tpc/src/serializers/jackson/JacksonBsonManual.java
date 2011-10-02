@@ -9,7 +9,7 @@ public class JacksonBsonManual
     public static void register(TestGroups groups)
     {
         BsonFactory factory = new BsonFactory();
-        groups.media.add(JavaBuiltIn.MediaTransformer,
+        groups.media.add(JavaBuiltIn.mediaTransformer,
                 new JacksonJsonManual("bson/jackson/manual", factory));
     }
 }

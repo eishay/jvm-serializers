@@ -19,7 +19,7 @@ object Scala
 	// --------------------------------------------------------------------------
 	// MediaContent
 
-	object MediaTransformer extends Transformer[data.media.MediaContent,sdata.media.MediaContent]
+	object MediaTransformer extends data.media.MediaTransformer[sdata.media.MediaContent]
 	{
 		import sdata.media._
 

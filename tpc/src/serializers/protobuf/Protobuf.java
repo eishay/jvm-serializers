@@ -6,15 +6,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import data.media.MediaTransformer;
+
 import serializers.Serializer;
 import serializers.TestGroups;
-import serializers.Transformer;
 
 public class Protobuf
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(MediaTransformer, MediaSerializer);
+		groups.media.add(mediaTransformer, MediaSerializer);
 	}
 
 	// ------------------------------------------------------------
@@ -41,9 +42,12 @@ public class Protobuf
 	// ------------------------------------------------------------
 	// Transformers
 
-	public static final Transformer<data.media.MediaContent,MediaContent> MediaTransformer = new Transformer<data.media.MediaContent,MediaContent>()
+	public static final MediaTransformer<MediaContent> mediaTransformer = new MediaTransformer<MediaContent>()
 	{
-		// ----------------------------------------------------------
+            @Override
+            public MediaContent[] resultArray(int size) { return new MediaContent[size]; }
+
+	    // ----------------------------------------------------------
 		// Forward
 
 		public MediaContent forward(data.media.MediaContent mc)

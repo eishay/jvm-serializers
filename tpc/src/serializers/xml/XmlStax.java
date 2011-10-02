@@ -36,7 +36,7 @@ public class XmlStax
     public static void register(TestGroups groups)
     {
         for (Handler h : HANDLERS) {
-            groups.media.add(JavaBuiltIn.MediaTransformer, new MediaSerializer(h));
+            groups.media.add(JavaBuiltIn.mediaTransformer, new MediaSerializer(h));
         }
     }
 

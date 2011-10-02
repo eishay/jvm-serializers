@@ -18,7 +18,7 @@ public class JacksonBsonDatabind
 	public static void register(TestGroups groups)
 	{
 	    ObjectMapper mapper = new ObjectMapper(new BsonFactory());
-	    groups.media.add(JavaBuiltIn.MediaTransformer,
+	    groups.media.add(JavaBuiltIn.mediaTransformer,
 	            new StdJacksonDataBind<MediaContent>(
 	                    "bson/jackson/databind", MediaContent.class, mapper));
 	}

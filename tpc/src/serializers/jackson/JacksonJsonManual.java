@@ -38,7 +38,7 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
     public static void register(TestGroups groups)
     {
         JsonFactory factory = new JsonFactory();
-        groups.media.add(JavaBuiltIn.MediaTransformer, new JacksonJsonManual("json/jackson/manual", factory));
+        groups.media.add(JavaBuiltIn.mediaTransformer, new JacksonJsonManual("json/jackson/manual", factory));
     }
 
     private final JsonFactory _factory;
@@ -49,178 +49,182 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
         _factory = jsonFactory;
     }
 
-	    public final byte[] serialize(MediaContent content) throws IOException
-	    {
-	        ByteArrayOutputStream baos = outputStream(content);
-	        JsonGenerator generator = constructGenerator(baos);
-	        writeMediaContent(generator, content);
-	        generator.close();
-	        return baos.toByteArray();
-	    }
+    @Override
+    public final byte[] serialize(MediaContent content) throws IOException
+    {
+        ByteArrayOutputStream baos = outputStream(content);
+        JsonGenerator generator = constructGenerator(baos);
+        writeMediaContent(generator, content);
+        generator.close();
+        return baos.toByteArray();
+    }
 
-	    public final MediaContent deserialize(byte[] array) throws IOException
-	    {
-	        JsonParser parser = constructParser(array);
-	        MediaContent mc = readMediaContent(parser);
-	        parser.close();
-	        return mc;
-	    }
+    @Override
+    public final MediaContent deserialize(byte[] array) throws IOException
+    {
+        JsonParser parser = constructParser(array);
+        MediaContent mc = readMediaContent(parser);
+        parser.close();
+        return mc;
+    }
 
-	    @Override
-	    public void serializeItems(MediaContent[] items, OutputStream out) throws IOException
-	    {
-	        JsonGenerator generator = constructGenerator(out);
-	        // JSON allows simple sequences, so:
-	        for (int i = 0, len = items.length; i < len; ++i) {
-	            writeMediaContent(generator, items[i]);
-	        }
-	        generator.close();
-	    }
+    @Override
+    public final void serializeItems(MediaContent[] items, OutputStream out) throws IOException
+    {
+        JsonGenerator generator = constructGenerator(out);
+        // JSON allows simple sequences, so:
+        for (int i = 0, len = items.length; i < len; ++i) {
+            writeMediaContent(generator, items[i]);
+        }
+        generator.close();
+    }
 
-	    public MediaContent[] deserializeItems(InputStream in, int numberOfItems) throws IOException 
-	    {
-	        MediaContent[] result = new MediaContent[numberOfItems];
-	        JsonParser parser = constructParser(in);
-	        for (int i = 0; i < numberOfItems; ++i) {
-	            result[i] = readMediaContent(parser);
-	        }
-	        parser.close();
-	        return result;
-	    }
+    @Override
+    public MediaContent[] deserializeItems(InputStream in, int numberOfItems) throws IOException 
+    {
+        MediaContent[] result = new MediaContent[numberOfItems];
+        JsonParser parser = constructParser(in);
+        for (int i = 0; i < numberOfItems; ++i) {
+            result[i] = readMediaContent(parser);
+        }
+        parser.close();
+        return result;
+    }
 		
-	    // // // Internal methods
+    // // // Internal methods
 
-	    protected JsonParser constructParser(byte[] data) throws IOException {
-	        return _factory.createJsonParser(data, 0, data.length);
-	    }
+    protected JsonParser constructParser(byte[] data) throws IOException {
+        return _factory.createJsonParser(data, 0, data.length);
+    }
 
-            protected JsonParser constructParser(InputStream in) throws IOException {
-                return _factory.createJsonParser(in);
-            }
+    protected JsonParser constructParser(InputStream in) throws IOException {
+        return _factory.createJsonParser(in);
+    }
+
+    protected JsonGenerator constructGenerator(OutputStream baos) throws IOException {
+        return _factory.createJsonGenerator(baos, JsonEncoding.UTF8);
+    }
+
+    //////////////////////////////////////////////////
+    // Serialization
+    //////////////////////////////////////////////////
 	    
-	    protected JsonGenerator constructGenerator(OutputStream baos) throws IOException {
-	        return _factory.createJsonGenerator(baos, JsonEncoding.UTF8);
-	    }
+    protected void writeMediaContent(JsonGenerator generator, MediaContent content) throws IOException
+    {
+        generator.writeStartObject();
+        generator.writeFieldName(FIELD_MEDIA);
+        writeMedia(generator, content.media);
+        generator.writeFieldName(FIELD_IMAGES);
+        generator.writeStartArray();
+        for (Image i : content.images) {
+            writeImage(generator, i);
+        }
+        generator.writeEndArray();
+        generator.writeEndObject();
+    }
 
-	    //////////////////////////////////////////////////
-	    // Serialization
-            //////////////////////////////////////////////////
-	    
-            protected void writeMediaContent(JsonGenerator generator, MediaContent content) throws IOException
-            {
-                generator.writeStartObject();
-                generator.writeFieldName(FIELD_MEDIA);
-                writeMedia(generator, content.media);
-                generator.writeFieldName(FIELD_IMAGES);
-                generator.writeStartArray();
-                for (Image i : content.images) {
-                    writeImage(generator, i);
-                }
-                generator.writeEndArray();
-                generator.writeEndObject();
+    private void writeMedia(JsonGenerator generator, Media media) throws IOException
+    {
+        generator.writeStartObject();
+        generator.writeFieldName(FIELD_PLAYER);
+        generator.writeString(media.player.name());
+        generator.writeFieldName(FIELD_URI);
+        generator.writeString(media.uri);
+        if (media.title != null) {
+            generator.writeFieldName(FIELD_TITLE);
+            generator.writeString(media.title);
+        }
+        generator.writeFieldName(FIELD_WIDTH);
+        generator.writeNumber(media.width);
+        generator.writeFieldName(FIELD_HEIGHT);
+        generator.writeNumber(media.height);
+        generator.writeFieldName(FIELD_FORMAT);
+        generator.writeString(media.format);
+        generator.writeFieldName(FIELD_DURATION);
+        generator.writeNumber(media.duration);
+        generator.writeFieldName(FIELD_SIZE);
+        generator.writeNumber(media.size);
+        if (media.hasBitrate) {
+            generator.writeFieldName(FIELD_BITRATE);
+            generator.writeNumber(media.bitrate);
+        }
+        if (media.copyright != null) {
+            generator.writeFieldName(FIELD_COPYRIGHT);
+            generator.writeString(media.copyright);
+        }
+        generator.writeFieldName(FIELD_PERSONS);
+        generator.writeStartArray();
+        for (String person : media.persons) {
+            generator.writeString(person);
+        }
+        generator.writeEndArray();
+        generator.writeEndObject();
+    }
+
+    private void writeImage(JsonGenerator generator, Image image) throws IOException
+    {
+        generator.writeStartObject();
+        generator.writeFieldName(FIELD_URI);
+        generator.writeString(image.uri);
+        if (image.title != null) {
+            generator.writeFieldName(FIELD_TITLE);
+            generator.writeString(image.title);
+        }
+        generator.writeFieldName(FIELD_WIDTH);
+        generator.writeNumber(image.width);
+        generator.writeFieldName(FIELD_HEIGHT);
+        generator.writeNumber(image.height);
+        generator.writeFieldName(FIELD_SIZE);
+        generator.writeString(image.size.name());
+        generator.writeEndObject();
+    }
+    
+    //////////////////////////////////////////////////
+    // Deserialization
+    //////////////////////////////////////////////////
+
+    protected MediaContent readMediaContent(JsonParser parser) throws IOException
+    {
+        MediaContent mc = new MediaContent();
+        if (parser.nextToken() != JsonToken.START_OBJECT) {
+            reportIllegal(parser, JsonToken.START_OBJECT);
+        }
+        // first fast version when field-order is as expected
+        if (parser.nextFieldName(FIELD_MEDIA)) {
+            mc.media = readMedia(parser);
+            if (parser.nextFieldName(FIELD_IMAGES)) {
+                mc.images = readImages(parser);
+                parser.nextToken();
+                verifyCurrent(parser, JsonToken.END_OBJECT);
+                return mc;
             }
-		
-            private void writeMedia(JsonGenerator generator, Media media) throws IOException
-            {
-			generator.writeStartObject();
-                        generator.writeFieldName(FIELD_PLAYER);
-			generator.writeString(media.player.name());
-                        generator.writeFieldName(FIELD_URI);
-			generator.writeString(media.uri);
-			if (media.title != null) {
-			    generator.writeFieldName(FIELD_TITLE);
-			    generator.writeString(media.title);
-			}
-                        generator.writeFieldName(FIELD_WIDTH);
-			generator.writeNumber(media.width);
-                        generator.writeFieldName(FIELD_HEIGHT);
-			generator.writeNumber(media.height);
-			
-			generator.writeFieldName(FIELD_FORMAT);
-			generator.writeString(media.format);
-                        generator.writeFieldName(FIELD_DURATION);
-			generator.writeNumber(media.duration);
-                        generator.writeFieldName(FIELD_SIZE);
-			generator.writeNumber(media.size);
-			if (media.hasBitrate) {
-			    generator.writeFieldName(FIELD_BITRATE);
-			    generator.writeNumber(media.bitrate);
-			}
-			if (media.copyright != null) {
-			    generator.writeFieldName(FIELD_COPYRIGHT);
-			    generator.writeString(media.copyright);
-			}
-			generator.writeFieldName(FIELD_PERSONS);
-			generator.writeStartArray();
-			for (String person : media.persons) {
-			    generator.writeString(person);
-			}
-			generator.writeEndArray();
-			generator.writeEndObject();
-		}
-
-                private void writeImage(JsonGenerator generator, Image image) throws IOException
-                {
-                    generator.writeStartObject();
-                    generator.writeFieldName(FIELD_URI);
-                    generator.writeString(image.uri);
-                    if (image.title != null) {
-                        generator.writeFieldName(FIELD_TITLE);
-                        generator.writeString(image.title);
-                    }
-                    generator.writeFieldName(FIELD_WIDTH);
-                    generator.writeNumber(image.width);
-                    generator.writeFieldName(FIELD_HEIGHT);
-                    generator.writeNumber(image.height);
-                    generator.writeFieldName(FIELD_SIZE);
-                    generator.writeString(image.size.name());
-                    generator.writeEndObject();
+        }
+        // and fallback if order was changed
+        for (; parser.getCurrentToken() == JsonToken.FIELD_NAME; parser.nextToken()) {
+            String field = parser.getCurrentName();
+            Integer I = fullFieldToIndex.get(field);
+            if (I != null) {
+                switch (I) {
+                case FIELD_IX_MEDIA:
+                    mc.media = readMedia(parser);
+                    continue;
+                case FIELD_IX_IMAGES:
+                    mc.images = readImages(parser);
+                    continue;
                 }
+            }
+            throw new IllegalStateException("Unexpected field '"+field+"'");
+        }
+        verifyCurrent(parser, JsonToken.END_OBJECT);
+        
+        if (mc.media == null) throw new IllegalStateException("Missing field: " + FIELD_MEDIA);
+        if (mc.images == null) mc.images = new ArrayList<Image>();
+        
+        return mc;
+    }
 
-                //////////////////////////////////////////////////
-	        // Deserialization
-	        //////////////////////////////////////////////////
-
-		protected MediaContent readMediaContent(JsonParser parser) throws IOException
-		{
-			MediaContent mc = new MediaContent();
-			if (parser.nextToken() != JsonToken.START_OBJECT) {
-			    reportIllegal(parser, JsonToken.START_OBJECT);
-			}
-			// first fast version when field-order is as expected
-			if (parser.nextFieldName(FIELD_MEDIA)) {
-                            mc.media = readMedia(parser);
-                            if (parser.nextFieldName(FIELD_IMAGES)) {
-                                mc.images = readImages(parser);
-                                return mc;
-                            }
-			}
-			// and fallback if order was changed
-			for (; parser.getCurrentToken() == JsonToken.FIELD_NAME; parser.nextToken()) {
-			    String field = parser.getCurrentName();
-			    Integer I = fullFieldToIndex.get(field);
-			    if (I != null) {
-			        switch (I) {
-			        case FIELD_IX_MEDIA:
-			            mc.media = readMedia(parser);
-			            continue;
-			        case FIELD_IX_IMAGES:
-			            mc.images = readImages(parser);
-			            continue;
-			        }
-			    }
-			    throw new IllegalStateException("Unexpected field '"+field+"'");
-			}
-			verifyCurrent(parser, JsonToken.END_OBJECT);
-
-			if (mc.media == null) throw new IllegalStateException("Missing field: " + FIELD_MEDIA);
-			if (mc.images == null) mc.images = new ArrayList<Image>();
-
-			return mc;
-		}
-
-		private Media readMedia(JsonParser parser) throws IOException
-		{
+    private Media readMedia(JsonParser parser) throws IOException
+    {
 		    if (parser.nextToken() != JsonToken.START_OBJECT) {
 		        reportIllegal(parser, JsonToken.START_OBJECT);
 		    }
@@ -437,6 +441,7 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
         if (curr == JsonToken.FIELD_NAME) {
             msg += " (current field name '"+parser.getCurrentName()+"')";
         }
+        msg += ", location: "+parser.getTokenLocation();
         throw new IllegalStateException(msg);
     }
 }
