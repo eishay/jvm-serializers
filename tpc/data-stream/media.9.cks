@@ -31,7 +31,7 @@
 {
         Media = {
                 Uri = "http://cowtowncoder.com/blog/blog.html"
-                Title = Set: "CowTalk - Some stuff"
+                Title = Set: "CowTalk Blog"
                 Width = 63
                 Height = 24
                 Format = "text/html"
@@ -40,7 +40,7 @@
                 Bitrate = Set: 16000
                 Persons = ["Tatu the Coder"]
                 Player = Flash
-                Copyright = None
+                Copyright = Set: "Maybe"
         }
         Images = [ {
                         Uri = "http://cowtowncoder.com/icon.jpg"
@@ -50,7 +50,7 @@
                         Size = Large
                 },{
                         Uri = "http://cowtowncoder.com/icon-small.jpg"
-                        Title = Set: "Cowboy Icon"
+                        Title = Set: "Cowboy Icon (small)"
                         Width = 24
                         Height = 24
                         Size = Small
@@ -59,17 +59,17 @@
 @@@@
 {
         Media = {
-                Uri = "http://google.com/search?foo=bar"
-                Title = Set: "Big G -- search for masses"
+                Uri = "http://google.com/search2"
+                Title = Set: "Search Results Part 2"
                 Width = 640
                 Height = 480
                 Format = "text/plain"
                 Duration = 9000000
                 Size = 256000
                 Bitrate = Set: 192000
-                Persons = ["Sergei Brin", "Steve Jobs", "Just Kiddin"]
+                Persons = ["Sergei Brin", "others"]
                 Player = Java
-                Copyright = Set: "Probably"
+                Copyright = Set: "Maybe"
         }
         Images = [ {
                         Uri = "http://google.com/icon-large.jpg"
@@ -79,36 +79,37 @@
                         Size = Large
                 },{
                         Uri = "http://google.com/icon-small.jpg"
-                        Title = Set: "Javaone Keynote"
+                        Title = Set: "G!smaller"
                         Width = 15
                         Height = 15
                         Size = Small
                 } ]
 }
 @@@@
+
 {
         Media = {
                 Uri = "http://javaone.com/keynote.mpg"
-                Title = Set: "Javaone Keynote"
+                Title = Set: "Javaone Keynote 2011"
                 Width = 640
                 Height = 480
                 Format = "video/mpg4"
                 Duration = 18000000    // half hour in milliseconds
                 Size = 58982400        // bitrate * duration in seconds / 8 bits per byte
                 Bitrate = Set: 262144  // 256k
-                Persons = ["Bill Gates", "Steve Jobs"]
+                Persons = ["Larry 'the bobblehead' Ellison"]
                 Player = Java
                 Copyright = None
         }
         Images = [ {
-                        Uri = "http://javaone.com/keynote_large.jpg"
-                        Title = Set: "Javaone Keynote"
+                        Uri = "http://javaone.com/keynote_2011.jpg"
+                        Title = Set: "Javaone Keynote 2011"
                         Width = 1024
                         Height = 768
                         Size = Large
                 },{
-                        Uri = "http://javaone.com/keynote_small.jpg"
-                        Title = Set: "Javaone Keynote"
+                        Uri = "http://javaone.com/keynote_2011_small.jpg"
+                        Title = Set: "Javaone Keynote 2011 (small)"
                         Width = 320
                         Height = 240
                         Size = Small
@@ -117,15 +118,15 @@
 @@@@
 {
         Media = {
-                Uri = "http://cowtowncoder.com/blog/blog.html"
-                Title = Set: "CowTalk - Some stuff"
+                Uri = "http://cowtowncoder.com/blog/article2.html"
+                Title = Set: "CowTalk: Article 2"
                 Width = 63
                 Height = 24
                 Format = "text/html"
                 Duration = 1600
                 Size = 65536
                 Bitrate = Set: 16000
-                Persons = ["Tatu the Coder"]
+                Persons = ["Tatu the Coder", "Bob the Builder"]
                 Player = Flash
                 Copyright = None
         }
@@ -137,7 +138,7 @@
                         Size = Large
                 },{
                         Uri = "http://cowtowncoder.com/icon-small.jpg"
-                        Title = Set: "Cowboy Icon"
+                        Title = Set: "Cowboy Icon (small)"
                         Width = 24
                         Height = 24
                         Size = Small
@@ -166,7 +167,7 @@
                         Size = Large
                 },{
                         Uri = "http://google.com/icon-small.jpg"
-                        Title = Set: "Javaone Keynote"
+                        Title = Set: "G!smaller"
                         Width = 15
                         Height = 15
                         Size = Small
@@ -205,15 +206,15 @@
 @@@@
 {
         Media = {
-                Uri = "http://cowtowncoder.com/blog/blog.html"
-                Title = Set: "CowTalk - Some stuff"
+                Uri = "http://cowtowncoder.com/blog/article3.html"
+                Title = Set: "CowTalk: Yet another article (3!)"
                 Width = 63
                 Height = 24
                 Format = "text/html"
                 Duration = 1600
                 Size = 65536
                 Bitrate = Set: 16000
-                Persons = ["Tatu the Coder"]
+                Persons = ["Tatu the Coder", "others"]
                 Player = Flash
                 Copyright = None
         }
@@ -225,7 +226,7 @@
                         Size = Large
                 },{
                         Uri = "http://cowtowncoder.com/icon-small.jpg"
-                        Title = Set: "Cowboy Icon"
+                        Title = Set: "Cowboy Icon (small)"
                         Width = 24
                         Height = 24
                         Size = Small
@@ -234,17 +235,17 @@
 @@@@
 {
         Media = {
-                Uri = "http://google.com/search?foo=bar"
-                Title = Set: "Big G -- search for masses"
+                Uri = "http://google.com/search3"
+                Title = Set: "Search Results Part 3"
                 Width = 640
                 Height = 480
                 Format = "text/plain"
                 Duration = 9000000
                 Size = 256000
                 Bitrate = Set: 192000
-                Persons = ["Sergei Brin", "Steve Jobs", "Just Kiddin"]
+                Persons = ["Sergei Brin"]
                 Player = Java
-                Copyright = Set: "Probably"
+                Copyright = Set: "Maybe"
         }
         Images = [ {
                         Uri = "http://google.com/icon-large.jpg"
@@ -254,7 +255,7 @@
                         Size = Large
                 },{
                         Uri = "http://google.com/icon-small.jpg"
-                        Title = Set: "Javaone Keynote"
+                        Title = Set: "G!smaller"
                         Width = 15
                         Height = 15
                         Size = Small
