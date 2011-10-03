@@ -29,12 +29,13 @@ public class MediaStreamBenchmark extends BenchmarkBase
     @SuppressWarnings("unused")
     @Override
     protected void addTests(TestGroups groups)
-    {
+    {        
         // Binary Formats; language-specific ones
         JavaManual.register(groups);
 
         // Binary formats, generic: protobuf, thrift, avro, CKS, msgpack
         Protobuf.register(groups);
+        Thrift.register(groups);
         AvroSpecific.register(groups);
  
         // JSON
