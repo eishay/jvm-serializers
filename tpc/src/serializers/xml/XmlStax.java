@@ -1,16 +1,10 @@
 package serializers.xml;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.*;
 
 import serializers.JavaBuiltIn;
 import serializers.Serializer;
@@ -21,6 +15,12 @@ import static data.media.FieldMapping.*;
 
 public class XmlStax
 {
+    /**
+     * Since XML streams must still have a single root, we'll use
+     * this as the tag
+     */
+    private final static String STREAM_ROOT = "stream";
+    
     public static final Handler[] HANDLERS = new Handler[] {
         new Handler("woodstox",
                 new com.ctc.wstx.stax.WstxInputFactory(),
@@ -33,10 +33,16 @@ public class XmlStax
                 new com.sun.xml.fastinfoset.stax.factory.StAXOutputFactory()),
     };
     
-    public static void register(TestGroups groups)
+    public static void register(TestGroups groups, boolean woodstox, boolean aalto, boolean fastinfoset)
     {
-        for (Handler h : HANDLERS) {
-            groups.media.add(JavaBuiltIn.mediaTransformer, new MediaSerializer(h));
+        if (woodstox) {
+            groups.media.add(JavaBuiltIn.mediaTransformer, new MediaSerializer(HANDLERS[0]));
+        }
+        if (aalto) {
+            groups.media.add(JavaBuiltIn.mediaTransformer, new MediaSerializer(HANDLERS[1]));
+        }
+        if (fastinfoset) {
+            groups.media.add(JavaBuiltIn.mediaTransformer, new MediaSerializer(HANDLERS[2]));
         }
     }
 
@@ -57,46 +63,104 @@ public class XmlStax
         }
     }
 
-	// -------------------------------------------------------------------
-	// Serializers
+    // -------------------------------------------------------------------
+    // Serializers
 
-	public static final class MediaSerializer extends Serializer<MediaContent>
-	{
-		private final Handler handler;
+    public static final class MediaSerializer extends Serializer<MediaContent>
+    {
+        private final Handler handler;
 
-		public String getName() { return "xml/"+handler.name+"-manual"; }
+        public MediaSerializer(Handler handler)
+        {
+            this.handler = handler;
+        }
 
-		public MediaSerializer(Handler handler)
-		{
-			this.handler = handler;
-		}
+        public String getName() { return "xml/"+handler.name+"-manual"; }
 
-		// Deserialization
+        // // Public API
 
-		public MediaContent deserialize (byte[] array) throws Exception
-		{
-			XMLStreamReader parser = handler.inFactory.createXMLStreamReader(new ByteArrayInputStream(array));
-			searchTag(parser, "mc");
-			Media media = readMedia(parser);
-			List<Image> images = new ArrayList<Image>();
-			if (parser.nextTag() != XMLStreamConstants.START_ELEMENT) {
-				throw new IllegalStateException("Expected <im>, no START_ELEMENT encountered but "+parser.getEventType());
-			}
-			do {
-				if (!FULL_FIELD_NAME_IMAGES.equals(parser.getLocalName())) {
-					throw new IllegalStateException("Expected <"+FULL_FIELD_NAME_IMAGES+">, got <"+parser.getLocalName()+">");
-				}
-				images.add(readImage(parser));
-			} while (parser.nextTag() == XMLStreamConstants.START_ELEMENT);
-			// and should have closing </mc> at this point
-			if (!"mc".equals(parser.getLocalName())) {
-				throw new IllegalStateException("Expected closing </mc>, got </"+parser.getLocalName()+">");
-			}
-			parser.close();
-			return new MediaContent(media, images);
-		}
+        @Override
+        public MediaContent deserialize (byte[] array) throws XMLStreamException
+        {
+            XMLStreamReader parser = handler.inFactory.createXMLStreamReader(new ByteArrayInputStream(array));
+            MediaContent content = readMediaContent(parser);
+            parser.close();
+            return content;
+        }
 
-		private Image readImage (XMLStreamReader parser) throws Exception
+        @Override
+        public byte[] serialize(MediaContent content) throws Exception
+        {
+            ByteArrayOutputStream baos = outputStream(content);
+            XMLStreamWriter writer = handler.outFactory.createXMLStreamWriter(baos, "UTF-8");
+            writer.writeStartDocument("UTF-8", "1.0");
+            writeMediaContent(writer, content);
+            writer.writeEndDocument();
+            writer.flush();
+            writer.close();
+            return baos.toByteArray();
+        }
+
+        @Override
+        public final void serializeItems(MediaContent[] items, OutputStream out) throws XMLStreamException
+        {
+            // XML requires single root, so add bogus "stream"
+            XMLStreamWriter writer = handler.outFactory.createXMLStreamWriter(out, "UTF-8");
+            writer.writeStartDocument("UTF-8", "1.0");
+            writer.writeStartElement(STREAM_ROOT);
+            for (MediaContent item : items) {
+                writeMediaContent(writer, item);
+            }
+            writer.writeEndElement();
+            writer.writeEndDocument();
+            writer.flush();
+            writer.close();
+        }
+
+        @Override
+        public MediaContent[] deserializeItems(InputStream in, int numberOfItems) throws XMLStreamException 
+        {
+            XMLStreamReader parser = handler.inFactory.createXMLStreamReader(in);
+            MediaContent[] result = new MediaContent[numberOfItems];
+            searchTag(parser, STREAM_ROOT);
+            for (int i = 0; i < numberOfItems; ++i) {
+                result[i] = readMediaContent(parser);
+            }
+            // and should have closing tag at this point
+            if (parser.nextTag() != XMLStreamConstants.END_ELEMENT) {
+                throw new IllegalStateException("Expected closing tag, got: "+parser.getEventType());
+            }
+            if (!STREAM_ROOT.equals(parser.getLocalName())) {
+                throw new IllegalStateException("Expected closing </"+STREAM_ROOT+">, got </"+parser.getLocalName()+">");
+            }
+            parser.close();
+            return result;
+        }
+        
+       // // Internal methods, deserialization		
+
+        private MediaContent readMediaContent(XMLStreamReader parser) throws XMLStreamException
+        {
+            searchTag(parser, "mc");
+            Media media = readMedia(parser);
+            List<Image> images = new ArrayList<Image>();
+            if (parser.nextTag() != XMLStreamConstants.START_ELEMENT) {
+                throw new IllegalStateException("Expected <im>, no START_ELEMENT encountered but "+parser.getEventType());
+            }
+            do {
+                if (!FULL_FIELD_NAME_IMAGES.equals(parser.getLocalName())) {
+                    throw new IllegalStateException("Expected <"+FULL_FIELD_NAME_IMAGES+">, got <"+parser.getLocalName()+">");
+                }
+                images.add(readImage(parser));
+            } while (parser.nextTag() == XMLStreamConstants.START_ELEMENT);
+            // and should have closing </mc> at this point
+            if (!"mc".equals(parser.getLocalName())) {
+                throw new IllegalStateException("Expected closing </mc>, got </"+parser.getLocalName()+">");
+            }
+            return new MediaContent(media, images);
+        }
+        
+		private Image readImage (XMLStreamReader parser) throws XMLStreamException
 		{
 			Image image = new Image();
 			image.uri = readElement(parser, FULL_FIELD_NAME_URI);
@@ -111,7 +175,7 @@ public class XmlStax
 			return image;
 		}
 
-		private Media readMedia (XMLStreamReader parser) throws Exception
+		private Media readMedia (XMLStreamReader parser) throws XMLStreamException
 		{
 			Media media = new Media();
 			media.player = Media.Player.valueOf(readElement(parser, FULL_FIELD_NAME_PLAYER));
@@ -179,25 +243,19 @@ public class XmlStax
 			}
 		}
 
-		// Serialization
+        // Serialization
 
-		public byte[] serialize(MediaContent content) throws Exception
-		{
-			ByteArrayOutputStream baos = outputStream(content);
-			XMLStreamWriter writer = handler.outFactory.createXMLStreamWriter(baos, "UTF-8");
-			writer.writeStartDocument("UTF-8", "1.0");
-			writer.writeStartElement("mc");
-			writeMedia(writer, content.media);
-			for (Image image : content.images) {
-				writeImage(writer, image);
-			}
-			writer.writeEndElement();
-			writer.writeEndDocument();
-			writer.flush();
-			writer.close();
-			return baos.toByteArray();
-		}
-
+        protected void writeMediaContent(XMLStreamWriter writer, MediaContent content)
+            throws XMLStreamException
+        {
+            writer.writeStartElement("mc");
+            writeMedia(writer, content.media);
+            for (Image image : content.images) {
+                writeImage(writer, image);
+            }
+            writer.writeEndElement();
+        }
+		
 		private void writeImage (XMLStreamWriter writer, Image image) throws XMLStreamException
 		{
 			writer.writeStartElement(FULL_FIELD_NAME_IMAGES);

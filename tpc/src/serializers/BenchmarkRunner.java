@@ -106,7 +106,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         ProtostuffSmile.register(groups);
 
         // XML-based formats.
-        XmlStax.register(groups);
+        XmlStax.register(groups, true, true, true); // woodstox/aalto/fast-infoset
         XmlXStream.register(groups);
         JacksonXmlDatabind.register(groups);
         XmlJavolution.register(groups);

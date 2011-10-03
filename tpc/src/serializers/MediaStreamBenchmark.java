@@ -26,7 +26,6 @@ public class MediaStreamBenchmark extends BenchmarkBase
                 Deserialize, DeserializeAndCheck, DeserializeAndCheckShallow);
     }
     
-    @SuppressWarnings("unused")
     @Override
     protected void addTests(TestGroups groups)
     {        
@@ -52,10 +51,8 @@ public class MediaStreamBenchmark extends BenchmarkBase
         // this one needed to read in test data, too:
         CksText.register(groups);
         
-        // XML
-        if (false) {
-            XmlStax.register(groups);
-        }
+        // XML (only fastest codecs)
+        XmlStax.register(groups, false, true, true); // skip woodstox, include aalto and fast-infoset
     }
 
     @Override

@@ -31,6 +31,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.io.xml.CompactWriter;
 
+@SuppressWarnings("rawtypes")
 public class XmlXStream
 {
 	public static void register(TestGroups groups)
@@ -170,7 +171,7 @@ public class XmlXStream
 				return new MediaContent(media, images);
 			}
 
-			@SuppressWarnings("unchecked")
+			@Override
 			public boolean canConvert(Class arg0)
 			{
 				return MediaContent.class.equals(arg0);
@@ -200,7 +201,7 @@ public class XmlXStream
 				return image;
 			}
 
-			@SuppressWarnings("unchecked")
+                        @Override
 			public boolean canConvert(Class arg0)
 			{
 				return Image.class.equals(arg0);
@@ -258,7 +259,7 @@ public class XmlXStream
 				return media;
 			}
 
-			@SuppressWarnings("unchecked")
+                        @Override
 			public boolean canConvert(Class arg0)
 			{
 				return Media.class.equals(arg0);
@@ -312,7 +313,7 @@ public class XmlXStream
 				return new MediaContent(media, images);
 			}
 
-			@SuppressWarnings("unchecked")
+                        @Override
 			public boolean canConvert(Class arg0)
 			{
 				return MediaContent.class.equals(arg0);
@@ -342,7 +343,7 @@ public class XmlXStream
 				return image;
 			}
 
-			@SuppressWarnings("unchecked")
+                        @Override
 			public boolean canConvert(Class arg0)
 			{
 				return Image.class.equals(arg0);
@@ -401,7 +402,7 @@ public class XmlXStream
 				return media;
 			}
 
-			@SuppressWarnings("unchecked")
+                        @Override
 			public boolean canConvert(Class arg0)
 			{
 				return Media.class.equals(arg0);
