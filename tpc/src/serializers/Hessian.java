@@ -1,7 +1,7 @@
 package serializers;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ByteArrayInputStream;
+import java.io.*;
+import java.lang.reflect.Array;
 
 import data.media.MediaContent;
 
@@ -9,41 +9,60 @@ import com.caucho.hessian.io.*;
 
 public class Hessian
 {
-	public static void register(TestGroups groups)
+    public static void register(TestGroups groups)
+    {
+        groups.media.add(JavaBuiltIn.mediaTransformer, new HessianSerializer<MediaContent>(MediaContent.class));
+    }
+
+    // ------------------------------------------------------------
+    // Serializer (just one)
+
+	public final static class HessianSerializer<T> extends Serializer<T>
 	{
-		groups.media.add(JavaBuiltIn.mediaTransformer, Hessian.<MediaContent>GenericSerializer());
+	    private final Class<T> clz;
+	    
+	    public HessianSerializer(Class<T> c) { clz = c; }
+	    
+            public String getName() { return "hessian"; }
+
+            @SuppressWarnings("unchecked")
+            public T deserialize(byte[] array) throws Exception
+	    {
+	        ByteArrayInputStream in = new ByteArrayInputStream(array);
+	        Hessian2StreamingInput hin = new Hessian2StreamingInput(in);
+	        return (T) hin.readObject();
+	    }
+
+	    public byte[] serialize(T data) throws java.io.IOException
+	    {
+	        ByteArrayOutputStream out = outputStream(data);
+	        Hessian2StreamingOutput hout = new Hessian2StreamingOutput(out);
+	        hout.writeObject(data);
+	        return out.toByteArray();
+	    }
+
+            @Override
+            public final void serializeItems(T[] items, OutputStream out) throws Exception
+            {
+                Hessian2StreamingOutput hout = new Hessian2StreamingOutput(out);
+                for (Object item : items) {
+                    hout.writeObject(item);
+                }
+                hout.flush();
+                hout.close();
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public T[] deserializeItems(InputStream in, int numberOfItems) throws Exception 
+            {
+                Hessian2StreamingInput hin = new Hessian2StreamingInput(in);
+                T[] result = (T[]) Array.newInstance(clz, numberOfItems);
+                for (int i = 0; i < numberOfItems; ++i) {
+                    result[i] = (T) hin.readObject();
+                }
+                hin.close();
+                return result;
+            }	
 	}
-
-	public static <T> Serializer<T> GenericSerializer()
-	{
-		@SuppressWarnings("unchecked")
-		Serializer<T> s = (Serializer<T>) GenericSerializer;
-		return s;
-	}
-
-	// ------------------------------------------------------------
-	// Serializer (just one)
-
-	public static Serializer<Object> GenericSerializer = new Serializer<Object>()
-	{
-		public Object deserialize(byte[] array) throws Exception
-		{
-			ByteArrayInputStream in = new ByteArrayInputStream(array);
-			Hessian2StreamingInput hin = new Hessian2StreamingInput(in);
-			return hin.readObject();
-		}
-
-		public byte[] serialize(Object data) throws java.io.IOException
-		{
-			ByteArrayOutputStream out = outputStream(data);
-			Hessian2StreamingOutput hout = new Hessian2StreamingOutput(out);
-			hout.writeObject(data);
-			return out.toByteArray();
-		}
-
-		public String getName()
-		{
-			return "hessian";
-		}
-	};
 }
