@@ -69,11 +69,11 @@ public class BenchmarkRunner extends MediaItemBenchmark
 
         // JSON
         JacksonJsonManual.register(groups);
-        JacksonJsonTree.register(groups);
-        JacksonJsonTreeWithStrings.register(groups);
         JacksonJsonDatabind.register(groups);
         JacksonJsonDatabindWithStrings.register(groups);
         JacksonJsonAfterburner.register(groups); // databind with bytecode generation (faster)
+        JacksonJsonTree.register(groups);
+        JacksonJsonTreeWithStrings.register(groups);
         JsonTwoLattes.register(groups);
         ProtostuffJson.register(groups);
 // too slow, why bother:
