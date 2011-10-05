@@ -73,6 +73,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         JacksonJsonTreeWithStrings.register(groups);
         JacksonJsonDatabind.register(groups);
         JacksonJsonDatabindWithStrings.register(groups);
+        JacksonJsonAfterburner.register(groups); // databind with bytecode generation (faster)
         JsonTwoLattes.register(groups);
         ProtostuffJson.register(groups);
 // too slow, why bother:
@@ -97,13 +98,15 @@ public class BenchmarkRunner extends MediaItemBenchmark
         // CKS text is textual JSON-like format
         CksText.register(groups);
         // then binary variants
-        // BSON is binary JSON-like format
+        // Smile is 1-to-1 binary JSON serialization
+        JacksonSmileManual.register(groups);
+        JacksonSmileDatabind.register(groups);
+        JacksonSmileAfterburner.register(groups); // databind with bytecode generation (faster)
+        ProtostuffSmile.register(groups);
+        // BSON is JSON-like format with extended datatypes
         JacksonBsonManual.register(groups);
         JacksonBsonDatabind.register(groups);
         MongoDB.register(groups);
-        JacksonSmileManual.register(groups);
-        JacksonSmileDatabind.register(groups);
-        ProtostuffSmile.register(groups);
 
         // XML-based formats.
         XmlStax.register(groups, true, true, true); // woodstox/aalto/fast-infoset
