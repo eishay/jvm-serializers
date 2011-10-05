@@ -15,6 +15,6 @@ public class JacksonJsonAfterburner
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new AfterburnerModule());
         groups.media.add(JavaBuiltIn.mediaTransformer,
-                new StdJacksonDataBind<MediaContent>("json/jackson/databind-afterburner", MediaContent.class, mapper));
+                new StdJacksonDataBind<MediaContent>("json/jackson/db-afterburner", MediaContent.class, mapper));
     }
 }

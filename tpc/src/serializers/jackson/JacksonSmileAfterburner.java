@@ -27,6 +27,6 @@ public class JacksonSmileAfterburner
         ObjectMapper smileMapper = new ObjectMapper(f);
         smileMapper.registerModule(new AfterburnerModule());
         groups.media.add(JavaBuiltIn.mediaTransformer,
-                new StdJacksonDataBind<MediaContent>("smile/jackson/databind-afterburner", MediaContent.class, smileMapper));
+                new StdJacksonDataBind<MediaContent>("smile/jackson/db-afterburner", MediaContent.class, smileMapper));
     }
 }
