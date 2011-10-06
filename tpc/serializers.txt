@@ -5,6 +5,7 @@ scala/sbinary
 kryo
 kryo-opt
 kryo-manual
+msgpack
 wobly
 wobly-compact
 hessian
