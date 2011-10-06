@@ -24,7 +24,6 @@ public class Media implements java.io.Serializable {
 	}
 
 	public String uri;
-        @Optional // msgpack requires this
 	public String title;        // Can be unset.
 	public int width;
 	public int height;

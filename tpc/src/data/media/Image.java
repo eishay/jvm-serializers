@@ -2,8 +2,6 @@ package data.media;
 
 import static data.ReprUtil.repr;
 
-import org.msgpack.annotation.Optional;
-
 public class Image implements java.io.Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -14,7 +12,6 @@ public class Image implements java.io.Serializable
 
 	public String uri;
 
-	@Optional // msgpack
 	public String title;  // Can be null
 	public int width;
 	public int height;
