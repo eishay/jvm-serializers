@@ -39,7 +39,6 @@ public class Media implements java.io.Serializable {
 	
 	public Player player;
 
-	@Optional // msgpack requires this
 	public String copyright;    // Can be unset.
 
 	public Media() {}
