@@ -24,7 +24,6 @@ public class Media implements java.io.Serializable {
 	}
 
 	public String uri;
-        @Optional // msgpack requires this
 	public String title;        // Can be unset.
 	public int width;
 	public int height;
@@ -40,7 +39,6 @@ public class Media implements java.io.Serializable {
 	
 	public Player player;
 
-	@Optional // msgpack requires this
 	public String copyright;    // Can be unset.
 
 	public Media() {}
