@@ -41,7 +41,7 @@ public class FastJSONDatabind
     public T deserialize(byte[] array) throws Exception
     {
 	// fastjson can parse from byte array, yay:
-	return JSON.parseObject(array, type);
+	return (T) JSON.parseObject(array, type);
     }
 
     public byte[] serialize(T data) throws IOException
