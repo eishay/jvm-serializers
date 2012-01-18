@@ -38,6 +38,7 @@ public class FastJSONDatabind
       return name;
     }
 
+    @SuppressWarnings("unchecked")
     public T deserialize(byte[] array) throws Exception
     {
 	// fastjson can parse from byte array, yay:

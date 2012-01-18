@@ -3,7 +3,6 @@ package data.media;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.msgpack.annotation.Optional;
 import jsonij.json.annotation.JSONIgnore;
 
 import static data.ReprUtil.repr;
