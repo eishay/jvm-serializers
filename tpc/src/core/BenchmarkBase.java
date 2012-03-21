@@ -48,7 +48,7 @@ abstract class BenchmarkBase
         testClassMap.put("java-built-in", "serializers.JavaBuiltIn");
 
         testClassMap.put("java-manual", "serializers.JavaManual");
-        testClassMap.put("scala", "serializers.Scala");
+        testClassMap.put("scala/sbinary", "serializers.Scala");
 //        // hessian, kryo and wobly are Java object serializations
 //        Hessian.register(groups);
 //        Kryo.register(groups);
