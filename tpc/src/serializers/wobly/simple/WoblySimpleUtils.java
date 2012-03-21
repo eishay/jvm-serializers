@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import serializers.Serializer;
+import core.serializers.Serializer;
 import data.media.Image;
 import data.media.Media;
 import data.media.MediaContent;

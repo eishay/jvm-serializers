@@ -1,7 +1,7 @@
 package serializers.jackson;
 
 import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import core.TestGroups;
 
 import com.fasterxml.aalto.stax.InputFactoryImpl;
 import com.fasterxml.aalto.stax.OutputFactoryImpl;

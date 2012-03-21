@@ -1,5 +1,6 @@
 package serializers;
 
+import core.TestGroups;
 import serializers.wobly.compact.WoblyCompactUtils;
 import serializers.wobly.simple.WoblySimpleUtils;
 

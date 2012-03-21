@@ -1,4 +1,6 @@
-package serializers;
+package core;
+
+import core.serializers.Serializer;
 
 public final class TestCaseRunner<J>
 {

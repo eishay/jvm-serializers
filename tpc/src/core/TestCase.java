@@ -1,4 +1,6 @@
-package serializers;
+package core;
+
+import core.serializers.Serializer;
 
 public abstract class TestCase
 {

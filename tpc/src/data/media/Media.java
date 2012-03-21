@@ -2,13 +2,17 @@ package data.media;
 
 import java.util.List;
 
+import com.gemstone.gemfire.pdx.PdxReader;
+import com.gemstone.gemfire.pdx.PdxSerializable;
+import com.gemstone.gemfire.pdx.PdxWriter;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import jsonij.json.annotation.JSONIgnore;
 
 import static data.ReprUtil.repr;
 
 @SuppressWarnings("serial")
-public class Media implements java.io.Serializable {
+public class Media implements java.io.Serializable
+{
 	public enum Player {
 		JAVA, FLASH;
 		
@@ -41,18 +45,24 @@ public class Media implements java.io.Serializable {
 	public String copyright;    // Can be unset.
 
 	public Media() {}
+    
+    public Media(Media m) {
+        this(m.uri, m.title, m.width, m.height, m.format, m.duration,
+                m.size, m.bitrate, m.hasBitrate, m.persons,
+                m.player, m.copyright);
+    }
 
 	public Media(String uri, String title, int width, int height, String format, long duration, long size, int bitrate, boolean hasBitrate, List<String> persons, Player player, String copyright)
 	{
+        this.width = width;
+        this.height = height;
+        this.duration = duration;
+        this.size = size;
+        this.bitrate = bitrate;
+        this.hasBitrate = hasBitrate;
 		this.uri = uri;
 		this.title = title;
-		this.width = width;
-		this.height = height;
 		this.format = format;
-		this.duration = duration;
-		this.size = size;
-		this.bitrate = bitrate;
-		this.hasBitrate = hasBitrate;
 		this.persons = persons;
 		this.player = player;
 		this.copyright = copyright;
@@ -62,7 +72,7 @@ public class Media implements java.io.Serializable {
 	public boolean equals(Object o)
 	{
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (o == null || ! getClass().isAssignableFrom(o.getClass())) return false;
 
 		Media media = (Media) o;
 
@@ -102,7 +112,7 @@ public class Media implements java.io.Serializable {
 
 	public String toString () {
 		StringBuilder sb = new StringBuilder();
-		sb.append("[Media ");
+		sb.append("[" + this.getClass().getSimpleName() + ": ");
 		sb.append("uri=").append(repr(uri));
 		sb.append(", title=").append(repr(title));
 		sb.append(", width=").append(width);

@@ -1,7 +1,7 @@
 package serializers.protobuf;
 
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.serializers.Serializer;
+import core.TestGroups;
 import serializers.protobuf.media.MediaContentHolder.MediaContent;
 
 import java.io.IOException;

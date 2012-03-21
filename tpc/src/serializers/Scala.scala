@@ -8,6 +8,9 @@ import _root_.sbinary.{Format, Input, Output, DefaultProtocol}
 
 import _root_.serializers.{scala => sdata}
 
+import _root_.core.TestGroups
+import _root_.core.serializers.Serializer
+
 object Scala
 {
 	def register(groups: TestGroups)

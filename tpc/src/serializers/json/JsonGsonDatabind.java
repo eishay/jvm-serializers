@@ -2,9 +2,9 @@ package serializers.json;
 
 import java.io.*;
 
+import core.TestGroups;
+import core.serializers.Serializer;
 import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
 
 import data.media.MediaContent;
 

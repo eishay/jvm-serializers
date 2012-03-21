@@ -4,13 +4,14 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import core.TestGroups;
 import org.codehaus.jackson.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import core.TestGroups;
 
 import data.media.Image;
 import data.media.Media;

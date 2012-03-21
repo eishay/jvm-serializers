@@ -1,6 +1,12 @@
-package serializers;
+package core;
+
+import core.serializers.Serializer;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -13,6 +19,8 @@ abstract class BenchmarkBase
 {
     public final static int DEFAULT_ITERATIONS = 2000;
     public final static int DEFAULT_TRIALS = 20;
+
+    private List<URL> classPathUrls = new ArrayList<URL>();
 
     /**
      * Number of milliseconds to warm up for each operation type for each serializer. Let's
@@ -28,6 +36,90 @@ abstract class BenchmarkBase
             HIDDEN.add("cks-text");
     }
 
+    /*
+     * This map holds the mapping of the name of the test (benchmark) and the
+     * class which implements it. This is so that the tests can be instantiated
+     * within their own classloaders in order to provide some separation.
+     */
+    protected static final Map<String, String> testClassMap =
+            new HashMap<String, String>();
+    static {
+        // Binary Formats; language-specific ones
+        testClassMap.put("java-built-in", "serializers.JavaBuiltIn");
+
+        testClassMap.put("java-manual", "serializers.JavaManual");
+        testClassMap.put("scala", "serializers.Scala");
+//        // hessian, kryo and wobly are Java object serializations
+//        Hessian.register(groups);
+//        Kryo.register(groups);
+//        Wobly.register(groups);
+
+//        Binary formats, generic: protobuf, thrift, avro, CKS, msgpack
+        testClassMap.put("protobuf", "serializers.protobuf.Protobuf");
+//        ActiveMQProtobuf.register(groups);
+        testClassMap.put("protostuff", "serializers.protostuff.Protostuff");
+        testClassMap.put("thrift", "serializers.Thrift");
+        testClassMap.put("avro", "serializers.AvroSpecific");
+        testClassMap.put("avro-generic", "serializers.AvroGeneric");
+//        CksBinary.register(groups);
+//        MsgPack.register(groups);
+//
+//        // JSON
+        testClassMap.put("json/jackson/manual", "serializers.jackson.JacksonJsonManual");
+//        JacksonJsonDatabind.register(groups);
+//        JacksonJsonDatabindWithStrings.register(groups);
+//        JacksonJsonAfterburner.register(groups); // databind with bytecode generation (faster)
+//        JacksonJsonTree.register(groups);
+//        JacksonJsonTreeWithStrings.register(groups);
+//        JsonTwoLattes.register(groups);
+//        ProtostuffJson.register(groups);
+//// too slow, why bother:
+////        ProtobufJson.register(groups);
+//        JsonGsonManual.register(groups);
+//        JsonGsonTree.register(groups);
+//        JsonGsonDatabind.register(groups);
+//        JsonSvensonDatabind.register(groups);
+//        FlexjsonDatabind.register(groups);
+//        JsonLibJsonDatabind.register(groups);
+//        FastJSONDatabind.register(groups);
+//        JsonSimpleWithContentHandler.register(groups);
+//        JsonSimpleManualTree.register(groups);
+//        JsonSmartManualTree.register(groups);
+//        JsonDotOrgManualTree.register(groups);
+//        JsonijJpath.register(groups);
+//        JsonijManualTree.register(groups);
+//        JsonArgoTree.register(groups);
+//        JsonPathDeserializerOnly.register(groups);
+//
+//        // Then JSON-like
+//        // CKS text is textual JSON-like format
+        testClassMap.put("cks-text", "serializers.cks.CksText");
+
+//        // then binary variants
+//        // Smile is 1-to-1 binary JSON serialization
+        testClassMap.put("smile/jackson/manual", "serializers.jackson.JacksonSmileManual");
+//        JacksonSmileManual.register(groups);
+//        JacksonSmileDatabind.register(groups);
+//        JacksonSmileAfterburner.register(groups); // databind with bytecode generation (faster)
+//        ProtostuffSmile.register(groups);
+//        // BSON is JSON-like format with extended datatypes
+//        JacksonBsonManual.register(groups);
+//        JacksonBsonDatabind.register(groups);
+//        MongoDB.register(groups);
+        testClassMap.put("bson/mongodb", "serializers.MongoDB");
+//
+//        // XML-based formats.
+//        XmlStax.register(groups, true, true, true); // woodstox/aalto/fast-infoset
+//        XmlXStream.register(groups);
+//        JacksonXmlDatabind.register(groups);
+//        XmlJavolution.register(groups);
+
+        // Gemfire
+//        testClassMap.put("gemfire/pdx-auto", "serializers.GemFirePdxAuto");
+//        testClassMap.put("gemfire/pdx-serializer", "serializers.GemfirePdxSerializer");
+//        testClassMap.put("gemfire/pdx-serializable", "serializers.GemfirePdxSerializable");
+//        testClassMap.put("gemfire/data-serializable", "serializers.GemfireDataSerializable");
+    }
     protected static final String ERROR_DIVIDER = "-------------------------------------------------------------------";
 
     // ------------------------------------------------------------------------------------
@@ -67,7 +159,21 @@ abstract class BenchmarkBase
         public String dataExtra; // from second part
         public String dataExtension; // from last part of file name
     }
-    
+
+    protected BenchmarkBase() throws IOException {
+        String classPath = System.getProperty("loader.classpath");
+        String pwd = new File(".").getCanonicalPath();
+        for (String s : classPath.split(":")) {
+            if (! (s.endsWith(".jar") || s.endsWith(".war") || s.endsWith(".ear"))) {
+                s += "/";
+            }
+            if (s.startsWith("/")) {
+                classPathUrls.add(new URL("file://" + s));
+            } else {
+                classPathUrls.add(new URL("file://" + pwd + "/" + s));
+            }
+        }
+    }
 
     // ------------------------------------------------------------------------------------
     // Actual benchmark flow
@@ -76,12 +182,14 @@ abstract class BenchmarkBase
     protected void runBenchmark(String[] args,
             TestCase testCreate,
             TestCase testSerialize, TestCase testSerializeSameObject,
-            TestCase testDeserialize, TestCase testDeserializeAndCheck, TestCase testDeserializeAndCheckShallow)
-        {
+            TestCase testDeserialize, TestCase testDeserializeAndCheck, TestCase testDeserializeAndCheckShallow) throws Exception {
         Params params = new Params();
         findParameters(args, params);
         TestGroups groups = new TestGroups();
-        addTests(groups);
+
+        // We always need cks
+        params.filterStrings.add("cks-text");
+        addTests(groups, params.filterStrings);
         runTests(groups, params,
                 testCreate,
                 testSerialize, testSerializeSameObject,
@@ -91,7 +199,7 @@ abstract class BenchmarkBase
     /**
      * Method called to find add actual test codecs
      */
-    protected abstract void addTests(TestGroups groups);
+    protected abstract void addTests(TestGroups groups, Set<String> tests) throws Exception;
     
     protected void findParameters(String[] args, Params params)
     {
@@ -574,12 +682,14 @@ abstract class BenchmarkBase
     
     protected <J> void warmTest(TestCaseRunner<J> runner, long warmupTime, TestCase test) throws Exception
     {
-        // Instead of fixed counts, let's try to prime by running for N seconds
-        long endTime = System.currentTimeMillis() + warmupTime;
-        do {
-            runner.run(test, 10);
+        if (warmupTime > 0) {
+            // Instead of fixed counts, let's try to prime by running for N seconds
+            long endTime = System.currentTimeMillis() + warmupTime;
+            do {
+                runner.run(test, 10);
+            }
+            while (System.currentTimeMillis() < endTime);
         }
-        while (System.currentTimeMillis() < endTime);
     }
     
     // ------------------------------------------------------------------------------------
@@ -741,7 +851,21 @@ abstract class BenchmarkBase
             System.err.println("WARNING: Not enough room to fit all bars in chart.");
         }
     }
-    
+
+    @SuppressWarnings("unchecked")
+    protected void register(String className, TestGroups groups)
+            throws Exception {
+
+        ClassLoader loader = newLoader();
+        Class c = loader.loadClass(className);
+        Method m = c.getDeclaredMethod("register", TestGroups.class);
+        m.invoke(null, groups);
+    }
+
+    private ClassLoader newLoader() {
+        return new URLClassLoader(classPathUrls.toArray(new URL[]{}),
+                BenchmarkRunner.class.getClassLoader());
+    }
     // ------------------------------------------------------------------------------------
     // Static helper methods
     // ------------------------------------------------------------------------------------
@@ -767,13 +891,13 @@ abstract class BenchmarkBase
         try {
             Thread.sleep(50L);
         } catch (InterruptedException ie) {
-            System.err.println("Interrupted while sleeping in serializers.BenchmarkBase.doGc()");
+            System.err.println("Interrupted while sleeping in core.BenchmarkBase.doGc()");
         }
         System.gc();
         try { // longer sleep afterwards (not needed by GC, but may help with scheduling)
             Thread.sleep(200L);
         } catch (InterruptedException ie) {
-            System.err.println("Interrupted while sleeping in serializers.BenchmarkBase.doGc()");
+            System.err.println("Interrupted while sleeping in core.BenchmarkBase.doGc()");
         }
     }
     

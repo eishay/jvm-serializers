@@ -14,7 +14,7 @@
 
 # Need 'javac' version 5 or greater.
 JavaC ?= javac
-JavaC_Opt := -Xlint:unchecked
+JavaC_Opt := -Xlint:unchecked -g
 
 empty :=
 space := $(empty) $(empty)
@@ -28,7 +28,7 @@ protobuf_generator ?= protoc
 thrift_generator ?= thrift
 activemqprotobuf_cp := $(call mkcp,$(wildcard lib/activemq-*.jar))
 activemqprotobuf_generator ?= java -cp "$(activemqprotobuf_cp)" org.apache.activemq.protobuf.compiler.AltJavaGenerator
-cks_generator ?= java -jar lib/cks-tool.jar
+cks_generator ?= java -cp lib-core/cks-core.jar:lib-core/cks-text-reader.jar:lib-core/cks-text-writer.jar -jar lib-core/cks-tool.jar
 avro_cp ?= $(call mkcp,$(wildcard lib/avro-*.jar lib/jackson-*.jar lib/jopt-simple-*.jar lib/velocity-*.jar lib/slf4j-*.jar))
 avro_generator ?= java -cp "$(avro_cp)" org.apache.avro.tool.Main
 protostuff_compiler ?= $(wildcard lib/protostuff-compiler-*.jar)
@@ -47,7 +47,7 @@ Generate_protostuff ?= y
 
 .PHONY: default compile
 .DELETE_ON_ERROR:
-default: compile build/gen-cp build/lib-cp
+default: compile build/gen-cp build/lib-cp build/lib-core-cp
 
 
 p1 := @
@@ -75,6 +75,9 @@ build/gen-cp: schema
 build/lib-cp: lib
 	$(p2)mkdir -p build
 	$(p1)echo "$(call mkcp,$(wildcard lib/*.jar))" > "$@"
+
+build/lib-core-cp: build/lib-cp
+	$(p1)echo "$(call mkcp,$(wildcard lib-core/*.jar))" > "$@"
 
 ##########################################################################
 # Generate and Compile Bindings
@@ -138,14 +141,14 @@ JavaSourceFiles_$(1) = $$(shell find $$(JavaSourceRoots_$(1)) -type f -name '*.j
 endif
 
 # Compile to bytecode
-build/bytecode/gen/$(2).compile.$$(StampSuffix_$(1)): $$(JavaSourceRoots_$(1)) $$(JavaSourceDirs_$(1)) $$(JavaSourceFiles_$(1)) lib build/lib-cp $(wildcard lib/*.jar)
+build/bytecode/gen/$(2).compile.$$(StampSuffix_$(1)): $$(JavaSourceRoots_$(1)) $$(JavaSourceDirs_$(1)) $$(JavaSourceFiles_$(1)) lib build/lib-cp build/lib-core-cp $(wildcard lib/*.jar)
 	$(p2)[ ! -e build/bytecode/gen/$(2) ] || rm -r build/bytecode/gen/$(2)
 	$(p2)mkdir -p build/bytecode/gen/$(2)
 	$(p2)rm -f build/bytecode/gen/$(2).compile.*
 	# Compile: $$(JavaSourceRoots_$(1))
 	$(p2)touch "$$@"
 	$(p1)$(JavaC) $(JavaC_Opt) $$(JavaC_Opt_$(2)) -d build/bytecode/gen/$(2) \
-		-classpath "$$(shell cat build/lib-cp)" \
+		-classpath "$$(shell cat build/lib-cp) $$(shell cat build/lib-core-cp)" \
 		$$(shell find $$(JavaSourceRoots_$(1)) -type f -name '*.java')
 
 build/bytecode/gen/$(2).compile: build/bytecode/gen/$(2).compile.$$(StampSuffix_$(1))
@@ -165,7 +168,7 @@ JavaSourceDirs = $(shell find $(JavaSourceRoots) -type d)
 JavaSourceFiles = $(shell find $(JavaSourceRoots) -type f -name '*.java')
 ScalaSourceFiles = $(shell find $(JavaSourceRoots) -type f -name '*.scala')
 
-build/bytecode/main.compile: $(JavaSourceRoots) $(JavaSourceDirs) $(JavaSourceFiles) $(ScalaSourceFiles) lib build/lib-cp build/gen-cp $(wildcard lib/*.jar) $(Schemas:%=build/bytecode/gen/%.compile)
+build/bytecode/main.compile: $(JavaSourceRoots) $(JavaSourceDirs) $(JavaSourceFiles) $(ScalaSourceFiles) lib build/lib-cp build/lib-core-cp build/gen-cp $(wildcard lib/*.jar) $(Schemas:%=build/bytecode/gen/%.compile)
 	$(p2)[ ! -e build/bytecode/main ] || rm -r build/bytecode/main
 	$(p2)mkdir -p build/bytecode/main
 	$(p2)touch "$@"
@@ -180,11 +183,15 @@ else
 	# Compile: $(JavaSourceRoots) [javac]
 	$(p1)$(JavaC) $(JavaC_Opt) -d build/bytecode/main \
 		-deprecation \
-		-classpath "$(call mkcp,build/bytecode/main $(shell cat build/lib-cp) $(shell cat build/gen-cp))" \
+		-classpath "$(call mkcp,build/bytecode/main $(shell cat build/lib-cp) $(shell cat build/gen-cp) $(shell cat build/lib-core-cp))" \
 		$(JavaSourceFiles)
 endif
 
 compile: build/bytecode/main.compile
+	$(p2)rm -rf build/bytecode/main/sx
+	$(p2)mkdir -p build/bytecode/main/sx
+	$(p2)mv build/bytecode/main/serializers build/bytecode/main/sx/
+	# $(p2)mv build/bytecode/main/ext build/bytecode/main/sx/
 
 ##########################################################################
 # Clean

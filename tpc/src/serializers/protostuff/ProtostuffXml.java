@@ -6,9 +6,9 @@ import com.dyuproject.protostuff.XmlIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
+import core.TestGroups;
 import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.serializers.Serializer;
 import serializers.protostuff.media.MediaContent;
 import serializers.protostuff.media.Media;
 import serializers.protostuff.media.Image;

@@ -1,5 +1,7 @@
 package serializers;
 
+import core.TestGroups;
+import core.serializers.Serializer;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 

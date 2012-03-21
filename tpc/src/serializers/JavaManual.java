@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import core.TestGroups;
+import core.serializers.Serializer;
 import data.media.*;
 
 public final class JavaManual

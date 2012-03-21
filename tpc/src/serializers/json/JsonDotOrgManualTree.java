@@ -4,13 +4,13 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import core.TestGroups;
+import core.serializers.Serializer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONWriter;
 
 import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
 
 import data.media.Image;
 import data.media.Media;

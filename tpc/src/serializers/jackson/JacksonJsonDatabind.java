@@ -1,8 +1,9 @@
 package serializers.jackson;
 
+import core.TestGroups;
 import data.media.MediaContent;
 import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import core.TestGroups;
 
 import org.codehaus.jackson.map.*;
 

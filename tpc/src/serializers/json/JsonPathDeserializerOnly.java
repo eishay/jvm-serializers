@@ -5,12 +5,12 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import core.TestGroups;
+import core.serializers.Serializer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
 
 import com.jayway.jsonpath.JsonPath;
 

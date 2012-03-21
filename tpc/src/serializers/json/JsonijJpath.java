@@ -5,9 +5,9 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import core.TestGroups;
 import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.serializers.Serializer;
 
 import jsonij.json.JPath;
 import jsonij.json.JSON;

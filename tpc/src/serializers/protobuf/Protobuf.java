@@ -9,8 +9,8 @@ import java.util.List;
 
 import data.media.MediaTransformer;
 
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.serializers.Serializer;
+import core.TestGroups;
 
 /**
  *<p>

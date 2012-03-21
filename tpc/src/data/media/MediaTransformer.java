@@ -1,6 +1,6 @@
 package data.media;
 
-import serializers.Transformer;
+import core.Transformer;
 
 public abstract class MediaTransformer<B> extends Transformer<MediaContent,B>
 {

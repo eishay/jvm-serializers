@@ -8,6 +8,8 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import core.TestGroups;
+import core.serializers.Serializer;
 import data.media.Image;
 import data.media.Media;
 import data.media.MediaContent;

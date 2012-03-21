@@ -5,9 +5,9 @@ import java.io.*;
 import javax.xml.bind.*;
 import javax.xml.stream.*;
 
+import core.TestGroups;
 import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.serializers.Serializer;
 
 import data.media.MediaContent;
 

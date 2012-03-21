@@ -1,9 +1,16 @@
-package serializers;
+package core;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 
+import serializers.AvroSpecific;
+import serializers.Hessian;
+import serializers.JavaManual;
+import core.serializers.Serializer;
+import serializers.Thrift;
 import serializers.cks.CksText;
 import serializers.jackson.*;
 import serializers.protobuf.Protobuf;
@@ -15,11 +22,15 @@ import serializers.xml.XmlStax;
  */
 public class MediaStreamBenchmark extends BenchmarkBase
 {
-    public static void main(String[] args) {
+    protected MediaStreamBenchmark() throws IOException {
+        super();
+    }
+
+    public static void main(String[] args) throws Exception {
         new MediaStreamBenchmark().runBenchmark(args);
     }
 
-    private void runBenchmark(String[] args) {
+    private void runBenchmark(String[] args) throws Exception {
         runBenchmark(args,
                 Create,
                 Serialize, SerializeSameObject,
@@ -27,7 +38,7 @@ public class MediaStreamBenchmark extends BenchmarkBase
     }
     
     @Override
-    protected void addTests(TestGroups groups)
+    protected void addTests(TestGroups groups, Set<String> tests)
     {        
         // Binary Formats; language-specific ones
         JavaManual.register(groups);

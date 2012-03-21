@@ -1,7 +1,7 @@
 package serializers.jackson;
 
 import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import core.TestGroups;
 import de.undercouch.bson4jackson.BsonFactory;
 
 public class JacksonBsonManual

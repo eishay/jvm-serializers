@@ -1,4 +1,4 @@
-package serializers;
+package core.serializers;
 
 import java.io.*;
 

@@ -1,4 +1,4 @@
-package serializers;
+package core;
 
 public abstract class Transformer<A,B>
 {

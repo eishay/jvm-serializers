@@ -9,7 +9,7 @@ import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.*;
 
 import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import core.TestGroups;
 
 /**
  * This serializer uses Jackson in full automated data binding mode, which

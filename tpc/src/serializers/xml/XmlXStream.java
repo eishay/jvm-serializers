@@ -12,6 +12,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.io.xml.XppDriver;
 
+import core.serializers.Serializer;
 import data.media.Image;
 import data.media.Media;
 import data.media.MediaContent;
@@ -22,8 +23,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
 import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.TestGroups;
 
 import java.io.Writer;
 import java.util.ArrayList;

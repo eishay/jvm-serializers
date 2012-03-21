@@ -3,8 +3,8 @@ package serializers.cks;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.TestGroups;
+import core.serializers.Serializer;
 import serializers.cks.media.MediaContent;
 
 public class CksBinary

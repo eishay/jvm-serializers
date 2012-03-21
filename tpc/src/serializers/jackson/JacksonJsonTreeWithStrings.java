@@ -6,7 +6,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import core.TestGroups;
 
 import data.media.MediaContent;
 

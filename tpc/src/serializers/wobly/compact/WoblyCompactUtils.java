@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import core.serializers.Serializer;
 import data.media.Image;
 import data.media.Media;
 import data.media.MediaContent;
 import data.media.MediaTransformer;
-
-import serializers.Serializer;
 
 public class WoblyCompactUtils {
 	public static WMedia forwardMedia(Media a) {

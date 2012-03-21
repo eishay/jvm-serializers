@@ -6,9 +6,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import core.TestGroups;
+import core.serializers.Serializer;
 import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
 
 import com.google.gson.stream.*;
 

@@ -3,8 +3,8 @@ package serializers.json;
 import java.io.*;
 import java.nio.charset.Charset;
 
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.TestGroups;
+import core.serializers.Serializer;
 
 import com.twolattes.json.Json;
 import com.twolattes.json.Marshaller;

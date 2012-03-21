@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import serializers.Serializer;
+import core.serializers.Serializer;
 
 abstract class BaseJacksonDriver<T> extends Serializer<T>
 {

@@ -3,6 +3,7 @@ package serializers;
 import java.io.*;
 import java.lang.reflect.Array;
 
+import core.TestGroups;
 import data.media.MediaContent;
 
 import com.caucho.hessian.io.*;
@@ -17,7 +18,7 @@ public class Hessian
     // ------------------------------------------------------------
     // Serializer (just one)
 
-	public final static class HessianSerializer<T> extends Serializer<T>
+	public final static class HessianSerializer<T> extends core.serializers.Serializer<T>
 	{
 	    private final Class<T> clz;
 	    
