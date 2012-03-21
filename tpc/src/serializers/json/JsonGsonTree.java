@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.serializers.Serializer;
+import core.TestGroups;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

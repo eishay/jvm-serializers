@@ -1,5 +1,8 @@
 package serializers;
 
+import core.TestGroups;
+import core.Transformer;
+import core.serializers.Serializer;
 import data.media.*;
 
 import org.apache.avro.Schema;

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import core.serializers.Serializer;
 import data.media.MediaTransformer;
 
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.TestGroups;
 import serializers.activemq.media.MediaContentHolder.Image;
 import serializers.activemq.media.MediaContentHolder.Media;
 import serializers.activemq.media.MediaContentHolder.MediaContent;

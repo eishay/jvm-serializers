@@ -5,6 +5,8 @@ import static data.media.FieldMapping.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import core.TestGroups;
+import core.serializers.Serializer;
 import org.bson.BSONDecoder;
 import org.bson.BSONEncoder;
 import org.bson.BSONObject;

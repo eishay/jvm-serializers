@@ -19,7 +19,7 @@ public class MediaContent implements java.io.Serializable
 	public boolean equals(Object o)
 	{
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (o == null || ! getClass().isAssignableFrom(o.getClass())) return false;
 
 		MediaContent that = (MediaContent) o;
 
@@ -39,7 +39,7 @@ public class MediaContent implements java.io.Serializable
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("[MediaContent: ");
+		sb.append("[" + this.getClass().getSimpleName() + ": ");
 		sb.append("media=").append(media);
 		sb.append(", images=").append(images);
 		sb.append("]");

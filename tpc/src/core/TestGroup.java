@@ -1,4 +1,6 @@
-package serializers;
+package core;
+
+import core.serializers.Serializer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

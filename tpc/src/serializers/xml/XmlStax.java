@@ -6,9 +6,9 @@ import java.util.List;
 
 import javax.xml.stream.*;
 
+import core.serializers.Serializer;
 import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.TestGroups;
 
 import data.media.*;
 import static data.media.FieldMapping.*;

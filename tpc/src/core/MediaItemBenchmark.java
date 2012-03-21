@@ -1,5 +1,8 @@
-package serializers;
+package core;
 
+import core.serializers.Serializer;
+
+import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
@@ -9,9 +12,12 @@ import java.io.PrintWriter;
  */
 public abstract class MediaItemBenchmark extends BenchmarkBase
 {
-    public MediaItemBenchmark() { }
-    
-    protected void runBenchmark(String[] args) {
+
+    protected MediaItemBenchmark() throws IOException {
+        super();
+    }
+
+    protected void runBenchmark(String[] args) throws Exception {
         runBenchmark(args,
                 Create,
                 Serialize, SerializeSameObject,

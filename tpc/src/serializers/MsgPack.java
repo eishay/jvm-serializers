@@ -3,6 +3,10 @@ package serializers;
 import java.io.IOException;
 import java.util.List;
 
+import core.TestGroup;
+import core.TestGroups;
+import core.Transformer;
+import core.serializers.Serializer;
 import org.msgpack.MessagePack;
 import org.msgpack.packer.BufferPacker;
 import org.msgpack.packer.Packer;

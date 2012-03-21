@@ -2,8 +2,8 @@ package serializers.cks;
 
 import java.io.*;
 
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.serializers.Serializer;
+import core.TestGroups;
 import serializers.cks.media.MediaContent;
 
 public class CksText

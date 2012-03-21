@@ -1,11 +1,12 @@
 package serializers.jackson;
 
+import core.TestGroups;
 import data.media.MediaContent;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
 import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import core.TestGroups;
 import de.undercouch.bson4jackson.BsonFactory;
 
 /**

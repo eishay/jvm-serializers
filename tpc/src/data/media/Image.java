@@ -1,5 +1,9 @@
 package data.media;
 
+import com.gemstone.gemfire.pdx.PdxReader;
+import com.gemstone.gemfire.pdx.PdxSerializable;
+import com.gemstone.gemfire.pdx.PdxWriter;
+
 import static data.ReprUtil.repr;
 
 public class Image implements java.io.Serializable
@@ -18,6 +22,10 @@ public class Image implements java.io.Serializable
 	public Size size;
 
 	public Image() {}
+    
+    public Image(Image i) {
+        this(i.uri, i.title, i.width, i.height, i.size);
+    }
 
 	public Image (String uri, String title, int width, int height, Size size) {
 		this.height = height;
@@ -31,7 +39,7 @@ public class Image implements java.io.Serializable
 	public boolean equals(Object o)
 	{
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (o == null || ! getClass().isAssignableFrom(o.getClass())) return false;
 
 		Image image = (Image) o;
 
@@ -57,7 +65,7 @@ public class Image implements java.io.Serializable
 
 	public String toString () {
 		StringBuilder sb = new StringBuilder();
-		sb.append("[Image ");
+		sb.append("[" + this.getClass().getSimpleName() + ": ");
 		sb.append("uri=").append(repr(uri));
 		sb.append(", title=").append(repr(title));
 		sb.append(", width=").append(width);

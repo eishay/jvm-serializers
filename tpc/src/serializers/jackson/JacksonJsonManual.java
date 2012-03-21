@@ -1,5 +1,6 @@
 package serializers.jackson;
 
+import core.TestGroups;
 import data.media.*;
 import static data.media.FieldMapping.*;
 
@@ -11,7 +12,7 @@ import org.codehaus.jackson.*;
 import org.codehaus.jackson.io.SerializedString;
 
 import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import core.TestGroups;
 
 /**
  * "Hand-written" version of Jackson-based codec. Not optimized for compactness,

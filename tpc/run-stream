@@ -7,4 +7,4 @@ case "`uname`" in
 esac
 
 cp=build/bytecode/main$path_sep$(cat build/gen-cp)$path_sep$(cat build/lib-cp)
-exec java -Xmx64m -server -cp "$cp" serializers.MediaStreamBenchmark "$@"
+exec java -Xmx64m -server -cp "$cp" core.MediaStreamBenchmark "$@"

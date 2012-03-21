@@ -11,8 +11,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.serializers.Serializer;
+import core.TestGroups;
 
 import data.media.Image;
 import data.media.Media;

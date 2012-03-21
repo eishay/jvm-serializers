@@ -5,9 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import core.TestGroups;
 import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.serializers.Serializer;
 
 import javolution.text.CharArray;
 import javolution.xml.XMLBinding;

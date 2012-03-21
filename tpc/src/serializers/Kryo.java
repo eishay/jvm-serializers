@@ -13,6 +13,10 @@ import com.esotericsoftware.kryo.serialize.LongSerializer;
 import com.esotericsoftware.kryo.serialize.SimpleSerializer;
 import com.esotericsoftware.kryo.serialize.StringSerializer;
 
+import core.TestGroup;
+import core.TestGroups;
+import core.Transformer;
+import core.serializers.Serializer;
 import data.media.Image;
 import data.media.Image.Size;
 import data.media.Media;

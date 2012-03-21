@@ -5,7 +5,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
 import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import core.TestGroups;
 import data.media.MediaContent;
 
 public class JacksonJsonAfterburner

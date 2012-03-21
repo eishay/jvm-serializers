@@ -2,14 +2,13 @@ package serializers.protostuff;
 
 import static serializers.protostuff.Protostuff.MEDIA_CONTENT_SCHEMA;
 
-import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.SmileIOUtil;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
+import core.TestGroups;
 import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import core.serializers.Serializer;
 import serializers.protostuff.media.MediaContent;
 
 /**
