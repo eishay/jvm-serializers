@@ -1,7 +1,6 @@
 package serializers.jackson;
 
-import org.codehaus.jackson.smile.SmileFactory;
-import org.codehaus.jackson.smile.SmileGenerator;
+import com.fasterxml.jackson.dataformat.smile.*;
 
 import serializers.JavaBuiltIn;
 import serializers.TestGroups;

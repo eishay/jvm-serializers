@@ -4,10 +4,12 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.*;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.core.*;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import serializers.JavaBuiltIn;
 import serializers.TestGroups;
@@ -60,7 +62,7 @@ public class JacksonJsonTree extends BaseJacksonDataBind<MediaContent>
       JsonParser parser = constructParser(in);
       MediaContent[] result = new MediaContent[numberOfItems];
       for (int i = 0; i < numberOfItems; ++i) {
-          result[i] = readMediaContent(mapper.readTree(parser));
+          result[i] = readMediaContent((JsonNode)mapper.readTree(parser));
       }
       parser.close();
       return result;
@@ -71,11 +73,11 @@ public class JacksonJsonTree extends BaseJacksonDataBind<MediaContent>
     protected static Image readImage(JsonNode node)
     {
       Image image = new Image();
-      image.height = node.get("height").getIntValue();
-      image.size = Image.Size.valueOf(node.get("size").getTextValue());
-      image.title = node.get("title").getTextValue();
-      image.uri = node.get("uri").getTextValue();
-      image.width = node.get("width").getIntValue();
+      image.height = node.get("height").intValue();
+      image.size = Image.Size.valueOf(node.get("size").textValue());
+      image.title = node.get("title").textValue();
+      image.uri = node.get("uri").textValue();
+      image.width = node.get("width").intValue();
       return image;
     }
 
@@ -102,25 +104,25 @@ public class JacksonJsonTree extends BaseJacksonDataBind<MediaContent>
       Media media = new Media();
       JsonNode bitrate = node.get("bitrate");
       if (bitrate != null && !bitrate.isNull()) {
-        media.bitrate = bitrate.getIntValue();
+        media.bitrate = bitrate.intValue();
         media.hasBitrate = true;
       }
-      media.copyright = node.path("copyright").getTextValue();
-      media.duration = node.path("duration").getLongValue();
-      media.format = node.path("format").getTextValue();
-      media.height = node.path("height").getIntValue();
-      media.player = Media.Player.valueOf(node.get("player").getTextValue());
+      media.copyright = node.path("copyright").textValue();
+      media.duration = node.path("duration").longValue();
+      media.format = node.path("format").textValue();
+      media.height = node.path("height").intValue();
+      media.player = Media.Player.valueOf(node.get("player").textValue());
       ArrayNode personsArrayNode = (ArrayNode) node.get("persons");
       int size = personsArrayNode.size();
       List<String> persons = new ArrayList<String>(size);
       for (JsonNode person : personsArrayNode) {
-        persons.add(person.getTextValue());
+        persons.add(person.textValue());
       }
       media.persons = persons;
-      media.size = node.get("size").getIntValue();
-      media.title = node.get("title").getTextValue();
-      media.uri = node.get("uri").getTextValue();
-      media.width = node.get("width").getIntValue();
+      media.size = node.get("size").intValue();
+      media.title = node.get("title").textValue();
+      media.uri = node.get("uri").textValue();
+      media.width = node.get("width").intValue();
       return media;
     }
 

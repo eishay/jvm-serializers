@@ -1,9 +1,9 @@
 package serializers.jackson;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.smile.SmileFactory;
-import org.codehaus.jackson.smile.SmileGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+import com.fasterxml.jackson.dataformat.smile.*;
 
 import serializers.JavaBuiltIn;
 import serializers.TestGroups;
@@ -23,7 +23,7 @@ public class JacksonSmileDatabind
 	factory.configure(SmileGenerator.Feature.CHECK_SHARED_STRING_VALUES, sharedValues);
 	// no point in using enum names with binary format, so:
         ObjectMapper mapper = new ObjectMapper(factory);
-        mapper.enable(SerializationConfig.Feature.WRITE_ENUMS_USING_INDEX);
+        mapper.enable(SerializationFeature.WRITE_ENUMS_USING_INDEX);
         
         groups.media.add(JavaBuiltIn.mediaTransformer,
                 new StdJacksonDataBind<MediaContent>("smile/jackson/databind",

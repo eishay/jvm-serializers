@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/libthrift.jar"/>
@@ -21,14 +22,12 @@
 	<classpathentry kind="lib" path="lib/json-0.19-tpc.jar"/>
 	<classpathentry kind="lib" path="lib/asm-commons-3.2.jar"/>
 	<classpathentry kind="lib" path="lib/asm-3.2.jar"/>
-	<classpathentry kind="lib" path="lib/avro-1.3.2.jar"/>
 	<classpathentry kind="lib" path="lib/cakoose-util.jar"/>
 	<classpathentry kind="lib" path="lib/cks-core.jar"/>
 	<classpathentry kind="lib" path="lib/cks-text-reader.jar"/>
 	<classpathentry kind="lib" path="lib/cks-text-writer.jar"/>
 	<classpathentry kind="lib" path="lib/cks-tool.jar"/>
 	<classpathentry kind="lib" path="lib/FastInfoset-1.2.6.jar"/>
-	<classpathentry kind="lib" path="lib/hessian-4.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/javolution-5.5.1.jar"/>
 	<classpathentry kind="lib" path="lib/jopt-simple-3.2.jar"/>
 	<classpathentry kind="lib" path="lib/kryo-1.03.jar"/>
@@ -40,22 +39,10 @@
 	<classpathentry kind="lib" path="lib/slf4j-api-1.5.10.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-nop-1.5.10.jar"/>
 	<classpathentry kind="lib" path="lib/woodstox-core-asl-4.0.7.jar"/>
-	<classpathentry kind="lib" path="lib/gson-1.6.jar"/>
-	<classpathentry kind="lib" path="lib/bson4jackson-1.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-all-1.7.1.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-xml-databind-0.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/mongo-2.4.jar"/>
-	<classpathentry kind="lib" path="lib/msgpack-0.4.0-devel.jar"/>
-	<classpathentry kind="lib" path="lib/protostuff-api-1.0.0.M7.jar"/>
-	<classpathentry kind="lib" path="lib/protostuff-compiler-1.0.0.M7-jarjar.jar"/>
-	<classpathentry kind="lib" path="lib/protostuff-core-1.0.0.M7.jar"/>
-	<classpathentry kind="lib" path="lib/protostuff-json-1.0.0.M7.jar"/>
-	<classpathentry kind="lib" path="lib/protostuff-runtime-1.0.0.M7.jar"/>
-	<classpathentry kind="lib" path="lib/protostuff-xml-1.0.0.M7.jar"/>
 	<classpathentry kind="lib" path="lib/svenson-1.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/json-lib-2.4-jdk15.jar"/>
 	<classpathentry kind="lib" path="lib/ezmorph-1.0.6.jar"/>
-	<classpathentry kind="lib" path="lib/fastjson-1.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/json_simple-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/json-smart-1.0.8.jar"/>
 	<classpathentry kind="lib" path="lib/json.org-ref-2011.06.21.jar"/>
@@ -63,5 +50,32 @@
 	<classpathentry kind="lib" path="lib/argo-2.10.jar"/>
 	<classpathentry kind="lib" path="lib/jsonpath-2011.06.23.jar"/>
 	<classpathentry kind="lib" path="lib/flexjson-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/avro-1.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/avro-compiler-1.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/avro-ipc-1.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/avro-tool-1.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/bson4jackson-1.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/fastjson-1.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/hessian-4.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-annotations-2.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-2.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-databind-2.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-smile-2.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-xml-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-module-afterburner-2.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/javassist-3.15.0-GA.jar"/>
+	<classpathentry kind="lib" path="lib/msgpack-0.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff-api-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff-collectionschema-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff-compiler-1.0.1-jarjar.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff-core-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff-json-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff-runtime-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/protostuff-xml-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/velocity-1.7-dep.jar"/>
+	<classpathentry kind="lib" path="lib/velocity-1.7.jar"/>
+	<classpathentry kind="lib" path="lib/wobly-core-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-all-1.9.6.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

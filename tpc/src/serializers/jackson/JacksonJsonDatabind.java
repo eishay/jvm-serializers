@@ -4,7 +4,7 @@ import data.media.MediaContent;
 import serializers.JavaBuiltIn;
 import serializers.TestGroups;
 
-import org.codehaus.jackson.map.*;
+import com.fasterxml.jackson.databind.*;
 
 /**
  * This serializer uses Jackson in full automated data binding mode, which

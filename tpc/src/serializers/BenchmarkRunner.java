@@ -104,7 +104,6 @@ public class BenchmarkRunner extends MediaItemBenchmark
         JacksonSmileAfterburner.register(groups); // databind with bytecode generation (faster)
         ProtostuffSmile.register(groups);
         // BSON is JSON-like format with extended datatypes
-        JacksonBsonManual.register(groups);
         JacksonBsonDatabind.register(groups);
         MongoDB.register(groups);
 

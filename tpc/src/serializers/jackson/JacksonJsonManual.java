@@ -7,8 +7,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.*;
-import org.codehaus.jackson.io.SerializedString;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.io.SerializedString;
 
 import serializers.JavaBuiltIn;
 import serializers.TestGroups;

@@ -6,8 +6,7 @@ import serializers.TestGroups;
 import com.fasterxml.aalto.stax.InputFactoryImpl;
 import com.fasterxml.aalto.stax.OutputFactoryImpl;
 
-import com.fasterxml.jackson.xml.XmlFactory;
-import com.fasterxml.jackson.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.*;
 
 import data.media.MediaContent;
 
