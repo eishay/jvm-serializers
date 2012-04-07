@@ -44,8 +44,8 @@ public class Kryo {
 			this.kryo = new com.esotericsoftware.kryo.Kryo();
 			kryo.setReferences(false);
 			kryo.setRegistrationRequired(true);
-			this.input = new Input(4096);
-			this.output = new Output(4096);
+			this.input = new Input(8192);
+			this.output = new Output(8192);
 			handler.register(this.kryo);
 		}
 
@@ -68,6 +68,7 @@ public class Kryo {
 			output.flush();
 		}
 
+		@SuppressWarnings("unchecked")
 		public T[] deserializeItems (InputStream inStream, int numberOfItems) throws IOException {
 			input.setInputStream(inStream);
 			MediaContent[] result = new MediaContent[numberOfItems];
