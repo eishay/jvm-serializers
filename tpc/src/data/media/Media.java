@@ -2,9 +2,6 @@ package data.media;
 
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import jsonij.json.annotation.JSONIgnore;
-
 import static data.ReprUtil.repr;
 
 @SuppressWarnings("serial")
@@ -31,9 +28,11 @@ public class Media implements java.io.Serializable {
 	public long size;
 	public int bitrate;         // Can be unset.
 
-	@JSONIgnore // required by JSONiJ
-	@JsonIgnore // by Jackson
+	@jsonij.json.annotation.JSONIgnore // required by JSONiJ
+	@org.codehaus.jackson.annotate.JsonIgnore // Jackson 1.x
+        @com.fasterxml.jackson.annotation.JsonIgnore // Jackson 2.x
 	public boolean hasBitrate;
+
 	public List<String> persons;
 	
 	public Player player;
