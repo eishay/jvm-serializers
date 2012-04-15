@@ -44,6 +44,7 @@ public class Kryo {
 			this.kryo = new com.esotericsoftware.kryo.Kryo();
 			kryo.setReferences(false);
 			kryo.setRegistrationRequired(true);
+			kryo.setReflection(false);
 			this.input = new Input(8192);
 			this.output = new Output(8192);
 			handler.register(this.kryo);
@@ -178,7 +179,7 @@ public class Kryo {
 		}
 	};
 
-	static class MediaContentSerializer implements com.esotericsoftware.kryo.Serializer<MediaContent> {
+	static class MediaContentSerializer extends com.esotericsoftware.kryo.Serializer<MediaContent> {
 		private CollectionSerializer _imagesSerializer;
 
 		public MediaContentSerializer (com.esotericsoftware.kryo.Kryo kryo) {
@@ -187,7 +188,7 @@ public class Kryo {
 			_imagesSerializer.setElementsCanBeNull(false);
 		}
 
-		public MediaContent read (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<MediaContent> type) {
+		public MediaContent create (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<MediaContent> type) {
 			final Media media = kryo.readObject(input, Media.class);
 			@SuppressWarnings("unchecked")
 			final List<Image> images = (List<Image>)kryo.readObject(input, ArrayList.class, _imagesSerializer);
@@ -200,7 +201,7 @@ public class Kryo {
 		}
 	}
 
-	static class MediaSerializer implements com.esotericsoftware.kryo.Serializer<Media> {
+	static class MediaSerializer extends com.esotericsoftware.kryo.Serializer<Media> {
 		private final CollectionSerializer _personsSerializer;
 
 		public MediaSerializer (final com.esotericsoftware.kryo.Kryo kryo) {
@@ -210,7 +211,7 @@ public class Kryo {
 		}
 
 		@SuppressWarnings("unchecked")
-		public Media read (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<Media> type) {
+		public Media create (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<Media> type) {
 			return new Media(input.readString(), input.readString(), input.readInt(true), input.readInt(true), input.readString(),
 				input.readLong(true), input.readLong(true), input.readInt(true), input.readBoolean(), (List<String>)kryo.readObject(
 					input, ArrayList.class, _personsSerializer), kryo.readObject(input, Media.Player.class), input.readString());
@@ -232,8 +233,8 @@ public class Kryo {
 		}
 	}
 
-	static class ImageSerializer implements com.esotericsoftware.kryo.Serializer<Image> {
-		public Image read (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<Image> type) {
+	static class ImageSerializer extends com.esotericsoftware.kryo.Serializer<Image> {
+		public Image create (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<Image> type) {
 			return new Image(input.readString(), input.readString(), input.readInt(true), input.readInt(true), kryo.readObject(
 				input, Size.class));
 		}

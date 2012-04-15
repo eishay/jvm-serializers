@@ -71,10 +71,7 @@
 	<classpathentry kind="lib" path="lib/woodstox-core-asl-4.0.7.jar"/>
 	<classpathentry kind="lib" path="lib/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-1.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/kryo2-2.02.jar"/>
 	<classpathentry kind="lib" path="lib/minlog-none-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/reflectasm-1.01.jar"/>
-	<classpathentry kind="lib" path="lib/asm-3.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-all-1.9.6.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-annotations-2.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-core-2.0.0.jar"/>
@@ -82,5 +79,9 @@
 	<classpathentry kind="lib" path="lib/jackson-dataformat-smile-2.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-dataformat-xml-2.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-module-afterburner-2.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/asm-4.0.jar"/>
+	<classpathentry kind="lib" path="lib/reflectasm-1.02.jar"/>
+	<classpathentry kind="lib" path="lib/kryo2-2.04.jar"/>
+	<classpathentry kind="lib" path="lib/objenesis-1.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
