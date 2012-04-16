@@ -84,8 +84,7 @@ public class Kryo {
 		}
 	}
 
-	/** This shows how to configure individual Kryo serializers. This generally reduces the serialized bytes and increases speed a
-	 * tiny amount. */
+	/** This shows how to configure individual Kryo serializersto reduce the serialized bytes. */
 	public static class OptimizedSerializer<T> extends BasicSerializer<T> {
 		public OptimizedSerializer (TypeHandler<T> handler) {
 			super(handler);
@@ -138,7 +137,7 @@ public class Kryo {
 			kryo.register(Media.class);
 			kryo.register(Image.Size.class);
 			kryo.register(Image.class);
-			kryo.register(String.class, new DefaultSerializers.String8Serializer()); // String7Serializer is slightly smaller.
+			kryo.register(String.class, new DefaultSerializers.String8Serializer());
 		}
 
 		public void optimize (com.esotericsoftware.kryo.Kryo kryo) {
@@ -168,6 +167,8 @@ public class Kryo {
 			personsSerializer.setElementClass(String.class);
 			personsSerializer.setElementsCanBeNull(false);
 			personsField.setClass(ArrayList.class, personsSerializer);
+
+			kryo.register(String.class, new DefaultSerializers.String7Serializer());
 		}
 
 		public void registerCustom (com.esotericsoftware.kryo.Kryo kryo) {
