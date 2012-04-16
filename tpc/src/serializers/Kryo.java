@@ -10,6 +10,7 @@ import java.util.List;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.CollectionSerializer;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import com.esotericsoftware.kryo.serializers.FieldSerializer.CachedField;
 
@@ -44,7 +45,6 @@ public class Kryo {
 			this.kryo = new com.esotericsoftware.kryo.Kryo();
 			kryo.setReferences(false);
 			kryo.setRegistrationRequired(true);
-			kryo.setReflection(false);
 			this.input = new Input(8192);
 			this.output = new Output(8192);
 			handler.register(this.kryo);
@@ -138,6 +138,7 @@ public class Kryo {
 			kryo.register(Media.class);
 			kryo.register(Image.Size.class);
 			kryo.register(Image.class);
+			kryo.register(String.class, new DefaultSerializers.String8Serializer()); // String7Serializer is slightly smaller.
 		}
 
 		public void optimize (com.esotericsoftware.kryo.Kryo kryo) {
@@ -170,12 +171,9 @@ public class Kryo {
 		}
 
 		public void registerCustom (com.esotericsoftware.kryo.Kryo kryo) {
-			kryo.register(ArrayList.class);
 			kryo.register(Image.class, new ImageSerializer());
 			kryo.register(MediaContent.class, new MediaContentSerializer(kryo));
 			kryo.register(Media.class, new MediaSerializer(kryo));
-			kryo.register(Media.Player.class);
-			kryo.register(Image.Size.class);
 		}
 	};
 
@@ -212,36 +210,37 @@ public class Kryo {
 
 		@SuppressWarnings("unchecked")
 		public Media create (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<Media> type) {
-			return new Media(input.readString(), input.readString(), input.readInt(true), input.readInt(true), input.readString(),
-				input.readLong(true), input.readLong(true), input.readInt(true), input.readBoolean(), (List<String>)kryo.readObject(
-					input, ArrayList.class, _personsSerializer), kryo.readObject(input, Media.Player.class), input.readString());
+			return new Media(input.readString8(), input.readString8(), input.readInt(true), input.readInt(true),
+				input.readString8(), input.readLong(true), input.readLong(true), input.readInt(true), input.readBoolean(),
+				(List<String>)kryo.readObject(input, ArrayList.class, _personsSerializer),
+				kryo.readObject(input, Media.Player.class), input.readString8());
 		}
 
 		public void write (com.esotericsoftware.kryo.Kryo kryo, Output output, Media obj) {
-			output.writeString(obj.uri);
-			output.writeString(obj.title);
+			output.writeString8(obj.uri);
+			output.writeString8(obj.title);
 			output.writeInt(obj.width, true);
 			output.writeInt(obj.height, true);
-			output.writeString(obj.format);
+			output.writeString8(obj.format);
 			output.writeLong(obj.duration, true);
 			output.writeLong(obj.size, true);
 			output.writeInt(obj.bitrate, true);
 			output.writeBoolean(obj.hasBitrate);
 			kryo.writeObject(output, obj.persons, _personsSerializer);
 			kryo.writeObject(output, obj.player);
-			output.writeString(obj.copyright);
+			output.writeString8(obj.copyright);
 		}
 	}
 
 	static class ImageSerializer extends com.esotericsoftware.kryo.Serializer<Image> {
 		public Image create (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<Image> type) {
-			return new Image(input.readString(), input.readString(), input.readInt(true), input.readInt(true), kryo.readObject(
+			return new Image(input.readString8(), input.readString8(), input.readInt(true), input.readInt(true), kryo.readObject(
 				input, Size.class));
 		}
 
 		public void write (com.esotericsoftware.kryo.Kryo kryo, Output output, Image obj) {
-			output.writeString(obj.uri);
-			output.writeString(obj.title);
+			output.writeString8(obj.uri);
+			output.writeString8(obj.title);
 			output.writeInt(obj.width, true);
 			output.writeInt(obj.height, true);
 			kryo.writeObject(output, obj.size);
