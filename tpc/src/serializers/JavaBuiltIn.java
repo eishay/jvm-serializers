@@ -58,9 +58,9 @@ public class JavaBuiltIn
 
 	public static final MediaTransformer<MediaContent> mediaTransformer = new MediaTransformer<MediaContent>()
 	{
-                @Override
-                public MediaContent[] resultArray(int size) { return new MediaContent[size]; }
-	    
+		@Override
+		public MediaContent[] resultArray(int size) { return new MediaContent[size]; }
+
 		public MediaContent forward(MediaContent mc)
 		{
 			return copy(mc);
@@ -74,21 +74,15 @@ public class JavaBuiltIn
 		private MediaContent copy(MediaContent mc)
 		{
 			ArrayList<Image> images = new ArrayList<Image>(mc.images.size());
-			for (Image image : mc.images) {
-				images.add(copy(image));
+			for (Image i : mc.images) {
+				images.add(new Image(i.uri, i.title, i.width, i.height, i.size));
 			}
-
 			return new MediaContent(copy(mc.media), images);
 		}
 
 		private Media copy(Media m)
 		{
 			return new Media(m.uri, m.title, m.width, m.height, m.format, m.duration, m.size, m.bitrate, m.hasBitrate, new ArrayList<String>(m.persons), m.player, m.copyright);
-		}
-
-		private Image copy(Image i)
-		{
-			return new Image(i.uri, i.title, i.width, i.height, i.size);
 		}
 
 		public MediaContent shallowReverse(MediaContent mc)
