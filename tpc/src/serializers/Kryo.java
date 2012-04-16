@@ -10,9 +10,10 @@ import java.util.List;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.CollectionSerializer;
-import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import com.esotericsoftware.kryo.serializers.FieldSerializer.CachedField;
+import com.esotericsoftware.kryo.serializers.String7Serializer;
+import com.esotericsoftware.kryo.serializers.String8Serializer;
 
 import data.media.Image;
 import data.media.Image.Size;
@@ -137,7 +138,7 @@ public class Kryo {
 			kryo.register(Media.class);
 			kryo.register(Image.Size.class);
 			kryo.register(Image.class);
-			kryo.register(String.class, new DefaultSerializers.String8Serializer());
+			kryo.register(String.class, new String8Serializer());
 		}
 
 		public void optimize (com.esotericsoftware.kryo.Kryo kryo) {
@@ -168,7 +169,7 @@ public class Kryo {
 			personsSerializer.setElementsCanBeNull(false);
 			personsField.setClass(ArrayList.class, personsSerializer);
 
-			kryo.register(String.class, new DefaultSerializers.String7Serializer());
+			kryo.register(String.class, new String7Serializer());
 		}
 
 		public void registerCustom (com.esotericsoftware.kryo.Kryo kryo) {
