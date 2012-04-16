@@ -8,20 +8,20 @@ public abstract class Serializer<S>
 	public abstract byte[] serialize(S content) throws Exception;
  	public abstract String getName();
 
- 	public ByteArrayOutputStream outputStream(S content)
- 	{
- 	    /* 15-May-2010, tsaloranta: For now, let's use a reasonable
- 	     *  guess; not too small nor too large a buffer.
- 	     */
- 	    return new ByteArrayOutputStream(500);
- 	}
-
- 	// And then bit bigger default when serializing a list or array
-        public ByteArrayOutputStream outputStreamForList(S[] items)
-        {
-            return new ByteArrayOutputStream(500 * items.length);
-        }
+ 	// Size doesn't matter since after warm up the backing array will be big enough since it is reused.
+ 	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream(1024);
  	
+	public ByteArrayOutputStream outputStream (S content) {
+		outputStream.reset();
+		return outputStream;
+	}
+
+	// And then bit bigger default when serializing a list or array
+	public ByteArrayOutputStream outputStreamForList (S[] items) {
+		outputStream.reset();
+		return outputStream;
+	}
+
  	// Multi-item interfaces
  	
  	public S[] deserializeItems(InputStream in, int numberOfItems) throws Exception {

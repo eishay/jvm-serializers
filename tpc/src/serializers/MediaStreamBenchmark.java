@@ -32,6 +32,7 @@ public class MediaStreamBenchmark extends BenchmarkBase
         // Binary Formats; language-specific ones
         JavaManual.register(groups);
         Hessian.register(groups);
+        Kryo.register(groups);
 
         // Binary formats, generic: protobuf, thrift, avro, CKS, msgpack
         Protobuf.register(groups);
