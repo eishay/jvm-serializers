@@ -56,7 +56,7 @@ public final class Protostuff
     public static final Serializer<MediaContent> ProtostuffMediaSerializer = 
         new Serializer<MediaContent>()
     {
-        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
+        final LinkedBuffer buffer = LinkedBuffer.allocate(BUFFER_SIZE);
 
         public MediaContent deserialize(byte[] array) throws Exception
         {
@@ -87,7 +87,7 @@ public final class Protostuff
     public static final Serializer<MediaContent> ProtobufMediaSerializer = 
         new Serializer<MediaContent>()
     {
-        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
+        final LinkedBuffer buffer = LinkedBuffer.allocate(BUFFER_SIZE);
 
         public MediaContent deserialize(byte[] array) throws Exception
         {
@@ -120,7 +120,7 @@ public final class Protostuff
     {
 
 	    final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
-        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
+        final LinkedBuffer buffer = LinkedBuffer.allocate(BUFFER_SIZE);
 
         public data.media.MediaContent deserialize(byte[] array) throws Exception
         {
@@ -153,7 +153,7 @@ public final class Protostuff
     {
 
 	    final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
-        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
+        final LinkedBuffer buffer = LinkedBuffer.allocate(BUFFER_SIZE);
 
         public data.media.MediaContent deserialize(byte[] array) throws Exception
         {
@@ -184,7 +184,7 @@ public final class Protostuff
     public static final Serializer<data.media.MediaContent> ProtostuffManualMediaSerializer = 
         new Serializer<data.media.MediaContent>()
     {
-        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
+        final LinkedBuffer buffer = LinkedBuffer.allocate(BUFFER_SIZE);
 
         public data.media.MediaContent deserialize(byte[] array) throws Exception
         {
@@ -215,7 +215,7 @@ public final class Protostuff
     public static final Serializer<data.media.MediaContent> ProtostuffGraphMediaSerializer = 
         new Serializer<data.media.MediaContent>()
     {
-        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
+        final LinkedBuffer buffer = LinkedBuffer.allocate(BUFFER_SIZE);
 
         public data.media.MediaContent deserialize(byte[] array) throws Exception
         {
@@ -246,7 +246,7 @@ public final class Protostuff
     public static final Serializer<data.media.MediaContent> ProtostuffGraphRuntimeMediaSerializer = 
         new Serializer<data.media.MediaContent>()
     {
-        final LinkedBuffer buffer = LinkedBuffer.allocate(512);
+        final LinkedBuffer buffer = LinkedBuffer.allocate(BUFFER_SIZE);
         final Schema<data.media.MediaContent> schema = RuntimeSchema.getSchema(data.media.MediaContent.class);
 
         public data.media.MediaContent deserialize(byte[] array) throws Exception

@@ -41,7 +41,7 @@ public class MsgPack
 	protected AbstractSerializer(TypeHandler<T> handler, MessagePack msgpack) {
 	    type = handler.type;
 	    this.msgpack = msgpack;
-	    packer = this.msgpack.createBufferPacker(2048);
+	    packer = this.msgpack.createBufferPacker(BUFFER_SIZE);
 	    unpacker = this.msgpack.createBufferUnpacker();
 	}
 
