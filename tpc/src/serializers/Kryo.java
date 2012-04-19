@@ -1,6 +1,7 @@
 
 package serializers;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,8 +13,6 @@ import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.CollectionSerializer;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import com.esotericsoftware.kryo.serializers.FieldSerializer.CachedField;
-import com.esotericsoftware.kryo.serializers.String7Serializer;
-import com.esotericsoftware.kryo.serializers.String8Serializer;
 
 import data.media.Image;
 import data.media.Image.Size;
@@ -46,8 +45,8 @@ public class Kryo {
 			this.kryo = new com.esotericsoftware.kryo.Kryo();
 			kryo.setReferences(false);
 			kryo.setRegistrationRequired(true);
-			this.input = new Input(8192);
-			this.output = new Output(8192);
+			this.input = new Input(BUFFER_SIZE);
+			this.output = new Output(BUFFER_SIZE);
 			handler.register(this.kryo);
 		}
 
@@ -57,9 +56,11 @@ public class Kryo {
 		}
 
 		public byte[] serialize (T content) {
-			output.clear();
+		    ByteArrayOutputStream outStream = outputStream(content);
+		    output.setOutputStream(outStream);
 			kryo.writeObject(output, content);
-			return output.toBytes();
+			output.flush();
+			return outStream.toByteArray();
 		}
 
 		public void serializeItems (T[] items, OutputStream outStream) throws Exception {
@@ -138,7 +139,6 @@ public class Kryo {
 			kryo.register(Media.class);
 			kryo.register(Image.Size.class);
 			kryo.register(Image.class);
-			kryo.register(String.class, new String8Serializer());
 		}
 
 		public void optimize (com.esotericsoftware.kryo.Kryo kryo) {
@@ -168,8 +168,6 @@ public class Kryo {
 			personsSerializer.setElementClass(String.class);
 			personsSerializer.setElementsCanBeNull(false);
 			personsField.setClass(ArrayList.class, personsSerializer);
-
-			kryo.register(String.class, new String7Serializer());
 		}
 
 		public void registerCustom (com.esotericsoftware.kryo.Kryo kryo) {
@@ -212,37 +210,37 @@ public class Kryo {
 
 		@SuppressWarnings("unchecked")
 		public Media create (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<Media> type) {
-			return new Media(input.readString8(), input.readString8(), input.readInt(true), input.readInt(true),
-				input.readString8(), input.readLong(true), input.readLong(true), input.readInt(true), input.readBoolean(),
+			return new Media(input.readString(), input.readString(), input.readInt(true), input.readInt(true),
+				input.readString(), input.readLong(true), input.readLong(true), input.readInt(true), input.readBoolean(),
 				(List<String>)kryo.readObject(input, ArrayList.class, _personsSerializer),
-				kryo.readObject(input, Media.Player.class), input.readString8());
+				kryo.readObject(input, Media.Player.class), input.readString());
 		}
 
 		public void write (com.esotericsoftware.kryo.Kryo kryo, Output output, Media obj) {
-			output.writeString8(obj.uri);
-			output.writeString8(obj.title);
+			output.writeString(obj.uri);
+			output.writeString(obj.title);
 			output.writeInt(obj.width, true);
 			output.writeInt(obj.height, true);
-			output.writeString8(obj.format);
+			output.writeString(obj.format);
 			output.writeLong(obj.duration, true);
 			output.writeLong(obj.size, true);
 			output.writeInt(obj.bitrate, true);
 			output.writeBoolean(obj.hasBitrate);
 			kryo.writeObject(output, obj.persons, _personsSerializer);
 			kryo.writeObject(output, obj.player);
-			output.writeString8(obj.copyright);
+			output.writeString(obj.copyright);
 		}
 	}
 
 	static class ImageSerializer extends com.esotericsoftware.kryo.Serializer<Image> {
 		public Image create (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<Image> type) {
-			return new Image(input.readString8(), input.readString8(), input.readInt(true), input.readInt(true), kryo.readObject(
+			return new Image(input.readString(), input.readString(), input.readInt(true), input.readInt(true), kryo.readObject(
 				input, Size.class));
 		}
 
 		public void write (com.esotericsoftware.kryo.Kryo kryo, Output output, Image obj) {
-			output.writeString8(obj.uri);
-			output.writeString8(obj.title);
+			output.writeString(obj.uri);
+			output.writeString(obj.title);
 			output.writeInt(obj.width, true);
 			output.writeInt(obj.height, true);
 			kryo.writeObject(output, obj.size);
