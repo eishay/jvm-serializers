@@ -1,7 +1,6 @@
 
 package serializers;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,34 +36,30 @@ public class Kryo {
 	public static class BasicSerializer<T> extends Serializer<T> {
 		protected final Class<T> type;
 		protected final com.esotericsoftware.kryo.Kryo kryo;
-		protected final Input input;
-		protected final Output output;
+		// The buffer size is assigned by the benchmark, used on every iteration
+		protected final byte[] buffer = new byte[BUFFER_SIZE];
 
 		public BasicSerializer (TypeHandler<T> handler) {
 			this.type = handler.type;
 			this.kryo = new com.esotericsoftware.kryo.Kryo();
 			kryo.setReferences(false);
 			kryo.setRegistrationRequired(true);
-			this.input = new Input(BUFFER_SIZE);
-			this.output = new Output(BUFFER_SIZE);
 			handler.register(this.kryo);
 		}
 
 		public T deserialize (byte[] array) {
-			input.setBuffer(array);
-			return kryo.readObject(input, type);
+			return kryo.readObject(new Input(array), type);
 		}
 
 		public byte[] serialize (T content) {
-		    ByteArrayOutputStream outStream = outputStream(content);
-		    output.setOutputStream(outStream);
-			kryo.writeObject(output, content);
-			output.flush();
-			return outStream.toByteArray();
+		    Output output = new Output(buffer, Integer.MAX_VALUE);
+		    kryo.writeObject(output, content);
+		    return output.toBytes();
 		}
 
 		public void serializeItems (T[] items, OutputStream outStream) throws Exception {
-			output.setOutputStream(outStream);
+		    Output output = new Output(buffer);
+		    output.setOutputStream(outStream);
 			for (int i = 0, n = items.length; i < n; ++i) {
 				kryo.writeObject(output, items[i]);
 			}
@@ -73,7 +68,8 @@ public class Kryo {
 
 		@SuppressWarnings("unchecked")
 		public T[] deserializeItems (InputStream inStream, int numberOfItems) throws IOException {
-			input.setInputStream(inStream);
+			Input input = new Input(buffer);
+		    input.setInputStream(inStream);
 			MediaContent[] result = new MediaContent[numberOfItems];
 			for (int i = 0; i < numberOfItems; ++i) {
 				result[i] = kryo.readObject(input, MediaContent.class);
