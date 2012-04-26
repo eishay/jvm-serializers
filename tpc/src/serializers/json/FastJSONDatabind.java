@@ -10,6 +10,7 @@ import data.media.MediaContent;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.parser.Feature;
 
 /**
  * This serializer uses FastJSON [http://code.alibabatech.com/wiki/display/FastJSON] for JSON data binding.
@@ -42,13 +43,12 @@ public class FastJSONDatabind
     public T deserialize(byte[] array) throws Exception
     {
 	// fastjson can parse from byte array, yay:
-	return (T) JSON.parseObject(array, type);
+	return (T) JSON.parseObject(array, type, Feature.DisableCircularReferenceDetect);
     }
 
     public byte[] serialize(T data) throws IOException
     {
-      String jsonString = JSON.toJSONString(data, SerializerFeature.WriteEnumUsingToString);
-      return jsonString.getBytes("UTF-8");
+      return JSON.toJSONBytes(data, SerializerFeature.WriteEnumUsingToString,SerializerFeature.DisableCircularReferenceDetect);
     }
   }
 }
