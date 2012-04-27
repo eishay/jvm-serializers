@@ -14,19 +14,14 @@ public abstract class Serializer<S>
 	public abstract S deserialize(byte[] array) throws Exception;
 	public abstract byte[] serialize(S content) throws Exception;
  	public abstract String getName();
-
- 	// Size doesn't matter since after warm up the backing array will be big enough since it is reused.
- 	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream(1024);
  	
 	public ByteArrayOutputStream outputStream (S content) {
-		outputStream.reset();
-		return outputStream;
+		return new ByteArrayOutputStream(BUFFER_SIZE);
 	}
 
 	// And then bit bigger default when serializing a list or array
 	public ByteArrayOutputStream outputStreamForList (S[] items) {
-		outputStream.reset();
-		return outputStream;
+		return new ByteArrayOutputStream(BUFFER_SIZE * items.length);
 	}
 
  	// Multi-item interfaces
