@@ -22,7 +22,7 @@ public class MediaStreamBenchmark extends BenchmarkBase
     private void runBenchmark(String[] args) {
         runBenchmark(args,
                 Create,
-                Serialize, SerializeSameObject,
+                Serialize, 
                 Deserialize, DeserializeAndCheck, DeserializeAndCheckShallow);
     }
     
@@ -119,27 +119,14 @@ public class MediaStreamBenchmark extends BenchmarkBase
         {
             @SuppressWarnings("unchecked")
             J[] src = (J[]) value;
-            long start = System.nanoTime();
-            ByteArrayOutputStream out = serializer.outputStreamForList(src);
+            Object[][] objects = new Object[iterations][];
             for (int i = 0; i < iterations; i++) {
-                Object[] items = transformer.forwardAll(src);
-                serializer.serializeItems(items, out);
-                out.reset();
+            	objects[i] = transformer.forwardAll(src);
             }
-            return iterationTime(System.nanoTime() - start, iterations);
-        }
-    };
-
-    protected final TestCase SerializeSameObject = new TestCase()
-    {
-        public <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception
-        {
+            ByteArrayOutputStream out = serializer.outputStreamForList(src);
             long start = System.nanoTime();
-            @SuppressWarnings("unchecked")
-            Object[] items = transformer.forwardAll((J[]) value);
-            ByteArrayOutputStream out = serializer.outputStreamForList(items);
             for (int i = 0; i < iterations; i++) {
-                serializer.serializeItems(items, out);
+                serializer.serializeItems(objects[i], out);
                 out.reset();
             }
             return iterationTime(System.nanoTime() - start, iterations);

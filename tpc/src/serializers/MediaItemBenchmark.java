@@ -14,7 +14,7 @@ public abstract class MediaItemBenchmark extends BenchmarkBase
     protected void runBenchmark(String[] args) {
         runBenchmark(args,
                 Create,
-                Serialize, SerializeSameObject,
+                Serialize,
                 Deserialize, DeserializeAndCheck, DeserializeAndCheckShallow);
     }
     
@@ -62,26 +62,15 @@ public abstract class MediaItemBenchmark extends BenchmarkBase
     {
             public <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception
             {
-                    long start = System.nanoTime();
+                    Object[] objects = new Object[iterations];
                     for (int i = 0; i < iterations; i++)
                     {
-                            Object obj = transformer.forward(value);
-                            serializer.serialize(obj);
+                  	  objects[i] = transformer.forward(value);
                     }
-                    return iterationTime(System.nanoTime() - start, iterations);
-            }
-    };
-
-    protected final TestCase SerializeSameObject = new TestCase()
-    {
-            public <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception
-            {
-                    // let's reuse same instance to reduce overhead
-                    Object obj = transformer.forward(value);
                     long start = System.nanoTime();
                     for (int i = 0; i < iterations; i++)
                     {
-                            serializer.serialize(obj);
+                  	  objects[i] = serializer.serialize(objects[i]);
                     }
                     return iterationTime(System.nanoTime() - start, iterations);
             }

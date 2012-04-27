@@ -36,7 +36,7 @@ abstract class BenchmarkBase
     
     public enum measurements
     {
-            timeCreate("create (nanos)"), timeSerializeDifferentObjects("ser (nanos)"), timeSerializeSameObject("ser+same (nanos)"),
+            timeCreate("create (nanos)"), timeSerialize("ser (nanos)"), 
             timeDeserializeNoFieldAccess("deser (nanos)"), timeDeserializeAndCheck("deser+deep (nanos)"), timeDeserializeAndCheckShallow("deser+shal (nanos)"),
             totalTime("total (nanos)"), length("size (bytes)"), lengthDeflate("size+dfl (bytes)"),
             ;
@@ -75,7 +75,7 @@ abstract class BenchmarkBase
 
     protected void runBenchmark(String[] args,
             TestCase testCreate,
-            TestCase testSerialize, TestCase testSerializeSameObject,
+            TestCase testSerialize, 
             TestCase testDeserialize, TestCase testDeserializeAndCheck, TestCase testDeserializeAndCheckShallow)
         {
         Params params = new Params();
@@ -84,7 +84,7 @@ abstract class BenchmarkBase
         addTests(groups);
         runTests(groups, params,
                 testCreate,
-                testSerialize, testSerializeSameObject,
+                testSerialize, 
                 testDeserialize, testDeserializeAndCheck, testDeserializeAndCheckShallow);
     }
 
@@ -284,7 +284,7 @@ abstract class BenchmarkBase
      */
     protected void runTests(TestGroups groups, Params params,
             TestCase testCreate,
-            TestCase testSerialize, TestCase testSerializeSameObject,
+            TestCase testSerialize, 
             TestCase testDeserialize, TestCase testDeserializeAndCheck, TestCase testDeserializeAndCheckShallow)
     {
         TestGroup<?> bootstrapGroup = findGroupForTestData(groups, params);
@@ -297,7 +297,7 @@ abstract class BenchmarkBase
         try {
             EnumMap<measurements, Map<String, Double>> values = runMeasurements(errorsPW, params, matchingEntries, testData,
                     testCreate,
-                    testSerialize, testSerializeSameObject,
+                    testSerialize, 
                     testDeserialize, testDeserializeAndCheck, testDeserializeAndCheckShallow
             );
                     
@@ -432,7 +432,7 @@ abstract class BenchmarkBase
     protected <J> EnumMap<measurements, Map<String, Double>> runMeasurements(PrintWriter errors,
             Params params, Iterable<TestGroup.Entry<J,Object>> groups, J value,
             TestCase testCreate,
-            TestCase testSerialize, TestCase testSerializeSameObject,
+            TestCase testSerialize, 
             TestCase testDeserialize, TestCase testDeserializeAndCheck, TestCase testDeserializeAndCheckShallow
     ) throws Exception
     {
@@ -461,11 +461,10 @@ abstract class BenchmarkBase
                         System.out.println("[done]");
                 }
 
-                System.out.printf("%-32s %6s %7s %7s %7s %7s %7s %7s %6s %5s\n",
+                System.out.printf("%-32s %6s %7s %7s %7s %7s %7s %6s %5s\n",
                         "",
                         "create",
                         "ser",
-                        "+same",
                         "deser",
                         "+shal",
                         "+deep",
@@ -494,10 +493,7 @@ abstract class BenchmarkBase
                                 warmTest(runner, params.warmupTime, testSerialize);
 
                                 doGc();
-                                double timeSerializeDifferentObjects = runner.runTakeMin(params.trials, testSerialize, params.iterations);
-
-                                doGc();
-                                double timeSerializeSameObject = runner.runTakeMin(params.trials, testSerializeSameObject, params.iterations);
+                                double timeSerialize = runner.runTakeMin(params.trials, testSerialize, params.iterations);
 
                                 warmTest(runner, params.warmupTime, testDeserializeAndCheck);
 
@@ -510,16 +506,15 @@ abstract class BenchmarkBase
                                 doGc();
                                 double timeDeserializeAndCheck = runner.runTakeMin(params.trials, testDeserializeAndCheck, params.iterations);
 
-                                double totalTime = timeSerializeDifferentObjects + timeDeserializeAndCheck;
+                                double totalTime = timeSerialize + timeDeserializeAndCheck;
 
                                 byte[] array = serializeForSize(entry.transformer, entry.serializer, value);
                                 byte[] compressDeflate = compressDeflate(array);
 
-                                System.out.printf("%-32s %6.0f %7.0f %7.0f %7.0f %7.0f %7.0f %7.0f %6d %5d\n",
+                                System.out.printf("%-32s %6.0f %7.0f %7.0f %7.0f %7.0f %7.0f %6d %5d\n",
                                         name,
                                         timeCreate,
-                                        timeSerializeDifferentObjects,
-                                        timeSerializeSameObject,
+                                        timeSerialize,
                                         timeDeserializeNoFieldAccess,
                                         timeDeserializeAndCheckShallow,
                                         timeDeserializeAndCheck,
@@ -527,7 +522,7 @@ abstract class BenchmarkBase
                                         array.length,
                                         compressDeflate.length);
 
-                                addValue(values, name, timeCreate, timeSerializeDifferentObjects, timeSerializeSameObject,
+                                addValue(values, name, timeCreate, timeSerialize, 
                                         timeDeserializeNoFieldAccess, timeDeserializeAndCheckShallow, timeDeserializeAndCheck, totalTime,
                                         array.length, compressDeflate.length);
                         }
@@ -549,16 +544,14 @@ abstract class BenchmarkBase
             EnumMap<measurements, Map<String, Double>> values,
             String name,
             double timeCreate,
-            double timeSerializeDifferentObjects,
-            double timeSerializeSameObject,
+            double timeSerialize,
             double timeDeserializeNoFieldAccess,
             double timeDeserializeAndCheckShallow,
             double timeDeserializeAndCheck,
             double totalTime,
             double length, double lengthDeflate)
     {
-        values.get(measurements.timeSerializeDifferentObjects).put(name, timeSerializeDifferentObjects);
-        values.get(measurements.timeSerializeSameObject).put(name, timeSerializeSameObject);
+        values.get(measurements.timeSerialize).put(name, timeSerialize);
         values.get(measurements.timeDeserializeNoFieldAccess).put(name, timeDeserializeNoFieldAccess);
         values.get(measurements.timeDeserializeAndCheckShallow).put(name, timeDeserializeAndCheckShallow);
         values.get(measurements.timeDeserializeAndCheck).put(name, timeDeserializeAndCheck);
