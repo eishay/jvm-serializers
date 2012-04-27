@@ -12,7 +12,7 @@ import java.util.zip.DeflaterOutputStream;
 abstract class BenchmarkBase
 {
     public final static int DEFAULT_ITERATIONS = 2000;
-    public final static int DEFAULT_TRIALS = 20;
+    public final static int DEFAULT_TRIALS = 500;
 
     /**
      * Number of milliseconds to warm up for each operation type for each serializer. Let's
@@ -55,7 +55,7 @@ abstract class BenchmarkBase
         public int iterations = DEFAULT_ITERATIONS;
         public int trials = DEFAULT_TRIALS;
         public long warmupTime = DEFAULT_WARMUP_MSECS;
-        public boolean prewarm = false;
+        public boolean prewarm = true;
         public Boolean filterIsInclude;
         public Set<String> filterStrings;
         public boolean printChart = false;
@@ -202,12 +202,12 @@ abstract class BenchmarkBase
                     System.exit(1);
                     }
             }
-            else if (option.equals("pre-warmup")) {
+            else if (option.equals("skip-pre-warmup")) {
                 if (value != null) {
-                    System.err.println("The \"pre-warmup\" option does not take a value: \"" + arg + "\"");
+                    System.err.println("The \"skip-pre-warmup\" option does not take a value: \"" + arg + "\"");
                     System.exit(1);
                 }
-                params.prewarm = true;
+                params.prewarm = false;
             }
             else if (option.equals("chart")) {
                 if (value != null) {
@@ -239,7 +239,7 @@ abstract class BenchmarkBase
                 System.out.println("  -iterations=n         [default=" + DEFAULT_ITERATIONS + "]");
                 System.out.println("  -trials=n             [default=" + DEFAULT_TRIALS + "]");
                 System.out.println("  -warmup-time=millis   [default=" + DEFAULT_WARMUP_MSECS + "]");
-                System.out.println("  -pre-warmup           (warm all serializers before the first measurement)");
+                System.out.println("  -skip-pre-warmup      (don't warm all serializers before the first measurement)");
                 System.out.println("  -chart                (generate a Google Chart URL for the results)");
                 System.out.println("  -include=impl1,impl2,impl3,...");
                 System.out.println("  -exclude=impl1,impl2,impl3,...");

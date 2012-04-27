@@ -7,7 +7,4 @@ case "`uname`" in
 esac
 
 cp=build/bytecode/main$path_sep$(cat build/gen-cp)$path_sep$(cat build/lib-cp)
-exec java -Xmx16m -server -cp "$cp" serializers.BenchmarkRunner "$@"
-
-# Values used during testing are small.  Should probably use fairly
-# small heap to capture effects of memory allocation
+exec java -Xmx256m -server -cp "$cp" serializers.BenchmarkRunner "$@"
