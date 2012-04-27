@@ -34,10 +34,11 @@ public class Kryo {
 
 	/** This is the most basic Kryo usage. Just register the classes and go. */
 	public static class BasicSerializer<T> extends Serializer<T> {
-		protected final Class<T> type;
-		protected final com.esotericsoftware.kryo.Kryo kryo;
-		protected final Output output = new Output(BUFFER_SIZE, -1);
-		protected final Input input = new Input(BUFFER_SIZE);
+		private final Class<T> type;
+		final com.esotericsoftware.kryo.Kryo kryo;
+		private final byte[] buffer = new byte[BUFFER_SIZE];
+		private final Output output = new Output();
+		private final Input input = new Input();
 
 		public BasicSerializer (TypeHandler<T> handler) {
 			this.type = handler.type;
@@ -53,13 +54,13 @@ public class Kryo {
 		}
 
 		public byte[] serialize (T content) {
-		    output.clear();
-		    kryo.writeObject(output, content);
-		    return output.toBytes();
+			output.setBuffer(buffer, -1);
+			kryo.writeObject(output, content);
+			return output.toBytes();
 		}
 
 		public void serializeItems (T[] items, OutputStream outStream) throws Exception {
-		    output.setOutputStream(outStream);
+			output.setOutputStream(outStream);
 			for (int i = 0, n = items.length; i < n; ++i) {
 				kryo.writeObject(output, items[i]);
 			}
@@ -68,7 +69,7 @@ public class Kryo {
 
 		@SuppressWarnings("unchecked")
 		public T[] deserializeItems (InputStream inStream, int numberOfItems) throws IOException {
-		    input.setInputStream(inStream);
+			input.setInputStream(inStream);
 			MediaContent[] result = new MediaContent[numberOfItems];
 			for (int i = 0; i < numberOfItems; ++i) {
 				result[i] = kryo.readObject(input, MediaContent.class);
@@ -205,10 +206,9 @@ public class Kryo {
 
 		@SuppressWarnings("unchecked")
 		public Media create (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<Media> type) {
-			return new Media(input.readString(), input.readString(), input.readInt(true), input.readInt(true),
-				input.readString(), input.readLong(true), input.readLong(true), input.readInt(true), input.readBoolean(),
-				(List<String>)kryo.readObject(input, ArrayList.class, _personsSerializer),
-				kryo.readObject(input, Media.Player.class), input.readString());
+			return new Media(input.readString(), input.readString(), input.readInt(true), input.readInt(true), input.readString(),
+				input.readLong(true), input.readLong(true), input.readInt(true), input.readBoolean(), (List<String>)kryo.readObject(
+					input, ArrayList.class, _personsSerializer), kryo.readObject(input, Media.Player.class), input.readString());
 		}
 
 		public void write (com.esotericsoftware.kryo.Kryo kryo, Output output, Media obj) {

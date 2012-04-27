@@ -31,7 +31,6 @@
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/ezmorph-1.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/FastInfoset-1.2.6.jar"/>
-	<classpathentry kind="lib" path="lib/fastjson-1.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/flexjson-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/hessian-4.0.7.jar"/>
@@ -80,8 +79,9 @@
 	<classpathentry kind="lib" path="lib/jackson-dataformat-xml-2.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-module-afterburner-2.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/asm-4.0.jar"/>
-	<classpathentry kind="lib" path="lib/reflectasm-1.02.jar"/>
-	<classpathentry kind="lib" path="lib/kryo2-2.04.jar"/>
 	<classpathentry kind="lib" path="lib/objenesis-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/fastjson-1.1.19.jar"/>
+	<classpathentry kind="lib" path="lib/kryo2-2.06.jar"/>
+	<classpathentry kind="lib" path="lib/reflectasm-1.03.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
