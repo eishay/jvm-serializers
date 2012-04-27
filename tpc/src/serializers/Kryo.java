@@ -36,8 +36,8 @@ public class Kryo {
 	public static class BasicSerializer<T> extends Serializer<T> {
 		protected final Class<T> type;
 		protected final com.esotericsoftware.kryo.Kryo kryo;
-		// The buffer size is assigned by the benchmark, used on every iteration
-		protected final byte[] buffer = new byte[BUFFER_SIZE];
+		protected final Output output = new Output(BUFFER_SIZE, -1);
+		protected final Input input = new Input(BUFFER_SIZE);
 
 		public BasicSerializer (TypeHandler<T> handler) {
 			this.type = handler.type;
@@ -48,17 +48,17 @@ public class Kryo {
 		}
 
 		public T deserialize (byte[] array) {
-			return kryo.readObject(new Input(array), type);
+			input.setBuffer(array);
+			return kryo.readObject(input, type);
 		}
 
 		public byte[] serialize (T content) {
-		    Output output = new Output(buffer, Integer.MAX_VALUE);
+		    output.clear();
 		    kryo.writeObject(output, content);
 		    return output.toBytes();
 		}
 
 		public void serializeItems (T[] items, OutputStream outStream) throws Exception {
-		    Output output = new Output(buffer);
 		    output.setOutputStream(outStream);
 			for (int i = 0, n = items.length; i < n; ++i) {
 				kryo.writeObject(output, items[i]);
@@ -68,7 +68,6 @@ public class Kryo {
 
 		@SuppressWarnings("unchecked")
 		public T[] deserializeItems (InputStream inStream, int numberOfItems) throws IOException {
-			Input input = new Input(buffer);
 		    input.setInputStream(inStream);
 			MediaContent[] result = new MediaContent[numberOfItems];
 			for (int i = 0; i < numberOfItems; ++i) {
