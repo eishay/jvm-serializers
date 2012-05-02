@@ -37,8 +37,8 @@ public class Kryo {
 		private final Class<T> type;
 		final com.esotericsoftware.kryo.Kryo kryo;
 		private final byte[] buffer = new byte[BUFFER_SIZE];
-		private final Output output = new Output();
-		private final Input input = new Input();
+		private final Output output = new Output(buffer, -1);
+		private final Input input = new Input(buffer);
 
 		public BasicSerializer (TypeHandler<T> handler) {
 			this.type = handler.type;
