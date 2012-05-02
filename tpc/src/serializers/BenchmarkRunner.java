@@ -70,10 +70,11 @@ public class BenchmarkRunner extends MediaItemBenchmark
         // JSON
         JacksonJsonManual.register(groups);
         JacksonJsonDatabind.register(groups);
-        JacksonJsonDatabindWithStrings.register(groups);
         JacksonJsonAfterburner.register(groups); // databind with bytecode generation (faster)
         JacksonJsonTree.register(groups);
-        JacksonJsonTreeWithStrings.register(groups);
+// 01-May-2012, tatu: not all that useful (IMO) for general comparisons
+//        JacksonJsonDatabindWithStrings.register(groups);
+//        JacksonJsonTreeWithStrings.register(groups);
         JsonTwoLattes.register(groups);
         ProtostuffJson.register(groups);
 // too slow, why bother:
