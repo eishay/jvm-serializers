@@ -36,9 +36,10 @@ abstract class BenchmarkBase
     
     public enum measurements
     {
-            timeCreate("create (nanos)"), timeSerialize("ser (nanos)"), 
+            totalTime("total (nanos)"), timeSerialize("ser (nanos)"), 
             timeDeserializeNoFieldAccess("deser (nanos)"), timeDeserializeAndCheck("deser+deep (nanos)"), timeDeserializeAndCheckShallow("deser+shal (nanos)"),
-            totalTime("total (nanos)"), length("size (bytes)"), lengthDeflate("size+dfl (bytes)"),
+            length("size (bytes)"), lengthDeflate("size+dfl (bytes)"),
+				timeCreate("create (nanos)")
             ;
 
             public final String displayName;
@@ -462,7 +463,7 @@ abstract class BenchmarkBase
                 }
 
                 System.out.printf("%-32s %6s %7s %7s %7s %7s %7s %6s %5s\n",
-                        "",
+                        params.printChart ? "\npre." : "",
                         "create",
                         "ser",
                         "deser",
@@ -610,6 +611,7 @@ abstract class BenchmarkBase
             array = serializer.serialize(specialInput);
         }
         catch (Exception ex) {
+      	  ex.printStackTrace();
             System.out.println("ERROR: \"" + name + "\" crashed during serialization.");
             errors.println(ERROR_DIVIDER);
             errors.println("\"" + name + "\" crashed during serialization.");
@@ -660,6 +662,7 @@ abstract class BenchmarkBase
     
     protected static void printImages(EnumMap<measurements, Map<String, Double>> values)
     {
+        System.out.println();
         for (measurements m : values.keySet()) {
             Map<String, Double> map = values.get(m);
             ArrayList<Map.Entry<String,Double>> list = new ArrayList<Map.Entry<String,Double>>(map.entrySet());
@@ -677,6 +680,7 @@ abstract class BenchmarkBase
             }
             if (!sortedMap.isEmpty()) printImage(sortedMap, m);
         }
+        System.out.println();
     }
 
     protected static void printImage(Map<String, Double> map, measurements m)
