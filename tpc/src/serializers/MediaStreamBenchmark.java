@@ -23,7 +23,7 @@ public class MediaStreamBenchmark extends BenchmarkBase
         runBenchmark(args,
                 Create,
                 Serialize, 
-                Deserialize, DeserializeAndCheck, DeserializeAndCheckShallow);
+                Deserialize);
     }
     
     @Override
@@ -148,39 +148,42 @@ public class MediaStreamBenchmark extends BenchmarkBase
         }
     };
 
-    protected final TestCase DeserializeAndCheck = new TestCase()
-    {
-        public <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception
-        {
-            @SuppressWarnings("unchecked")
-            J[] src = (J[]) value;
-            byte[] bytes = serializer.serializeAsBytes(transformer.forwardAll(src));
-            long start = System.nanoTime();
-            for (int i = 0; i < iterations; i++) {
-                Object[] items = serializer.deserializeItems(new ByteArrayInputStream(bytes), src.length);
-                for (Object item : items) {
-                    transformer.reverse(item);
-                }
-            }
-            return iterationTime(System.nanoTime() - start, iterations);
-        }
-    };
-
-    protected final TestCase DeserializeAndCheckShallow = new TestCase()
-    {
-        public <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception
-        {
-            @SuppressWarnings("unchecked")
-            J[] src = (J[]) value;
-            byte[] bytes = serializer.serializeAsBytes(transformer.forwardAll(src));
-            long start = System.nanoTime();
-            for (int i = 0; i < iterations; i++) {
-                Object[] items = serializer.deserializeItems(new ByteArrayInputStream(bytes), src.length);
-                for (Object item : items) {
-                    transformer.shallowReverse(item);
-                }
-            }
-            return iterationTime(System.nanoTime() - start, iterations);
-        }
-    };
+// 16-May-2012, Nate: As discussed on mailing list, removed these two as they only exist in an attempt to
+// make the comparison with ActiveMQProtobuf fair with the rest of the serializers. This adds overhead to
+// the rest of the serializers, skewing the results. ActiveMQProtobuf has been disabled, so these aren't needed.
+//    protected final TestCase DeserializeAndCheck = new TestCase()
+//    {
+//        public <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception
+//        {
+//            @SuppressWarnings("unchecked")
+//            J[] src = (J[]) value;
+//            byte[] bytes = serializer.serializeAsBytes(transformer.forwardAll(src));
+//            long start = System.nanoTime();
+//            for (int i = 0; i < iterations; i++) {
+//                Object[] items = serializer.deserializeItems(new ByteArrayInputStream(bytes), src.length);
+//                for (Object item : items) {
+//                    transformer.reverse(item);
+//                }
+//            }
+//            return iterationTime(System.nanoTime() - start, iterations);
+//        }
+//    };
+//
+//    protected final TestCase DeserializeAndCheckShallow = new TestCase()
+//    {
+//        public <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception
+//        {
+//            @SuppressWarnings("unchecked")
+//            J[] src = (J[]) value;
+//            byte[] bytes = serializer.serializeAsBytes(transformer.forwardAll(src));
+//            long start = System.nanoTime();
+//            for (int i = 0; i < iterations; i++) {
+//                Object[] items = serializer.deserializeItems(new ByteArrayInputStream(bytes), src.length);
+//                for (Object item : items) {
+//                    transformer.shallowReverse(item);
+//                }
+//            }
+//            return iterationTime(System.nanoTime() - start, iterations);
+//        }
+//    };
 }

@@ -59,7 +59,9 @@ public class BenchmarkRunner extends MediaItemBenchmark
         
         // Binary formats, generic: protobuf, thrift, avro, CKS, msgpack
         Protobuf.register(groups);
-        ActiveMQProtobuf.register(groups);
+        // 16-May-2012, Nate: As discussed on mailing list, removed ActiveMQProtobuf as 
+        // its lazy deserialization isn't comparable to other serializers.
+        // ActiveMQProtobuf.register(groups);
         Protostuff.register(groups);
         Thrift.register(groups);
         AvroSpecific.register(groups);
