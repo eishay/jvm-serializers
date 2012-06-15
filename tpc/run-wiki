@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 # SIMPLE/GENERIC: Serializes any POJO without special knowledge about the class.
-./run -trials=500 -chart -include=java-built-in,hessian,kryo,protostuff-runtime,msgpack,json/jackson/databind,json/jackson/databind-strings,json/jackson/db-afterburner,json/google-gson/databind,json/svenson-databind,json/flexjson/databind,json/fastjson/databind,smile/jackson/databind,smile/jackson/db-afterburner,smile/protostuff-runtime,bson/jackson/databind,xml/xstream+c,xml/jackson/databind-aalto,json/protostuff-runtime data/media.1.cks
+./run -trials=500 -chart -include=java-built-in,hessian,kryo,protostuff-runtime,msgpack,json/jackson/databind,json/jackson/db-afterburner,json/google-gson/databind,json/svenson-databind,json/flexjson/databind,json/fastjson/databind,smile/jackson/databind,smile/jackson/db-afterburner,smile/protostuff-runtime,bson/jackson/databind,xml/xstream+c,xml/jackson/databind-aalto,json/protostuff-runtime data/media.1.cks
 
 # SIMPLE/SPECIFC: Serializes only specific classes using code generation or other special knowledge about the class.
 ./run -trials=500 -chart -include=wobly,wobly-compact,kryo-opt,protobuf,protostuff,protobuf/protostuff,thrift,thrift-compact,avro,json/json-lib-databind,json/jsonij-jpath,json/jsonpath/json.simple data/media.1.cks
