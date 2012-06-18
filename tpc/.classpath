@@ -81,7 +81,7 @@
 	<classpathentry kind="lib" path="lib/asm-4.0.jar"/>
 	<classpathentry kind="lib" path="lib/objenesis-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/fastjson-1.1.19.jar"/>
-	<classpathentry kind="lib" path="lib/kryo-2.15.jar"/>
-	<classpathentry kind="lib" path="lib/reflectasm-1.04.jar"/>
+	<classpathentry kind="lib" path="lib/kryo-2.16.jar"/>
+	<classpathentry kind="lib" path="lib/reflectasm-1.05.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
