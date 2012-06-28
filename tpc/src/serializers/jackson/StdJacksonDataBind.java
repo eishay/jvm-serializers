@@ -16,14 +16,14 @@ public final class StdJacksonDataBind<T> extends BaseJacksonDataBind<T>
     @Override
     public byte[] serialize(T data) throws IOException
     {
-        return mapper.writeValueAsBytes(data);
+        return writer.writeValueAsBytes(data);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T deserialize(byte[] array) throws IOException
     {
-        return (T) mapper.readValue(array, 0, array.length, type);
+        return (T) reader.readValue(array, 0, array.length);
     }
 
     // // Future extensions for testing performance for item sequences
@@ -34,7 +34,7 @@ public final class StdJacksonDataBind<T> extends BaseJacksonDataBind<T>
         JsonGenerator generator = constructGenerator(out);
         // JSON allows simple sequences, so:
         for (int i = 0, len = items.length; i < len; ++i) {
-            mapper.writeValue(generator, items[i]);
+            writer.writeValue(generator, items[i]);
         }
         generator.close();
     }
@@ -46,7 +46,7 @@ public final class StdJacksonDataBind<T> extends BaseJacksonDataBind<T>
         T[] result = (T[]) new Object[numberOfItems];
         JsonParser parser = constructParser(in);
         for (int i = 0; i < numberOfItems; ++i) {
-            result[i] = (T) mapper.readValue(parser, type);
+            result[i] = (T) reader.readValue(parser, type);
         }
         parser.close();
         return result;

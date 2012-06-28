@@ -10,22 +10,7 @@ import serializers.BenchmarkBase.Params;
 import serializers.cks.CksBinary;
 import serializers.cks.CksText;
 import serializers.jackson.*;
-import serializers.json.JsonGsonDatabind;
-import serializers.json.JsonArgoTree;
-import serializers.json.FastJSONDatabind;
-import serializers.json.FlexjsonDatabind;
-import serializers.json.JsonGsonManual;
-import serializers.json.JsonGsonTree;
-import serializers.json.JsonDotOrgManualTree;
-import serializers.json.JsonLibJsonDatabind;
-import serializers.json.JsonPathDeserializerOnly;
-import serializers.json.JsonSimpleManualTree;
-import serializers.json.JsonSimpleWithContentHandler;
-import serializers.json.JsonSmartManualTree;
-import serializers.json.JsonTwoLattes;
-import serializers.json.JsonijJpath;
-import serializers.json.JsonijManualTree;
-import serializers.json.JsonSvensonDatabind;
+import serializers.json.*;
 import serializers.protobuf.ActiveMQProtobuf;
 import serializers.protobuf.Protobuf;
 import serializers.protostuff.Protostuff;
@@ -109,6 +94,9 @@ public class BenchmarkRunner extends MediaItemBenchmark
         // BSON is JSON-like format with extended datatypes
         JacksonBsonDatabind.register(groups);
         MongoDB.register(groups);
+
+        // YAML (using Jackson module built on SnakeYAML)
+        JacksonYAMLDatabind.register(groups);
 
         // XML-based formats.
         XmlStax.register(groups, true, true, true); // woodstox/aalto/fast-infoset

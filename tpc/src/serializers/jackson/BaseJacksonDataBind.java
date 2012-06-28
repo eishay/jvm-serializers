@@ -5,17 +5,23 @@ import java.io.*;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 public abstract class BaseJacksonDataBind<T> extends BaseJacksonDriver<T>
 {
     protected final JavaType type;
     protected final ObjectMapper mapper;
+    protected final ObjectReader reader;
+    protected final ObjectWriter writer;
 
     protected BaseJacksonDataBind(String name, Class<T> clazz, ObjectMapper mapper)
     {
         super(name);
         type = mapper.getTypeFactory().constructType(clazz);
         this.mapper = mapper;
+        reader = mapper.reader(type);
+        writer = mapper.writerWithType(type);
     }
     
     protected final JsonParser constructParser(byte[] data) throws IOException {
