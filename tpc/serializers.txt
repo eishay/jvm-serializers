@@ -9,6 +9,7 @@ msgpack
 wobly
 wobly-compact
 hessian
+jboss-serialization
 protobuf
 protobuf/activemq+alt
 protostuff

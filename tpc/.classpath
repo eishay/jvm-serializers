@@ -84,5 +84,8 @@
 	<classpathentry kind="lib" path="lib/fastjson-1.1.19.jar"/>
 	<classpathentry kind="lib" path="lib/kryo-2.16.jar"/>
 	<classpathentry kind="lib" path="lib/reflectasm-1.05.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-serialization-1.0.3.GA.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="lib/trove-1.0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
