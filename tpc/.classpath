@@ -76,7 +76,8 @@
 	<classpathentry kind="lib" path="lib/jackson-core-2.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-databind-2.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-dataformat-smile-2.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-dataformat-xml-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-xml-2.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-yaml-2.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-module-afterburner-2.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/asm-4.0.jar"/>
 	<classpathentry kind="lib" path="lib/objenesis-1.2.jar"/>
