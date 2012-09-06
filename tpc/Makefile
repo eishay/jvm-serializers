@@ -182,6 +182,8 @@ else
 		-deprecation \
 		-classpath "$(call mkcp,build/bytecode/main $(shell cat build/lib-cp) $(shell cat build/gen-cp))" \
 		$(JavaSourceFiles)
+	# Copy resources
+	$(p2)cp $(JavaSourceRoots)/log4j.xml build/bytecode/main
 endif
 
 compile: build/bytecode/main.compile

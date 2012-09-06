@@ -9,6 +9,12 @@ msgpack
 wobly
 wobly-compact
 hessian
+jboss-serialization
+jboss-marshalling-river
+jboss-marshalling-river-manual
+jboss-marshalling-river-ct
+jboss-marshalling-river-ct-manual
+jboss-marshalling-serial
 protobuf
 protobuf/activemq+alt
 protostuff

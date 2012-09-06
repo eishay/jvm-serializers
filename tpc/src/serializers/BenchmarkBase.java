@@ -461,7 +461,7 @@ abstract class BenchmarkBase
                         System.out.println("[done]");
                 }
 
-                System.out.printf("%-32s %6s %7s %7s %7s %6s %5s\n",
+                System.out.printf("%-34s %6s %7s %7s %7s %6s %5s\n",
                         params.printChart ? "\npre." : "",
                         "create",
                         "ser",
@@ -501,7 +501,7 @@ abstract class BenchmarkBase
                                 byte[] array = serializeForSize(entry.transformer, entry.serializer, value);
                                 byte[] compressDeflate = compressDeflate(array);
 
-                                System.out.printf("%-32s %6.0f %7.0f %7.0f %7.0f %6d %5d\n",
+                                System.out.printf("%-34s %6.0f %7.0f %7.0f %7.0f %6d %5d\n",
                                         name,
                                         timeCreate,
                                         timeSerialize,
