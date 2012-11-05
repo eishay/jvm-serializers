@@ -26,6 +26,10 @@ public class JacksonSmileAfterburner
         f.configure(SmileGenerator.Feature.CHECK_SHARED_NAMES, sharedNames);
         f.configure(SmileGenerator.Feature.CHECK_SHARED_STRING_VALUES, sharedValues);
         ObjectMapper smileMapper = new ObjectMapper(f);
+
+        // to force as-array serialization, uncomment:
+//        smileMapper.setAnnotationIntrospector(new AsArrayIntrospector());
+        
         smileMapper.registerModule(new AfterburnerModule());
         groups.media.add(JavaBuiltIn.mediaTransformer,
                 new StdJacksonDataBind<MediaContent>("smile/jackson/db-afterburner", MediaContent.class, smileMapper));

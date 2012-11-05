@@ -13,6 +13,10 @@ public class JacksonJsonAfterburner
     public static void register(TestGroups groups)
     {
         ObjectMapper mapper = new ObjectMapper();
+
+        // to force as-array serialization, uncomment:
+//        mapper.setAnnotationIntrospector(new AsArrayIntrospector());
+
         mapper.registerModule(new AfterburnerModule());
         groups.media.add(JavaBuiltIn.mediaTransformer,
                 new StdJacksonDataBind<MediaContent>("json/jackson/db-afterburner", MediaContent.class, mapper));
