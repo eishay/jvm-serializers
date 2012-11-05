@@ -25,14 +25,14 @@ public abstract class BaseJacksonDataBind<T> extends BaseJacksonDriver<T>
     }
     
     protected final JsonParser constructParser(byte[] data) throws IOException {
-        return mapper.getJsonFactory().createParser(data, 0, data.length);
+        return mapper.getFactory().createParser(data, 0, data.length);
     }
 
     protected final JsonParser constructParser(InputStream in) throws IOException {
-        return mapper.getJsonFactory().createParser(in);
+        return mapper.getFactory().createParser(in);
     }
     
     protected final JsonGenerator constructGenerator(OutputStream out) throws IOException {
-        return mapper.getJsonFactory().createGenerator(out, JsonEncoding.UTF8);
+        return mapper.getFactory().createGenerator(out, JsonEncoding.UTF8);
     }
 }
