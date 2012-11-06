@@ -5,7 +5,10 @@ import java.io.*;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 public final class StdJacksonDataBind<T> extends BaseJacksonDataBind<T>
 {
@@ -13,6 +16,12 @@ public final class StdJacksonDataBind<T> extends BaseJacksonDataBind<T>
         super(name, clazz, mapper);
     }
 
+    public StdJacksonDataBind(String name, JavaType type,
+            ObjectMapper mapper, ObjectReader reader, ObjectWriter writer)
+    {
+        super(name, type, mapper, reader, writer);
+    }
+    
     @Override
     public byte[] serialize(T data) throws IOException
     {

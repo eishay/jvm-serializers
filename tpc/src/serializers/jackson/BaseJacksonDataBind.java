@@ -23,6 +23,16 @@ public abstract class BaseJacksonDataBind<T> extends BaseJacksonDriver<T>
         reader = mapper.reader(type);
         writer = mapper.writerWithType(type);
     }
+
+    protected BaseJacksonDataBind(String name, JavaType type,
+            ObjectMapper mapper, ObjectReader reader, ObjectWriter writer)
+    {
+        super(name);
+        this.type = type;
+        this.mapper = mapper;
+        this.reader = reader;
+        this.writer = writer;
+    }
     
     protected final JsonParser constructParser(byte[] data) throws IOException {
         return mapper.getFactory().createParser(data, 0, data.length);
