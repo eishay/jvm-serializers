@@ -11,6 +11,7 @@ import serializers.cks.CksBinary;
 import serializers.cks.CksText;
 import serializers.jackson.*;
 import serializers.json.*;
+import serializers.msgpack.MsgPack;
 import serializers.protobuf.ActiveMQProtobuf;
 import serializers.protobuf.Protobuf;
 import serializers.protostuff.Protostuff;

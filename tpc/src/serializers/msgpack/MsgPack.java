@@ -1,4 +1,4 @@
-package serializers;
+package serializers.msgpack;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,6 +15,12 @@ import org.msgpack.template.Template;
 import org.msgpack.template.Templates;
 import org.msgpack.unpacker.BufferUnpacker;
 import org.msgpack.unpacker.Unpacker;
+
+import serializers.JavaBuiltIn;
+import serializers.Serializer;
+import serializers.TestGroup;
+import serializers.TestGroups;
+import serializers.Transformer;
 
 import data.media.Image;
 import data.media.Media;
