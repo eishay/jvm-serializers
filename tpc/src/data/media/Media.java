@@ -113,7 +113,7 @@ public class Media implements java.io.Serializable {
 		sb.append(", bitrate=").append(String.valueOf(bitrate));
 		sb.append(", persons=").append(repr(persons));
 		sb.append(", player=").append(player);
-		sb.append(", copyright=").append(copyright);
+		sb.append(", copyright=").append(repr(copyright));
 		sb.append("]");
 		return sb.toString();
 	}
