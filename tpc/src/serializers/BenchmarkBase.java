@@ -627,7 +627,8 @@ abstract class BenchmarkBase
             return;
         }
         if (!value.equals(output)) {
-            System.out.println("ERROR: \"" + name + "\" failed round-trip check.");
+            System.out.println("ERROR: \"" + name + "\" failed round-trip check (item type: "
+                    +value.getClass().getName()+").");
             errors.println(ERROR_DIVIDER);
             errors.println("\"" + name + "\" failed round-trip check.");
             errors.println("ORIGINAL:  " + value);
