@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 
+import serializers.avro.AvroSpecific;
 import serializers.cks.CksText;
 import serializers.jackson.*;
 import serializers.protobuf.Protobuf;

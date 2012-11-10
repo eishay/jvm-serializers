@@ -1,4 +1,4 @@
-package serializers;
+package serializers.avro;
 
 import org.apache.avro.Schema;
 

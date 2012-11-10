@@ -1,4 +1,4 @@
-package serializers;
+package serializers.avro;
 
 import java.util.ArrayList;
 import java.util.Collections;

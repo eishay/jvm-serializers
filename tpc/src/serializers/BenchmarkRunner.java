@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 import java.util.zip.DeflaterOutputStream;
 
 import serializers.BenchmarkBase.Params;
+import serializers.avro.AvroGeneric;
+import serializers.avro.AvroSpecific;
 import serializers.cks.CksBinary;
 import serializers.cks.CksText;
 import serializers.jackson.*;

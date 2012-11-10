@@ -1,4 +1,4 @@
-package serializers;
+package serializers.avro;
 
 import data.media.*;
 
@@ -11,6 +11,10 @@ import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.BinaryDecoder;
+
+import serializers.Serializer;
+import serializers.TestGroups;
+import serializers.Transformer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

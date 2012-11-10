@@ -1,4 +1,4 @@
-package serializers;
+package serializers.avro;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,6 +13,8 @@ import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
 
+import serializers.Serializer;
+import serializers.TestGroups;
 import serializers.avro.media.*;
 
 public class AvroSpecific
