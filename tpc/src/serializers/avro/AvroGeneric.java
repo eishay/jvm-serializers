@@ -44,8 +44,8 @@ public class AvroGeneric
 		private final GenericDatumWriter<GenericRecord> WRITER;
 		private final GenericDatumReader<GenericRecord> READER;
 
-                private BinaryEncoder encoder;
-                private BinaryDecoder decoder;
+		private BinaryEncoder encoder;
+		private BinaryDecoder decoder;
 
 		public GenericSerializer(Schema schema)
 		{

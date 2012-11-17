@@ -78,7 +78,7 @@ abstract class BenchmarkBase
             TestCase testCreate,
             TestCase testSerialize, 
             TestCase testDeserialize)
-        {
+    {
         Params params = new Params();
         findParameters(args, params);
         TestGroups groups = new TestGroups();

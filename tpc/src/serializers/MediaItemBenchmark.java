@@ -62,17 +62,19 @@ public abstract class MediaItemBenchmark extends BenchmarkBase
     {
             public <J> double run(Transformer<J,Object> transformer, Serializer<Object> serializer, J value, int iterations) throws Exception
             {
-                    Object[] objects = new Object[iterations];
-                    for (int i = 0; i < iterations; i++)
-                    {
-                  	  objects[i] = transformer.forward(value);
-                    }
-                    long start = System.nanoTime();
-                    for (int i = 0; i < iterations; i++)
-                    {
-                  	  objects[i] = serializer.serialize(objects[i]);
-                    }
-                    return iterationTime(System.nanoTime() - start, iterations);
+                /* 16-Nov-2012, tatu: Time to serialize should consider time to
+                 *   convert from POJO to intermediate representation, because
+                 *   some format libs (Avro) do significant amount of pre-processing.
+                 *   We could do this by adding Create time as well, but this should
+                 *   model usual usage bit more accurately.
+                 */
+                Object[] objects = new Object[iterations];
+                long start = System.nanoTime();
+                for (int i = 0; i < iterations; i++) {
+                    Object input = transformer.forward(value);
+                    objects[i] = serializer.serialize(input);
+                }
+                return iterationTime(System.nanoTime() - start, iterations);
             }
     };
 
