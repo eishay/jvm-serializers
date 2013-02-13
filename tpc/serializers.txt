@@ -15,6 +15,10 @@ jboss-marshalling-river-manual
 jboss-marshalling-river-ct
 jboss-marshalling-river-ct-manual
 jboss-marshalling-serial
+obser
+obser-compact
+obser-manual
+obser-manual-compact
 protobuf
 protobuf/activemq+alt
 protostuff

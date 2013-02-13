@@ -46,6 +46,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         Wobly.register(groups);
         JBossSerialization.register(groups);
         JBossMarshalling.register(groups);
+        Obser.register(groups);
         
         // Binary formats, generic: protobuf, thrift, avro, CKS, msgpack
         Protobuf.register(groups);
