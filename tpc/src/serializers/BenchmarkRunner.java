@@ -39,6 +39,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         // Binary Formats; language-specific ones
         JavaBuiltIn.register(groups);
         JavaManual.register(groups);
+        Stephenerialization.register(groups);
         Scala.register(groups);
         // hessian, kryo and wobly are Java object serializations
         Hessian.register(groups);
