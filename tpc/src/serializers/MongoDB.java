@@ -8,7 +8,9 @@ import java.util.List;
 import org.bson.BSONDecoder;
 import org.bson.BSONEncoder;
 import org.bson.BSONObject;
+import org.bson.BasicBSONEncoder;
 import org.bson.BasicBSONObject;
+import org.bson.LazyBSONDecoder;
 import org.bson.types.BasicBSONList;
 
 import data.media.Image;
@@ -45,7 +47,7 @@ public class MongoDB
 			
 			o.put(FULL_FIELD_NAME_IMAGES, images);
 			
-			BSONEncoder enc = new BSONEncoder();
+			BSONEncoder enc = new BasicBSONEncoder();
 			return enc.encode(o);
 		}
 		
@@ -89,7 +91,7 @@ public class MongoDB
 		{
 			MediaContent r = new MediaContent();
 			
-			BSONDecoder dec = new BSONDecoder();
+			BSONDecoder dec = new LazyBSONDecoder();
 			BSONObject o = dec.readObject(array);
 			for (String name : o.keySet())
 			{
