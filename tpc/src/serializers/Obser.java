@@ -14,6 +14,7 @@ import data.media.MediaContentCustom;
 import net.sockali.obser.ObserEncoding;
 import net.sockali.obser.ObserFactory;
 
+@SuppressWarnings("unchecked")
 public class Obser {
 	public static void register (TestGroups groups) {
 		register(groups.media, JavaBuiltIn.mediaTransformer);
@@ -30,7 +31,6 @@ public class Obser {
 	// ------------------------------------------------------------
 	// Serializers
 
-	/** This is the most basic Kryo usage. Just register the classes and go. */
 	public static class BasicSerializer<T> extends Serializer<T> {
 		final net.sockali.obser.Obser obser;
 //		private final byte[] buffer = new byte[1024*1024];
@@ -53,7 +53,7 @@ public class Obser {
 			buffer.position(0);
 			buffer.put(array);
 			
-			return obser.deserialize(buffer, 0);
+			return (T) obser.deserialize(buffer, 0);
 		}
 
 		public byte[] serialize (Object content) {
@@ -77,7 +77,6 @@ public class Obser {
 		}
 	}
 
-	/** This shows how to configure individual Kryo serializersto reduce the serialized bytes. */
 	public static class CompactSerializer<T> extends BasicSerializer<T> {
 		public CompactSerializer () {
 			super();
