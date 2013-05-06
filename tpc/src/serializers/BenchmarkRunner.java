@@ -39,14 +39,17 @@ public class BenchmarkRunner extends MediaItemBenchmark
         // Binary Formats; language-specific ones
         JavaBuiltIn.register(groups);
         JavaManual.register(groups);
-        Scala.register(groups);
-        // hessian, kryo and wobly are Java object serializations
+
+// 06-May-2013, tatu: way too slow, commenting out for now, can add in slow section?
+//        Scala.register(groups);
+// hessian, kryo and wobly are Java object serializations
         Hessian.register(groups);
         Kryo.register(groups);
         Wobly.register(groups);
         JBossSerialization.register(groups);
         JBossMarshalling.register(groups);
-        Obser.register(groups);
+// 06-May-2013, tatu: Fails on basic Java7, mismatch with Unsafe; commented out
+//        Obser.register(groups);
         
         // Binary formats, generic: protobuf, thrift, avro, CKS, msgpack
         Protobuf.register(groups);
@@ -64,7 +67,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         JacksonJsonManual.register(groups);
         JacksonJsonDatabind.register(groups);
         JacksonJsonAfterburner.register(groups); // databind with bytecode generation (faster)
-        JacksonJsonTree.register(groups);
+//        JacksonJsonTree.register(groups);
 // 01-May-2012, tatu: not all that useful (IMO) for general comparisons
 //        JacksonJsonDatabindWithStrings.register(groups);
 //        JacksonJsonTreeWithStrings.register(groups);
@@ -73,18 +76,18 @@ public class BenchmarkRunner extends MediaItemBenchmark
 // too slow, why bother:
 //        ProtobufJson.register(groups);
         JsonGsonManual.register(groups);
-        JsonGsonTree.register(groups);
+//        JsonGsonTree.register(groups);
         JsonGsonDatabind.register(groups);
         JsonSvensonDatabind.register(groups);
         FlexjsonDatabind.register(groups);
         JsonLibJsonDatabind.register(groups);
         FastJSONDatabind.register(groups);
         JsonSimpleWithContentHandler.register(groups);
-        JsonSimpleManualTree.register(groups);
+//        JsonSimpleManualTree.register(groups);
         JsonSmartManualTree.register(groups);
         JsonDotOrgManualTree.register(groups);
         JsonijJpath.register(groups);
-        JsonijManualTree.register(groups);
+// JsonijManualTree.register(groups);
         JsonArgoTree.register(groups);
         JsonPathDeserializerOnly.register(groups);
 
@@ -96,7 +99,10 @@ public class BenchmarkRunner extends MediaItemBenchmark
         JacksonSmileManual.register(groups);
         JacksonSmileDatabind.register(groups);
         JacksonSmileAfterburner.register(groups); // databind with bytecode generation (faster)
-        ProtostuffSmile.register(groups);
+
+	// 06-May-2013, tatu: Unfortunately there is a version conflict
+        //    here too -- commenting out, to let David fix it
+//        ProtostuffSmile.register(groups);
         // BSON is JSON-like format with extended datatypes
         JacksonBsonDatabind.register(groups);
         MongoDB.register(groups);

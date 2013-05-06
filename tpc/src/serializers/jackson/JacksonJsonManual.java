@@ -94,15 +94,15 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
     // // // Internal methods
 
     protected JsonParser constructParser(byte[] data) throws IOException {
-        return _factory.createJsonParser(data, 0, data.length);
+        return _factory.createParser(data, 0, data.length);
     }
 
     protected JsonParser constructParser(InputStream in) throws IOException {
-        return _factory.createJsonParser(in);
+        return _factory.createParser(in);
     }
 
     protected JsonGenerator constructGenerator(OutputStream baos) throws IOException {
-        return _factory.createJsonGenerator(baos, JsonEncoding.UTF8);
+        return _factory.createGenerator(baos, JsonEncoding.UTF8);
     }
 
     //////////////////////////////////////////////////
