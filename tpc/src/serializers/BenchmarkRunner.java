@@ -89,7 +89,8 @@ public class BenchmarkRunner extends MediaItemBenchmark
         JsonijJpath.register(groups);
 // JsonijManualTree.register(groups);
         JsonArgoTree.register(groups);
-        JsonPathDeserializerOnly.register(groups);
+// 06-May-2013, tatu: Too slow (100x above fastest)
+// JsonPathDeserializerOnly.register(groups);
 
         // Then JSON-like
         // CKS text is textual JSON-like format
