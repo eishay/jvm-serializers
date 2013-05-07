@@ -20,7 +20,7 @@ empty :=
 space := $(empty) $(empty)
 
 # On Unix, ":" (colon), on Windows, ";" (semicolon)
-path_sep = $(shell if expr "$(uname -s)" : 'CYGWIN' >/dev/null ; then printf ';' ; else printf ':' ; fi)
+path_sep := $(shell if expr "$$(uname -s)" : 'CYGWIN' >/dev/null ; then printf ';' ; else printf ':' ; fi)
 
 mkcp = $(subst $(space),$(path_sep),$(1))
 
