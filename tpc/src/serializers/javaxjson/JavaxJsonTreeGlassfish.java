@@ -13,7 +13,7 @@ public class JavaxJsonTreeGlassfish extends JavaxJsonTree {
 
     @Override
     public String getName() {
-        return "javax-json/tree/glassfish";
+        return "json/javax-tree/glassfish";
     }
 
     public static void register(TestGroups groups) {
