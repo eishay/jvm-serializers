@@ -12,6 +12,7 @@ import serializers.avro.AvroSpecific;
 import serializers.cks.CksBinary;
 import serializers.cks.CksText;
 import serializers.jackson.*;
+import serializers.javaxjson.*;
 import serializers.json.*;
 import serializers.msgpack.MsgPack;
 import serializers.protobuf.ActiveMQProtobuf;
@@ -71,6 +72,8 @@ public class BenchmarkRunner extends MediaItemBenchmark
 // 01-May-2012, tatu: not all that useful (IMO) for general comparisons
 //        JacksonJsonDatabindWithStrings.register(groups);
 //        JacksonJsonTreeWithStrings.register(groups);
+        JavaxJsonTreeGlassfish.register(groups);
+        JavaxJsonStreamGlassfish.register(groups);
         JsonTwoLattes.register(groups);
         ProtostuffJson.register(groups);
 // too slow, why bother:
