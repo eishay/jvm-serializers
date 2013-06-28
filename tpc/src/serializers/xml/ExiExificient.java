@@ -17,7 +17,7 @@ import serializers.TestGroups;
 
 public class ExiExificient
 {
-    public static void register(TestGroups groups, boolean woodstox, boolean aalto, boolean fastinfoset)
+    public static void register(TestGroups groups)
     {
         groups.media.add(JavaBuiltIn.mediaTransformer, new ExificientSerializer());
     }
@@ -92,13 +92,13 @@ public class ExiExificient
 
         @Override
         public void writeAttribute(String localName, String value) throws XMLStreamException {
-            _encoder.writeAttribute(null, null, localName, value);
+            _encoder.writeAttribute("", "", localName, value);
         }
 
         @Override
         public void writeAttribute(String nsURI, String localName, String value)
                 throws XMLStreamException {
-            _encoder.writeAttribute(null, nsURI, localName, value);
+            _encoder.writeAttribute("", nsURI, localName, value);
         }
 
         @Override
@@ -141,14 +141,14 @@ public class ExiExificient
 
         @Override
         public void writeEmptyElement(String localName) throws XMLStreamException {
-            _encoder.writeStartElement(null, null, localName);
+            _encoder.writeStartElement("", "", localName);
             _encoder.writeEndElement();
         }
 
         @Override
         public void writeEmptyElement(String nsURI, String localName)
                 throws XMLStreamException {
-            _encoder.writeStartElement(null, localName, nsURI);
+            _encoder.writeStartElement("", localName, nsURI);
             _encoder.writeEndElement();
         }
 
@@ -207,13 +207,13 @@ public class ExiExificient
 
         @Override
         public void writeStartElement(String localName) throws XMLStreamException {
-            _encoder.writeStartElement(null, localName, null);
+            _encoder.writeStartElement("", localName, "");
         }
 
         @Override
         public void writeStartElement(String nsURI, String localName)
                 throws XMLStreamException {
-            _encoder.writeStartElement(null, localName, nsURI);
+            _encoder.writeStartElement("", localName, nsURI);
         }
 
         @Override
