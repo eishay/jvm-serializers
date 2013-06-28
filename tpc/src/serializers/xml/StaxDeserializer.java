@@ -75,13 +75,21 @@ public class StaxDeserializer
            image.title = readElement(parser, FULL_FIELD_NAME_TITLE);
            image.width = Integer.parseInt(readElement(parser, FULL_FIELD_NAME_WIDTH));
            image.height = Integer.parseInt(readElement(parser, FULL_FIELD_NAME_HEIGHT));
-           image.size = Image.Size.valueOf(readElement(parser, FULL_FIELD_NAME_SIZE));
+           image.size = imageSize(readElement(parser, FULL_FIELD_NAME_SIZE)));
            // need to match close tag
            if (parser.nextTag() != XMLStreamConstants.END_ELEMENT) {
                 throw new IllegalStateException("Expected closing </"+FULL_FIELD_NAME_IMAGES+">");
            }
            return image;
       }
+
+    private Image.Size imageSize(String value) {
+      if (value == null) {
+         throw new IllegalStateException("Missing 'size' value for Image (null)");
+      }
+      return Image.Size.valueOf(value);
+    }
+
 
       private Media readMedia (XMLStreamReader parser) throws XMLStreamException
       {
