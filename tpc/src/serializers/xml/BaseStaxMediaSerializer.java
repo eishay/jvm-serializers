@@ -14,9 +14,15 @@ import data.media.MediaContent;
 
 public abstract class BaseStaxMediaSerializer extends Serializer<MediaContent>
 {
-    private final static StaxDeserializer _deserializer = new StaxDeserializer();
-    private final static StaxSerializer _serializer = new StaxSerializer();
+    private final StaxSerializer _serializer = new StaxSerializer();
 
+    private final StaxDeserializer _deserializer;
+    
+    protected BaseStaxMediaSerializer(boolean workingGetElementText)
+    {
+        _deserializer = new StaxDeserializer(workingGetElementText);
+    }
+    
     protected XMLStreamReader createReader(byte[] input) throws XMLStreamException {
         return createReader(new ByteArrayInputStream(input));
     }

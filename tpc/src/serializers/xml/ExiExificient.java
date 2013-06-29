@@ -25,9 +25,16 @@ public class ExiExificient
     public static final class ExificientSerializer extends BaseStaxMediaSerializer
     {
         private final static EXIFactory _exiFactory = DefaultEXIFactory.newInstance();
+
+        public ExificientSerializer() {
+            // as of 0.9.1, getElementText() not implemented. Boo.
+            super(false);
+        }
         
+        @Override
         public String getName() { return "xml/exi-manual"; }
 
+        @Override
         protected XMLStreamReader createReader(InputStream in) throws XMLStreamException {
             try {
                 StAXDecoder dec = new StAXDecoder(_exiFactory);
@@ -38,6 +45,7 @@ public class ExiExificient
             }
         }
 
+        @Override
         protected XMLStreamWriter createWriter(OutputStream out) throws XMLStreamException {
             try {
                 StAXEncoder enc = new StAXEncoder(_exiFactory);

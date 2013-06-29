@@ -25,6 +25,13 @@ import data.media.MediaContent;
 
 public class StaxDeserializer
 {
+    protected final boolean _workingGetElementText;
+    
+    public StaxDeserializer(boolean workingGetElementText)
+    {
+        _workingGetElementText = workingGetElementText;
+    }
+    
     public final MediaContent readDocument(XMLStreamReader parser) throws XMLStreamException
     {
         return readMediaContent(parser);
@@ -75,7 +82,7 @@ public class StaxDeserializer
            image.title = readElement(parser, FULL_FIELD_NAME_TITLE);
            image.width = Integer.parseInt(readElement(parser, FULL_FIELD_NAME_WIDTH));
            image.height = Integer.parseInt(readElement(parser, FULL_FIELD_NAME_HEIGHT));
-           image.size = imageSize(readElement(parser, FULL_FIELD_NAME_SIZE)));
+           image.size = imageSize(readElement(parser, FULL_FIELD_NAME_SIZE));
            // need to match close tag
            if (parser.nextTag() != XMLStreamConstants.END_ELEMENT) {
                 throw new IllegalStateException("Expected closing </"+FULL_FIELD_NAME_IMAGES+">");
@@ -112,7 +119,7 @@ public class StaxDeserializer
            searchTag(parser, FULL_FIELD_NAME_PERSONS);
            List<String> persons = new ArrayList<String>();
            do {
-                persons.add(parser.getElementText());
+                persons.add(_getElementText(parser));
            } while (parser.nextTag() == XMLStreamConstants.START_ELEMENT
                 && FULL_FIELD_NAME_PERSONS.equals(parser.getLocalName()));
            if (!FULL_FIELD_NAME_MEDIA.equals(parser.getLocalName())) {
@@ -121,13 +128,13 @@ public class StaxDeserializer
            media.persons = persons;
            return media;
       }
-
+      
       private String readElementMaybe(XMLStreamReader parser, String string) throws XMLStreamException
       {
            if (parser.getEventType() != XMLStreamConstants.START_ELEMENT) {
                 while (parser.next() != XMLStreamConstants.START_ELEMENT) { }
            }
-           return (parser.getLocalName().equals(string)) ? parser.getElementText() : null;
+           return (parser.getLocalName().equals(string)) ? _getElementText(parser) : null;
       }
 
       private String readElement(XMLStreamReader parser, String string) throws XMLStreamException
@@ -138,7 +145,7 @@ public class StaxDeserializer
            }
            while (true) {
                 if (parser.getLocalName().equals(string)) {
-                     return parser.getElementText();
+                     return _getElementText(parser);
                 }
                 while (parser.next() != XMLStreamConstants.START_ELEMENT) { }
            }
@@ -157,5 +164,36 @@ public class StaxDeserializer
                      return;
                 }
            }
+      }
+
+      private final String _getElementText(XMLStreamReader parser) throws XMLStreamException
+      {
+          if (_workingGetElementText) {
+              return parser.getElementText();
+          }
+
+          /* This is not optimal if there are more than two segments; but really
+           * it should not matter -- impls SHOULD implement getElementText() properly
+           * so this is just a fallback. Also, unlikely we'll get more than one segment
+           * in most cases.
+           */
+          
+          String text = null;
+          int t;
+
+          while (parser.hasNext()) {
+              t = parser.next();
+              if (t == XMLStreamConstants.END_ELEMENT) {
+                  break;
+              }
+              if (t == XMLStreamConstants.CHARACTERS || t == XMLStreamConstants.CDATA) {
+                  if (text == null) {
+                      text = parser.getText();
+                  } else {
+                      text += parser.getText();
+                  }
+              }
+          }
+          return (text == null) ? "" : text;
       }
 }

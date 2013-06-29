@@ -1,12 +1,5 @@
 package serializers;
 
-import java.io.*;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.zip.DeflaterOutputStream;
-
-import serializers.BenchmarkBase.Params;
 import serializers.avro.AvroGeneric;
 import serializers.avro.AvroSpecific;
 import serializers.cks.CksBinary;
@@ -15,11 +8,9 @@ import serializers.jackson.*;
 import serializers.javaxjson.*;
 import serializers.json.*;
 import serializers.msgpack.MsgPack;
-import serializers.protobuf.ActiveMQProtobuf;
 import serializers.protobuf.Protobuf;
 import serializers.protostuff.Protostuff;
 import serializers.protostuff.ProtostuffJson;
-import serializers.protostuff.ProtostuffSmile;
 import serializers.xml.XmlJavolution;
 import serializers.xml.XmlStax;
 import serializers.xml.XmlXStream;

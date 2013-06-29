@@ -71,15 +71,20 @@ public class XmlStax
 
         public StaxMediaSerializer(Handler handler)
         {
+            // yes, standard implementations better implement it correctly
+            super(true);
             this.handler = handler;
         }
 
+        @Override
         public String getName() { return "xml/"+handler.name+"-manual"; }
 
+        @Override
         protected XMLStreamReader createReader(InputStream in) throws XMLStreamException {
             return handler.inFactory.createXMLStreamReader(in);
         }
 
+        @Override
         protected XMLStreamWriter createWriter(OutputStream out) throws XMLStreamException {
             return handler.outFactory.createXMLStreamWriter(out, "UTF-8");
         }
