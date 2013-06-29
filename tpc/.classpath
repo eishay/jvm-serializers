@@ -90,5 +90,6 @@
 	<classpathentry kind="lib" path="lib/jboss-marshalling-osgi-1.3.15.GA.jar"/>
 	<classpathentry kind="lib" path="lib/obser-0.9.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/javax.json-1.0-b06.jar"/>
+	<classpathentry kind="lib" path="lib/exi-exificient-0.9.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
