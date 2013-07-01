@@ -11,6 +11,7 @@ import serializers.msgpack.MsgPack;
 import serializers.protobuf.Protobuf;
 import serializers.protostuff.Protostuff;
 import serializers.protostuff.ProtostuffJson;
+import serializers.xml.ExiExificient;
 import serializers.xml.XmlJavolution;
 import serializers.xml.XmlStax;
 import serializers.xml.XmlXStream;
@@ -105,10 +106,15 @@ public class BenchmarkRunner extends MediaItemBenchmark
         // YAML (using Jackson module built on SnakeYAML)
         JacksonYAMLDatabind.register(groups);
 
-        // XML-based formats.
-        XmlStax.register(groups, true, true, true); // woodstox/aalto/fast-infoset
+        // XML-based formats; first textual XML
+        XmlStax.register(groups, true, true, false); // woodstox/aalto/-
         XmlXStream.register(groups);
         JacksonXmlDatabind.register(groups);
         XmlJavolution.register(groups);
+
+        // Then binary XML; Fast Infoset, EXI
+        XmlStax.register(groups, false, false, true); // -/-/fast-infoset
+        ExiExificient.register(groups);
+
     }
 }
