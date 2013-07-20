@@ -56,7 +56,7 @@ public class Obser {
 			return (T) obser.deserialize(buffer, 0);
 		}
 
-		public byte[] serialize (Object content) {
+		public byte[] serialize (T content) {
 				buffer.position(0);
 				int pos = obser.serialize(content, buffer, 0);
 				byte[] ret = new byte[pos];
@@ -89,19 +89,16 @@ public class Obser {
 	}
 	
 	public static class CustomSerializer extends BasicSerializer<MediaContent> {
-		@Override
 		public byte[] serialize(MediaContent content) {
 			MediaContentCustom mcc = new MediaContentCustom(content);
-			return super.serialize(mcc);
+			return super.serialize(mcc.getContent());
 		}
 		
-		@Override
 		public MediaContent deserialize(byte[] array) {
 			MediaContentCustom mcc = (MediaContentCustom) ((Object) super.deserialize(array));
 			return mcc.getContent();
 		}
 		
-		@Override
 		public void serializeItems(MediaContent[] items, OutputStream outStream) throws Exception {
 			MediaContentCustom[] data = new MediaContentCustom[items.length];
 			for (int i=0; i<items.length; i++)
@@ -109,7 +106,6 @@ public class Obser {
 			super.serializeItems((MediaContent[]) (Object)data, outStream);
 		}
 		
-		@Override
 		public MediaContent[] deserializeItems(InputStream inStream, int numberOfItems) throws IOException {
 			MediaContentCustom[] data = (MediaContentCustom[]) (Object) super.deserializeItems(inStream, numberOfItems);
 			MediaContent[] items = new MediaContent[data.length];

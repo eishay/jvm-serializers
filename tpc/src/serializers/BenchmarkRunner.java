@@ -77,6 +77,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         FlexjsonDatabind.register(groups);
         JsonLibJsonDatabind.register(groups);
         FastJSONDatabind.register(groups);
+        FastJSONDatabindArray.register(groups);
         JsonSimpleWithContentHandler.register(groups);
 //        JsonSimpleManualTree.register(groups);
         JsonSmartManualTree.register(groups);
