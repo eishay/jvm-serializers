@@ -20,7 +20,7 @@ public class Obser {
 		register(groups.media, JavaBuiltIn.mediaTransformer);
 	}
 
-	private static <T, S> void register (TestGroup group, Transformer transformer) {
+	private static <T, S> void register (TestGroup<?> group, Transformer transformer) {
 		group.add(transformer, new BasicSerializer<S>());
 		group.add(transformer, new CompactSerializer<S>());
 		group.add(transformer, new CustomSerializer());
@@ -49,6 +49,7 @@ public class Obser {
 			obser.registerClass(MediaContentCustom[].class);
 		}
 
+		@Override
 		public T deserialize (byte[] array) {
 			buffer.position(0);
 			buffer.put(array);
@@ -56,7 +57,8 @@ public class Obser {
 			return (T) obser.deserialize(buffer, 0);
 		}
 
-		public byte[] serialize (Object content) {
+          @Override
+		public byte[] serialize (T content) {
 				buffer.position(0);
 				int pos = obser.serialize(content, buffer, 0);
 				byte[] ret = new byte[pos];
@@ -64,14 +66,17 @@ public class Obser {
 				return ret;
 		}
 
+          @Override
 		public void serializeItems (T[] items, OutputStream outStream) throws Exception {
 			obser.serialize(items, outStream);
 		}
 
+          @Override
 		public T[] deserializeItems (InputStream inStream, int numberOfItems) throws IOException {
 			return obser.deserialize(inStream);
 		}
 
+          @Override
 		public String getName () {
 			return "obser";
 		}
@@ -83,15 +88,16 @@ public class Obser {
 			obser.setEncoding(ObserEncoding.nativeCompactEncoding());
 		}
 
+          @Override
 		public String getName () {
 			return "obser-compact";
 		}
 	}
 	
-	public static class CustomSerializer extends BasicSerializer<MediaContent> {
+	public static class CustomSerializer extends BasicSerializer<Object> {
 		@Override
-		public byte[] serialize(MediaContent content) {
-			MediaContentCustom mcc = new MediaContentCustom(content);
+		public byte[] serialize(Object content) {
+			MediaContentCustom mcc = new MediaContentCustom((MediaContent) content);
 			return super.serialize(mcc);
 		}
 		
@@ -102,10 +108,10 @@ public class Obser {
 		}
 		
 		@Override
-		public void serializeItems(MediaContent[] items, OutputStream outStream) throws Exception {
+		public void serializeItems(Object[] items, OutputStream outStream) throws Exception {
 			MediaContentCustom[] data = new MediaContentCustom[items.length];
 			for (int i=0; i<items.length; i++)
-				data[i] = new MediaContentCustom(items[i]);
+				data[i] = new MediaContentCustom((MediaContent)items[i]);
 			super.serializeItems((MediaContent[]) (Object)data, outStream);
 		}
 		
@@ -118,6 +124,8 @@ public class Obser {
 			
 			return items;
 		}
+
+		@Override
 		public String getName () {
 			return "obser-manual";
 		}
@@ -128,7 +136,8 @@ public class Obser {
 		public CustomCompactSerializer() {
 			obser.setEncoding(ObserEncoding.nativeCompactEncoding());
 		}
-		
+
+		@Override
 		public String getName () {
 			return "obser-manual-compact";
 		}
