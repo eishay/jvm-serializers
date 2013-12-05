@@ -6,16 +6,15 @@ import java.io.OutputStream;
 
 import data.media.MediaContent;
 
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.JavaType;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.*;
 
 import serializers.JavaBuiltIn;
 import serializers.Serializer;
 import serializers.TestGroups;
+
 import de.undercouch.bson4jackson.BsonFactory;
+import de.undercouch.bson4jackson.BsonModule;
 
 /**
  * This serializer uses bson4jackson in full automated data binding mode, which
@@ -26,7 +25,9 @@ public class JacksonBsonDatabind
 {
     public static void register(TestGroups groups)
     {
-        ObjectMapper mapper = new ObjectMapper(new BsonFactory());
+        JsonFactory f = new BsonFactory();
+        ObjectMapper mapper = new ObjectMapper(f);
+        mapper.registerModule(new BsonModule());
         groups.media.add(JavaBuiltIn.mediaTransformer,
                 new DataBindBase<MediaContent>(
                         "bson/jackson/databind", MediaContent.class, mapper));
@@ -39,12 +40,16 @@ public class JacksonBsonDatabind
         protected final String name;
         protected final JavaType type;
         protected final ObjectMapper mapper;
+        protected final ObjectReader objectReader;
+        protected final ObjectWriter objectWriter;
         
         public DataBindBase(String name, Class<T> clazz, ObjectMapper mapper)
         {
             this.name = name;
-            type = mapper.getTypeFactory().constructType(clazz);
+            type = mapper.constructType(clazz);
             this.mapper = mapper;
+            objectReader = mapper.reader(type);
+	    objectWriter = mapper.writerWithType(type);
         }
 
         @Override
@@ -53,28 +58,28 @@ public class JacksonBsonDatabind
         }
 
         protected final JsonParser constructParser(byte[] data) throws IOException {
-            return mapper.getJsonFactory().createJsonParser(data, 0, data.length);
+            return mapper.getFactory().createParser(data, 0, data.length);
         }
 
         protected final JsonParser constructParser(InputStream in) throws IOException {
-            return mapper.getJsonFactory().createJsonParser(in);
+            return mapper.getFactory().createParser(in);
         }
         
         protected final JsonGenerator constructGenerator(OutputStream out) throws IOException {
-            return mapper.getJsonFactory().createJsonGenerator(out, JsonEncoding.UTF8);
+            return mapper.getFactory().createGenerator(out, JsonEncoding.UTF8);
         }
         
         @Override
         public byte[] serialize(T data) throws IOException
         {
-            return mapper.writeValueAsBytes(data);
+            return objectWriter.writeValueAsBytes(data);
         }
     
         @Override
         @SuppressWarnings("unchecked")
         public T deserialize(byte[] array) throws IOException
         {
-            return (T) mapper.readValue(array, 0, array.length, type);
+            return (T) objectReader.readValue(array, 0, array.length);
         }
     
         // // Future extensions for testing performance for item sequences
