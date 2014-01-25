@@ -6,13 +6,13 @@ import org.msgpack.unpacker.BufferUnpacker;
 
 import serializers.Serializer;
 
-public abstract class AbstractSerializer<T> extends Serializer<T> {
+public class MsgPackSerializer<T> extends Serializer<T> {
     protected final String name;
     protected final Class<T> type;
     private final BufferPacker packer;
     private final BufferUnpacker unpacker;
     
-    protected AbstractSerializer(String name, TypeHandler<T> handler, MessagePack msgpack) {
+    public MsgPackSerializer(String name, TypeHandler<T> handler, MessagePack msgpack) {
         this.name = name;
         type = handler.type;
         packer = msgpack.createBufferPacker(BUFFER_SIZE);

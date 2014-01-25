@@ -10,11 +10,20 @@ import serializers.Transformer;
 public class MsgPack
 {
     public static void register(TestGroups groups) {
-        register(groups.media, JavaBuiltIn.mediaTransformer, new MediaContentTypeHandler());
+        register(groups.media, JavaBuiltIn.mediaTransformer);
     }
 
-    private static <T,S> void register(TestGroup<T> group, Transformer<T,S> transformer, TypeHandler<S> handler) {
-        group.add(transformer, new BasicSerializer<S>(handler, new MessagePack()));
-        //group.add(transformer, new ManualSerializer<S>(handler, new MessagePack()));
+    @SuppressWarnings("unchecked")
+    private static <T,S> void register(TestGroup<T> group, Transformer<T,S> transformer) {
+        MessagePack msgpack = new MessagePack();
+        TypeHandler<S> h = (TypeHandler<S>) new MediaContentTypeHandler();
+        h.register(msgpack);
+        group.add(transformer, new MsgPackSerializer<S>("msgpack-databind", h, msgpack));
+
+        msgpack = new MessagePack();
+        h = (TypeHandler<S>) new MediaContentTypeHandler();
+        h.registerManually(msgpack);
+
+        group.add(transformer, new MsgPackSerializer<S>("msgpack-manual", h, msgpack));
     }
 }
