@@ -1,7 +1,5 @@
 package serializers;
 
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 import data.media.*;
 import de.ruedigermoeller.serialization.*;
 
@@ -31,9 +29,6 @@ import java.io.*;
  */
 public class FastSerialization {
 
-    public static final int BUFFER_SIZE = Math.max(
-            Integer.getInteger("buffer_size", 1024), 256);
-
     public static void register (TestGroups groups) {
         register(groups.media, JavaBuiltIn.mediaTransformer);
     }
@@ -46,7 +41,7 @@ public class FastSerialization {
     // Serializers
 
     /**
-     * all default. Even omit registration, do not preallocate streams as others do ..
+     * setup similar to kryo: all classes registered, unshared mode, unsafe disabled (does not help anyway for this bench)
      */
     public static class BasicSerializer<T> extends Serializer<T> {
         final static FSTConfiguration conf;
@@ -54,8 +49,14 @@ public class FastSerialization {
 //            System.setProperty("fst.unsafe", "true");
             conf = FSTConfiguration.createDefaultConfiguration();
             conf.setShareReferences(false);
-            conf.registerClass(Image.Size.class, Image.class, Media.Player.class, Media.class, MediaContent[].class, MediaContent.class, MediaContent.class);
-//            conf.setPreferSpeed(true);
+            conf.registerClass(
+                    Image.Size.class,
+                    Image.class,
+                    Media.Player.class,
+                    Media.class,
+                    MediaContent[].class,
+                    MediaContent.class,
+                    MediaContent.class);
         }
         private final byte[] buffer = new byte[BUFFER_SIZE];
         FSTObjectInput objectInput = new FSTObjectInputNoShared(conf);
@@ -96,16 +97,21 @@ public class FastSerialization {
         }
 
         public void serializeItems (T[] items, OutputStream outStream) throws Exception {
-            outStream.write(serializeInternal(items));
+            objectOutput.resetForReUse();
+            for (int i = 0; i < items.length; i++) {
+                objectOutput.writeObject(items[i]);
+            }
+            outStream.write(objectOutput.getBuffer(),0,objectOutput.getWritten()); // avoid copy
         }
 
         @SuppressWarnings("unchecked")
         public T[] deserializeItems (InputStream inStream, int numberOfItems) throws IOException {
             try {
+                MediaContent[] result = new MediaContent[numberOfItems];
                 objectInput.resetForReuse(inStream);
-                T[] res = (T[]) objectInput.readObject();
-                objectInput.close();
-                return res;
+                for ( int i=0; i < numberOfItems; i++)
+                    result[i] = (MediaContent) objectInput.readObject();
+                return (T[]) result;
             } catch (Throwable e) {
                 e.printStackTrace();
             }
