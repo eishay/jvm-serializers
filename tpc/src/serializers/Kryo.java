@@ -19,11 +19,13 @@ import data.media.Media;
 import data.media.MediaContent;
 
 public class Kryo {
+    
 	public static void register (TestGroups groups) {
 		register(groups.media, JavaBuiltIn.mediaTransformer, MediaTypeHandler);
 	}
 
 	private static <T, S> void register (TestGroup<T> group, Transformer<T, S> transformer, TypeHandler<S> handler) {
+        group.add(transformer, new DefaultSerializer<S>());
 		group.add(transformer, new BasicSerializer<S>(handler));
 		group.add(transformer, new OptimizedSerializer<S>(handler));
 		group.add(transformer, new CustomSerializer<S>(handler));
@@ -31,6 +33,54 @@ public class Kryo {
 
 	// ------------------------------------------------------------
 	// Serializers
+
+    /** This is the most basic Kryo usage. Just register the classes and go. */
+    public static class DefaultSerializer<T> extends Serializer<T> {
+        final com.esotericsoftware.kryo.Kryo kryo;
+        private final byte[] buffer = new byte[BUFFER_SIZE];
+        private final Output output = new Output(buffer, -1);
+        private final Input input = new Input(buffer);
+
+        public DefaultSerializer () {
+            this.kryo = new com.esotericsoftware.kryo.Kryo();
+            kryo.setReferences(true);
+            kryo.setRegistrationRequired(false);
+        }
+
+        @SuppressWarnings("unchecked")
+        public T deserialize (byte[] array) {
+            input.setBuffer(array);
+            return (T) kryo.readClassAndObject(input);
+        }
+
+        public byte[] serialize (T content) {
+            output.setBuffer(buffer, -1);
+            kryo.writeClassAndObject(output, content);
+            return output.toBytes();
+        }
+
+        public void serializeItems (T[] items, OutputStream outStream) throws Exception {
+            output.setOutputStream(outStream);
+            for (int i = 0, n = items.length; i < n; ++i) {
+                kryo.writeClassAndObject(output, items[i]);
+            }
+            output.flush();
+        }
+
+        @SuppressWarnings("unchecked")
+        public T[] deserializeItems (InputStream inStream, int numberOfItems) throws IOException {
+            input.setInputStream(inStream);
+            MediaContent[] result = new MediaContent[numberOfItems];
+            for (int i = 0; i < numberOfItems; ++i) {
+                result[i] = (MediaContent) kryo.readClassAndObject(input);
+            }
+            return (T[])result;
+        }
+
+        public String getName () {
+            return "kryo-serializer";
+        }
+    }
 
 	/** This is the most basic Kryo usage. Just register the classes and go. */
 	public static class BasicSerializer<T> extends Serializer<T> {
