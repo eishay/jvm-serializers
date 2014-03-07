@@ -32,6 +32,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         // Binary Formats; language-specific ones
         JavaBuiltIn.register(groups);
         JavaManual.register(groups);
+        Stephenerialization.register(groups);
 
 // 06-May-2013, tatu: way too slow, commenting out for now, can add in slow section?
 //        Scala.register(groups);
