@@ -2,6 +2,7 @@ java-built-in
 java-manual
 scala/java-built-in
 scala/sbinary
+fast-serialization
 kryo
 kryo-opt
 kryo-manual

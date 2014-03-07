@@ -34,7 +34,8 @@ public class FastSerialization {
     }
 
     private static <T, S> void register (TestGroup<T> group, Transformer<T, S> transformer) {
-        group.add(transformer, new BasicSerializer<S>());
+        group.add(transformer, new BasicSerializer<S>("fast-serialization",true));
+        group.add(transformer, new BasicSerializer<S>("fast-serialization-shared",false));
     }
 
     // ------------------------------------------------------------
@@ -45,6 +46,7 @@ public class FastSerialization {
      */
     public static class BasicSerializer<T> extends Serializer<T> {
         final static FSTConfiguration conf;
+        final static FSTConfiguration confShared;
         static {
 //            System.setProperty("fst.unsafe", "true");
             conf = FSTConfiguration.createDefaultConfiguration();
@@ -57,16 +59,26 @@ public class FastSerialization {
                     MediaContent[].class,
                     MediaContent.class,
                     MediaContent.class);
-        }
-        private final byte[] buffer = new byte[BUFFER_SIZE];
-        FSTObjectInput objectInput = new FSTObjectInputNoShared(conf);
-        FSTObjectOutput objectOutput = new FSTObjectOutputNoShared(conf);
-
-
-        public BasicSerializer () {
-            objectOutput.resetForReUse(buffer);
+            confShared = FSTConfiguration.createDefaultConfiguration();
         }
 
+        FSTObjectInput objectInput;
+        FSTObjectOutput objectOutput;
+        String name;
+
+        public BasicSerializer (String name, boolean unshared) {
+            conf.setShareReferences(!unshared);
+            this.name = name;
+            if ( unshared ) {
+                objectInput = new FSTObjectInputNoShared(conf);
+                objectOutput = new FSTObjectOutputNoShared(conf);
+            } else {
+                objectInput = new FSTObjectInput(confShared);
+                objectOutput = new FSTObjectOutput(confShared);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
         public T deserialize (byte[] array) {
             return (T) deserializeInternal(array);
         }
@@ -119,7 +131,7 @@ public class FastSerialization {
         }
 
         public String getName () {
-            return "fast-serialization";
+            return name;
         }
     }
 
