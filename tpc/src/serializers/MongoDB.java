@@ -19,7 +19,14 @@ public class MongoDB
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(JavaBuiltIn.mediaTransformer, new MongoDBSerializer());
+		groups.media.add(JavaBuiltIn.mediaTransformer, new MongoDBSerializer(),
+                new SerFeatures(
+                        SerFormat.BIN_CROSSLANG,
+                        SerGraph.FLAT_TREE,
+                        SerClass.MANUAL_OPT,
+                        ""
+                )
+        );
 	}
 	
 	public static final class MongoDBSerializer extends Serializer<MediaContent>

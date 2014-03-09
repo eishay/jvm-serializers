@@ -17,8 +17,22 @@ public class JavaBuiltIn
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(mediaTransformer, new GenericSerializer<MediaContent>("java-built-in",true));
-        groups.media.add(mediaTransformer, new GenericSerializer<MediaContent>("java-built-in-serializer",false));
+		groups.media.add(mediaTransformer, new GenericSerializer<MediaContent>("java-built-in",true),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
+        groups.media.add(mediaTransformer, new GenericSerializer<MediaContent>("java-built-in-serializer",false),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FULL_GRAPH,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
 	}
 
 	// ------------------------------------------------------------

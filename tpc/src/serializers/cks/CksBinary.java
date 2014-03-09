@@ -3,15 +3,21 @@ package serializers.cks;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 import serializers.cks.media.MediaContent;
 
 public class CksBinary
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(Cks.mediaTransformer, MediaSerializer);
+		groups.media.add(Cks.mediaTransformer, MediaSerializer,
+                new SerFeatures(
+                        SerFormat.MISC,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        ""
+                )
+        );
 	}
 
 	// ------------------------------------------------------------

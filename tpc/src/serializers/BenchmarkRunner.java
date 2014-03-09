@@ -9,6 +9,7 @@ import serializers.javaxjson.*;
 import serializers.json.*;
 import serializers.msgpack.MsgPack;
 import serializers.protobuf.Protobuf;
+import serializers.protobuf.ProtobufJson;
 import serializers.protostuff.Protostuff;
 import serializers.protostuff.ProtostuffJson;
 import serializers.xml.ExiExificient;
@@ -26,7 +27,6 @@ public class BenchmarkRunner extends MediaItemBenchmark
         new BenchmarkRunner().runBenchmark(args);
     }
 
-    @Override
     protected void addTests(TestGroups groups)
     {
         // Binary Formats; language-specific ones
@@ -35,7 +35,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         Stephenerialization.register(groups);
 
 // 06-May-2013, tatu: way too slow, commenting out for now, can add in slow section?
-//        Scala.register(groups);
+        Scala.register(groups); // ruediger: let them face the truth :-). Not a problem as now time based test duration
 // hessian, kryo and wobly are Java object serializations
         Hessian.register(groups);
         Kryo.register(groups);
@@ -45,10 +45,10 @@ public class BenchmarkRunner extends MediaItemBenchmark
         JBossMarshalling.register(groups);
 // 06-May-2013, tatu: Fails on basic Java7, mismatch with Unsafe; commented out
 //        Obser.register(groups);
-        
+
         // Binary formats, generic: protobuf, thrift, avro, CKS, msgpack
         Protobuf.register(groups);
-        // 16-May-2012, Nate: As discussed on mailing list, removed ActiveMQProtobuf as 
+        // 16-May-2012, Nate: As discussed on mailing list, removed ActiveMQProtobuf as
         // its lazy deserialization isn't comparable to other serializers.
         // ActiveMQProtobuf.register(groups);
         Protostuff.register(groups);
@@ -70,10 +70,10 @@ public class BenchmarkRunner extends MediaItemBenchmark
         JavaxJsonStreamGlassfish.register(groups);
         JsonTwoLattes.register(groups);
         ProtostuffJson.register(groups);
-// too slow, why bother:
-//        ProtobufJson.register(groups);
+
+        ProtobufJson.register(groups);
         JsonGsonManual.register(groups);
-//        JsonGsonTree.register(groups);
+        JsonGsonTree.register(groups);
         JsonGsonDatabind.register(groups);
         JsonSvensonDatabind.register(groups);
         FlexjsonDatabind.register(groups);

@@ -8,9 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONWriter;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import data.media.Image;
 import data.media.Media;
@@ -24,7 +22,14 @@ public class JsonDotOrgManualTree
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new ManualTreeSerializer("json/org.json/manual/tree"));
+        new ManualTreeSerializer("json/org.json/manual/tree"),
+            new SerFeatures(
+                    SerFormat.JSON,
+                    SerGraph.FLAT_TREE,
+                    SerClass.MANUAL_OPT,
+                    ""
+            )
+    );
   }
 
   static class ManualTreeSerializer extends Serializer<MediaContent>

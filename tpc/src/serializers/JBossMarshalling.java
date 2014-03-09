@@ -40,8 +40,14 @@ public class JBossMarshalling {
 				riverFactory,
 				false,
 				false
-			)
-		);
+			),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FULL_GRAPH,
+                        SerClass.ZERO_KNOWLEDGE,
+                        "full graph zero knowledge"
+                )
+        );
 		groups.media.add(
 			JavaBuiltIn.mediaTransformer,
 			new MarshallingSerializer<MediaContent>(
@@ -50,8 +56,14 @@ public class JBossMarshalling {
 				riverFactory,
 				false,
 				true
-			)
-		);
+			),
+            new SerFeatures(
+                    SerFormat.BINARY,
+                    SerGraph.FULL_GRAPH,
+                    SerClass.MANUAL_OPT,
+                    "full graph with manual optimizations"
+            )
+        );
 		groups.media.add(
 			JavaBuiltIn.mediaTransformer,
 			new MarshallingSerializer<MediaContent>(
@@ -60,7 +72,13 @@ public class JBossMarshalling {
 				riverFactory,
 				true,
 				false
-			)
+			),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FULL_GRAPH,
+                        SerClass.CLASSES_KNOWN,
+                        "full graph with preregistered classes"
+                )
 		);
 		groups.media.add(
 			JavaBuiltIn.mediaTransformer,
@@ -70,7 +88,13 @@ public class JBossMarshalling {
 				riverFactory,
 				true,
 				true
-			)
+			),
+            new SerFeatures(
+                    SerFormat.BINARY,
+                    SerGraph.FULL_GRAPH,
+                    SerClass.MANUAL_OPT,
+                    "full graph preregistered classes, manual optimization"
+            )
 		);
 		groups.media.add(
 			JavaBuiltIn.mediaTransformer,
@@ -80,7 +104,13 @@ public class JBossMarshalling {
 				new SerialMarshallerFactory(),
 				false,
 				false
-			)
+			),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FULL_GRAPH,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
 		);
 	}
 

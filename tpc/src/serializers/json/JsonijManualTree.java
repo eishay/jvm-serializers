@@ -5,9 +5,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import jsonij.json.JSON;
 import jsonij.json.JSONMarshaler;
@@ -25,7 +23,14 @@ public class JsonijManualTree
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new ManualTreeSerializer("json/jsonij-manual/tree"));
+        new ManualTreeSerializer("json/jsonij-manual/tree"),
+            new SerFeatures(
+                    SerFormat.JSON,
+                    SerGraph.FLAT_TREE,
+                    SerClass.MANUAL_OPT,
+                    ""
+            )
+    );
   }
 
   static class ManualTreeSerializer extends Serializer<MediaContent>

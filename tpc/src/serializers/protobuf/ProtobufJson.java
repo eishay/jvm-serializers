@@ -1,7 +1,6 @@
 package serializers.protobuf;
 
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 import serializers.protobuf.media.MediaContentHolder.MediaContent;
 
 import java.io.IOException;
@@ -12,7 +11,14 @@ import com.google.protobuf.JsonFormat;
 public class ProtobufJson
 {
     public static void register(TestGroups groups) {
-        groups.media.add(new Protobuf.Transformer(), new JsonSerializer());
+        groups.media.add(new Protobuf.Transformer(), new JsonSerializer(),
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        ""
+                )
+        );
     }
 
     private static final Charset _charset = Charset.forName("UTF-8");

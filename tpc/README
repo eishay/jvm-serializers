@@ -1,16 +1,37 @@
 Requirements:
 - GNU Make 3.81+
-- JDK 1.5+
+- JDK 1.7+
+
+for windows install cygwin with make+bash features
 
 To compile:
-  make
+  make 
+  (if you run in trouble its usually because of CRLF dirt) E.g. scalac did not run because it was CRLF
 
-To run:
-  ./run -help
+To run
 
-To run and generate charts with all serializers: (For official results, add -trials=500)
-  ./run -chart -include=`cat serializers.txt | tr "\\n" ","`  data/media.1.cks
+  bash run-bench.sh
+  
+Parameters of the default run are hardcoded in run-bench.sh
 
+To update results of subset of serializers
 
-To generate bindings for schema files, see top of "Makefile" for
-instructions on what to put into "Config.mk".
+  bash run-bench.sh serializer1,serializer2,..
+  
+How this works:
+  
+  the project was somewhat messy, i probably contributed to that .. but its easier to manage now.
+  I removed the config files to avoid problems when serializers rename or are un/commented. Additionally
+  each benchmark runs in a separate VM.
+  
+  1) the run-bench.sh uses class BenchmarkExporter.java to get a ',' separated list of all serializers to run.
+     All benchmarks registered in the BenchnarkRunner.java class a run be default.
+  2) after each bench finished, the mk-stats.sh script aggregates the results found in ./results/tmp to ./results.txt
+     the the class StatsCruncher.java creates a Textile style report.
+     To modify the report output, directly edit the StatsCruncher.java . You are welcome to enhance this using
+     some templating/configuration files.
+     You can copy the report.textile directly to github wiki in textile-mode.
+  3) You can run the mk-stats.sh script again without having to re-run the benchmarks if you want to add
+     custom query charts.
+  4) to filter out certain libraries, do not uncomment them in BenchMarkRunner.java (except they fail), better
+     edit StatsCruncher.java to exclude them.

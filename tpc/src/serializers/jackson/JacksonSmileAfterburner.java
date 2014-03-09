@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.smile.SmileFactory;
 import com.fasterxml.jackson.dataformat.smile.SmileGenerator;
 
-import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import serializers.*;
 
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
@@ -32,6 +31,13 @@ public class JacksonSmileAfterburner
         
         smileMapper.registerModule(new AfterburnerModule());
         groups.media.add(JavaBuiltIn.mediaTransformer,
-                new StdJacksonDataBind<MediaContent>("smile/jackson/db-afterburner", MediaContent.class, smileMapper));
+                new StdJacksonDataBind<MediaContent>("smile/jackson/db-afterburner", MediaContent.class, smileMapper),
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
     }
 }

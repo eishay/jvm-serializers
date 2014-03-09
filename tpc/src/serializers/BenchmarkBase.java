@@ -11,14 +11,14 @@ import java.util.zip.DeflaterOutputStream;
  */
 abstract class BenchmarkBase
 {
-    public final static int DEFAULT_ITERATIONS = 2000;
-    public final static int DEFAULT_TRIALS = 500;
+    public final static int DEFAULT_ITERATIONS = 2000; 
+    public final static int DEFAULT_TEST_RUN_MILLIS = 10000; // 10 seconds
 
     /**
      * Number of milliseconds to warm up for each operation type for each serializer. Let's
      * start with 3 seconds.
      */
-    final static long DEFAULT_WARMUP_MSECS = 3000;
+    final static long DEFAULT_WARMUP_MSECS = 10000;
 
     // These tests aren't included by default.  Use the "-hidden" flag to enable them.
     protected static final HashSet<String> HIDDEN = new HashSet<String>();
@@ -54,7 +54,7 @@ abstract class BenchmarkBase
     protected final static class Params
     {
         public int iterations = DEFAULT_ITERATIONS;
-        public int trials = DEFAULT_TRIALS;
+        public int testRunMillis = DEFAULT_TEST_RUN_MILLIS;
         public long warmupTime = DEFAULT_WARMUP_MSECS;
         public boolean prewarm = true;
         public Boolean filterIsInclude;
@@ -171,19 +171,19 @@ abstract class BenchmarkBase
                     System.exit(1);
                 }
             }
-            else if (option.equals("trials")) {
+            else if (option.equals("testRunMillis")) {
                 if (value == null) {
-                    System.err.println("The \"trials\" option requires a value.");
+                    System.err.println("The \"testRunMillis\" option requires a value.");
                     System.exit(1);
                 }
                 try {
-                    params.trials = Integer.parseInt(value);
+                    params.testRunMillis = Integer.parseInt(value);
                 } catch (NumberFormatException ex) {
-                    System.err.println("Invalid value for \"trials\" option: \"" + value + "\"");
+                    System.err.println("Invalid value for \"testRunMillis\" option: \"" + value + "\"");
                     System.exit(1);
                 }
-                if (params.trials < 1) {
-                    System.err.println("Invalid value for \"trials\" option: \"" + value + "\"");
+                if (params.testRunMillis < 1) {
+                    System.err.println("Invalid value for \"testRunMillis\" option: \"" + value + "\"");
                     System.exit(1);
                 }
             }
@@ -238,7 +238,7 @@ abstract class BenchmarkBase
                 System.out.println();
                 System.out.println("Options:");
                 System.out.println("  -iterations=n         [default=" + DEFAULT_ITERATIONS + "]");
-                System.out.println("  -trials=n             [default=" + DEFAULT_TRIALS + "]");
+                System.out.println("  -testRunMillis=n      [default=" + DEFAULT_TEST_RUN_MILLIS + "ms]");
                 System.out.println("  -warmup-time=millis   [default=" + DEFAULT_WARMUP_MSECS + "]");
                 System.out.println("  -skip-pre-warmup      (don't warm all serializers before the first measurement)");
                 System.out.println("  -chart                (generate a Google Chart URL for the results)");
@@ -483,18 +483,20 @@ abstract class BenchmarkBase
                                  * Should only warm things for the serializer that we test next: HotSpot JIT will
                                  * otherwise spent most of its time optimizing slower ones...
                                  */
-                                warmTest(runner, params.warmupTime, testCreate);
+                                warmTest(runner, params.warmupTime/3, testCreate);
 
                                 doGc();
-                                double timeCreate = runner.runTakeMin(params.trials, testCreate, params.iterations * 100); // do more iteration for object creation because of its short time
+                                // ruediger: turns out startup/init time is pretty equal for all tests. 
+                                // No need to spend too much time here
+                                double timeCreate = runner.runWithTimeMeasurement(params.testRunMillis / 3, testCreate, params.iterations); 
 
                                 warmTest(runner, params.warmupTime, testSerialize);
 
                                 doGc();
-                                double timeSerialize = runner.runTakeMin(params.trials, testSerialize, params.iterations);
-
+                                double timeSerialize = runner.runWithTimeMeasurement(params.testRunMillis, testSerialize, params.iterations);
+                            
                                 doGc();
-                                double timeDeserialize = runner.runTakeMin(params.trials, testDeserialize, params.iterations);
+                                double timeDeserialize = runner.runWithTimeMeasurement(params.testRunMillis, testDeserialize, params.iterations);
 
                                 double totalTime = timeSerialize + timeDeserialize;
 

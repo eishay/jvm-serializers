@@ -2,8 +2,7 @@ package serializers.jackson;
 
 import com.fasterxml.jackson.dataformat.smile.*;
 
-import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import serializers.*;
 
 public class JacksonSmileManual
 {
@@ -16,7 +15,14 @@ public class JacksonSmileManual
         SmileFactory factory = new SmileFactory();
 	factory.configure(SmileGenerator.Feature.CHECK_SHARED_NAMES, sharedNames);
 	factory.configure(SmileGenerator.Feature.CHECK_SHARED_STRING_VALUES, sharedValues);
-        groups.media.add(JavaBuiltIn.mediaTransformer, new JacksonJsonManual("smile/jackson/manual", factory));
+        groups.media.add(JavaBuiltIn.mediaTransformer, new JacksonJsonManual("smile/jackson/manual", factory),
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.MANUAL_OPT,
+                        ""
+                )
+        );
     }
 
 }

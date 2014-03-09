@@ -14,12 +14,22 @@ public abstract class Serializer<S>
 	public abstract S deserialize(byte[] array) throws Exception;
 	public abstract byte[] serialize(S content) throws Exception;
  	public abstract String getName();
- 	
+    
+    SerFeatures features = new SerFeatures(); // ruediger: everything misc by default.
+    
 	public ByteArrayOutputStream outputStream (S content) {
 		return new ByteArrayOutputStream(BUFFER_SIZE);
 	}
 
-	// And then bit bigger default when serializing a list or array
+    public SerFeatures getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(SerFeatures features) {
+        this.features = features;
+    }
+
+    // And then bit bigger default when serializing a list or array
 	public ByteArrayOutputStream outputStreamForList (S[] items) {
 		return new ByteArrayOutputStream(BUFFER_SIZE * items.length);
 	}

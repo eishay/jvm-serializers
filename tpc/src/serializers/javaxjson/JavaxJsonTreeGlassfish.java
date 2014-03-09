@@ -17,6 +17,13 @@ public class JavaxJsonTreeGlassfish extends JavaxJsonTree {
     }
 
     public static void register(TestGroups groups) {
-        groups.media.add(new JavaxJsonTransformer(JSON), new JavaxJsonTreeGlassfish());
+        groups.media.add(new JavaxJsonTransformer(JSON), new JavaxJsonTreeGlassfish(),
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
     }
 }

@@ -2,9 +2,7 @@ package serializers.json;
 
 import java.io.*;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import data.media.MediaContent;
 
@@ -20,7 +18,14 @@ public class FastJSONDatabind
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new GenericSerializer<MediaContent>("json/fastjson/databind", MediaContent.class));
+        new GenericSerializer<MediaContent>("json/fastjson/databind", MediaContent.class),
+            new SerFeatures(
+                    SerFormat.JSON,
+                    SerGraph.FLAT_TREE,
+                    SerClass.ZERO_KNOWLEDGE,
+                    ""
+            )
+    );
   }
 
   static class GenericSerializer<T> extends Serializer<T>

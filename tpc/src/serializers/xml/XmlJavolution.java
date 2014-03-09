@@ -5,9 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import javolution.text.CharArray;
 import javolution.xml.XMLBinding;
@@ -25,7 +23,14 @@ public class XmlJavolution
 
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(JavaBuiltIn.mediaTransformer, new JavolutionSerializer<MediaContent>("", MediaBinding, MediaContent.class));
+		groups.media.add(JavaBuiltIn.mediaTransformer, new JavolutionSerializer<MediaContent>("", MediaBinding, MediaContent.class),
+                new SerFeatures(
+                        SerFormat.XML,
+                        SerGraph.FLAT_TREE,
+                        SerClass.MANUAL_OPT,
+                        ""
+                )
+        );
         // commented-out by dyu: use the non-abbreviated version
 		//groups.media.add(JavaBuiltIn.MediaTransformer, new JavolutionSerializer<MediaContent>("-abbrev", MediaBindingAbbreviated, MediaContent.class));
 	}

@@ -4,8 +4,7 @@ import java.io.*;
 
 import javax.xml.stream.*;
 
-import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import serializers.*;
 
 /**
  * Codec that works with standard full Stax implementations, where
@@ -34,13 +33,35 @@ public class XmlStax
     public static void register(TestGroups groups, boolean woodstox, boolean aalto, boolean fastinfoset)
     {
         if (woodstox) {
-            groups.media.add(JavaBuiltIn.mediaTransformer, new StaxMediaSerializer(HANDLERS[0]));
+            groups.media.add(JavaBuiltIn.mediaTransformer, new StaxMediaSerializer(HANDLERS[0]),
+                    new SerFeatures(
+                            SerFormat.XML,
+                            SerGraph.UNKNOWN,
+                            SerClass.MANUAL_OPT,
+                            ""
+                    )
+            );
+
         }
         if (aalto) {
-            groups.media.add(JavaBuiltIn.mediaTransformer, new StaxMediaSerializer(HANDLERS[1]));
+            groups.media.add(JavaBuiltIn.mediaTransformer, new StaxMediaSerializer(HANDLERS[1]),
+                    new SerFeatures(
+                            SerFormat.XML,
+                            SerGraph.UNKNOWN,
+                            SerClass.MANUAL_OPT,
+                            ""
+                    )
+            );
         }
         if (fastinfoset) {
-            groups.media.add(JavaBuiltIn.mediaTransformer, new StaxMediaSerializer(HANDLERS[2]));
+            groups.media.add(JavaBuiltIn.mediaTransformer, new StaxMediaSerializer(HANDLERS[2]),
+                    new SerFeatures(
+                            SerFormat.XML,
+                            SerGraph.UNKNOWN,
+                            SerClass.MANUAL_OPT,
+                            ""
+                    )
+            );
         }
     }
 

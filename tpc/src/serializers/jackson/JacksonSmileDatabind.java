@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import com.fasterxml.jackson.dataformat.smile.*;
 
-import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import serializers.*;
 
 import data.media.MediaContent;
 
@@ -27,7 +26,14 @@ public class JacksonSmileDatabind
         
         groups.media.add(JavaBuiltIn.mediaTransformer,
                 new StdJacksonDataBind<MediaContent>("smile/jackson/databind",
-                        MediaContent.class, mapper));
+                        MediaContent.class, mapper),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
     }
 
 }

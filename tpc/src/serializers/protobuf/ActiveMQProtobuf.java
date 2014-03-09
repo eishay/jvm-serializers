@@ -6,8 +6,7 @@ import java.util.List;
 
 import data.media.MediaTransformer;
 
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 import serializers.activemq.media.MediaContentHolder.Image;
 import serializers.activemq.media.MediaContentHolder.Media;
 import serializers.activemq.media.MediaContentHolder.MediaContent;
@@ -22,7 +21,14 @@ public class ActiveMQProtobuf
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(mediaTransformer, MediaSerializer);
+		groups.media.add(mediaTransformer, MediaSerializer,
+                new SerFeatures(
+                        SerFormat.BIN_CROSSLANG,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        ""
+                )
+        );
 	}
 
 	// ------------------------------------------------------------

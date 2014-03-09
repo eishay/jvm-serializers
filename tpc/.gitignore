@@ -1,2 +1,3 @@
-build
-bin
+/build
+/bin
+/results

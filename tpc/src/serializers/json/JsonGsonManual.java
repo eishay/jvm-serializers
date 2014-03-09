@@ -6,9 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import com.google.gson.stream.*;
 
@@ -25,7 +23,14 @@ public class JsonGsonManual
     public static void register(TestGroups groups)
     {
             groups.media.add(JavaBuiltIn.mediaTransformer,
-                    new ManualSerializer("json/google-gson/manual"));
+                    new ManualSerializer("json/google-gson/manual"),
+                    new SerFeatures(
+                            SerFormat.JSON,
+                            SerGraph.FLAT_TREE,
+                            SerClass.MANUAL_OPT,
+                            ""
+                    )
+            );
     }
 
     // ------------------------------------------------------------
