@@ -1,0 +1,7 @@
+smile/jackson/manual
+Checking correctness...
+[done]
+Pre-warmup... smile/jackson/manual
+[done]
+                                   create     ser   deser   total   size  +dfl
+smile/jackson/manual                   74    1015    1259    2275    341   244

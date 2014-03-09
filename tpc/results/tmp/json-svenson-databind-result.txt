@@ -1,0 +1,7 @@
+json/svenson-databind
+Checking correctness...
+[done]
+Pre-warmup... json/svenson-databind
+[done]
+                                   create     ser   deser   total   size  +dfl
+json/svenson-databind                  73    5772   12192   17964    495   265

@@ -9,9 +9,7 @@ import data.media.MediaContent;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import de.undercouch.bson4jackson.BsonFactory;
 import de.undercouch.bson4jackson.BsonModule;
@@ -30,7 +28,14 @@ public class JacksonBsonDatabind
         mapper.registerModule(new BsonModule());
         groups.media.add(JavaBuiltIn.mediaTransformer,
                 new DataBindBase<MediaContent>(
-                        "bson/jackson/databind", MediaContent.class, mapper));
+                        "bson/jackson/databind", MediaContent.class, mapper),
+                new SerFeatures(
+                        SerFormat.BINARY_CROSSLANG,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        ""
+                )
+        );
     }
 
     // Must bundle, because BSON module still uses Jackson 1.x...

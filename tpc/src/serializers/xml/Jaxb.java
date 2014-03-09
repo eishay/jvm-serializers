@@ -5,9 +5,7 @@ import java.io.*;
 import javax.xml.bind.*;
 import javax.xml.stream.*;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import data.media.MediaContent;
 
@@ -20,7 +18,14 @@ public class Jaxb<T> extends Serializer<T>
     {
         groups.media.add(JavaBuiltIn.mediaTransformer,
                 new Jaxb<MediaContent>("JAXB/aalto", MediaContent.class,
-                        new InputFactoryImpl(), new OutputFactoryImpl()));
+                        new InputFactoryImpl(), new OutputFactoryImpl()),
+                new SerFeatures(
+                        SerFormat.XML,
+                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
     }
 
     private final String name;

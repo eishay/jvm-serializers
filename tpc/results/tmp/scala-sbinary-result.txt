@@ -1,0 +1,7 @@
+scala/sbinary
+Checking correctness...
+[done]
+Pre-warmup... scala/sbinary
+[done]
+                                   create     ser   deser   total   size  +dfl
+scala/sbinary                         142    1814    1263    3077    255   147

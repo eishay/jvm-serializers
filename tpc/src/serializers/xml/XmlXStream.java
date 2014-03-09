@@ -21,9 +21,7 @@ import data.media.Image.Size;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import java.io.Writer;
 import java.util.ArrayList;
@@ -52,7 +50,14 @@ public class XmlXStream
 					//return new PrettyPrintWriter(out, xmlFriendlyReplacer());
 					return new CompactWriter(out, xmlFriendlyReplacer());
 				}
-			}), MediaConfiguration));
+			}), MediaConfiguration),
+                new SerFeatures(
+                        SerFormat.XML,
+                        SerGraph.FLAT_TREE,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
 
         // commented-out by dyu: use the non-abbreviated version
 		/*groups.media.add(JavaBuiltIn.MediaTransformer, new ConverterSerializer<MediaContent>("xml/xstream+c-abbrev",
@@ -68,7 +73,14 @@ public class XmlXStream
 			// TODO: This doesn't work yet.  Need to properly handle optional fields in readMedia/readImage.
             // commented-out by dyu: use the non-abbreviated version (+c) because the perf of the default sux.
 			//groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "",  EmptyConfiguration));
-			groups.media.add(JavaBuiltIn.mediaTransformer, XmlXStream.<MediaContent>mkStaxSerializer(h, "+c", MediaConfiguration));
+			groups.media.add(JavaBuiltIn.mediaTransformer, XmlXStream.<MediaContent>mkStaxSerializer(h, "+c", MediaConfiguration),
+                    new SerFeatures(
+                            SerFormat.XML,
+                            SerGraph.FLAT_TREE,
+                            SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                            ""
+                    )
+            );
 			//groups.media.add(JavaBuiltIn.MediaTransformer, XStream.<MediaContent>mkStaxSerializer(h, "+c-abbrev", MediaConfigurationAbbreviated));
 		}
 	}

@@ -1,0 +1,7 @@
+fst-flat-pre
+Checking correctness...
+[done]
+Pre-warmup... fst-flat-pre
+[done]
+                                   create     ser   deser   total   size  +dfl
+fst-flat-pre                           73     791     849    1639    251   165

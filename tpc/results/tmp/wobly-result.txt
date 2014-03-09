@@ -1,0 +1,7 @@
+wobly
+Checking correctness...
+[done]
+Pre-warmup... wobly
+[done]
+                                   create     ser   deser   total   size  +dfl
+wobly                                  54    1039     600    1639    251   151

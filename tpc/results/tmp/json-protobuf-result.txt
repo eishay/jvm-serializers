@@ -1,0 +1,7 @@
+json/protobuf
+Checking correctness...
+[done]
+Pre-warmup... json/protobuf
+[done]
+                                   create     ser   deser   total   size  +dfl
+json/protobuf                         151    9883   61416   71299    488   253

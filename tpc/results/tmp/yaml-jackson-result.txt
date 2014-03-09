@@ -1,0 +1,7 @@
+yaml/jackson
+Checking correctness...
+[done]
+Pre-warmup... yaml/jackson
+[done]
+                                   create     ser   deser   total   size  +dfl
+yaml/jackson                           74   22747   35101   57848    505   260

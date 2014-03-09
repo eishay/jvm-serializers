@@ -5,9 +5,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import jsonij.json.JPath;
 import jsonij.json.JSON;
@@ -27,7 +25,14 @@ public class JsonijJpath
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new SemiManualSerializer("json/jsonij-jpath"));
+        new SemiManualSerializer("json/jsonij-jpath"),
+            new SerFeatures(
+                    SerFormat.JSON,
+                    SerGraph.FLAT_TREE,
+                    SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                    ""
+            )
+    );
   }
 
   static class SemiManualSerializer extends Serializer<MediaContent>

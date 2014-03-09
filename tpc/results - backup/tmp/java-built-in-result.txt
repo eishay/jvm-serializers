@@ -1,0 +1,7 @@
+
+Checking correctness...
+[done]
+Pre-warmup... java-built-in
+[done]
+                                   create     ser   deser   total   size  +dfl
+java-built-in                          73    6375   34112   40487    889   514

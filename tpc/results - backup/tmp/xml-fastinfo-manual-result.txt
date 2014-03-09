@@ -1,0 +1,7 @@
+
+Checking correctness...
+[done]
+Pre-warmup... xml/fastinfo-manual
+[done]
+                                   create     ser   deser   total   size  +dfl
+xml/fastinfo-manual                    73    7332    6012   13344    377   284

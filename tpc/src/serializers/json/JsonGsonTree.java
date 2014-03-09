@@ -5,9 +5,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -27,7 +25,14 @@ public class JsonGsonTree
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new SemiManualSerializer("json/google-gson/manual/tree"));
+        new SemiManualSerializer("json/google-gson/manual/tree"),
+            new SerFeatures(
+                    SerFormat.JSON,
+                    SerGraph.FLAT_TREE,
+                    SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                    ""
+            )
+    );
   }
 
   static class SemiManualSerializer extends Serializer<MediaContent>

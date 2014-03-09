@@ -1,0 +1,7 @@
+
+Checking correctness...
+[done]
+Pre-warmup... json/jackson/databind
+[done]
+                                   create     ser   deser   total   size  +dfl
+json/jackson/databind                  79    1869    3024    4893    485   261

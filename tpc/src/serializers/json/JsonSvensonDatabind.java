@@ -2,9 +2,7 @@ package serializers.json;
 
 import java.io.*;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import data.media.Image;
 import data.media.MediaContent;
@@ -17,7 +15,14 @@ public class JsonSvensonDatabind
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new GenericSerializer<MediaContent>("json/svenson-databind", MediaContent.class));
+        new GenericSerializer<MediaContent>("json/svenson-databind", MediaContent.class),
+            new SerFeatures(
+                    SerFormat.JSON,
+                    SerGraph.FLAT_TREE,
+                    SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                    ""
+            )
+    );
   }
 
   static class GenericSerializer<T> extends Serializer<T>

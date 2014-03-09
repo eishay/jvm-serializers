@@ -1,0 +1,7 @@
+xml/aalto-manual
+Checking correctness...
+[done]
+Pre-warmup... xml/aalto-manual
+[done]
+                                   create     ser   deser   total   size  +dfl
+xml/aalto-manual                       73    2288    3466    5754    653   304

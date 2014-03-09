@@ -1,0 +1,7 @@
+json/jackson/db-afterburner
+Checking correctness...
+[done]
+Pre-warmup... json/jackson/db-afterburner
+[done]
+                                   create     ser   deser   total   size  +dfl
+json/jackson/db-afterburner            74    1665    2283    3948    485   261

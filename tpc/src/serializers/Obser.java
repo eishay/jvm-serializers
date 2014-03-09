@@ -21,10 +21,38 @@ public class Obser {
 	}
 
 	private static <T, S> void register (TestGroup<?> group, Transformer transformer) {
-		group.add(transformer, new BasicSerializer<S>());
-		group.add(transformer, new CompactSerializer<S>());
-		group.add(transformer, new CustomSerializer());
-		group.add(transformer, new CustomCompactSerializer());
+		group.add(transformer, new BasicSerializer<S>(),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerClass.CLASSES_KNOWN,
+                        ""
+                )
+        );
+		group.add(transformer, new CompactSerializer<S>(),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerClass.CLASSES_KNOWN,
+                        ""
+                )
+        );
+		group.add(transformer, new CustomSerializer(),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        ""
+                )
+        );
+		group.add(transformer, new CustomCompactSerializer(),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        ""
+                )
+        );
 	}
 
 

@@ -1,0 +1,7 @@
+
+Checking correctness...
+[done]
+Pre-warmup... json/protostuff-manual
+[done]
+                                   create     ser   deser   total   size  +dfl
+json/protostuff-manual                 74    1443    2303    3745    449   233

@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
-import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import serializers.*;
 import data.media.MediaContent;
 
 public class JacksonJsonAfterburner
@@ -19,6 +18,13 @@ public class JacksonJsonAfterburner
 
         mapper.registerModule(new AfterburnerModule());
         groups.media.add(JavaBuiltIn.mediaTransformer,
-                new StdJacksonDataBind<MediaContent>("json/jackson/db-afterburner", MediaContent.class, mapper));
+                new StdJacksonDataBind<MediaContent>("json/jackson/db-afterburner", MediaContent.class, mapper),
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.ZERO_KNOWLEDGE,
+                        "uses bytecode generation to reduce overhead"
+                )
+        );
     }
 }

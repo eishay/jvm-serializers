@@ -12,9 +12,7 @@ import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.BinaryDecoder;
 
-import serializers.Serializer;
-import serializers.TestGroups;
-import serializers.Transformer;
+import serializers.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,7 +24,14 @@ public class AvroGeneric
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(MediaTransformer, new GenericSerializer(Avro.Media.sMediaContent));
+		groups.media.add(MediaTransformer, new GenericSerializer(Avro.Media.sMediaContent),
+                new SerFeatures(
+                        SerFormat.BINARY_CROSSLANG,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        ""
+                )
+        );
 	}
 
 	// ------------------------------------------------------------

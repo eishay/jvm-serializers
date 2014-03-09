@@ -1,0 +1,7 @@
+msgpack-databind
+Checking correctness...
+[done]
+Pre-warmup... msgpack-databind
+[done]
+                                   create     ser   deser   total   size  +dfl
+msgpack-databind                       74     955    1607    2562    233   146

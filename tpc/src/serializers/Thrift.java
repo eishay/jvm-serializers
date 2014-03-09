@@ -19,8 +19,22 @@ public class Thrift
 {
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(mediaTransformer, new MediaSerializer(ProtocolSpec.DefaultBinary));
-		groups.media.add(mediaTransformer, new MediaSerializer(ProtocolSpec.CompactBinary));
+		groups.media.add(mediaTransformer, new MediaSerializer(ProtocolSpec.DefaultBinary),
+                new SerFeatures(
+                        SerFormat.BINARY_CROSSLANG,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        ""
+                )
+        );
+		groups.media.add(mediaTransformer, new MediaSerializer(ProtocolSpec.CompactBinary),
+                new SerFeatures(
+                        SerFormat.BINARY_CROSSLANG,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        ""
+                )
+        );
 	}
 
 	// ------------------------------------------------------------

@@ -19,7 +19,14 @@ public class JBossSerialization {
         groups.media.add(
     		JavaBuiltIn.mediaTransformer,
     		new JBossSerializationSerializer<MediaContent>(MediaContent.class)
-		);
+                ,
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
     }
 
 	private static final class JBossSerializationSerializer<T>

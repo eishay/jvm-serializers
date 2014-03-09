@@ -17,9 +17,7 @@ import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
 import data.media.MediaTransformer;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 import serializers.protostuff.media.MediaContent;
 import serializers.protostuff.media.Media;
 import serializers.protostuff.media.Image;
@@ -30,17 +28,54 @@ public final class Protostuff
     public static void register(TestGroups groups)
     {
         // generated code
-        groups.media.add(mediaTransformer, ProtostuffMediaSerializer);
+        groups.media.add(mediaTransformer, ProtostuffMediaSerializer,
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        "generated code"
+                )
+        );
 
         // manual (hand-coded schema, no autoboxing)
-        groups.media.add(JavaBuiltIn.mediaTransformer, ProtostuffManualMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, ProtostuffManualMediaSerializer,
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        ""
+                )
+        );
 
         // runtime (reflection)
-        groups.media.add(JavaBuiltIn.mediaTransformer, ProtostuffRuntimeMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, ProtostuffRuntimeMediaSerializer,
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        ""
+                )
+        );
         
         // protobuf serialization + generated code
-        groups.media.add(mediaTransformer, ProtobufMediaSerializer);
-
+        groups.media.add(mediaTransformer, ProtobufMediaSerializer,
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        "protobuf serialization + generated code"
+                )
+        );
+        
+        // protobuf serialization + runtime
+        groups.media.add(JavaBuiltIn.mediaTransformer, ProtobufRuntimeMediaSerializer,
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
         /*protostuff has too many entries
 
         // graph+manual
@@ -49,8 +84,7 @@ public final class Protostuff
         // graph+runtime
         groups.media.add(JavaBuiltIn.MediaTransformer, ProtostuffGraphRuntimeMediaSerializer);
         
-        // protobuf serialization + runtime
-        groups.media.add(JavaBuiltIn.MediaTransformer, ProtobufRuntimeMediaSerializer);*/
+*/
     }
     
     public static final Serializer<MediaContent> ProtostuffMediaSerializer = 

@@ -8,9 +8,7 @@ import com.dyuproject.protostuff.JsonXIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 import serializers.protostuff.media.MediaContent;
 
 /**
@@ -24,9 +22,23 @@ public final class ProtostuffJson
     public static void register(TestGroups groups)
     {
         // manual (hand-coded schema, no autoboxing)
-        groups.media.add(JavaBuiltIn.mediaTransformer, JsonManualMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, JsonManualMediaSerializer,
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        ""
+                )
+        );
         // runtime (reflection)
-        groups.media.add(JavaBuiltIn.mediaTransformer, JsonRuntimeMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, JsonRuntimeMediaSerializer,
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
 
         /* protostuff has too many entries
 

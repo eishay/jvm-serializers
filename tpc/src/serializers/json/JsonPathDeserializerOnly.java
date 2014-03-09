@@ -8,9 +8,7 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import com.jayway.jsonpath.JsonPath;
 
@@ -27,7 +25,14 @@ public class JsonPathDeserializerOnly
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new SemiManualSerializer("json/jsonpath/json.simple"));
+        new SemiManualSerializer("json/jsonpath/json.simple"),
+            new SerFeatures(
+                    SerFormat.JSON,
+                    SerGraph.FLAT_TREE,
+                    SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                    ""
+            )
+    );
   }
 
   static class SemiManualSerializer extends Serializer<MediaContent>

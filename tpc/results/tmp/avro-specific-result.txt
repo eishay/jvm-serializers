@@ -1,0 +1,7 @@
+avro-specific
+Checking correctness...
+[done]
+Pre-warmup... avro-specific
+[done]
+                                   create     ser   deser   total   size  +dfl
+avro-specific                         105    1822    1701    3523    221   133

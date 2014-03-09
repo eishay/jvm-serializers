@@ -1,0 +1,7 @@
+avro-generic
+Checking correctness...
+[done]
+Pre-warmup... avro-generic
+[done]
+                                   create     ser   deser   total   size  +dfl
+avro-generic                          430    2058    1346    3404    221   133

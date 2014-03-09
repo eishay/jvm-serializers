@@ -11,8 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import serializers.*;
 
 import data.media.Image;
 import data.media.Media;
@@ -26,7 +25,14 @@ public class JacksonJsonTree extends BaseJacksonDataBind<MediaContent>
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer, new JacksonJsonTree(
-            "json/jackson/tree",new ObjectMapper()));
+            "json/jackson/tree",new ObjectMapper()),
+            new SerFeatures(
+                    SerFormat.JSON,
+                    SerGraph.FLAT_TREE,
+                    SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                    ""
+            )
+    );
   }
 
   public JacksonJsonTree(String name, ObjectMapper mapper) {

@@ -5,8 +5,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import serializers.*;
 
 import data.media.MediaContent;
 
@@ -18,7 +17,14 @@ public class JacksonJsonTreeWithStrings extends JacksonJsonTree
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-            new JacksonJsonTreeWithStrings("json/jackson/tree-strings", new ObjectMapper()));
+            new JacksonJsonTreeWithStrings("json/jackson/tree-strings", new ObjectMapper()),
+            new SerFeatures(
+                    SerFormat.JSON,
+                    SerGraph.FLAT_TREE,
+                    SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                    ""
+            )
+    );
   }
 
     public JacksonJsonTreeWithStrings(String name, ObjectMapper mapper) {

@@ -1,0 +1,6 @@
+xml/fastinfo-manual
+Checking correctness...
+[done]
+Pre-warmup...
+[done]
+                                   create     ser   deser   total   size  +dfl

@@ -34,24 +34,52 @@ public class FastSerialization {
     }
 
     private static <T, S> void register (TestGroup<T> group, Transformer<T, S> transformer) {
-        group.add(transformer, new BasicSerializer<S>("fast-serialization",true));
-        group.add(transformer, new BasicSerializer<S>("fast-serialization-shared",false));
+        group.add(transformer, new BasicSerializer<S>("fst-flat-pre",true,true),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN, 
+                        "fst in unshared mode with preregistered classes"
+                )
+        );
+
+        group.add(transformer, new BasicSerializer<S>("fst-flat",true,false),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.ZERO_KNOWLEDGE,
+                        "fst default, but unshared mode"
+                )
+        );
+        group.add(transformer, new BasicSerializer<S>("fst",false,false),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerClass.ZERO_KNOWLEDGE,
+                        "default: JDK serialization drop-in-replacement mode"
+                )
+        );
+
     }
 
     // ------------------------------------------------------------
     // Serializers
 
     /**
-     * setup similar to kryo: all classes registered, unshared mode, unsafe disabled (does not help anyway for this bench)
+     * setup similar to kryo
      */
     public static class BasicSerializer<T> extends Serializer<T> {
-        final static FSTConfiguration conf;
+        final static FSTConfiguration confUnsharedUnregistered;
+        final static FSTConfiguration confUnshared;
         final static FSTConfiguration confShared;
         static {
 //            System.setProperty("fst.unsafe", "true");
-            conf = FSTConfiguration.createDefaultConfiguration();
-            conf.setShareReferences(false);
-            conf.registerClass(
+            confUnsharedUnregistered = FSTConfiguration.createDefaultConfiguration();
+            confUnsharedUnregistered.setShareReferences(false);
+
+            confUnshared = FSTConfiguration.createDefaultConfiguration();
+            confUnshared.setShareReferences(false);
+            confUnshared.registerClass(
                     Image.Size.class,
                     Image.class,
                     Media.Player.class,
@@ -59,19 +87,27 @@ public class FastSerialization {
                     MediaContent[].class,
                     MediaContent.class,
                     MediaContent.class);
+            
             confShared = FSTConfiguration.createDefaultConfiguration();
         }
 
         FSTObjectInput objectInput;
         FSTObjectOutput objectOutput;
+        boolean unshared;
         String name;
+        Class type[] = { MediaContent.class };
 
-        public BasicSerializer (String name, boolean unshared) {
-            conf.setShareReferences(!unshared);
+        public BasicSerializer (String name, boolean unshared, boolean register) {
             this.name = name;
+            this.unshared = unshared;
             if ( unshared ) {
-                objectInput = new FSTObjectInputNoShared(conf);
-                objectOutput = new FSTObjectOutputNoShared(conf);
+                if ( register ) {
+                    objectInput = new FSTObjectInputNoShared(confUnshared);
+                    objectOutput = new FSTObjectOutputNoShared(confUnshared);
+                } else {
+                    objectInput = new FSTObjectInputNoShared(confUnsharedUnregistered);
+                    objectOutput = new FSTObjectOutputNoShared(confUnsharedUnregistered);
+                }
             } else {
                 objectInput = new FSTObjectInput(confShared);
                 objectOutput = new FSTObjectOutput(confShared);
@@ -86,7 +122,7 @@ public class FastSerialization {
         private Object deserializeInternal(byte[] array) {
             try {
                 objectInput.resetForReuseUseArray(array);
-                return objectInput.readObject();
+                return objectInput.readObject(type);
             } catch (Throwable e) {
                 e.printStackTrace();
             }
@@ -94,13 +130,9 @@ public class FastSerialization {
         }
 
         public byte[] serialize (T content) {
-            return serializeInternal(content);
-        }
-
-        private byte[] serializeInternal(Object content) {
             try {
                 objectOutput.resetForReUse();
-                objectOutput.writeObject(content);
+                objectOutput.writeObject(content,type);
                 return objectOutput.getCopyOfWrittenBuffer();
             } catch (IOException e) {
                 e.printStackTrace();

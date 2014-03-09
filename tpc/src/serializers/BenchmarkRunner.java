@@ -9,6 +9,7 @@ import serializers.javaxjson.*;
 import serializers.json.*;
 import serializers.msgpack.MsgPack;
 import serializers.protobuf.Protobuf;
+import serializers.protobuf.ProtobufJson;
 import serializers.protostuff.Protostuff;
 import serializers.protostuff.ProtostuffJson;
 import serializers.xml.ExiExificient;
@@ -26,7 +27,26 @@ public class BenchmarkRunner extends MediaItemBenchmark
         new BenchmarkRunner().runBenchmark(args);
     }
 
-    @Override
+    protected void addTests0(TestGroups groups)
+    {
+        // Binary Formats; language-specific ones
+//        JavaBuiltIn.register(groups);
+//        JavaManual.register(groups);
+        Protostuff.register(groups);
+
+// 06-May-2013, tatu: way too slow, commenting out for now, can add in slow section?
+//        Scala.register(groups);
+// hessian, kryo and wobly are Java object serializations
+//        Hessian.register(groups);
+//        FastSerialization.register(groups);
+//        Kryo.register(groups);
+//        JBossSerialization.register(groups);
+        
+        // Then JSON-like
+        // CKS text is textual JSON-like format
+        CksText.register(groups);
+    }
+    
     protected void addTests(TestGroups groups)
     {
         // Binary Formats; language-specific ones
@@ -34,7 +54,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         JavaManual.register(groups);
 
 // 06-May-2013, tatu: way too slow, commenting out for now, can add in slow section?
-//        Scala.register(groups);
+        Scala.register(groups); // ruediger: let them face the truth :-). Not a problem as now time based test duration
 // hessian, kryo and wobly are Java object serializations
         Hessian.register(groups);
         Kryo.register(groups);
@@ -69,10 +89,10 @@ public class BenchmarkRunner extends MediaItemBenchmark
         JavaxJsonStreamGlassfish.register(groups);
         JsonTwoLattes.register(groups);
         ProtostuffJson.register(groups);
-// too slow, why bother:
-//        ProtobufJson.register(groups);
+
+        ProtobufJson.register(groups);
         JsonGsonManual.register(groups);
-//        JsonGsonTree.register(groups);
+        JsonGsonTree.register(groups);
         JsonGsonDatabind.register(groups);
         JsonSvensonDatabind.register(groups);
         FlexjsonDatabind.register(groups);

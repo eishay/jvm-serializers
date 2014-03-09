@@ -7,9 +7,7 @@ import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.SmileIOUtil;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 import serializers.protostuff.media.MediaContent;
 
 /**
@@ -23,9 +21,23 @@ public final class ProtostuffSmile
     public static void register(TestGroups groups)
     {
         // manual (hand-coded schema, no autoboxing)
-        groups.media.add(JavaBuiltIn.mediaTransformer, SmileManualMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, SmileManualMediaSerializer,
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        ""
+                )
+        );
         // runtime (reflection)
-        groups.media.add(JavaBuiltIn.mediaTransformer, SmileRuntimeMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, SmileRuntimeMediaSerializer,
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
 
         /* protostuff has too many entries
 
