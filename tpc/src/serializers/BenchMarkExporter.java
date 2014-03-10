@@ -49,7 +49,9 @@ public class BenchMarkExporter extends BenchmarkRunner {
             String next = iterator.next().trim();
             if ( ! next.equals("cks") && ! next.equals("cks-text") ) // used to read data, exclude
                 alltests += next+ (iterator.hasNext() ? "," : "");
-            featureMap.put(next,groups.groupMap.get("media").getSerMap().get(next).getFeatures());
+            SerFeatures features = groups.groupMap.get("media").getSerMap().get(next).getFeatures();
+//            System.out.println("serializer:"+next+" features: "+features);
+            featureMap.put(next, features);
         }
     }
 

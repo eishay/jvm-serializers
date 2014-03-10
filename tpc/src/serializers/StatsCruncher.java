@@ -25,7 +25,6 @@ package serializers;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -42,6 +41,7 @@ import java.util.*;
  */
 public class StatsCruncher {
 
+    public static final int MAX_CHART_BARS = 18;
     HashMap<String, SerFeatures> mappedFeatures = new HashMap<>();
     HashMap<String, TestCaseResult> mappedResults;
     List<TestCaseResult> resultList;
@@ -82,13 +82,14 @@ public class StatsCruncher {
             res.setSize(Integer.parseInt(split[5].trim()));
             res.setCompressedSize(Integer.parseInt(split[6].trim()));
             mappedResults.put(res.getName(), res);
+            res.setFeatures(mappedFeatures.get(res.getName()));
             resultList.add(res);
         }
     }
 
-    public int max(List<TestCaseResult> resultList, String arg) {
+    public int max(List<TestCaseResult> resultList, String arg, int elems) {
         int max = Integer.MIN_VALUE;
-        for (int i = 0; i < resultList.size(); i++) {
+        for (int i = 0; i < Math.min(elems,resultList.size()); i++) {
             TestCaseResult testCaseResult = resultList.get(i);
             max = Math.max(testCaseResult.getInt(arg),max);
         }
@@ -105,30 +106,32 @@ public class StatsCruncher {
     }
 
     public String generateChart(List<TestCaseResult> resultList, String title, String lowerValueName, String higherValueName) {
-        int max = max(resultList,higherValueName);
-        String res = "https://chart.googleapis.com/chart?cht=bhs&chs=600x"+(resultList.size()*26+20); // html: finally a device independent technology
+        int chartSize = Math.min(MAX_CHART_BARS, resultList.size() ); // more bars aren't possible with gcharts
+        int max = max(resultList, higherValueName, MAX_CHART_BARS);
+        String res = "https://chart.googleapis.com/chart?cht=bhs&chs=600x"+(chartSize *20+14); // html: finally a device independent technology
 //        res+="&chtt="+URLEncoder.encode(title);
         res+="&chd=t:";
-        for (int i = 0; i < resultList.size(); i++) {
+        for (int i = 0; i < chartSize; i++) {
             TestCaseResult testCaseResult = resultList.get(i);
             int val = testCaseResult.getInt(lowerValueName);
-            res+= val +((i<resultList.size()-1) ? ",":"|");
+            res+= val +((i< chartSize -1) ? ",":"|");
         }
-        for (int i = 0; i < resultList.size(); i++) {
+        for (int i = 0; i < chartSize; i++) {
             TestCaseResult testCaseResult = resultList.get(i);
             int valLower = (testCaseResult.getInt(lowerValueName));
             int val = testCaseResult.getInt(higherValueName);
             val -= valLower;
-            res+=val+((i<resultList.size()-1) ? ",":"");
+            res+=val+((i< chartSize -1) ? ",":"");
         }
-        res += "&chco=5d99f9,4d89f9&chdlp=t";
-        res += "&chbh=20";
+        res += "&chco=5d99f9,4d89f9";
+        res += "&chdlp=t";
+        res += "&chbh=15";
         res += "&chds=0,"+max;
         res += "&chxr=1,0,"+max;
         res += "&chxt=y,x&chxl=0:|";
-        for (int i = 0; i < resultList.size(); i++) {
-            TestCaseResult testCaseResult = resultList.get(resultList.size()-i-1);
-            res+=URLEncoder.encode(testCaseResult.getName())+((i<resultList.size()-1) ? "|":"");
+        for (int i = 0; i < chartSize; i++) {
+            TestCaseResult testCaseResult = resultList.get(chartSize -i-1);
+            res+=URLEncoder.encode(testCaseResult.getName())+((i< chartSize -1) ? "|":"");
         }
         return "<b>"+title+"</b><br><img src='"+res+"'/>";
     }
@@ -139,7 +142,6 @@ public class StatsCruncher {
      * @param intFieldToSort - result field name to sort for (create ser deser total size compressedSize) 
      * @param maxRangeDiff - max distance of min value (remove outliers)
      * @param maxListLen - max number of entries in result
-     * @param features - required features. null in a feature is wildcard. e.g. new SerFeature( JSON, null, null ) 
      * @return
      */
     public List<TestCaseResult> generateChartList(String commaSeparatedNames, final String intFieldToSort, int maxRangeDiff, int maxListLen, SerFeatures featureFilter) 
@@ -159,16 +161,11 @@ public class StatsCruncher {
                 }
             }
         }
-        Collections.sort(chartList, new Comparator<TestCaseResult>() {
-            @Override
-            public int compare(TestCaseResult o1, TestCaseResult o2) {
-                return o1.getInt(intFieldToSort)-o2.getInt(intFieldToSort);
-            }
-        });
+        chartList = sort(intFieldToSort, chartList);
         // process feature filter (I am in dirt mode here ..)
         for (int i = 0; i < chartList.size(); i++) {
             TestCaseResult testCaseResult = chartList.get(i);
-            SerFeatures feature = mappedFeatures.get(testCaseResult.getName());
+            SerFeatures feature = testCaseResult.getFeatures();
             if ( feature != null ) {
                  if ( 
                         ( featureFilter.getClz() != null && ! featureFilter.getClz().equals(feature.getClz()) ) ||
@@ -194,14 +191,15 @@ public class StatsCruncher {
         return chartList;
     }
 
-    String generateChartAndDump(String title, final String intFieldToSort,final String lowerValueName, SerFormat fmt, SerGraph graph,SerClass clz ) {
-        return generateChartAndDump(title, "*", intFieldToSort, lowerValueName, 50, 18, new SerFeatures(fmt,graph,clz));
-    }
-
-    String generateChartAndDump(String title, String commaSeparatedNamesOrStar, final String intFieldToSort,final String lowerValueName, int maxRangeDiff, int maxListLen, SerFeatures featureFilter) {
-        List<TestCaseResult> testCaseResults = generateChartList(commaSeparatedNamesOrStar, intFieldToSort, maxRangeDiff, maxListLen, featureFilter);
-        
-        return "<b>"+title+"</b><br>\n"+dump(testCaseResults)+generateChart(testCaseResults,title,lowerValueName,intFieldToSort);
+    protected List<TestCaseResult> sort(final String intFieldToSort, List<TestCaseResult> chartList) {
+        List<TestCaseResult> res = new ArrayList<>(chartList);
+        Collections.sort(res, new Comparator<TestCaseResult>() {
+            @Override
+            public int compare(TestCaseResult o1, TestCaseResult o2) {
+                return o1.getInt(intFieldToSort) - o2.getInt(intFieldToSort);
+            }
+        });
+        return res;
     }
 
     String dump(List<TestCaseResult> total) {
@@ -213,6 +211,13 @@ public class StatsCruncher {
         return res+"\n";
     }
 
+    String generateResultSection(List<TestCaseResult> testCaseResults, String title) {
+        return  "\n\n<h3>"+title+"</h3>\n"+
+                generateChart(testCaseResults,"Ser Time+Deser Timee (ns)","ser","total")+"\n"+
+                generateChart( sort("size",testCaseResults),"Size, Compressed [light] in bytes","compressedSize","size")+"\n"+
+                dump(testCaseResults);
+    }
+
     //////////////////////////////////////////////////////////////////////////////////
 
 
@@ -222,10 +227,97 @@ public class StatsCruncher {
         List<TestCaseResult> total = statsCruncher.generateChartList("*", "total", 1000, 1000, new SerFeatures(null,null,null));
         statsCruncher.dump(total);
 
-        System.out.println( statsCruncher.generateChartAndDump("ZeroEffort Full Serializers, total Time+Ser Time in ns", "total", "ser", null, SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS, SerClass.ZERO_KNOWLEDGE) );
-        System.out.println( statsCruncher.generateChartAndDump("ZeroEffort Serializers, total Time+Ser Time in ns", "total", "ser", null, null, SerClass.ZERO_KNOWLEDGE) );
-        System.out.println( statsCruncher.generateChartAndDump("CL Binary Serializers, total Time+Ser Time in ns", "total", "ser", SerFormat.BINARY_CROSSLANG, null, null) );
-        System.out.println( statsCruncher.generateChartAndDump("Class known, total Time+Ser Time in ns", "total", "ser", null, null, SerClass.CLASSES_KNOWN) );
+        // first chart (like in previous tests)
+        // fastest of flat serializers (with or without preparation, exclude manually optimized)
+        List<TestCaseResult> all = statsCruncher.generateChartList("*", "total", 1000, 1000, new SerFeatures(null, null, null));
+        for (int i = 0; i < all.size(); i++) {
+            TestCaseResult testCaseResult = all.get(i);
+            if ( 
+                    testCaseResult.getFeatures().getGraph() == SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS     // exclude full serializers
+                 || testCaseResult.getFeatures().getClz() == SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS  // exclude manually optimized
+                 || ",kryo-flat,fst-flat,protobuf/protostuff,protostuff-runtime,protobuf/protostuff-runtime,"
+                            .indexOf(","+testCaseResult.getName()+",") >= 0 // prevent some libs to contribute twice to chart
+               ) {
+                all.remove(i--);
+            }
+        }
+        System.out.println( statsCruncher.generateResultSection(all, "Serializers (no shared refs)") );
+
+        // Second chart
+        // plain vanilla Full Graph serializers without generation/preparation
+        all = statsCruncher.generateChartList("*", "total", 1000, 1000, new SerFeatures(null, null, null));
+        for (int i = 0; i < all.size(); i++) {
+            TestCaseResult testCaseResult = all.get(i);
+            if (
+                    testCaseResult.getFeatures().getGraph() != SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS     // exclude full serializers
+                    || testCaseResult.getFeatures().getClz() == SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS  // exclude manually optimized
+                    || ",,".indexOf(","+testCaseResult.getName()+",") >= 0 // prevent some libs to contribute twice to chart
+                    ) {
+                all.remove(i--);
+            }
+        }
+        System.out.println( statsCruncher.generateResultSection(all, "Full Object Graph Serializers") );
+
+        // 3rd chart
+        // Cross language binary serializer 
+        all = statsCruncher.generateChartList("*", "total", 1000, 1000, new SerFeatures(null, null, null));
+        for (int i = 0; i < all.size(); i++) {
+            TestCaseResult testCaseResult = all.get(i);
+            if (
+                    testCaseResult.getFeatures().getFormat() != SerFormat.BINARY_CROSSLANG 
+                    || testCaseResult.getFeatures().getClz() == SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS  // exclude manually optimized
+                    || ",,".indexOf(","+testCaseResult.getName()+",") >= 0 // prevent some libs to contribute twice to chart
+                ) {
+                all.remove(i--);
+            }
+        }
+        System.out.println( statsCruncher.generateResultSection(all, "Cross Lang Binary Serializers") );
+
+        // 4th chart
+        // JSon+XML 
+        all = statsCruncher.generateChartList("*", "total", 1000, 1000, new SerFeatures(null, null, null));
+        for (int i = 0; i < all.size(); i++) {
+            TestCaseResult testCaseResult = all.get(i);
+            if (
+                    (testCaseResult.getFeatures().getFormat() != SerFormat.JSON
+                     && testCaseResult.getFeatures().getFormat() != SerFormat.XML)
+                    || testCaseResult.getFeatures().getClz() == SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS  // exclude manually optimized
+                    || ",,".indexOf(","+testCaseResult.getName()+",") >= 0 // prevent some libs to contribute twice to chart
+            ) 
+            {
+                all.remove(i--);
+            }
+        }
+        System.out.println( statsCruncher.generateResultSection(all, "XML/JSon Serializers") );
+
+        // Manually optimized 
+        all = statsCruncher.generateChartList("*", "total", 1000, 1000, new SerFeatures(null, null, null));
+        for (int i = 0; i < all.size(); i++) {
+            TestCaseResult testCaseResult = all.get(i);
+            if (
+                    testCaseResult.getFeatures().getClz() != SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS  // exclude NON manually optimized
+                    || ",,".indexOf(","+testCaseResult.getName()+",") >= 0 // prevent some libs to contribute twice to chart
+                )
+            {
+                all.remove(i--);
+            }
+        }
+        System.out.println( statsCruncher.generateResultSection(all, "Manually optimized Serializers") );
+
+        // Cost of features 
+        all = statsCruncher.generateChartList("*", "total", 1000, 1000, new SerFeatures(null, null, null));
+        for (int i = 0; i < all.size(); i++) {
+            TestCaseResult testCaseResult = all.get(i);
+            if (
+                  ",fst,fst-flat,fst-flat-pre,kryo-manual,kryo-serializer,kryo-flat,kryo-flat-pre,protostuff,protostuff-runtime,protostuf-manual,msgpack-databind,msgpack-manual,"
+                          .indexOf(","+testCaseResult.getName()+",") < 0 // only these
+               )
+            {
+                all.remove(i--);
+            }
+        }
+        System.out.println( statsCruncher.generateResultSection(all, "Cost of features") );
+
     }
 
 

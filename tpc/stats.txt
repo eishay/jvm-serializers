@@ -39,7 +39,7 @@ json/svenson-databind                  73    5772   12192   17964    495   265
 kryo-flat-pre                          73     752    1007    1759    212   132
 kryo-manual                            76     616     720    1337    211   131
 kryo-opt                               73     743    1029    1772    209   129
-kryo-serializer-flat                   74     968    1321    2289    293   188
+kryo-flat                              74     968    1321    2289    293   188
 kryo-serializer                        73    1946    1740    3687    311   198
 msgpack-databind                       74     955    1607    2562    233   146
 msgpack-manual                         73    1004    1487    2491    233   146

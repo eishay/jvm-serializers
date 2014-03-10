@@ -44,6 +44,16 @@ public class SerFeatures {
         this.description = description;
     }
 
+    @Override
+    public String toString() {
+        return "SerFeatures{" +
+                "format=" + format +
+                ", graph=" + graph +
+                ", clz=" + clz +
+                ", description='" + description + '\'' +
+                '}';
+    }
+
     public String getDescription() {
         return description;
     }

@@ -116,7 +116,7 @@ public class Kryo {
         }
 
         public String getName () {
-            return "kryo-serializer"+(shared?"":"-flat");
+            return "kryo"+(shared?"-serializer":"-flat");
         }
     }
 
