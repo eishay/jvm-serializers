@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... json/argo-manual/tree
 [done]
                                    create     ser   deser   total   size  +dfl
-json/argo-manual/tree                  72   71479   16924   88403    485   263
+json/argo-manual/tree                  79   74553   17969   92522    485   263
