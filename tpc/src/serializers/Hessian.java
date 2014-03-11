@@ -13,8 +13,8 @@ public class Hessian
     {
         groups.media.add(JavaBuiltIn.mediaTransformer, new HessianSerializer<MediaContent>(MediaContent.class), 
                 new SerFeatures(
-                        SerFormat.BINARY_CROSSLANG,
-                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerFormat.BIN_CROSSLANG,
+                        SerGraph.FULL_GRAPH,
                         SerClass.ZERO_KNOWLEDGE,""
                 ) 
         );

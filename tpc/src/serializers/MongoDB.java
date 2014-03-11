@@ -21,9 +21,9 @@ public class MongoDB
 	{
 		groups.media.add(JavaBuiltIn.mediaTransformer, new MongoDBSerializer(),
                 new SerFeatures(
-                        SerFormat.BINARY_CROSSLANG,
+                        SerFormat.BIN_CROSSLANG,
                         SerGraph.FLAT_TREE,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerClass.MANUAL_OPT,
                         ""
                 )
         );

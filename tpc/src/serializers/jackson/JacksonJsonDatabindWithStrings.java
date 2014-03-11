@@ -23,7 +23,7 @@ public class JacksonJsonDatabindWithStrings<T> extends BaseJacksonDataBind<T>
                 new SerFeatures(
                         SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerClass.MANUAL_OPT,
                         ""
                 )
         );

@@ -42,7 +42,7 @@ public final class Protostuff
                 new SerFeatures(
                         SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerClass.MANUAL_OPT,
                         ""
                 )
         );
@@ -60,7 +60,7 @@ public final class Protostuff
         // protobuf serialization + generated code
         groups.media.add(mediaTransformer, ProtobufMediaSerializer,
                 new SerFeatures(
-                        SerFormat.BINARY_CROSSLANG,
+                        SerFormat.BIN_CROSSLANG,
                         SerGraph.FLAT_TREE,
                         SerClass.CLASSES_KNOWN,
                         "protobuf serialization + generated code"

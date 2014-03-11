@@ -29,7 +29,7 @@ public enum SerFormat {
     /**
      * specified binary format which might be read by another language/implementation
      */
-    BINARY_CROSSLANG,
+    BIN_CROSSLANG,
     /**
      * text based JSon format
      */

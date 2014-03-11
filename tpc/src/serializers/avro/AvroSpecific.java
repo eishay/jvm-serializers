@@ -22,9 +22,9 @@ public class AvroSpecific
     {
         groups.media.add(new AvroTransformer(), new GenericSerializer<MediaContent>(MediaContent.class),
                 new SerFeatures(
-                        SerFormat.BINARY_CROSSLANG,
+                        SerFormat.BIN_CROSSLANG,
                         SerGraph.UNKNOWN,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerClass.MANUAL_OPT,
                         ""
                 )
         );

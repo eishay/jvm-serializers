@@ -30,7 +30,7 @@ public class JacksonBsonDatabind
                 new DataBindBase<MediaContent>(
                         "bson/jackson/databind", MediaContent.class, mapper),
                 new SerFeatures(
-                        SerFormat.BINARY_CROSSLANG,
+                        SerFormat.BIN_CROSSLANG,
                         SerGraph.FLAT_TREE,
                         SerClass.CLASSES_KNOWN,
                         ""

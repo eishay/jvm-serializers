@@ -20,7 +20,7 @@ public class FlexjsonDatabind
                     new GenericSerializer<MediaContent>("json/flexjson/databind", MediaContent.class),
             new SerFeatures(
                     SerFormat.JSON,
-                    SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                    SerGraph.FULL_GRAPH,
                     SerClass.ZERO_KNOWLEDGE,
                     ""
             )

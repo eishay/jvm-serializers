@@ -25,15 +25,15 @@ public class Kryo {
 	}
 
 	private static <T, S> void register (TestGroup<T> group, Transformer<T, S> transformer, TypeHandler<S> handler) {
-        group.add(transformer, new DefaultSerializer<S>(true),
+        group.add(transformer, new DefaultSerializer<S>(handler, true),
                 new SerFeatures(
                         SerFormat.BINARY,
-                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerGraph.FULL_GRAPH,
                         SerClass.ZERO_KNOWLEDGE,
                         "default"
                 )
         );
-        group.add(transformer, new DefaultSerializer<S>(false),
+        group.add(transformer, new DefaultSerializer<S>(handler, false),
                 new SerFeatures(
                         SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
@@ -53,7 +53,7 @@ public class Kryo {
                 new SerFeatures(
                         SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerClass.MANUAL_OPT,
                         "manually optimized"
                 )
         );
@@ -61,7 +61,7 @@ public class Kryo {
                 new SerFeatures(
                         SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerClass.MANUAL_OPT,
                         "manually optimized"
                 )
         );
@@ -90,7 +90,7 @@ public class Kryo {
         @SuppressWarnings("unchecked")
         public T deserialize (byte[] array) {
             input.setBuffer(array);
-            return (T) kryo.readObject(input,type);
+            return (T) kryo.readObject(input, type);
         }
 
         public byte[] serialize (T content) {

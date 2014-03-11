@@ -37,7 +37,7 @@ public class XmlStax
                     new SerFeatures(
                             SerFormat.XML,
                             SerGraph.UNKNOWN,
-                            SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                            SerClass.MANUAL_OPT,
                             ""
                     )
             );
@@ -48,7 +48,7 @@ public class XmlStax
                     new SerFeatures(
                             SerFormat.XML,
                             SerGraph.UNKNOWN,
-                            SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                            SerClass.MANUAL_OPT,
                             ""
                     )
             );
@@ -58,7 +58,7 @@ public class XmlStax
                     new SerFeatures(
                             SerFormat.XML,
                             SerGraph.UNKNOWN,
-                            SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                            SerClass.MANUAL_OPT,
                             ""
                     )
             );

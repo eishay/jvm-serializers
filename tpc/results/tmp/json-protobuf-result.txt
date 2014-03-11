@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... json/protobuf
 [done]
                                    create     ser   deser   total   size  +dfl
-json/protobuf                         151    9883   61416   71299    488   253
+json/protobuf                         155    9769   62569   72339    488   253

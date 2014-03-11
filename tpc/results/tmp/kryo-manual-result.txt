@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... kryo-manual
 [done]
                                    create     ser   deser   total   size  +dfl
-kryo-manual                            76     616     720    1337    211   131
+kryo-manual                            77     653     736    1389    211   131

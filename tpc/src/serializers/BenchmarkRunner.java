@@ -27,26 +27,6 @@ public class BenchmarkRunner extends MediaItemBenchmark
         new BenchmarkRunner().runBenchmark(args);
     }
 
-    protected void addTests0(TestGroups groups)
-    {
-        // Binary Formats; language-specific ones
-//        JavaBuiltIn.register(groups);
-//        JavaManual.register(groups);
-        Protostuff.register(groups);
-
-// 06-May-2013, tatu: way too slow, commenting out for now, can add in slow section?
-//        Scala.register(groups);
-// hessian, kryo and wobly are Java object serializations
-//        Hessian.register(groups);
-//        FastSerialization.register(groups);
-//        Kryo.register(groups);
-//        JBossSerialization.register(groups);
-        
-        // Then JSON-like
-        // CKS text is textual JSON-like format
-        CksText.register(groups);
-    }
-    
     protected void addTests(TestGroups groups)
     {
         // Binary Formats; language-specific ones

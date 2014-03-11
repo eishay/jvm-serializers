@@ -8,8 +8,6 @@ import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
 import serializers.*;
 import serializers.protostuff.media.MediaContent;
-import serializers.protostuff.media.Media;
-import serializers.protostuff.media.Image;
 
 public final class ProtostuffXml
 {
@@ -21,7 +19,7 @@ public final class ProtostuffXml
                 new SerFeatures(
                         SerFormat.XML,
                         SerGraph.FLAT_TREE,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerClass.MANUAL_OPT,
                         ""
                 )
         );

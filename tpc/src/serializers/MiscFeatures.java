@@ -18,18 +18,18 @@ package serializers;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  * <p/>
- * Date: 09.03.14
- * Time: 11:36
+ * Date: 11.03.14
+ * Time: 19:48
  * To change this template use File | Settings | File Templates.
  */
-public enum SerGraph {
-    /**
-     * cannot process object graphs containing cyclic references (flat tree only)
-     */
-    FLAT_TREE,
-    /**
-     * capable of read/write fully linked object graphs with reference restauration
-     */
-    FULL_GRAPH,
-    UNKNOWN
+
+/**
+ * describes misc miscFeatures a serializer might have. 
+ */
+public enum MiscFeatures {
+    VERSIONING_BACKWARD_COMPATIBLE,
+    VERSIONING_FORWARD_COMPATIBLE,
+    VERSIONING_MISMATCH_DETECTION,
+    CONTAINS_SCHEMA,
+    OPTIMIZATION_BY_ANNOTATION
 }

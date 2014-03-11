@@ -1,5 +1,8 @@
 package serializers;
 
+import java.util.EnumSet;
+import java.util.Formatter;
+
 /**
  * Copyright (c) 2012, Ruediger Moeller. All rights reserved.
  * <p/>
@@ -26,6 +29,9 @@ public class SerFeatures {
     SerFormat format = SerFormat.MISC;
     SerGraph graph = SerGraph.UNKNOWN;
     SerClass clz = SerClass.MISC;
+    // FIXME: should have used one EnumSet from the beginning so we could get rid of 
+    // SerFormat,SerGraph,SerClass .. sigh. Too lazy to change this now :-). ruediger
+    EnumSet<MiscFeatures> miscFeatures = EnumSet.noneOf(MiscFeatures.class);
     String description;
 
     public SerFeatures() {
@@ -44,15 +50,34 @@ public class SerFeatures {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return "SerFeatures{" +
-                "format=" + format +
-                ", graph=" + graph +
-                ", clz=" + clz +
-                ", description='" + description + '\'' +
-                '}';
+    public SerFeatures(SerFormat format, SerGraph graph, SerClass clz, String description, EnumSet<MiscFeatures> features) {
+        this.format = format;
+        this.graph = graph;
+        this.clz = clz;
+        this.miscFeatures = features;
+        this.description = description;
     }
+
+    public EnumSet<MiscFeatures> getMiscFeatures() {
+        return miscFeatures;
+    }
+
+    public void setMiscFeatures(EnumSet<MiscFeatures> miscFeatures) {
+        this.miscFeatures = miscFeatures;
+    }
+
+    public String toString(String name) {
+        Formatter format = new Formatter().format(
+                "%-34s %-15s %-14s %-10s %-60s",
+                name,
+                getClz(),
+                getFormat(),
+                getGraph(),
+                getMiscFeatures()+" "+getDescription()
+        );
+        return format.toString();
+    }
+
 
     public String getDescription() {
         return description;

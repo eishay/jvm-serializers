@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... protostuff
 [done]
                                    create     ser   deser   total   size  +dfl
-protostuff                             96     560     825    1386    239   150
+protostuff                             97     564     844    1408    239   150

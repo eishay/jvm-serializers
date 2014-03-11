@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... json/javax-stream/glassfish
 [done]
                                    create     ser   deser   total   size  +dfl
-json/javax-stream/glassfish            74    7415   12370   19784    468   253
+json/javax-stream/glassfish            72    7348   12474   19823    468   253

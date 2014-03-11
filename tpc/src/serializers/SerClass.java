@@ -35,7 +35,7 @@ public enum SerClass {
      * requires knowledge in advance which classes can be serialized. Preconfiguration/Code Generation required
      * additionally field specific manually written read/write code 
      */
-    CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+    MANUAL_OPT,
     /**
      * add new category if you fall into this :-)
      */

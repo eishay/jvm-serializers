@@ -16,7 +16,7 @@ esac
 cp=./build/bytecode/main$sep$cpgen$sep$cplib
 testTime=10000
 warmupTime=10000
-iter=100
+iter=2000
 
 mkdir ./results/tmp &> /dev/null
 

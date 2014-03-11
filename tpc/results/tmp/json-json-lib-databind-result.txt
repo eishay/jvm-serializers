@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... json/json-lib-databind
 [done]
                                    create     ser   deser   total   size  +dfl
-json/json-lib-databind                 74   28873  134041  162914    485   263
+json/json-lib-databind                 74   29224  131837  161061    485   263

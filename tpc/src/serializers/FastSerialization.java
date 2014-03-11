@@ -54,7 +54,7 @@ public class FastSerialization {
         group.add(transformer, new BasicSerializer<S>("fst",false,false),
                 new SerFeatures(
                         SerFormat.BINARY,
-                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerGraph.FULL_GRAPH,
                         SerClass.ZERO_KNOWLEDGE,
                         "default: JDK serialization drop-in-replacement mode"
                 )

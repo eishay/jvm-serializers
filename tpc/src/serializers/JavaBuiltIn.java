@@ -28,7 +28,7 @@ public class JavaBuiltIn
         groups.media.add(mediaTransformer, new GenericSerializer<MediaContent>("java-built-in-serializer",false),
                 new SerFeatures(
                         SerFormat.BINARY,
-                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerGraph.FULL_GRAPH,
                         SerClass.ZERO_KNOWLEDGE,
                         ""
                 )

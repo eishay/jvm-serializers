@@ -26,9 +26,9 @@ public class AvroGeneric
 	{
 		groups.media.add(MediaTransformer, new GenericSerializer(Avro.Media.sMediaContent),
                 new SerFeatures(
-                        SerFormat.BINARY_CROSSLANG,
+                        SerFormat.BIN_CROSSLANG,
                         SerGraph.FLAT_TREE,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerClass.MANUAL_OPT,
                         ""
                 )
         );

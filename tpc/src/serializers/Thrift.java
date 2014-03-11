@@ -21,7 +21,7 @@ public class Thrift
 	{
 		groups.media.add(mediaTransformer, new MediaSerializer(ProtocolSpec.DefaultBinary),
                 new SerFeatures(
-                        SerFormat.BINARY_CROSSLANG,
+                        SerFormat.BIN_CROSSLANG,
                         SerGraph.FLAT_TREE,
                         SerClass.CLASSES_KNOWN,
                         ""
@@ -29,7 +29,7 @@ public class Thrift
         );
 		groups.media.add(mediaTransformer, new MediaSerializer(ProtocolSpec.CompactBinary),
                 new SerFeatures(
-                        SerFormat.BINARY_CROSSLANG,
+                        SerFormat.BIN_CROSSLANG,
                         SerGraph.FLAT_TREE,
                         SerClass.CLASSES_KNOWN,
                         ""

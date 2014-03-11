@@ -21,7 +21,7 @@ public class JavaxJsonStreamGlassfish extends JavaxJsonStream {
                 new SerFeatures(
                         SerFormat.JSON,
                         SerGraph.FLAT_TREE,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerClass.MANUAL_OPT,
                         ""
                 )
         );

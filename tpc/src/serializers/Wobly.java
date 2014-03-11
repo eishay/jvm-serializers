@@ -10,7 +10,7 @@ public class Wobly {
                 new SerFeatures(
                         SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerClass.MANUAL_OPT,
                         ""
                 )
         );
@@ -18,7 +18,7 @@ public class Wobly {
                 new SerFeatures(
                         SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerClass.MANUAL_OPT,
                         ""
                 )
         );

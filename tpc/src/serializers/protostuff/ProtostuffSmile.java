@@ -2,7 +2,6 @@ package serializers.protostuff;
 
 import static serializers.protostuff.Protostuff.MEDIA_CONTENT_SCHEMA;
 
-import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.SmileIOUtil;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
@@ -25,7 +24,7 @@ public final class ProtostuffSmile
                 new SerFeatures(
                         SerFormat.JSON,
                         SerGraph.FLAT_TREE,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerClass.MANUAL_OPT,
                         ""
                 )
         );
@@ -33,7 +32,7 @@ public final class ProtostuffSmile
         groups.media.add(JavaBuiltIn.mediaTransformer, SmileRuntimeMediaSerializer,
                 new SerFeatures(
                         SerFormat.JSON,
-                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerGraph.FULL_GRAPH,
                         SerClass.ZERO_KNOWLEDGE,
                         ""
                 )

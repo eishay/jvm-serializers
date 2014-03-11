@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... xml/javolution
 [done]
                                    create     ser   deser   total   size  +dfl
-xml/javolution                         73    6023    9868   15891    504   263
+xml/javolution                         74    6479    9808   16287    504   263

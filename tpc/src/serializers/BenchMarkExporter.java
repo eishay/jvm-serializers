@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * tweak to generate a string containing all registered benchmarks. called by run script
+ * tweak to generate a string containing all registered benchmarks and extract bench feature data. called by run script
  */
 public class BenchMarkExporter extends BenchmarkRunner {
 
@@ -50,7 +50,7 @@ public class BenchMarkExporter extends BenchmarkRunner {
             if ( ! next.equals("cks") && ! next.equals("cks-text") ) // used to read data, exclude
                 alltests += next+ (iterator.hasNext() ? "," : "");
             SerFeatures features = groups.groupMap.get("media").getSerMap().get(next).getFeatures();
-//            System.out.println("serializer:"+next+" features: "+features);
+//            System.out.println("serializer:"+next+" miscFeatures: "+miscFeatures);
             featureMap.put(next, features);
         }
     }

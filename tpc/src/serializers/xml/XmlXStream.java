@@ -77,7 +77,7 @@ public class XmlXStream
                     new SerFeatures(
                             SerFormat.XML,
                             SerGraph.FLAT_TREE,
-                            SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                            SerClass.MANUAL_OPT,
                             ""
                     )
             );

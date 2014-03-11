@@ -43,7 +43,7 @@ public class JBossMarshalling {
 			),
                 new SerFeatures(
                         SerFormat.BINARY,
-                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerGraph.FULL_GRAPH,
                         SerClass.ZERO_KNOWLEDGE,
                         "full graph zero knowledge"
                 )
@@ -59,8 +59,8 @@ public class JBossMarshalling {
 			),
             new SerFeatures(
                     SerFormat.BINARY,
-                    SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
-                    SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                    SerGraph.FULL_GRAPH,
+                    SerClass.MANUAL_OPT,
                     "full graph with manual optimizations"
             )
         );
@@ -75,7 +75,7 @@ public class JBossMarshalling {
 			),
                 new SerFeatures(
                         SerFormat.BINARY,
-                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerGraph.FULL_GRAPH,
                         SerClass.CLASSES_KNOWN,
                         "full graph with preregistered classes"
                 )
@@ -91,8 +91,8 @@ public class JBossMarshalling {
 			),
             new SerFeatures(
                     SerFormat.BINARY,
-                    SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
-                    SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                    SerGraph.FULL_GRAPH,
+                    SerClass.MANUAL_OPT,
                     "full graph preregistered classes, manual optimization"
             )
 		);
@@ -107,7 +107,7 @@ public class JBossMarshalling {
 			),
                 new SerFeatures(
                         SerFormat.BINARY,
-                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerGraph.FULL_GRAPH,
                         SerClass.ZERO_KNOWLEDGE,
                         ""
                 )

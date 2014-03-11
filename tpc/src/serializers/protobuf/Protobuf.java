@@ -22,7 +22,7 @@ public class Protobuf
     public static void register(TestGroups groups) {
         groups.media.add(new Transformer(), new PBSerializer(),
                 new SerFeatures(
-                        SerFormat.BINARY_CROSSLANG,
+                        SerFormat.BIN_CROSSLANG,
                         SerGraph.FLAT_TREE,
                         SerClass.CLASSES_KNOWN,
                         ""

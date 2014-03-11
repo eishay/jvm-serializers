@@ -24,7 +24,7 @@ public class Obser {
 		group.add(transformer, new BasicSerializer<S>(),
                 new SerFeatures(
                         SerFormat.BINARY,
-                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerGraph.FULL_GRAPH,
                         SerClass.CLASSES_KNOWN,
                         ""
                 )
@@ -32,7 +32,7 @@ public class Obser {
 		group.add(transformer, new CompactSerializer<S>(),
                 new SerFeatures(
                         SerFormat.BINARY,
-                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
+                        SerGraph.FULL_GRAPH,
                         SerClass.CLASSES_KNOWN,
                         ""
                 )
@@ -40,16 +40,16 @@ public class Obser {
 		group.add(transformer, new CustomSerializer(),
                 new SerFeatures(
                         SerFormat.BINARY,
-                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerGraph.FULL_GRAPH,
+                        SerClass.MANUAL_OPT,
                         ""
                 )
         );
 		group.add(transformer, new CustomCompactSerializer(),
                 new SerFeatures(
                         SerFormat.BINARY,
-                        SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerGraph.FULL_GRAPH,
+                        SerClass.MANUAL_OPT,
                         ""
                 )
         );

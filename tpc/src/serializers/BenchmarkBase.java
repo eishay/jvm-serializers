@@ -11,7 +11,7 @@ import java.util.zip.DeflaterOutputStream;
  */
 abstract class BenchmarkBase
 {
-    public final static int DEFAULT_ITERATIONS = 500; // ruediger: reduced to avoid in-loop jitting
+    public final static int DEFAULT_ITERATIONS = 2000; 
     public final static int DEFAULT_TEST_RUN_MILLIS = 10000; // 10 seconds
 
     /**
@@ -488,15 +488,15 @@ abstract class BenchmarkBase
                                 doGc();
                                 // ruediger: turns out startup/init time is pretty equal for all tests. 
                                 // No need to spend too much time here
-                                double timeCreate = runner.runTakeMin(params.testRunMillis/3, testCreate, params.iterations); 
+                                double timeCreate = runner.runWithTimeMeasurement(params.testRunMillis / 3, testCreate, params.iterations); 
 
                                 warmTest(runner, params.warmupTime, testSerialize);
 
                                 doGc();
-                                double timeSerialize = runner.runTakeMin(params.testRunMillis, testSerialize, params.iterations);
+                                double timeSerialize = runner.runWithTimeMeasurement(params.testRunMillis, testSerialize, params.iterations);
                             
                                 doGc();
-                                double timeDeserialize = runner.runTakeMin(params.testRunMillis, testDeserialize, params.iterations);
+                                double timeDeserialize = runner.runWithTimeMeasurement(params.testRunMillis, testDeserialize, params.iterations);
 
                                 double totalTime = timeSerialize + timeDeserialize;
 

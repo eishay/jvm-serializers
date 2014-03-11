@@ -17,7 +17,7 @@ public class MsgPack
         h.register(msgpack);
         group.add(transformer, new MsgPackSerializer<S>("msgpack-databind", h, msgpack),
                 new SerFeatures(
-                        SerFormat.BINARY_CROSSLANG,
+                        SerFormat.BIN_CROSSLANG,
                         SerGraph.FLAT_TREE,
                         SerClass.CLASSES_KNOWN,
                         ""
@@ -30,9 +30,9 @@ public class MsgPack
 
         group.add(transformer, new MsgPackSerializer<S>("msgpack-manual", h, msgpack),
                 new SerFeatures(
-                        SerFormat.BINARY_CROSSLANG,
+                        SerFormat.BIN_CROSSLANG,
                         SerGraph.FLAT_TREE,
-                        SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
+                        SerClass.MANUAL_OPT,
                         ""
                 )
         );
