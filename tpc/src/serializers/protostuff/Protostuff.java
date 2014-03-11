@@ -60,7 +60,7 @@ public final class Protostuff
         // protobuf serialization + generated code
         groups.media.add(mediaTransformer, ProtobufMediaSerializer,
                 new SerFeatures(
-                        SerFormat.BINARY,
+                        SerFormat.BINARY_CROSSLANG,
                         SerGraph.FLAT_TREE,
                         SerClass.CLASSES_KNOWN,
                         "protobuf serialization + generated code"

@@ -45,7 +45,7 @@ public class JBossMarshalling {
                         SerFormat.BINARY,
                         SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
                         SerClass.ZERO_KNOWLEDGE,
-                        ""
+                        "full graph zero knowledge"
                 )
         );
 		groups.media.add(
@@ -61,7 +61,7 @@ public class JBossMarshalling {
                     SerFormat.BINARY,
                     SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
                     SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
-                    ""
+                    "full graph with manual optimizations"
             )
         );
 		groups.media.add(
@@ -77,7 +77,7 @@ public class JBossMarshalling {
                         SerFormat.BINARY,
                         SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
                         SerClass.CLASSES_KNOWN,
-                        ""
+                        "full graph with preregistered classes"
                 )
 		);
 		groups.media.add(
@@ -93,7 +93,7 @@ public class JBossMarshalling {
                     SerFormat.BINARY,
                     SerGraph.FULL_GRAPH_WITH_SHARED_OBJECTS,
                     SerClass.CLASS_SPECIFIC_MANUAL_OPTIMIZATIONS,
-                    ""
+                    "full graph preregistered classes, manual optimization"
             )
 		);
 		groups.media.add(

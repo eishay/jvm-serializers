@@ -70,16 +70,16 @@ public class FastSerialization {
      */
     public static class BasicSerializer<T> extends Serializer<T> {
         final static FSTConfiguration confUnsharedUnregistered;
-        final static FSTConfiguration confUnshared;
+        final static FSTConfiguration confUnsharedRegister;
         final static FSTConfiguration confShared;
         static {
 //            System.setProperty("fst.unsafe", "true");
             confUnsharedUnregistered = FSTConfiguration.createDefaultConfiguration();
             confUnsharedUnregistered.setShareReferences(false);
 
-            confUnshared = FSTConfiguration.createDefaultConfiguration();
-            confUnshared.setShareReferences(false);
-            confUnshared.registerClass(
+            confUnsharedRegister = FSTConfiguration.createDefaultConfiguration();
+            confUnsharedRegister.setShareReferences(false);
+            confUnsharedRegister.registerClass(
                     Image.Size.class,
                     Image.class,
                     Media.Player.class,
@@ -97,13 +97,13 @@ public class FastSerialization {
         String name;
         Class type[] = { MediaContent.class };
 
-        public BasicSerializer (String name, boolean unshared, boolean register) {
+        public BasicSerializer (String name, boolean flat, boolean register) {
             this.name = name;
-            this.unshared = unshared;
-            if ( unshared ) {
+            this.unshared = flat;
+            if ( flat ) {
                 if ( register ) {
-                    objectInput = new FSTObjectInputNoShared(confUnshared);
-                    objectOutput = new FSTObjectOutputNoShared(confUnshared);
+                    objectInput = new FSTObjectInputNoShared(confUnsharedRegister);
+                    objectOutput = new FSTObjectOutputNoShared(confUnsharedRegister);
                 } else {
                     objectInput = new FSTObjectInputNoShared(confUnsharedUnregistered);
                     objectOutput = new FSTObjectOutputNoShared(confUnsharedUnregistered);

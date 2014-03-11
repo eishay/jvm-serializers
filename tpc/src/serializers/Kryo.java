@@ -76,9 +76,11 @@ public class Kryo {
         private final byte[] buffer = new byte[BUFFER_SIZE];
         private final Output output = new Output(buffer, -1);
         private final Input input = new Input(buffer);
+        private final Class<T> type;
         boolean shared;
 
-        public DefaultSerializer (boolean shared) {
+        public DefaultSerializer (TypeHandler<T> handler,boolean shared) {
+            this.type = handler.type;
             this.shared = shared;
             this.kryo = new com.esotericsoftware.kryo.Kryo();
             kryo.setReferences(shared);
@@ -88,12 +90,12 @@ public class Kryo {
         @SuppressWarnings("unchecked")
         public T deserialize (byte[] array) {
             input.setBuffer(array);
-            return (T) kryo.readClassAndObject(input);
+            return (T) kryo.readObject(input,type);
         }
 
         public byte[] serialize (T content) {
             output.setBuffer(buffer, -1);
-            kryo.writeClassAndObject(output, content);
+            kryo.writeObject(output, content);
             return output.toBytes();
         }
 

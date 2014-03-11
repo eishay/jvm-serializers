@@ -213,7 +213,7 @@ public class StatsCruncher {
 
     String generateResultSection(List<TestCaseResult> testCaseResults, String title) {
         return  "\n\n<h3>"+title+"</h3>\n"+
-                generateChart(testCaseResults,"Ser Time+Deser Timee (ns)","ser","total")+"\n"+
+                generateChart(testCaseResults,"Ser Time+Deser Time (ns)","ser","total")+"\n"+
                 generateChart( sort("size",testCaseResults),"Size, Compressed [light] in bytes","compressedSize","size")+"\n"+
                 dump(testCaseResults);
     }
