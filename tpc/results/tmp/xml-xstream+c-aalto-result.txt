@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... xml/xstream+c-aalto
 [done]
                                    create     ser   deser   total   size  +dfl
-xml/xstream+c-aalto                    82    5560   12843   18403    525   273
+xml/xstream+c-aalto                    75    5260   11814   17074    525   273

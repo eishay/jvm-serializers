@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... fst
 [done]
                                    create     ser   deser   total   size  +dfl
-fst                                    74    1738    1722    3460    316   203
+fst                                    74    1795    1714    3509    316   203

@@ -1,5 +1,7 @@
 package serializers;
 
+import java.util.Arrays;
+
 public final class TestCaseRunner<J>
 {
     static double measurementVals[] = new double[1000*1000]; 
@@ -48,7 +50,16 @@ public final class TestCaseRunner<J>
             count++;
         }
         double avg = sumTime / count;
-        System.err.println("*** median: "+measurementVals[count/2]+" average:"+ avg +" deviation:"+(avg-measurementVals[count/2]));
+        Arrays.sort(measurementVals,0,count);
+        System.err.println("-----------------------------------------------------------------------------");
+        System.err.println(serializer.getName());
+        System.err.println("min:" + measurementVals[0]);
+        System.err.println("1/4:"+measurementVals[count/4]);
+        System.err.println("1/2:"+measurementVals[count/2]);
+        System.err.println("3/4:"+measurementVals[count/4*3]);
+        System.err.println("max:"+measurementVals[count-1]);
+        System.err.println("average:"+ avg +" deviation:"+(avg-measurementVals[count/2]));
+        System.err.println("-----------------------------------------------------------------------------");
         return avg;
     }
 }

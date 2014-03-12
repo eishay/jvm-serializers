@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... kryo-flat-pre
 [done]
                                    create     ser   deser   total   size  +dfl
-kryo-flat-pre                          77     781    1026    1807    212   132
+kryo-flat-pre                          75     746    1036    1781    212   132

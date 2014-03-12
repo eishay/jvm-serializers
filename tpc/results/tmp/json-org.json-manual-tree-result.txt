@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... json/org.json/manual/tree
 [done]
                                    create     ser   deser   total   size  +dfl
-json/org.json/manual/tree              74    7901    9733   17634    485   259
+json/org.json/manual/tree              75    7977    9734   17711    485   259

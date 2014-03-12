@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... bson/jackson/databind
 [done]
                                    create     ser   deser   total   size  +dfl
-bson/jackson/databind                  74    6182    7467   13650    506   286
+bson/jackson/databind                  75    6450    7567   14017    506   286

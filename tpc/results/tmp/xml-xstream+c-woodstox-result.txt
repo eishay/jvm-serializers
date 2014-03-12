@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... xml/xstream+c-woodstox
 [done]
                                    create     ser   deser   total   size  +dfl
-xml/xstream+c-woodstox                 81    6804   14890   21695    525   273
+xml/xstream+c-woodstox                 74    6141   13349   19490    525   273

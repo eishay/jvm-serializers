@@ -238,7 +238,8 @@ public class StatsCruncher {
         
         
 
-        PrintStream out = System.out;
+//        PrintStream out = System.out;
+        PrintStream out = new PrintStream(new FileOutputStream("report.textile"));
 
         out.println("<b>Test Platform</b>");
         out.println("OS:"+System.getProperty("os.name"));

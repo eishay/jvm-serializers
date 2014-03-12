@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... xml/exi-manual
 [done]
                                    create     ser   deser   total   size  +dfl
-xml/exi-manual                         75   18044   15967   34011    337   327
+xml/exi-manual                         74   18133   16073   34206    337   327

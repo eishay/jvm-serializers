@@ -15,8 +15,13 @@ esac
 
 cp=./build/bytecode/main$sep$cpgen$sep$cplib
 
+# for low run-to-run jitter  (anyway expect ~3% run-to-run jitter)
+# testTime=60000
+# warmupTime=60000
+# turn off turbo boost and any other kind of dynamic clock scaling
+
 testTime=10000
-warmupTime=10000
+warmupTime=15000
 iter=2000
 
 mkdir ./results/tmp &> /dev/null

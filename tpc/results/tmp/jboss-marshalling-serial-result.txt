@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... jboss-marshalling-serial
 [done]
                                    create     ser   deser   total   size  +dfl
-jboss-marshalling-serial               81   13365   39059   52424    856   498
+jboss-marshalling-serial               74   13334   37781   51115    856   498

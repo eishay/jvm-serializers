@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... json/google-gson/manual
 [done]
                                    create     ser   deser   total   size  +dfl
-json/google-gson/manual                74    4095    4297    8392    468   253
+json/google-gson/manual                75    4107    4344    8451    468   253

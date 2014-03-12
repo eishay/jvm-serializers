@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... avro-specific
 [done]
                                    create     ser   deser   total   size  +dfl
-avro-specific                         105    1830    1601    3432    221   133
+avro-specific                         105    1809    1635    3444    221   133

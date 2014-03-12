@@ -4,4 +4,4 @@ Checking correctness...
 Pre-warmup... xml/jackson/databind-aalto
 [done]
                                    create     ser   deser   total   size  +dfl
-xml/jackson/databind-aalto             74    3364    6124    9488    683   286
+xml/jackson/databind-aalto             75    3217    6140    9357    683   286
