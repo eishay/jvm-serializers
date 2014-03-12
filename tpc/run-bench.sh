@@ -14,6 +14,7 @@ case "`uname`" in
 esac
 
 cp=./build/bytecode/main$sep$cpgen$sep$cplib
+
 testTime=10000
 warmupTime=10000
 iter=2000
@@ -25,17 +26,17 @@ if [ -n "$1" ]; then
 else
     rm ./results/tmp/*.txt
     sentence=$(java -cp $cp serializers.BenchMarkExporter) # just grab all serializers
-
-    sentence=${sentence//,/$'\n'}  # change the colons to white space
-    for word in $sentence
-    do
-        echo "running $word .."
-        file=$word-result.txt
-        file=./results/tmp/${file//\//-}  # change '/' to '-'
-        echo $word > $file
-        java $mem -cp $cp $clz -iterations=$iter -warmup-time=$warmupTime -testRunMillis=$testTime -include=$word data/media.1.cks >> $file    
-    done
 fi
+
+sentence=${sentence//,/$'\n'}  # change the colons to white space
+for word in $sentence
+do
+    echo "running $word .."
+    file=$word-result.txt
+    file=./results/tmp/${file//\//-}  # change '/' to '-'
+    echo $word > $file
+    java $mem -cp $cp $clz -iterations=$iter -warmup-time=$warmupTime -testRunMillis=$testTime -include=$word data/media.1.cks >> $file    
+done
 
 # find files with no numbers => errors
 echo ""
