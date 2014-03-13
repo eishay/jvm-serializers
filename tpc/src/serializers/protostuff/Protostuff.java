@@ -77,7 +77,8 @@ public final class Protostuff
                 )
         );
         
-        groups.media.add(JavaBuiltIn.mediaTransformer, ProtostuffGraphMediaSerializer, 
+        // graph
+        groups.media.add(mediaTransformer, ProtostuffGraphMediaSerializer, 
                 new SerFeatures(
                         SerFormat.BINARY,
                         SerGraph.FULL_GRAPH,
@@ -94,6 +95,16 @@ public final class Protostuff
                         "graph + reflection"
                 )
         );
+        
+        // exclude protostuff-graph-manual
+        /*groups.media.add(JavaBuiltIn.mediaTransformer, ProtostuffGraphManualMediaSerializer, 
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FULL_GRAPH,
+                        SerClass.MANUAL_OPT,
+                        "graph + manual"
+                )
+        );*/
     }
     
     public static final Serializer<MediaContent> ProtostuffMediaSerializer = 
@@ -254,8 +265,38 @@ public final class Protostuff
         }
         
     };
+    
+    public static final Serializer<MediaContent> ProtostuffGraphMediaSerializer = 
+            new Serializer<MediaContent>()
+    {
+        final LinkedBuffer buffer = LinkedBuffer.allocate(BUFFER_SIZE);
 
-    public static final Serializer<data.media.MediaContent> ProtostuffGraphMediaSerializer = 
+        public MediaContent deserialize(byte[] array) throws Exception
+        {
+            final MediaContent mc = new MediaContent();
+            GraphIOUtil.mergeFrom(array, mc, mc.cachedSchema());
+            return mc;
+        }
+
+        public byte[] serialize(MediaContent content) throws Exception
+        {
+            try
+            {
+                return GraphIOUtil.toByteArray(content, content.cachedSchema(), buffer);
+            }
+            finally
+            {
+                buffer.clear();
+            }
+        }
+        
+        public String getName()
+        {
+            return "protostuff-graph";
+        }
+    };
+
+    public static final Serializer<data.media.MediaContent> ProtostuffGraphManualMediaSerializer = 
         new Serializer<data.media.MediaContent>()
     {
         final LinkedBuffer buffer = LinkedBuffer.allocate(BUFFER_SIZE);
