@@ -19,22 +19,32 @@ public final class ProtostuffSmile
 
     public static void register(TestGroups groups)
     {
+        // generated code
+        groups.media.add(Protostuff.mediaTransformer, SmileMediaSerializer, 
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        "smile + generated code"
+                )
+        );
+        
         // manual (hand-coded schema, no autoboxing)
         groups.media.add(JavaBuiltIn.mediaTransformer, SmileManualMediaSerializer,
                 new SerFeatures(
-                        SerFormat.JSON,
+                        SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
                         SerClass.MANUAL_OPT,
-                        ""
+                        "smile + manual"
                 )
         );
         // runtime (reflection)
         groups.media.add(JavaBuiltIn.mediaTransformer, SmileRuntimeMediaSerializer,
                 new SerFeatures(
-                        SerFormat.JSON,
-                        SerGraph.FULL_GRAPH,
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
                         SerClass.ZERO_KNOWLEDGE,
-                        ""
+                        "smile + reflection"
                 )
         );
 
