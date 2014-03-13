@@ -52,7 +52,7 @@ public final class ProtostuffJson
                 )
         );
 
-        // generated code
+        // generated code, numeric
         groups.media.add(Protostuff.mediaTransformer, JsonMediaSerializerNumeric,
                 new SerFeatures(
                         SerFormat.JSON,
@@ -62,7 +62,7 @@ public final class ProtostuffJson
                 )
         );
         
-        // manual (hand-coded schema, no autoboxing)
+        // manual, numeric (hand-coded schema, no autoboxing)
         groups.media.add(JavaBuiltIn.mediaTransformer, JsonManualMediaSerializerNumeric,
                 new SerFeatures(
                         SerFormat.JSON,
@@ -72,7 +72,7 @@ public final class ProtostuffJson
                 )
         );
         
-        // runtime (reflection)
+        // runtime, numeric (reflection)
         groups.media.add(JavaBuiltIn.mediaTransformer, JsonRuntimeMediaSerializerNumeric,
                 new SerFeatures(
                         SerFormat.JSON,
