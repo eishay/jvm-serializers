@@ -13,15 +13,21 @@ import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
 
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 import serializers.avro.media.*;
 
 public class AvroSpecific
 {
     public static void register(TestGroups groups)
     {
-        groups.media.add(new AvroTransformer(), new GenericSerializer<MediaContent>(MediaContent.class));
+        groups.media.add(new AvroTransformer(), new GenericSerializer<MediaContent>(MediaContent.class),
+                new SerFeatures(
+                        SerFormat.BIN_CROSSLANG,
+                        SerGraph.UNKNOWN,
+                        SerClass.MANUAL_OPT,
+                        ""
+                )
+        );
     }
 
     private static final DecoderFactory DECODER_FACTORY = DecoderFactory.get();
@@ -29,7 +35,7 @@ public class AvroSpecific
 
 	public static final class GenericSerializer<T> extends Serializer<T>
 	{
-		public String getName() { return "avro"; }
+		public String getName() { return "avro-specific"; }
 
 		private final SpecificDatumReader<T> READER;
 		private final SpecificDatumWriter<T> WRITER;

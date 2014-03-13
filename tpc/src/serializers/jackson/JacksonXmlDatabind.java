@@ -1,7 +1,6 @@
 package serializers.jackson;
 
-import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import serializers.*;
 
 import com.fasterxml.aalto.stax.InputFactoryImpl;
 import com.fasterxml.aalto.stax.OutputFactoryImpl;
@@ -23,6 +22,13 @@ public class JacksonXmlDatabind
                 new InputFactoryImpl(), new OutputFactoryImpl()));
         groups.media.add(JavaBuiltIn.mediaTransformer,
                 new StdJacksonDataBind<MediaContent>("xml/jackson/databind-aalto",
-                        MediaContent.class, mapper));
+                        MediaContent.class, mapper),
+                new SerFeatures(
+                        SerFormat.XML,
+                        SerGraph.FLAT_TREE,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
     }
 }

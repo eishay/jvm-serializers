@@ -1,0 +1,16 @@
+Requirements:
+- GNU Make 3.81+
+- JDK 1.7+
+
+To compile:
+  make
+
+To run:
+  ./run -help
+
+To run and generate charts with all serializers: (For official results, add -trials=500)
+  ./run -chart -include=`cat serializers.txt | tr "\\n" ","`  data/media.1.cks
+
+
+To generate bindings for schema files, see top of "Makefile" for
+instructions on what to put into "Config.mk".

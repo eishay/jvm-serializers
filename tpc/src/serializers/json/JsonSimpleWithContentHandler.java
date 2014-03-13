@@ -12,9 +12,7 @@ import org.json.simple.parser.ContentHandler;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import data.media.Image;
 import data.media.Media;
@@ -28,7 +26,14 @@ public class JsonSimpleWithContentHandler
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new SemiManualSerializer("json/json.simple/manual"));
+        new SemiManualSerializer("json/json.simple/manual"),
+            new SerFeatures(
+                    SerFormat.JSON,
+                    SerGraph.FLAT_TREE,
+                    SerClass.MANUAL_OPT,
+                    ""
+            )
+    );
   }
 
   static class SemiManualSerializer extends Serializer<MediaContent>

@@ -6,12 +6,8 @@ import com.dyuproject.protostuff.XmlIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 import serializers.protostuff.media.MediaContent;
-import serializers.protostuff.media.Media;
-import serializers.protostuff.media.Image;
 
 public final class ProtostuffXml
 {
@@ -19,9 +15,23 @@ public final class ProtostuffXml
     public static void register(TestGroups groups)
     {
         // manual (hand-coded schema, no autoboxing)
-        groups.media.add(JavaBuiltIn.mediaTransformer, XmlManualMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, XmlManualMediaSerializer,
+                new SerFeatures(
+                        SerFormat.XML,
+                        SerGraph.FLAT_TREE,
+                        SerClass.MANUAL_OPT,
+                        ""
+                )
+        );
         // runtime (reflection)
-        groups.media.add(JavaBuiltIn.mediaTransformer, XmlRuntimeMediaSerializer);
+        groups.media.add(JavaBuiltIn.mediaTransformer, XmlRuntimeMediaSerializer,
+                new SerFeatures(
+                        SerFormat.XML,
+                        SerGraph.FLAT_TREE,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
 
         /* protostuff has too many entries
 

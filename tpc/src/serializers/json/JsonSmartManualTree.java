@@ -6,9 +6,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -26,7 +24,14 @@ public class JsonSmartManualTree
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new ManualTreeSerializer("json/json-smart/manual/tree"));
+        new ManualTreeSerializer("json/json-smart/manual/tree"),
+            new SerFeatures(
+                    SerFormat.JSON,
+                    SerGraph.FLAT_TREE,
+                    SerClass.MANUAL_OPT,
+                    ""
+            )
+    );
   }
 
   static class ManualTreeSerializer extends Serializer<MediaContent>

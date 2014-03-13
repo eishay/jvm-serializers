@@ -11,7 +11,13 @@ public class Hessian
 {
     public static void register(TestGroups groups)
     {
-        groups.media.add(JavaBuiltIn.mediaTransformer, new HessianSerializer<MediaContent>(MediaContent.class));
+        groups.media.add(JavaBuiltIn.mediaTransformer, new HessianSerializer<MediaContent>(MediaContent.class), 
+                new SerFeatures(
+                        SerFormat.BIN_CROSSLANG,
+                        SerGraph.FULL_GRAPH,
+                        SerClass.ZERO_KNOWLEDGE,""
+                ) 
+        );
     }
 
     // ------------------------------------------------------------

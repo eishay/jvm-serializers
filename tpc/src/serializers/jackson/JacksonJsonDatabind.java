@@ -1,8 +1,7 @@
 package serializers.jackson;
 
 import data.media.MediaContent;
-import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import serializers.*;
 
 import com.fasterxml.jackson.databind.*;
 
@@ -18,6 +17,13 @@ public class JacksonJsonDatabind
         ObjectMapper mapper = new ObjectMapper();
         // note: could also force static typing; left out to keep defaults
         groups.media.add(JavaBuiltIn.mediaTransformer,
-                new StdJacksonDataBind<MediaContent>("json/jackson/databind", MediaContent.class, mapper));
+                new StdJacksonDataBind<MediaContent>("json/jackson/databind", MediaContent.class, mapper),
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
     }
 }

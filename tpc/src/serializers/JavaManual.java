@@ -14,7 +14,14 @@ import data.media.*;
 public final class JavaManual
 {
     public static void register(TestGroups groups) {
-        groups.media.add(JavaBuiltIn.mediaTransformer, new MediaContentSerializer());
+        groups.media.add(JavaBuiltIn.mediaTransformer, new MediaContentSerializer(),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.MANUAL_OPT,
+                        ""
+                )
+        );
     }
 
     // ------------------------------------------------------------

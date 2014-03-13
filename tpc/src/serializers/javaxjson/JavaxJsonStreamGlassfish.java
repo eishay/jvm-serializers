@@ -17,6 +17,13 @@ public class JavaxJsonStreamGlassfish extends JavaxJsonStream {
     }
 
     public static void register(TestGroups groups) {
-        groups.media.add(JavaBuiltIn.mediaTransformer, new JavaxJsonStreamGlassfish());
+        groups.media.add(JavaBuiltIn.mediaTransformer, new JavaxJsonStreamGlassfish(),
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.MANUAL_OPT,
+                        ""
+                )
+        );
     }
 }

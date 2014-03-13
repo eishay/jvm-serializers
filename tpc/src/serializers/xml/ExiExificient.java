@@ -12,14 +12,20 @@ import com.siemens.ct.exi.api.stream.StAXDecoder;
 import com.siemens.ct.exi.api.stream.StAXEncoder;
 import com.siemens.ct.exi.helpers.DefaultEXIFactory;
 
-import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import serializers.*;
 
 public class ExiExificient
 {
     public static void register(TestGroups groups)
     {
-        groups.media.add(JavaBuiltIn.mediaTransformer, new ExificientSerializer());
+        groups.media.add(JavaBuiltIn.mediaTransformer, new ExificientSerializer(),
+                new SerFeatures(
+                        SerFormat.XML,
+                        SerGraph.UNKNOWN,
+                        SerClass.ZERO_KNOWLEDGE,
+                        ""
+                )
+        );
     }
 
     public static final class ExificientSerializer extends BaseStaxMediaSerializer

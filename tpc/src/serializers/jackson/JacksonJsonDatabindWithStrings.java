@@ -7,8 +7,7 @@ import data.media.MediaContent;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 
-import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import serializers.*;
 
 /**
  * This serializer uses Jackson in full automated data binding mode, which
@@ -20,7 +19,14 @@ public class JacksonJsonDatabindWithStrings<T> extends BaseJacksonDataBind<T>
     public static void register(TestGroups groups)
     {
         groups.media.add(JavaBuiltIn.mediaTransformer,
-                new JacksonJsonDatabindWithStrings<MediaContent>(MediaContent.class));
+                new JacksonJsonDatabindWithStrings<MediaContent>(MediaContent.class),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.MANUAL_OPT,
+                        ""
+                )
+        );
     }
 
     public JacksonJsonDatabindWithStrings(Class<T> clz) {

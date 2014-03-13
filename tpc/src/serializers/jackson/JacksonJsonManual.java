@@ -10,8 +10,7 @@ import java.util.List;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.io.SerializedString;
 
-import serializers.JavaBuiltIn;
-import serializers.TestGroups;
+import serializers.*;
 
 /**
  * "Hand-written" version of Jackson-based codec. Not optimized for compactness,
@@ -38,7 +37,14 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
     public static void register(TestGroups groups)
     {
         JsonFactory factory = new JsonFactory();
-        groups.media.add(JavaBuiltIn.mediaTransformer, new JacksonJsonManual("json/jackson/manual", factory));
+        groups.media.add(JavaBuiltIn.mediaTransformer, new JacksonJsonManual("json/jackson/manual", factory),
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.MANUAL_OPT,
+                        ""
+                )
+        );
     }
 
     private final JsonFactory _factory;

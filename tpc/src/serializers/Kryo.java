@@ -25,37 +25,77 @@ public class Kryo {
 	}
 
 	private static <T, S> void register (TestGroup<T> group, Transformer<T, S> transformer, TypeHandler<S> handler) {
-        group.add(transformer, new DefaultSerializer<S>());
-		group.add(transformer, new BasicSerializer<S>(handler));
-		group.add(transformer, new OptimizedSerializer<S>(handler));
-		group.add(transformer, new CustomSerializer<S>(handler));
+        group.add(transformer, new DefaultSerializer<S>(handler, true),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FULL_GRAPH,
+                        SerClass.ZERO_KNOWLEDGE,
+                        "default"
+                )
+        );
+        group.add(transformer, new DefaultSerializer<S>(handler, false),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.ZERO_KNOWLEDGE,
+                        "default, no shared refs"
+                )
+        );
+		group.add(transformer, new BasicSerializer<S>(handler),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        "no shared refs, preregistered classes"
+                )
+        );
+		group.add(transformer, new OptimizedSerializer<S>(handler),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.MANUAL_OPT,
+                        "manually optimized"
+                )
+        );
+		group.add(transformer, new CustomSerializer<S>(handler),
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.MANUAL_OPT,
+                        "manually optimized"
+                )
+        );
 	}
 
 	// ------------------------------------------------------------
 	// Serializers
 
-    /** This is the most basic Kryo usage. Just register the classes and go. */
+    /** This is the most basic Kryo usage. Don't register anything go. */
     public static class DefaultSerializer<T> extends Serializer<T> {
         final com.esotericsoftware.kryo.Kryo kryo;
         private final byte[] buffer = new byte[BUFFER_SIZE];
         private final Output output = new Output(buffer, -1);
         private final Input input = new Input(buffer);
+        private final Class<T> type;
+        boolean shared;
 
-        public DefaultSerializer () {
+        public DefaultSerializer (TypeHandler<T> handler,boolean shared) {
+            this.type = handler.type;
+            this.shared = shared;
             this.kryo = new com.esotericsoftware.kryo.Kryo();
-            kryo.setReferences(true);
+            kryo.setReferences(shared);
             kryo.setRegistrationRequired(false);
         }
 
         @SuppressWarnings("unchecked")
         public T deserialize (byte[] array) {
             input.setBuffer(array);
-            return (T) kryo.readClassAndObject(input);
+            return (T) kryo.readObject(input, type);
         }
 
         public byte[] serialize (T content) {
             output.setBuffer(buffer, -1);
-            kryo.writeClassAndObject(output, content);
+            kryo.writeObject(output, content);
             return output.toBytes();
         }
 
@@ -78,11 +118,11 @@ public class Kryo {
         }
 
         public String getName () {
-            return "kryo-serializer";
+            return "kryo"+(shared?"-serializer":"-flat");
         }
     }
 
-	/** This is the most basic Kryo usage. Just register the classes and go. */
+	/** This is slightly advanced Kryo usage. Just register the classes and go. */
 	public static class BasicSerializer<T> extends Serializer<T> {
 		private final Class<T> type;
 		final com.esotericsoftware.kryo.Kryo kryo;
@@ -128,7 +168,7 @@ public class Kryo {
 		}
 
 		public String getName () {
-			return "kryo";
+			return "kryo-flat-pre";
 		}
 	}
 

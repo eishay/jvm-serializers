@@ -9,8 +9,7 @@ import java.util.List;
 
 import data.media.MediaTransformer;
 
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 /**
  *<p>
@@ -21,7 +20,14 @@ import serializers.TestGroups;
 public class Protobuf
 {
     public static void register(TestGroups groups) {
-        groups.media.add(new Transformer(), new PBSerializer());
+        groups.media.add(new Transformer(), new PBSerializer(),
+                new SerFeatures(
+                        SerFormat.BIN_CROSSLANG,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        ""
+                )
+        );
     }
 
     // ------------------------------------------------------------

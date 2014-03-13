@@ -10,9 +10,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import serializers.JavaBuiltIn;
-import serializers.Serializer;
-import serializers.TestGroups;
+import serializers.*;
 
 import data.media.Image;
 import data.media.Media;
@@ -26,7 +24,15 @@ public class JsonSimpleManualTree
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new ManualTreeSerializer("json/json.simple/manual/tree"));
+        new ManualTreeSerializer("json/json.simple/manual/tree"),
+            new SerFeatures(
+                    SerFormat.JSON,
+                    SerGraph.FLAT_TREE,
+                    SerClass.MANUAL_OPT,
+                    "fst in unshared mode with preregistered classes"
+            )
+    );
+
   }
 
   static class ManualTreeSerializer extends Serializer<MediaContent>
