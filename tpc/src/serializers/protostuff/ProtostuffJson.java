@@ -27,7 +27,7 @@ public final class ProtostuffJson
                         SerFormat.JSON,
                         SerGraph.FLAT_TREE,
                         SerClass.MANUAL_OPT,
-                        ""
+                        "json + manual"
                 )
         );
         // runtime (reflection)
@@ -36,23 +36,52 @@ public final class ProtostuffJson
                         SerFormat.JSON,
                         SerGraph.FLAT_TREE,
                         SerClass.ZERO_KNOWLEDGE,
-                        ""
+                        "json + reflection"
                 )
         );
-
+        
         /* protostuff has too many entries
 
         // generated code
-        groups.media.add(Protostuff.MediaTransformer, JsonMediaSerializer);
+        groups.media.add(Protostuff.mediaTransformer, JsonMediaSerializer,
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        "json + generated code"
+                )
+        );
 
-        // generated code (numeric)
-        groups.media.add(Protostuff.MediaTransformer, JsonMediaSerializerNumeric);
-
-        // manual (hand-coded + numeric)
-        groups.media.add(JavaBuiltIn.MediaTransformer, JsonManualMediaSerializerNumeric);
-
-        // runtime (reflection + numeric)
-        groups.media.add(JavaBuiltIn.MediaTransformer, JsonRuntimeMediaSerializerNumeric);*/
+        // generated code
+        groups.media.add(Protostuff.mediaTransformer, JsonMediaSerializerNumeric,
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        "json + numeric + generated code"
+                )
+        );
+        
+        // manual (hand-coded schema, no autoboxing)
+        groups.media.add(JavaBuiltIn.mediaTransformer, JsonManualMediaSerializerNumeric,
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.MANUAL_OPT,
+                        "json + numeric + manual"
+                )
+        );
+        
+        // runtime (reflection)
+        groups.media.add(JavaBuiltIn.mediaTransformer, JsonRuntimeMediaSerializerNumeric,
+                new SerFeatures(
+                        SerFormat.JSON,
+                        SerGraph.FLAT_TREE,
+                        SerClass.ZERO_KNOWLEDGE,
+                        "json + numeric + reflection"
+                )
+        );
+        */
     }
 
     public static final Serializer<MediaContent> JsonMediaSerializer = 
