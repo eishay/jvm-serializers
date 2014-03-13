@@ -1,7 +1,0 @@
-
-Checking correctness...
-[done]
-Pre-warmup... fast-serialization-shared
-[done]
-                                   create     ser   deser   total   size  +dfl
-fast-serialization-shared              73    1881    1772    3653    316   203

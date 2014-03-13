@@ -1,7 +1,0 @@
-java-built-in-serializer
-Checking correctness...
-[done]
-Pre-warmup... java-built-in-serializer
-[done]
-                                   create     ser   deser   total   size  +dfl
-java-built-in-serializer               74    6443   34649   41091    889   514

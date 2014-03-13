@@ -1,7 +1,0 @@
-json/protostuff-runtime
-Checking correctness...
-[done]
-Pre-warmup... json/protostuff-runtime
-[done]
-                                   create     ser   deser   total   size  +dfl
-json/protostuff-runtime                74    1754    2476    4231    469   243

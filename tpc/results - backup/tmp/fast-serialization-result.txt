@@ -1,7 +1,0 @@
-
-Checking correctness...
-[done]
-Pre-warmup... fast-serialization
-[done]
-                                   create     ser   deser   total   size  +dfl
-fast-serialization                     73     810     853    1663    251   165

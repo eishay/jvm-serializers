@@ -1,7 +1,0 @@
-xml/woodstox-manual
-Checking correctness...
-[done]
-Pre-warmup... xml/woodstox-manual
-[done]
-                                   create     ser   deser   total   size  +dfl
-xml/woodstox-manual                    74    3412    5597    9009    653   304

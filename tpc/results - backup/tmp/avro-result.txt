@@ -1,7 +1,0 @@
-
-Checking correctness...
-[done]
-Pre-warmup... avro
-[done]
-                                   create     ser   deser   total   size  +dfl
-avro                                  106    1835    1641    3476    221   133

@@ -1,7 +1,0 @@
-json/jsonij-jpath
-Checking correctness...
-[done]
-Pre-warmup... json/jsonij-jpath
-[done]
-                                   create     ser   deser   total   size  +dfl
-json/jsonij-jpath                      74   47032   15073   62105    478   259

@@ -1,7 +1,0 @@
-
-Checking correctness...
-[done]
-Pre-warmup... jboss-serialization
-[done]
-                                   create     ser   deser   total   size  +dfl
-jboss-serialization                    74    7044    7304   14348    932   582

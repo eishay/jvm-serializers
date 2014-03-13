@@ -1,7 +1,0 @@
-kryo-manual
-Checking correctness...
-[done]
-Pre-warmup... kryo-manual
-[done]
-                                   create     ser   deser   total   size  +dfl
-kryo-manual                            75     628     717    1345    211   131

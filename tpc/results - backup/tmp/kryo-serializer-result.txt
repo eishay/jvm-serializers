@@ -1,7 +1,0 @@
-
-Checking correctness...
-[done]
-Pre-warmup... kryo-serializer
-[done]
-                                   create     ser   deser   total   size  +dfl
-kryo-serializer                        73    1947    1708    3655    311   198

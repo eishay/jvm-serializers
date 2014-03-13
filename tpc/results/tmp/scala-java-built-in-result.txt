@@ -1,7 +1,0 @@
-scala/java-built-in
-Checking correctness...
-[done]
-Pre-warmup... scala/java-built-in
-[done]
-                                   create     ser   deser   total   size  +dfl
-scala/java-built-in                   145    9727   54939   64666   1312   700

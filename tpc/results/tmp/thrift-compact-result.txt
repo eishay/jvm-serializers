@@ -1,7 +1,0 @@
-thrift-compact
-Checking correctness...
-[done]
-Pre-warmup... thrift-compact
-[done]
-                                   create     ser   deser   total   size  +dfl
-thrift-compact                        147    1704    1082    2785    240   148

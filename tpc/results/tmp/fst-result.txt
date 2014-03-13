@@ -1,7 +1,0 @@
-fst
-Checking correctness...
-[done]
-Pre-warmup... fst
-[done]
-                                   create     ser   deser   total   size  +dfl
-fst                                    74    1795    1714    3509    316   203

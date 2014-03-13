@@ -1,7 +1,0 @@
-bson/mongodb
-Checking correctness...
-[done]
-Pre-warmup... bson/mongodb
-[done]
-                                   create     ser   deser   total   size  +dfl
-bson/mongodb                           75    3965    8731   12696    495   278

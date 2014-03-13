@@ -1,7 +1,0 @@
-smile/jackson/db-afterburner
-Checking correctness...
-[done]
-Pre-warmup... smile/jackson/db-afterburner
-[done]
-                                   create     ser   deser   total   size  +dfl
-smile/jackson/db-afterburner           74    1619    1655    3274    352   252

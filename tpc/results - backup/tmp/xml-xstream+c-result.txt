@@ -1,7 +1,0 @@
-
-Checking correctness...
-[done]
-Pre-warmup... xml/xstream+c
-[done]
-                                   create     ser   deser   total   size  +dfl
-xml/xstream+c                          74    7184   14978   22162    487   244
