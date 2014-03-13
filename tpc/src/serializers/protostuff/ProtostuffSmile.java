@@ -19,16 +19,6 @@ public final class ProtostuffSmile
 
     public static void register(TestGroups groups)
     {
-        // generated code
-        groups.media.add(Protostuff.mediaTransformer, SmileMediaSerializer, 
-                new SerFeatures(
-                        SerFormat.BINARY,
-                        SerGraph.FLAT_TREE,
-                        SerClass.CLASSES_KNOWN,
-                        "smile + generated code"
-                )
-        );
-        
         // manual (hand-coded schema, no autoboxing)
         groups.media.add(JavaBuiltIn.mediaTransformer, SmileManualMediaSerializer,
                 new SerFeatures(
@@ -51,7 +41,15 @@ public final class ProtostuffSmile
         /* protostuff has too many entries
 
         // generated code
-        groups.media.add(Protostuff.MediaTransformer, SmileMediaSerializer);*/
+        groups.media.add(Protostuff.mediaTransformer, SmileMediaSerializer, 
+                new SerFeatures(
+                        SerFormat.BINARY,
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        "smile + generated code"
+                )
+        );
+        */
     }
 
     public static final Serializer<MediaContent> SmileMediaSerializer = 
