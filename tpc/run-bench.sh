@@ -21,12 +21,9 @@ cp=./build/bytecode/main$sep$cpgen$sep$cplib
 # warmupTime=60000
 # turn off turbo boost and any other kind of dynamic clock scaling
 
-#testTime=10000
-#warmupTime=15000
-#iter=2000
-testTime=100
-warmupTime=15
-iter=20
+testTime=10000
+warmupTime=15000
+iter=2000
 
 if [ $# -eq 0 ]; then
     if [ -e "$raw_result_dir" ]; then
@@ -56,7 +53,7 @@ done
 echo ""
 echo "====================================================================================="
 echo "errors:"
-find ./results/tmp/. -print -type f -name "*.txt" -exec tail -1 {} \; | grep -B 1 create
+find ./results/raw/. -print -type f -name "*.txt" -exec tail -1 {} \; | grep -B 1 create
 echo "====================================================================================="
 echo ""
 

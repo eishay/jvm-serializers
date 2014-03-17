@@ -26,11 +26,11 @@ How this works:
   
   1) the run-bench.sh uses class BenchmarkExporter.java to get a ',' separated list of all serializers to run.
      All benchmarks registered in the BenchnarkRunner.java class a run be default.
-  2) after each bench finished, the mk-stats.sh script aggregates the results found in ./results/tmp to ./results.txt
+  2) after each bench finished, the mk-stats.sh script aggregates the results found in ./results/raw to ./results/stats.txt
      the the class StatsCruncher.java creates a Textile style report.
      To modify the report output, directly edit the StatsCruncher.java . You are welcome to enhance this using
      some templating/configuration files.
-     You can copy the report.textile directly to github wiki in textile-mode.
+     You can copy the results/report.textile directly to github wiki in textile-mode.
   3) You can run the mk-stats.sh script again without having to re-run the benchmarks if you want to add
      custom query charts.
   4) to filter out certain libraries, do not uncomment them in BenchMarkRunner.java (except they fail), better
