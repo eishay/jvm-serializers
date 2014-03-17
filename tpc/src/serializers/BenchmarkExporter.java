@@ -34,7 +34,7 @@ import java.util.Set;
 public class BenchmarkExporter extends BenchmarkRunner {
 
     String alltests = ""; // ',' separated 
-    HashMap<String,SerFeatures> featureMap = new HashMap<>(); // have to map back after running .. sigh
+    HashMap<String,SerFeatures> featureMap = new HashMap<String,SerFeatures>(); // have to map back after running .. sigh
 
     public BenchmarkExporter() {
         runBenchmark(new String[0]);

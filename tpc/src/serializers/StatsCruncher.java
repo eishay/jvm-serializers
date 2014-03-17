@@ -42,7 +42,7 @@ import java.util.*;
 public class StatsCruncher {
 
     public static final int MAX_CHART_BARS = 18;
-    HashMap<String, SerFeatures> mappedFeatures = new HashMap<>();
+    HashMap<String, SerFeatures> mappedFeatures = new HashMap<String, SerFeatures>();
     HashMap<String, TestCaseResult> mappedResults;
     List<TestCaseResult> resultList;
 
@@ -61,8 +61,8 @@ public class StatsCruncher {
         FileInputStream in = new FileInputStream(inputFile);
         BufferedReader din = new BufferedReader(new InputStreamReader(in));
 
-        mappedResults = new HashMap<>();
-        resultList = new ArrayList<>();
+        mappedResults = new HashMap<String, TestCaseResult>();
+        resultList = new ArrayList<TestCaseResult>();
 
         String line;
         while ((line = din.readLine()) != null) {
@@ -157,7 +157,7 @@ public class StatsCruncher {
     public List<TestCaseResult> generateChartList(String commaSeparatedNames, final String intFieldToSort, int maxRangeDiff, int maxListLen, SerFeatures featureFilter) 
     {
         String toChart[] = commaSeparatedNames.split(",");
-        List<TestCaseResult> chartList = new ArrayList<>();
+        List<TestCaseResult> chartList = new ArrayList<TestCaseResult>();
         if ( commaSeparatedNames.equals("*") ) {
             chartList.addAll(resultList);            
         } else {
@@ -202,7 +202,7 @@ public class StatsCruncher {
     }
 
     protected List<TestCaseResult> sort(final String intFieldToSort, List<TestCaseResult> chartList) {
-        List<TestCaseResult> res = new ArrayList<>(chartList);
+        List<TestCaseResult> res = new ArrayList<TestCaseResult>(chartList);
         Collections.sort(res, new Comparator<TestCaseResult>() {
             @Override
             public int compare(TestCaseResult o1, TestCaseResult o2) {

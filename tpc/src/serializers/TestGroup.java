@@ -11,7 +11,7 @@ public final class TestGroup<J>
 	public final ArrayList<Entry<J,Object>> entries = new ArrayList<Entry<J,Object>>();
 	final Set<String> entryNames = new HashSet<String>();
 	public final Map<String,Entry<J,Object>> extensionMap = new HashMap<String,Entry<J,Object>>(); // So we know which one to use to load from files.
-    Map<String,Serializer> serMap= new HashMap<>();
+    Map<String,Serializer> serMap= new HashMap<String,Serializer>();
 
     public <S> void add(Transformer<J,S> transformer, Serializer<S> serializer)
     {
