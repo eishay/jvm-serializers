@@ -15,7 +15,7 @@ public class JsonGsonDatabind
 	public static void register(TestGroups groups)
 	{
             groups.media.add(JavaBuiltIn.mediaTransformer,
-                    new GenericSerializer<MediaContent>("json/google-gson/databind", MediaContent.class),
+                    new GenericSerializer<MediaContent>("json/gson/databind", MediaContent.class),
                     new SerFeatures(
                             SerFormat.JSON,
                             SerGraph.FLAT_TREE,

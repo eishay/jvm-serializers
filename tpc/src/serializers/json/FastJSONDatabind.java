@@ -39,18 +39,21 @@ public class FastJSONDatabind
       type = clazz;
     }
 
+    @Override
     public String getName()
     {
       return name;
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public T deserialize(byte[] array) throws Exception
     {
 	// fastjson can parse from byte array, yay:
 	return (T) JSON.parseObject(array, type, Feature.DisableCircularReferenceDetect);
     }
 
+    @Override
     public byte[] serialize(T data) throws IOException
     {
       return JSON.toJSONBytes(data, SerializerFeature.WriteEnumUsingToString,SerializerFeature.DisableCircularReferenceDetect);

@@ -37,9 +37,8 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
     public static void register(TestGroups groups)
     {
         JsonFactory factory = new JsonFactory();
-        groups.media.add(JavaBuiltIn.mediaTransformer, new JacksonJsonManual("json/jackson/manual", factory),
-                new SerFeatures(
-                        SerFormat.JSON,
+        groups.media.add(JavaBuiltIn.mediaTransformer, new JacksonJsonManual("json/jackson/manual",factory),
+                new SerFeatures(SerFormat.JSON,
                         SerGraph.FLAT_TREE,
                         SerClass.MANUAL_OPT,
                         ""
@@ -55,6 +54,7 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
         _factory = jsonFactory;
     }
 
+    @SuppressWarnings("resource")
     @Override
     public final byte[] serialize(MediaContent content) throws IOException
     {

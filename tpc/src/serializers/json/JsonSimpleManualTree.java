@@ -24,7 +24,7 @@ public class JsonSimpleManualTree
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new ManualTreeSerializer("json/json.simple/manual/tree"),
+        new ManualTreeSerializer("json/json.simple/manual-tree"),
             new SerFeatures(
                     SerFormat.JSON,
                     SerGraph.FLAT_TREE,

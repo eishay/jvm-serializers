@@ -15,6 +15,7 @@ abstract class BaseJacksonDriver<T> extends Serializer<T>
         name = n;
     }
 
+    @Override
     public final String getName() {
         return name;
     }
@@ -27,9 +28,9 @@ abstract class BaseJacksonDriver<T> extends Serializer<T>
 
     // // Future extensions for testing performance for item sequences
     
-//    @Override
+    @Override
     public abstract void serializeItems(T[] items, OutputStream out) throws Exception;
 
-//    @Override
+    @Override
     public abstract T[] deserializeItems(InputStream in, int numberOfItems) throws IOException;
 }

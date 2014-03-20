@@ -44,24 +44,25 @@ public abstract class Serializer<S>
             throw new UnsupportedOperationException("Not implemented");
  	}
 
-        public final byte[] serializeAsBytes(S[] items) throws Exception {
-            ByteArrayOutputStream bytes = outputStreamForList(items);
-            serializeItems(items, bytes);
-            return bytes.toByteArray();
-        }
+ 	@SuppressWarnings("resource")
+    public final byte[] serializeAsBytes(S[] items) throws Exception {
+ 	    ByteArrayOutputStream bytes = outputStreamForList(items);
+ 	    serializeItems(items, bytes);
+ 	    return bytes.toByteArray();
+ 	}
 
-        // // // Helper methods
+ 	// // // Helper methods
 
-        protected byte[] readAll(InputStream in) throws IOException
-        {
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream(4000);
-            byte[] buffer = new byte[4000];
-            int count;
-            
-            while ((count = in.read(buffer)) >= 0) {
-                bytes.write(buffer, 0, count);
-            }
-            in.close();
-            return bytes.toByteArray();
-        }
+ 	protected byte[] readAll(InputStream in) throws IOException
+ 	{
+ 	    ByteArrayOutputStream bytes = new ByteArrayOutputStream(4000);
+ 	    byte[] buffer = new byte[4000];
+ 	    int count;
+
+ 	    while ((count = in.read(buffer)) >= 0) {
+ 	        bytes.write(buffer, 0, count);
+ 	    }
+ 	    in.close();
+ 	    return bytes.toByteArray();
+ 	}
 }

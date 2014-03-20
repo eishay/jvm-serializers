@@ -24,7 +24,7 @@ public class JacksonAvroDatabind
         ObjectReader reader =  mapper.reader(type).with(schema);
         ObjectWriter writer = mapper.writerWithType(type).withSchema(schema);
         groups.media.add(JavaBuiltIn.mediaTransformer, new StdJacksonDataBind<MediaContent>
-            ("avro/jackson", type, mapper, reader, writer),
+            ("avro/jackson/databind", type, mapper, reader, writer),
                 new SerFeatures(
                         SerFormat.JSON,
                         SerGraph.FLAT_TREE,

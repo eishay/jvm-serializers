@@ -23,7 +23,7 @@ public class JsonGsonManual
     public static void register(TestGroups groups)
     {
             groups.media.add(JavaBuiltIn.mediaTransformer,
-                    new ManualSerializer("json/google-gson/manual"),
+                    new ManualSerializer("json/gson/manual"),
                     new SerFeatures(
                             SerFormat.JSON,
                             SerGraph.FLAT_TREE,

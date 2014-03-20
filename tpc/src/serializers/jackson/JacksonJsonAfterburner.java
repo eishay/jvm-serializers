@@ -18,7 +18,7 @@ public class JacksonJsonAfterburner
 
         mapper.registerModule(new AfterburnerModule());
         groups.media.add(JavaBuiltIn.mediaTransformer,
-                new StdJacksonDataBind<MediaContent>("json/jackson/db-afterburner", MediaContent.class, mapper),
+                new StdJacksonDataBind<MediaContent>("json/jackson+afterburner/databind", MediaContent.class, mapper),
                 new SerFeatures(
                         SerFormat.JSON,
                         SerGraph.FLAT_TREE,

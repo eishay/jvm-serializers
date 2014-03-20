@@ -25,7 +25,7 @@ public class JsonPathDeserializerOnly
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new SemiManualSerializer("json/jsonpath/json.simple"),
+        new SemiManualSerializer("json/jsonpath/manual"),
             new SerFeatures(
                     SerFormat.JSON,
                     SerGraph.FLAT_TREE,

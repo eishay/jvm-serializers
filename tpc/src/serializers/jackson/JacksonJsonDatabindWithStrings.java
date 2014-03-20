@@ -21,7 +21,7 @@ public class JacksonJsonDatabindWithStrings<T> extends BaseJacksonDataBind<T>
         groups.media.add(JavaBuiltIn.mediaTransformer,
                 new JacksonJsonDatabindWithStrings<MediaContent>(MediaContent.class),
                 new SerFeatures(
-                        SerFormat.BINARY,
+                        SerFormat.JSON,
                         SerGraph.FLAT_TREE,
                         SerClass.MANUAL_OPT,
                         ""
@@ -33,11 +33,13 @@ public class JacksonJsonDatabindWithStrings<T> extends BaseJacksonDataBind<T>
         super("json/jackson/databind-strings", clz, new ObjectMapper());
     }
 
+    @Override
     public byte[] serialize(T data) throws IOException
     {
         return mapper.writeValueAsString(data).getBytes(("UTF-8"));
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public T deserialize(byte[] array) throws IOException
     {

@@ -13,7 +13,7 @@ public class JacksonYAMLDatabind
     {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         groups.media.add(JavaBuiltIn.mediaTransformer,
-                new StdJacksonDataBind<MediaContent>("yaml/jackson",
+                new StdJacksonDataBind<MediaContent>("yaml/jackson/databind",
                         MediaContent.class, mapper),
                 new SerFeatures(
                         SerFormat.JSON,

@@ -15,7 +15,7 @@ public class JsonSvensonDatabind
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new GenericSerializer<MediaContent>("json/svenson-databind", MediaContent.class),
+        new GenericSerializer<MediaContent>("json/svenson/databind", MediaContent.class),
             new SerFeatures(
                     SerFormat.JSON,
                     SerGraph.FLAT_TREE,
@@ -34,28 +34,31 @@ public class JsonSvensonDatabind
 
     public GenericSerializer(String name, Class<T> clazz)
     {
-      this.name = name;
-      type = clazz;
+        this.name = name;
+        type = clazz;
       
-      _jsonParser = org.svenson.JSONParser.defaultJSONParser();
-      _jsonParser.addTypeHint(".images[]", Image.class);
-      _jsonWriter = org.svenson.JSON.defaultJSON();
+        _jsonParser = org.svenson.JSONParser.defaultJSONParser();
+        _jsonParser.addTypeHint(".images[]", Image.class);
+        _jsonWriter = org.svenson.JSON.defaultJSON();
     }
 
+    @Override
     public String getName()
     {
-      return name;
+        return name;
     }
 
+    @Override
     public T deserialize(byte[] array) throws Exception
     {
-      return _jsonParser.parse(type, new String(array, "UTF-8"));
+        return _jsonParser.parse(type, new String(array, "UTF-8"));
     }
 
+    @Override
     public byte[] serialize(T data) throws IOException
     {
-      String result = _jsonWriter.forValue(data);
-      return result.getBytes();
+        String result = _jsonWriter.forValue(data);
+        return result.getBytes();
     }
   }
 }

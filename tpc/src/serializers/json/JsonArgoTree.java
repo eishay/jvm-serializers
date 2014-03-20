@@ -37,7 +37,7 @@ public class JsonArgoTree
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new ManualTreeSerializer("json/argo-manual/tree"),
+        new ManualTreeSerializer("json/argo/manual-tree"),
             new SerFeatures(
                     SerFormat.JSON,
                     SerGraph.FLAT_TREE,

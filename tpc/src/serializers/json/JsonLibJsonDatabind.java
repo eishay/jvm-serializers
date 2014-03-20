@@ -18,7 +18,7 @@ public class JsonLibJsonDatabind
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new GenericSerializer<MediaContent>("json/json-lib-databind", MediaContent.class),
+        new GenericSerializer<MediaContent>("json/json-lib/databind", MediaContent.class),
             new SerFeatures(
                     SerFormat.JSON,
                     SerGraph.FLAT_TREE,

@@ -25,7 +25,7 @@ public class JsonGsonTree
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new SemiManualSerializer("json/google-gson/manual/tree"),
+        new SemiManualSerializer("json/gson/manual-tree"),
             new SerFeatures(
                     SerFormat.JSON,
                     SerGraph.FLAT_TREE,
