@@ -17,27 +17,29 @@ import data.media.MediaContent;
 
 public class MongoDB
 {
-	public static void register(TestGroups groups)
-	{
-		groups.media.add(JavaBuiltIn.mediaTransformer, new MongoDBSerializer(),
+    public static void register(TestGroups groups)
+    {
+        groups.media.add(JavaBuiltIn.mediaTransformer, new MongoDBSerializer(),
                 new SerFeatures(
                         SerFormat.BIN_CROSSLANG,
                         SerGraph.FLAT_TREE,
                         SerClass.MANUAL_OPT,
                         ""
-                )
-        );
-	}
+                        )
+                );
+    }
 	
-	public static final class MongoDBSerializer extends Serializer<MediaContent>
-	{
-		public String getName()
-		{
-			return "bson/mongodb";
-		}
+    public static final class MongoDBSerializer extends Serializer<MediaContent>
+    {
+        @Override
+        public String getName()
+        {
+            return "bson/mongodb/manual";
+        }
 		
-		public byte[] serialize(MediaContent data) throws Exception
-		{
+        @Override
+        public byte[] serialize(MediaContent data) throws Exception
+        {
 			BSONObject o = new BasicBSONObject();
 			
 			BSONObject media = serializeMedia(data.media);

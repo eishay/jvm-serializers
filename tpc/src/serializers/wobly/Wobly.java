@@ -1,5 +1,10 @@
-package serializers;
+package serializers.wobly;
 
+import serializers.SerClass;
+import serializers.SerFeatures;
+import serializers.SerFormat;
+import serializers.SerGraph;
+import serializers.TestGroups;
 import serializers.wobly.compact.WoblyCompactUtils;
 import serializers.wobly.simple.WoblySimpleUtils;
 

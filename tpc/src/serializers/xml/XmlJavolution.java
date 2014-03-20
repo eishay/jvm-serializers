@@ -23,7 +23,7 @@ public class XmlJavolution
 
 	public static void register(TestGroups groups)
 	{
-		groups.media.add(JavaBuiltIn.mediaTransformer, new JavolutionSerializer<MediaContent>("", MediaBinding, MediaContent.class),
+		groups.media.add(JavaBuiltIn.mediaTransformer, new JavolutionSerializer<MediaContent>(MediaBinding, MediaContent.class),
                 new SerFeatures(
                         SerFormat.XML,
                         SerGraph.FLAT_TREE,
@@ -37,21 +37,20 @@ public class XmlJavolution
 
 	private static final class JavolutionSerializer<T> extends Serializer<T>
 	{
-		private final String append;
 		private final XMLBinding binding;
 		private final Class<T> clazz;
 
-		public JavolutionSerializer(String append, XMLBinding binding, Class<T> clazz)
+		public JavolutionSerializer(XMLBinding binding, Class<T> clazz)
 		{
-			this.append = append;
 			this.binding = binding;
 			this.clazz = clazz;
 		}
 
-		public String getName() { return "xml/javolution" + append; }
+		@Override
+		public String getName() { return "xml/javolution/manual"; }
 
-		public T deserialize(byte[] array)
-			throws Exception
+          @Override
+		public T deserialize(byte[] array) throws Exception
 		{
 			XMLObjectReader reader = XMLObjectReader.newInstance(new ByteArrayInputStream(array)).setBinding(binding);
 			try {
@@ -61,13 +60,14 @@ public class XmlJavolution
 			}
 		}
 
-		public byte[] serialize(T content)
-			throws Exception
+          @Override
+		public byte[] serialize(T content) throws Exception
 		{
 			ByteArrayOutputStream baos = outputStream(content);
 			XMLObjectWriter writer = XMLObjectWriter.newInstance(baos).setBinding(binding);
 			writer.write(content, ROOT_ELEMENT, clazz);
 			writer.close();
+			baos.close();
 			return baos.toByteArray();
 		}
 	}
