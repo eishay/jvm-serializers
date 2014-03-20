@@ -33,7 +33,7 @@ public class JacksonSmileAfterburner
         groups.media.add(JavaBuiltIn.mediaTransformer,
                 new StdJacksonDataBind<MediaContent>("smile/jackson/db-afterburner", MediaContent.class, smileMapper),
                 new SerFeatures(
-                        SerFormat.JSON,
+                        SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
                         SerClass.ZERO_KNOWLEDGE,
                         ""

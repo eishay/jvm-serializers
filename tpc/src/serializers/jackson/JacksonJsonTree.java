@@ -45,6 +45,7 @@ public class JacksonJsonTree extends BaseJacksonDataBind<MediaContent>
       return readMediaContent(mapper.readTree(new ByteArrayInputStream(array)));
   }
 
+  @Override
   public byte[] serialize(MediaContent mediaContent) throws IOException
   {
       JsonNode root = asTree(mediaContent, mapper.createObjectNode());

@@ -17,7 +17,7 @@ public class JacksonSmileManual
 	factory.configure(SmileGenerator.Feature.CHECK_SHARED_STRING_VALUES, sharedValues);
         groups.media.add(JavaBuiltIn.mediaTransformer, new JacksonJsonManual("smile/jackson/manual", factory),
                 new SerFeatures(
-                        SerFormat.JSON,
+                        SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
                         SerClass.MANUAL_OPT,
                         ""
