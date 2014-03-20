@@ -19,13 +19,13 @@ public class JacksonJrDatabind
                 new SerFeatures(
                         SerFormat.JSON,
                         SerGraph.FLAT_TREE,
-                        SerClass.MANUAL_OPT,
+                        SerClass.ZERO_KNOWLEDGE,
                         ""
                 )
         );
     }
 
-    private static class JrSerializer<T> extends Serializer<T>
+    public final static class JrSerializer<T> extends Serializer<T>
     {
         private final Class<T> type;
         private final JSON json;
