@@ -34,8 +34,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         JavaManual.register(groups);
         Stephenerialization.register(groups);
 
-// 06-May-2013, tatu: way too slow, commenting out for now, can add in slow section?
-        Scala.register(groups); // ruediger: let them face the truth :-). Not a problem as now time based test duration
+        Scala.register(groups);
 // hessian, kryo and wobly are Java object serializations
         Hessian.register(groups);
         Kryo.register(groups);
@@ -46,7 +45,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
 // 06-May-2013, tatu: Fails on basic Java7, mismatch with Unsafe; commented out
 //        Obser.register(groups);
 
-        // Binary formats, generic: protobuf, thrift, avro, CKS, msgpack
+        // Binary formats, generic: protobuf, thrift, avro, CKS, msgpack, CBOR
         Protobuf.register(groups);
         // 16-May-2012, Nate: As discussed on mailing list, removed ActiveMQProtobuf as
         // its lazy deserialization isn't comparable to other serializers.
@@ -57,7 +56,8 @@ public class BenchmarkRunner extends MediaItemBenchmark
         AvroGeneric.register(groups);
         CksBinary.register(groups);
         MsgPack.register(groups);
-
+        JacksonCBORDatabind.register(groups);
+        
         // JSON
         JacksonJsonManual.register(groups);
         JacksonJsonDatabind.register(groups);
@@ -77,6 +77,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         JsonGsonDatabind.register(groups);
         JsonSvensonDatabind.register(groups);
         FlexjsonDatabind.register(groups);
+
         JsonLibJsonDatabind.register(groups);
         FastJSONDatabind.register(groups);
         JsonSimpleWithContentHandler.register(groups);
