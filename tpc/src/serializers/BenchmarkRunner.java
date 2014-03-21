@@ -12,6 +12,7 @@ import serializers.protobuf.Protobuf;
 import serializers.protobuf.ProtobufJson;
 import serializers.protostuff.Protostuff;
 import serializers.protostuff.ProtostuffJson;
+import serializers.wobly.Wobly;
 import serializers.xml.ExiExificient;
 import serializers.xml.XmlJavolution;
 import serializers.xml.XmlStax;
