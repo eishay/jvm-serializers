@@ -226,13 +226,22 @@ public class Media implements java.io.Serializable {
         return copyright;
     }
 
+    public boolean isHasBitrate() {
+        return hasBitrate;
+    }
+
+    public void setHasBitrate(boolean hasBitrate) {
+        this.hasBitrate = hasBitrate;
+    }
+
     /**
      * Writes this object out to the stream using Stephenerialization.
      * @param streamer The output stream to use.
      */
     private void writeObject(ObjectOutputStream streamer) {
-        final StephenerializationService service = StephenerializationLookupService.lookup();
-        service.stephenerialize(this, streamer, Media.class);
+        MediaStephenerializer.stephenerialize(this, streamer);
+        /*final StephenerializationService service = StephenerializationLookupService.lookup();
+        service.stephenerialize(this, streamer, Media.class);*/
     }
 
     /**
@@ -240,7 +249,8 @@ public class Media implements java.io.Serializable {
      * @param streamer The input stream to use.
      */
     private void readObject(ObjectInputStream streamer) {
-        final StephenerializationService service = StephenerializationLookupService.lookup();
-        service.destephenerialize(this, streamer, Media.class);
+        MediaStephenerializer.destephenerialize(this, streamer);
+        /*final StephenerializationService service = StephenerializationLookupService.lookup();
+        service.destephenerialize(this, streamer, Media.class);*/
     }
 }

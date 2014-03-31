@@ -125,8 +125,9 @@ public class Image implements java.io.Serializable
      * @param streamer The output stream to use.
      */
     private void writeObject(ObjectOutputStream streamer) {
-        final StephenerializationService service = StephenerializationLookupService.lookup();
-        service.stephenerialize(this, streamer, Image.class);
+        ImageStephenerializer.stephenerialize(this, streamer);
+        /*final StephenerializationService service = StephenerializationLookupService.lookup();
+        service.stephenerialize(this, streamer, Image.class);*/
     }
 
     /**
@@ -134,7 +135,8 @@ public class Image implements java.io.Serializable
      * @param streamer The input stream to use.
      */
     private void readObject(ObjectInputStream streamer) {
-        final StephenerializationService service = StephenerializationLookupService.lookup();
-        service.destephenerialize(this, streamer, Image.class);
+        ImageStephenerializer.destephenerialize(this, streamer);
+        /*final StephenerializationService service = StephenerializationLookupService.lookup();
+        service.destephenerialize(this, streamer, Image.class);*/
     }
 }
