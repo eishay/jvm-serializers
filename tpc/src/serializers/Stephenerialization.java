@@ -17,7 +17,7 @@ import serializers.stephenerialization.MediaContent;
 public class Stephenerialization {
     public static void register(TestGroups groups)
     {
-        groups.media.add(mediaTransformer, new StephenerializationSerializer<MediaContent>("stephenerialization"), new SerFeatures(SerFormat.BINARY, SerGraph.FULL_GRAPH, SerClass.ZERO_KNOWLEDGE, "stephenerialization"));
+        groups.media.add(mediaTransformer, new StephenerializationSerializer<MediaContent>("stephenerialization"), new SerFeatures(SerFormat.BINARY, SerGraph.FULL_GRAPH, SerClass.ZERO_KNOWLEDGE));
     }
 
     // ------------------------------------------------------------
