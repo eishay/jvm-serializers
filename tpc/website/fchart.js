@@ -49,14 +49,25 @@ function createChart(spec, columns, entries) {
     throw new Error("couldn't understand chart spec: " + JSON.stringify(spec))
   }
 
-  var rows = []
-
+  // Sort by value, but remember the original index of the entry.
+  var byVal = []
   for (var ei = 0; ei < entries.length; ei++) {
-    var entry = entries[ei]
-    
+    var val = renderer.getVal(entries[ei].results)
+    byVal.push([val, ei])
+  }
+  byVal.sort(function(a,b) { return a[0]-b[0] })  // Sort by the result value.
+  var sorted = byVal.map(function(e) { return e[1] })
+
+  var rows = []
+  rows.length = sorted.length  // Ordered by original entry index.
+
+  for (var si = 0; si < sorted.length; si++) {
+    var origIndex = sorted[si]
+    var entry = entries[origIndex]
+
     var chartRow = document.createElement("div"); chartDiv.appendChild(chartRow)
     chartRow.className = "fchart-row"
-    
+
     var chartLabel = document.createElement("div"); chartRow.appendChild(chartLabel)
     chartLabel.className = "fchart-row-label"
     chartLabel.appendChild(document.createTextNode(entry.name))
@@ -66,7 +77,7 @@ function createChart(spec, columns, entries) {
 
     var chartBar = renderer.render(chartData)
 
-    rows.push({div: chartRow, bar: chartBar})
+    rows[origIndex] = {div: chartRow, bar: chartBar}
   }
 
   function updateFunc(enabled) {

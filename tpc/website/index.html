@@ -77,6 +77,9 @@ for (var ci = 0; ci < benchmarkResults.categories.length; ci++) {
 }
 </script>
 
+<h2>Round-Trip</h2>
+<div id="chart-total"></div>
+
 <h2>Serialization</h2>
 <div id="chart-ser"></div>
 
@@ -88,6 +91,7 @@ for (var ci = 0; ci < benchmarkResults.categories.length; ci++) {
 
 <script>
 var fcharts = new fchart.Group(benchmarkResults.columns, benchmarkResults.entries)
+document.getElementById("chart-total").appendChild(fcharts.create('total'))
 document.getElementById("chart-ser").appendChild(fcharts.create('ser'))
 document.getElementById("chart-deser").appendChild(fcharts.create('deser'))
 document.getElementById("chart-size").appendChild(fcharts.create(['overlay', 'size-gz', 'size']))
