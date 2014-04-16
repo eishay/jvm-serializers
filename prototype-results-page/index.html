@@ -1,0 +1,109 @@
+<html>
+
+<head>
+    <title>Results - JVM Serializer Benchmarks</title>
+    <link rel="stylesheet" type="text/css" href="fchart.css"/>
+    <style>
+        .filter-error {
+            color: #822;
+        }
+        .filter-property-category, .filter-property {
+            padding: 0 1px;
+            margin: 0 2px;
+        }
+        .filter-property-category {
+            font-weight: bold;
+        }
+        .data-tooltip {
+            border-bottom: 1px dotted;
+            position: relative;
+        }
+        .data-tooltip:hover:after {
+            font-weight: normal;
+            background-color: #fff;
+            padding: 2px 5px;
+            border: 1px solid;
+            left: 0%;
+            top: 110%;
+            content: attr(data-tooltip);
+            position: absolute;
+            z-index: 98;
+            width: 20em;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Results - JVM Serializer Benchmarks</h1>
+
+<div>
+    <div>
+        <span>Filter: </span>
+        <input type="text" id="filter-input" size="100" />
+        <a id="filter-permalink" href="#">Permalink</a>
+    </div>
+    <div><span class="filter-error" id="filter-error"></span></div>
+    <div id="filter-property-help"></div>
+</div>
+
+<script src="fchart.js"></script>
+<script src="beval.js"></script>
+<script src="glue.js"></script>
+<script src="benchmarkResults.js"></script>
+
+<script>
+// Show the list of properties that you are allowed to filter on.
+var filterPropertyHelp = document.getElementById("filter-property-help")
+for (var ci = 0; ci < benchmarkResults.categories.length; ci++) {
+    var category = benchmarkResults.categories[ci]
+    var categorySpan = document.createElement("span"); filterPropertyHelp.appendChild(categorySpan)
+    categorySpan.appendChild(document.createTextNode(category.name + ":"))
+    categorySpan.className = "filter-property-category data-tooltip"
+    if (category.description !== null) {
+        categorySpan.className += " data-tooltip"
+        categorySpan.setAttribute("data-tooltip", category.description)
+    }
+    for (var pi = 0; pi < category.properties.length; pi++) {
+        var p = category.properties[pi]
+        var propSpan = document.createElement("span"); filterPropertyHelp.appendChild(propSpan)
+        propSpan.appendChild(document.createTextNode(p.name))
+        propSpan.className = "filter-property"
+        if (p.description !== null) {
+            propSpan.className += " data-tooltip"
+            propSpan.setAttribute("data-tooltip", p.description)
+        }
+    }
+}
+</script>
+
+<h2>Round-Trip</h2>
+<div id="chart-total"></div>
+
+<h2>Serialization</h2>
+<div id="chart-ser"></div>
+
+<h2>Deserialization</h2>
+<div id="chart-deser"></div>
+
+<h2>Size (gz-size, size)</h2>
+<div id="chart-size"></div>
+
+<script>
+var fcharts = new fchart.Group(benchmarkResults.columns, benchmarkResults.entries)
+document.getElementById("chart-total").appendChild(fcharts.create('total'))
+document.getElementById("chart-ser").appendChild(fcharts.create('ser'))
+document.getElementById("chart-deser").appendChild(fcharts.create('deser'))
+document.getElementById("chart-size").appendChild(fcharts.create(['overlay', 'size-gz', 'size']))
+
+// Set things up so the chart bars are filtered based on "filter-input".
+glue(fcharts.update, benchmarkResults.categories, benchmarkResults.entries,
+     document.getElementById("filter-input"),
+     document.getElementById("filter-error"),
+     document.getElementById("filter-permalink"))
+</script>
+
+
+</body>
+
+</html>

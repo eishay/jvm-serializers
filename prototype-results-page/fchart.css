@@ -1,0 +1,38 @@
+.fchart-body {
+    display: table;
+}
+
+.fchart-row {
+    display: table-row;
+}
+
+.fchart-row-hidden {
+    display: none;
+    height: 100%;
+}
+
+.fchart-row-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+    white-space: nowrap;
+    padding: 0 2px;
+    font-size: small;
+}
+
+.fchart-row-data {
+    display: table-cell;
+    width: 100%;
+    height: 100%;
+    padding: 1px 0 0 0;
+}
+
+.fchart-row-data-bar {
+    background-color: #246;
+    height: 100%;
+    display: inline-block;
+}
+
+.fchart-row-data-bar-0 {
+    background-color: #123;
+}
