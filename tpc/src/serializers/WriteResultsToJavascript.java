@@ -293,7 +293,7 @@ public class WriteResultsToJavascript
 
     public enum Property
     {
-        Neutral(Category.Format, "netural", "The serialization format is language-neutral."),
+        Neutral(Category.Format, "neutral", "The serialization format is language-neutral."),
         Binary (Category.Format, "binary", "Some binary format."),
         Text   (Category.Format, "text", "Some human-readable text format."),
         Json   (Category.Format, "json", null),
