@@ -173,7 +173,7 @@ public class JacksonJsonTree extends BaseJacksonDataBind<MediaContent>
       for (String person : media.persons) {
         persons.add(person);
       }
-      node.put("persons", persons);
+      node.set("persons", persons);
       node.put("player", media.player.name());
       node.put("size", media.size);
       node.put("title", media.title);

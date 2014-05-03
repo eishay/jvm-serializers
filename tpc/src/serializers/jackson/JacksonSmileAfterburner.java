@@ -31,7 +31,7 @@ public class JacksonSmileAfterburner
         
         smileMapper.registerModule(new AfterburnerModule());
         groups.media.add(JavaBuiltIn.mediaTransformer,
-                new StdJacksonDataBind<MediaContent>("smile/jackson+afterburner/afterburner", MediaContent.class, smileMapper),
+                new StdJacksonDataBind<MediaContent>("smile/jackson+afterburner/databind", MediaContent.class, smileMapper),
                 new SerFeatures(
                         SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
