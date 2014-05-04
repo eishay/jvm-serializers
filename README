@@ -1,1 +1,21 @@
-Look in the "tpc" directory for source code; or see https://github.com/eishay/jvm-serializers/wiki for current results.
+<RuedigerMoeller>
+
+My current results:
+
+https://github.com/RuedigerMoeller/fast-serialization/wiki/TestPage
+
+My modifications:
+
+* The original project actually used the MINIMUM runtime for each benchmark thereby completely excluding GC related effects. 
+I changed it to measure the average results of all runs (excluding warmup)
+
+* I start a new VM for each benchmark run instead of running all in a single VM
+
+* I limit test runs by time not by number of iterations
+
+* I somewhat categorized serializers (full graph, generic, manually adoption, JSON/Binary, crossplatform ..). A lot of 
+comparing apples and oranges is going on there ..
+
+* beautified charts
+
+
