@@ -13,7 +13,7 @@ import data.media.MediaContent;
  */
 public class JacksonWithColumnsDatabind
 {
-    private final static String STD_DESC = "uses positional (column) laytout to eliminate use of names";
+    private final static String STD_DESC = "uses positional (column) layout to eliminate use of names";
 
     public static void registerAll(TestGroups groups)
     {

@@ -7,7 +7,7 @@ import serializers.*;
 public class MsgPack
 {
     private final static String DESC = 
-            "uses positional (column) laytout (instead of typical MsgPack Maps) to eliminate use of names";
+            "uses positional (column) layout (instead of Maps std impl uses) to eliminate use of names";
     
     public static void register(TestGroups groups) {
         register(groups.media, JavaBuiltIn.mediaTransformer);
