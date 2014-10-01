@@ -36,7 +36,7 @@ public class JacksonSmileAfterburner
                         SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
                         SerClass.ZERO_KNOWLEDGE,
-                        ""
+                        "uses bytecode generation to reduce overhead"
                 )
         );
     }

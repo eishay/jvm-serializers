@@ -30,7 +30,7 @@ How this works:
      the the class StatsCruncher.java creates a Textile style report.
      To modify the report output, directly edit the StatsCruncher.java . You are welcome to enhance this using
      some templating/configuration files.
-     You can copy the results/report.textile directly to github wiki in textile-mode.
+     You can copy the results/report.texfile directly to github wiki in textile-mode.
   3) You can run the mk-stats.sh script again without having to re-run the benchmarks if you want to add
      custom query charts.
   4) to filter out certain libraries, do not uncomment them in BenchMarkRunner.java (except they fail), better

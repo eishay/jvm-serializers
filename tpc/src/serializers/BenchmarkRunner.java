@@ -56,18 +56,20 @@ public class BenchmarkRunner extends MediaItemBenchmark
         AvroSpecific.register(groups);
         AvroGeneric.register(groups);
         CksBinary.register(groups);
+        // 01-Oct-2014: MsgPack implementation uses questionable technique as well: instead of using Maps (name/value),
+        //    uses arrays, presumes ordering (and implied schema thereby) -- not inter-operable with most non-Java MsgPack
+        //    usage, and basically seems to optimize for benchmarks instead of reflecting real usage.
         MsgPack.register(groups);
         JacksonCBORDatabind.register(groups);
+        JacksonCBORAfterburner.register(groups);
         
         // JSON
         JacksonJsonManual.register(groups);
         JacksonJsonDatabind.register(groups);
         JacksonJsonAfterburner.register(groups); // databind with bytecode generation (faster)
         JacksonJrDatabind.register(groups);
+        // 01-Oct-2014, tatu: not 100% sure this is still needed, but left just in case
 //        JacksonJsonTree.register(groups);
-// 01-May-2012, tatu: not all that useful (IMO) for general comparisons
-//        JacksonJsonDatabindWithStrings.register(groups);
-//        JacksonJsonTreeWithStrings.register(groups);
         JavaxJsonTreeGlassfish.register(groups);
         JavaxJsonStreamGlassfish.register(groups);
         JsonTwoLattes.register(groups);
