@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import serializers.avro.AvroSpecific;
 import serializers.cks.CksText;
 import serializers.jackson.*;
+import serializers.kryo.Kryo;
 import serializers.protobuf.Protobuf;
 import serializers.xml.XmlStax;
 
@@ -46,13 +47,13 @@ public class MediaStreamBenchmark extends BenchmarkBase
         // JSON
         JacksonJsonManual.register(groups);
         JacksonJsonDatabind.register(groups);
-        JacksonJsonAfterburner.register(groups); // databind with bytecode generation (faster)
+        JacksonWithAfterburner.registerJSON(groups); // databind with bytecode generation (faster)
 
         // JSON-like
         // share both names & values for data streams:
         JacksonSmileManual.register(groups, true, true);
         JacksonSmileDatabind.register(groups, true, true);
-        JacksonSmileAfterburner.register(groups, true, true);
+        JacksonWithAfterburner.registerSmile(groups, true, true);
 
         // this one needed to read in test data, too:
         CksText.register(groups);

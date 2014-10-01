@@ -7,6 +7,7 @@ import serializers.cks.CksText;
 import serializers.jackson.*;
 import serializers.javaxjson.*;
 import serializers.json.*;
+import serializers.kryo.Kryo;
 import serializers.msgpack.MsgPack;
 import serializers.protobuf.Protobuf;
 import serializers.protobuf.ProtobufJson;
@@ -61,12 +62,10 @@ public class BenchmarkRunner extends MediaItemBenchmark
         //    usage, and basically seems to optimize for benchmarks instead of reflecting real usage.
         MsgPack.register(groups);
         JacksonCBORDatabind.register(groups);
-        JacksonCBORAfterburner.register(groups);
         
         // JSON
         JacksonJsonManual.register(groups);
         JacksonJsonDatabind.register(groups);
-        JacksonJsonAfterburner.register(groups); // databind with bytecode generation (faster)
         JacksonJrDatabind.register(groups);
         // 01-Oct-2014, tatu: not 100% sure this is still needed, but left just in case
 //        JacksonJsonTree.register(groups);
@@ -101,7 +100,6 @@ public class BenchmarkRunner extends MediaItemBenchmark
         // Smile is 1-to-1 binary JSON serialization
         JacksonSmileManual.register(groups);
         JacksonSmileDatabind.register(groups);
-        JacksonSmileAfterburner.register(groups); // databind with bytecode generation (faster)
 
 	// 06-May-2013, tatu: Unfortunately there is a version conflict
         //    here too -- commenting out, to let David fix it
@@ -123,5 +121,12 @@ public class BenchmarkRunner extends MediaItemBenchmark
         XmlStax.register(groups, false, false, true); // -/-/fast-infoset
         ExiExificient.register(groups);
 
+        // Other things...
+
+        // Jackson databind with Afterburner; add-on module that uses bytecode gen for speed
+        JacksonWithAfterburner.registerAll(groups);
+        
+        // Jackson's column-oriented variants for formats that usually use key/value notation
+        JacksonWithColumnsDatabind.registerAll(groups);
     }
 }

@@ -1,11 +1,21 @@
 
-package serializers;
+package serializers.kryo;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import serializers.JavaBuiltIn;
+import serializers.SerClass;
+import serializers.SerFeatures;
+import serializers.SerFormat;
+import serializers.SerGraph;
+import serializers.Serializer;
+import serializers.TestGroup;
+import serializers.TestGroups;
+import serializers.Transformer;
 
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -23,48 +33,34 @@ public class Kryo {
 	public static void register (TestGroups groups) {
 		register(groups.media, JavaBuiltIn.mediaTransformer, MediaTypeHandler);
 	}
-
+	
 	private static <T, S> void register (TestGroup<T> group, Transformer<T, S> transformer, TypeHandler<S> handler) {
-        group.add(transformer, new DefaultSerializer<S>(handler, true),
-                new SerFeatures(
-                        SerFormat.BINARY,
+        group.add(transformer, new DefaultSerializer<S>(handler, true, "kryo-serializer"),
+                new SerFeatures(SerFormat.BINARY,
                         SerGraph.FULL_GRAPH,
                         SerClass.ZERO_KNOWLEDGE,
-                        "default"
-                )
-        );
-        group.add(transformer, new DefaultSerializer<S>(handler, false),
+                        "default") );
+        group.add(transformer, new DefaultSerializer<S>(handler, false, "kryo-flat"),
                 new SerFeatures(
                         SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
                         SerClass.ZERO_KNOWLEDGE,
-                        "default, no shared refs"
-                )
-        );
-		group.add(transformer, new BasicSerializer<S>(handler),
-                new SerFeatures(
-                        SerFormat.BINARY,
+                        "default, no shared refs"));
+		group.add(transformer, new BasicSerializer<S>(handler, "kryo-flat-pre"),
+                new SerFeatures(SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
                         SerClass.CLASSES_KNOWN,
-                        "no shared refs, preregistered classes"
-                )
-        );
+                        "no shared refs, preregistered classes"));
 		group.add(transformer, new OptimizedSerializer<S>(handler),
-                new SerFeatures(
-                        SerFormat.BINARY,
+                new SerFeatures(SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
                         SerClass.MANUAL_OPT,
-                        "manually optimized"
-                )
-        );
+                        "manually optimized"));
 		group.add(transformer, new CustomSerializer<S>(handler),
-                new SerFeatures(
-                        SerFormat.BINARY,
+                new SerFeatures( SerFormat.BINARY,
                         SerGraph.FLAT_TREE,
                         SerClass.MANUAL_OPT,
-                        "manually optimized"
-                )
-        );
+                        "manually optimized"));
 	}
 
 	// ------------------------------------------------------------
@@ -73,13 +69,16 @@ public class Kryo {
     /** This is the most basic Kryo usage. Don't register anything go. */
     public static class DefaultSerializer<T> extends Serializer<T> {
         final com.esotericsoftware.kryo.Kryo kryo;
+
+        private final String name;
         private final byte[] buffer = new byte[BUFFER_SIZE];
         private final Output output = new Output(buffer, -1);
         private final Input input = new Input(buffer);
         private final Class<T> type;
         boolean shared;
 
-        public DefaultSerializer (TypeHandler<T> handler,boolean shared) {
+        public DefaultSerializer (TypeHandler<T> handler,boolean shared, String name) {
+            this.name = name;
             this.type = handler.type;
             this.shared = shared;
             this.kryo = new com.esotericsoftware.kryo.Kryo();
@@ -117,8 +116,8 @@ public class Kryo {
             return (T[])result;
         }
 
-        public String getName () {
-            return "kryo"+(shared?"-serializer":"-flat");
+        public final String getName () {
+            return name;
         }
     }
 
@@ -126,15 +125,18 @@ public class Kryo {
 	public static class BasicSerializer<T> extends Serializer<T> {
 		private final Class<T> type;
 		final com.esotericsoftware.kryo.Kryo kryo;
+
+		private final String name;
 		private final byte[] buffer = new byte[BUFFER_SIZE];
 		private final Output output = new Output(buffer, -1);
 		private final Input input = new Input(buffer);
 
-		public BasicSerializer (TypeHandler<T> handler) {
+		public BasicSerializer (TypeHandler<T> handler, String name) {
 			this.type = handler.type;
 			this.kryo = new com.esotericsoftware.kryo.Kryo();
 			kryo.setReferences(false);
 			kryo.setRegistrationRequired(true);
+               this.name = name;
 			handler.register(this.kryo);
 		}
 
@@ -167,20 +169,17 @@ public class Kryo {
 			return (T[])result;
 		}
 
-		public String getName () {
-			return "kryo-flat-pre";
+		@Override
+		public final String getName () {
+		    return name;
 		}
 	}
 
 	/** This shows how to configure individual Kryo serializersto reduce the serialized bytes. */
 	public static class OptimizedSerializer<T> extends BasicSerializer<T> {
 		public OptimizedSerializer (TypeHandler<T> handler) {
-			super(handler);
+			super(handler, "kryo-opt");
 			handler.optimize(this.kryo);
-		}
-
-		public String getName () {
-			return "kryo-opt";
 		}
 	}
 
@@ -189,12 +188,8 @@ public class Kryo {
 	 * host their own serialization code (similar to java.io.Externalizable). */
 	public static class CustomSerializer<T> extends BasicSerializer<T> {
 		public CustomSerializer (TypeHandler<T> handler) {
-			super(handler);
+			super(handler, "kryo-manual");
 			handler.registerCustom(this.kryo);
-		}
-
-		public String getName () {
-			return "kryo-manual";
 		}
 	}
 
@@ -227,7 +222,8 @@ public class Kryo {
 			kryo.register(Image.class);
 		}
 
-		public void optimize (com.esotericsoftware.kryo.Kryo kryo) {
+		@SuppressWarnings("rawtypes")
+        public void optimize (com.esotericsoftware.kryo.Kryo kryo) {
 			FieldSerializer imageSerializer = (FieldSerializer)kryo.getSerializer(Image.class);
 			imageSerializer.setFieldsCanBeNull(false);
 			imageSerializer.getField("title").setCanBeNull(true);
