@@ -175,7 +175,7 @@ else
 	# Compile: $(JavaSourceRoots) [scalac]
 	$(p1)support/scala/scalac -d build/bytecode/main \
 		-deprecation \
-		-cp "$(shell cat build/lib-cp)" \
+		-cp "$(call mkcp,$(shell cat build/lib-cp) $(shell cat build/gen-cp))" \
 		$(ScalaSourceFiles) $(JavaSourceFiles)
 	# Compile: $(JavaSourceRoots) [javac]
 	$(p1)$(JavaC) $(JavaC_Opt) -d build/bytecode/main \

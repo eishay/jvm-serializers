@@ -1,12 +1,11 @@
 package serializers.scala.media
 
-@serializable
 case class Image(
 	uri: String,
 	title: Option[String],
 	width: Int,
 	height: Int,
-	size: Image.Size)
+	size: Image.Size) extends Serializable
 
 object Image {
 	sealed abstract class Size

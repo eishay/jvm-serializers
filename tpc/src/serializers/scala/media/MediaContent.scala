@@ -1,4 +1,3 @@
 package serializers.scala.media
 
-@serializable
-class MediaContent (val media: Media, val images: List[Image])
+case class MediaContent (val media: Media, val images: List[Image]) extends Serializable

@@ -1,6 +1,5 @@
 package serializers.scala.media
 
-@serializable
 case class Media (
 	val uri: String,
 	val title: Option[String],
@@ -12,7 +11,7 @@ case class Media (
 	val bitrate: Option[Int],
 	val persons: List[String],
 	val player: Media.Player,
-	val copyright: Option[String])
+	val copyright: Option[String]) extends Serializable
 
 object Media {
 	sealed abstract class Player
