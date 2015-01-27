@@ -18,6 +18,7 @@ import serializers.xml.ExiExificient;
 import serializers.xml.XmlJavolution;
 import serializers.xml.XmlStax;
 import serializers.xml.XmlXStream;
+import serializers.dslplatform.DSLPlatform;
 
 /**
  * Full test of various codecs, using a single <code>MediaItem</code>
@@ -128,5 +129,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         
         // Jackson's column-oriented variants for formats that usually use key/value notation
         JacksonWithColumnsDatabind.registerAll(groups);
+
+	DSLPlatform.register(groups);
     }
 }
