@@ -32,10 +32,12 @@ cks_generator ?= java -jar lib/cks-tool.jar
 avro_cp ?= $(call mkcp,$(wildcard lib/avro-*.jar lib/jackson-*.jar lib/jopt-simple-*.jar lib/velocity-*.jar lib/slf4j-*.jar))
 avro_generator ?= java -cp "$(avro_cp)" org.apache.avro.tool.Main
 protostuff_compiler ?= $(wildcard lib/protostuff-compiler-*.jar)
+dslplatform_generator = java -jar lib/dsl-clc.jar
 
 # Default to 'no' because we might not have these tools available.
 Generate_protobuf ?= n
 Generate_thrift ?= n
+Generate_dslplatform ?= n # Requires Mono 3.10+
 
 # Default to 'yes' because the generator tools are included in 'lib/'.
 Generate_activemqprotobuf ?= y
@@ -62,7 +64,7 @@ endif
 
 ##########################################################################
 
-SchemaExtensions := .thrift .proto .tcks .avro
+SchemaExtensions := .thrift .proto .tcks .avro .dsl
 Schemas = $(patsubst schema/%,%,$(wildcard $(SchemaExtensions:%=schema/*%)))
 
 ##########################################################################
@@ -94,6 +96,8 @@ else ifneq ($(findstring .tcks,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_cks)
 else ifneq ($(findstring .avro,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_avro)
+else ifneq ($(findstring .dsl,$(2)),)
+	NeedToGenerate_$(1) := $(Generate_dslplatform)
 else
 endif
 
@@ -122,6 +126,20 @@ else ifneq ($(findstring .tcks,$(2)),)
 	$(p1)$(cks_generator) gen-java $$< serializers.cks.$(basename $(2)) build/gen/$(2)/serializers/cks/$(basename $(2))
 else ifneq ($(findstring .avro,$(2)),)
 	$(p1)$(avro_generator) compile schema $$< build/gen/$(2)
+else ifneq ($(findstring .dsl,$(2)),)
+	rm -rf dslplatform_client_tmp java_client
+	mkdir -p dslplatform_client_tmp
+	$(p1)$(dslplatform_generator) \
+		-temp=dslplatform_client_tmp \
+		-dsl=schema \
+		-settings=manual-json,no-jackson \
+		-namespace=serializers.dslplatform \
+		-target=java_client \
+		-no-prompt \
+		-compiler=lib/dsl-compiler.exe \
+		-download
+	cp -r dslplatform_client_tmp/java_client/serializers build/gen/$(2)
+	rm -rf dslplatform_client_tmp java_client generated-model-java.jar
 else
 endif
 
