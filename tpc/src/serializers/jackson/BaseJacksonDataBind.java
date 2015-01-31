@@ -21,7 +21,7 @@ public abstract class BaseJacksonDataBind<T> extends BaseJacksonDriver<T>
         type = mapper.getTypeFactory().constructType(clazz);
         this.mapper = mapper;
         reader = mapper.reader(type);
-        writer = mapper.writerWithType(type);
+        writer = mapper.writerFor(type);
     }
 
     protected BaseJacksonDataBind(String name, JavaType type,

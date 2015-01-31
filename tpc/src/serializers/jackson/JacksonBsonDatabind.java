@@ -38,8 +38,6 @@ public class JacksonBsonDatabind
         );
     }
 
-    // Must bundle, because BSON module still uses Jackson 1.x...
-    
     public final static class DataBindBase<T> extends Serializer<T>
     {
         protected final String name;
@@ -54,7 +52,7 @@ public class JacksonBsonDatabind
             type = mapper.constructType(clazz);
             this.mapper = mapper;
             objectReader = mapper.reader(type);
-	    objectWriter = mapper.writerWithType(type);
+            objectWriter = mapper.writerFor(type);
         }
 
         @Override
