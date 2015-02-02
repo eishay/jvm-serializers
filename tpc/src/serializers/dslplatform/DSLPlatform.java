@@ -28,16 +28,27 @@ import data.media.MediaTransformer;
  */
 public class DSLPlatform {
     public static void register(final TestGroups groups) {
-        groups.media.add(new DSLPlatformMediaTransformer(), new DSLPlatformSerializer(), new SerFeatures(
-                SerFormat.JSON, SerGraph.FLAT_TREE, SerClass.CLASSES_KNOWN, ""));
+        groups.media.add(new DSLPlatformMediaTransformer(), new DSLPlatformSerializer(false), new SerFeatures(
+                SerFormat.JSON, SerGraph.FLAT_TREE, SerClass.CLASSES_KNOWN, "Serializes all properties.")); // Full serialization
+        groups.media.add(new DSLPlatformMediaTransformer(), new DSLPlatformSerializer(true), new SerFeatures(
+                SerFormat.JSON, SerGraph.FLAT_TREE, SerClass.CLASSES_KNOWN, "Omits default values from the JSON output.")); // Minimal serialization
     }
 
     static class DSLPlatformSerializer extends Serializer<MediaContent> {
         private static JsonWriter writer = new JsonWriter();
+        private final boolean minimal;
 
         @Override
         public String getName() {
-            return "json/dsl-platform";
+            return "json/dsl-platform" + (this.minimal ? "/omit-defaults" : "");
+        }
+        
+        public DSLPlatformSerializer(){
+            this(true); // minimal serialization
+        }	
+
+        public DSLPlatformSerializer(boolean minimal){
+            this.minimal = minimal;
         }
 
         @Override
@@ -48,7 +59,7 @@ public class DSLPlatform {
         @Override
         public byte[] serialize(final MediaContent content) throws Exception {
             writer.reset();
-            content.serialize(writer, true);
+            content.serialize(writer, this.minimal);
             return writer.toByteArray();
         }
     }
