@@ -19,7 +19,7 @@ public final class MediaContent   implements java.io.Serializable, com.dslplatfo
 	public MediaContent() {
 			
 		this.media = new serializers.dslplatform.media.Media();
-		this.images = new java.util.ArrayList<serializers.dslplatform.media.Image>();
+		this.images = new java.util.ArrayList<serializers.dslplatform.media.Image>(4);
 	}
 
 	
@@ -97,44 +97,67 @@ public final class MediaContent   implements java.io.Serializable, com.dslplatfo
 	
 	public void serialize(final com.dslplatform.client.json.JsonWriter sw, final boolean minimal) {
 		sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_START);
-		__serializeJsonObject(sw, minimal, false);
+		if (minimal) {
+			__serializeJsonObjectMinimal(sw, false);
+		} else {
+			__serializeJsonObjectFull(sw, false);
+		}
 		sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_END);
 	}
 
-	void __serializeJsonObject(com.dslplatform.client.json.JsonWriter sw, boolean minimal, boolean hasWrittenProperty) {
+	void __serializeJsonObjectMinimal(com.dslplatform.client.json.JsonWriter sw, boolean hasWrittenProperty) {
 		
 		
-		if(this.media != null) {
+		
 			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"media\":");
-			this.media.serialize(sw, minimal);
-		} 
-		else if (!minimal) {
-			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
-			hasWrittenProperty = true;
-			sw.writeAscii("\"media\":null");
-		}
+		sw.writeAscii("\"media\":", 8);
+		sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_START);
+					this.media.__serializeJsonObjectMinimal(sw, false);
+					sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_END);
 		
 		if(this.images.size() != 0) {
-			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
-			hasWrittenProperty = true;
-			sw.writeAscii("\"images\":[");
+			sw.writeAscii(",\"images\":[", 11);
 			serializers.dslplatform.media.Image item = this.images.get(0);
-				item.serialize(sw, minimal);
+				sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_START);
+				item.__serializeJsonObjectMinimal(sw, false);
+				sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_END);
 			for(int i = 1; i < this.images.size(); i++) {
 				sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);	
 				item = this.images.get(i);
-				item.serialize(sw, minimal);
+				sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_START);
+				item.__serializeJsonObjectMinimal(sw, false);
+				sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_END);
 			}
 			sw.writeByte(com.dslplatform.client.json.JsonWriter.ARRAY_END);
 		}
-		else if (!minimal) 
-		{
-			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
-			hasWrittenProperty = true;
-			sw.writeAscii("\"images\":[]");
+	}
+
+	void __serializeJsonObjectFull(com.dslplatform.client.json.JsonWriter sw, boolean hasWrittenProperty) {
+		
+		
+		
+		sw.writeAscii("\"media\":", 8);
+		sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_START);
+					this.media.__serializeJsonObjectFull(sw, false);
+					sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_END);
+		
+		if(this.images.size() != 0) {
+			sw.writeAscii(",\"images\":[", 11);
+			serializers.dslplatform.media.Image item = this.images.get(0);
+				sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_START);
+				item.__serializeJsonObjectFull(sw, false);
+				sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_END);
+			for(int i = 1; i < this.images.size(); i++) {
+				sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);	
+				item = this.images.get(i);
+				sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_START);
+				item.__serializeJsonObjectFull(sw, false);
+				sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_END);
+			}
+			sw.writeByte(com.dslplatform.client.json.JsonWriter.ARRAY_END);
 		}
+		else sw.writeAscii(",\"images\":[]", 12);
 	}
 
 	public static com.dslplatform.client.json.JsonReader.ReadJsonObject<MediaContent> JSON_READER = new com.dslplatform.client.json.JsonReader.ReadJsonObject<MediaContent>() {
@@ -147,7 +170,7 @@ public final class MediaContent   implements java.io.Serializable, com.dslplatfo
 	private MediaContent(final com.dslplatform.client.json.JsonReader reader, final com.dslplatform.patterns.ServiceLocator _serviceLocator) throws java.io.IOException {
 		
 		serializers.dslplatform.media.Media _media_ = null;
-		java.util.List<serializers.dslplatform.media.Image> _images_ = new java.util.ArrayList<serializers.dslplatform.media.Image>();
+		java.util.List<serializers.dslplatform.media.Image> _images_ = new java.util.ArrayList<serializers.dslplatform.media.Image>(4);
 		byte nextToken = reader.last();
 		if(nextToken != '}') {
 			int nameHash = reader.fillName();

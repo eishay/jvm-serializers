@@ -165,72 +165,81 @@ public final class Image   implements java.io.Serializable, com.dslplatform.clie
 	
 	public void serialize(final com.dslplatform.client.json.JsonWriter sw, final boolean minimal) {
 		sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_START);
-		__serializeJsonObject(sw, minimal, false);
+		if (minimal) {
+			__serializeJsonObjectMinimal(sw, false);
+		} else {
+			__serializeJsonObjectFull(sw, false);
+		}
 		sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_END);
 	}
 
-	void __serializeJsonObject(com.dslplatform.client.json.JsonWriter sw, boolean minimal, boolean hasWrittenProperty) {
+	void __serializeJsonObjectMinimal(com.dslplatform.client.json.JsonWriter sw, boolean hasWrittenProperty) {
 		
 		
-			if (this.uri != null && !(this.uri.length() == 0)) {
+			if (!(this.uri.length() == 0)) {
 				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"uri\":");
+			sw.writeAscii("\"uri\":", 6);
 				com.dslplatform.client.json.StringConverter.serialize(this.uri, sw);
-			}
-			else if (!minimal) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
-			hasWrittenProperty = true;
-			sw.writeAscii("\"uri\":\"\"");
 			}
 		
 			if (this.title != null) {
 				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"title\":");
-				com.dslplatform.client.json.StringConverter.serializeNullable(this.title, sw);
-			}
-			else if (!minimal) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
-			hasWrittenProperty = true;
-			sw.writeAscii("\"title\":null");
+			sw.writeAscii("\"title\":", 8);
+				com.dslplatform.client.json.StringConverter.serialize(this.title, sw);
 			}
 		
 			if (this.width != 0) {
 				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"width\":");
+			sw.writeAscii("\"width\":", 8);
 				com.dslplatform.client.json.NumberConverter.serialize(this.width, sw);
-			}
-			else if (!minimal) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
-			hasWrittenProperty = true;
-			sw.writeAscii("\"width\":0");
 			}
 		
 			if (this.height != 0) {
 				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"height\":");
+			sw.writeAscii("\"height\":", 9);
 				com.dslplatform.client.json.NumberConverter.serialize(this.height, sw);
-			}
-			else if (!minimal) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
-			hasWrittenProperty = true;
-			sw.writeAscii("\"height\":0");
 			}
 		
 		if(this.size != serializers.dslplatform.media.Size.SMALL) {
 			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"size\":\"");
+			sw.writeAscii("\"size\":\"", 8);
 			sw.writeAscii(this.size.name());
 			sw.writeByte(com.dslplatform.client.json.JsonWriter.QUOTE);
-		} else if (!minimal) {
-			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
-			hasWrittenProperty = true;
-			sw.writeAscii("\"size\":\"SMALL\"");
 		}
+	}
+
+	void __serializeJsonObjectFull(com.dslplatform.client.json.JsonWriter sw, boolean hasWrittenProperty) {
+		
+		
+			
+			sw.writeAscii("\"uri\":", 6);
+			com.dslplatform.client.json.StringConverter.serialize(this.uri, sw);
+		
+			
+			if (this.title != null) {
+				sw.writeAscii(",\"title\":", 9);
+				com.dslplatform.client.json.StringConverter.serialize(this.title, sw);
+			} else {
+				sw.writeAscii(",\"title\":null", 13);
+			}
+		
+			
+			sw.writeAscii(",\"width\":", 9);
+			com.dslplatform.client.json.NumberConverter.serialize(this.width, sw);
+		
+			
+			sw.writeAscii(",\"height\":", 10);
+			com.dslplatform.client.json.NumberConverter.serialize(this.height, sw);
+		
+		
+		sw.writeAscii(",\"size\":\"", 9);
+		sw.writeAscii(this.size.name());
+		sw.writeByte(com.dslplatform.client.json.JsonWriter.QUOTE);
 	}
 
 	public static com.dslplatform.client.json.JsonReader.ReadJsonObject<Image> JSON_READER = new com.dslplatform.client.json.JsonReader.ReadJsonObject<Image>() {

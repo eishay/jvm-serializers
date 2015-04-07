@@ -31,29 +31,32 @@ public class DSLPlatform {
         groups.media.add(new DSLPlatformMediaTransformer(), new DSLPlatformSerializer(false), new SerFeatures(
                 SerFormat.JSON, SerGraph.FLAT_TREE, SerClass.CLASSES_KNOWN, "Serializes all properties.")); // Full serialization
         groups.media.add(new DSLPlatformMediaTransformer(), new DSLPlatformSerializer(true), new SerFeatures(
-                SerFormat.JSON, SerGraph.FLAT_TREE, SerClass.CLASSES_KNOWN, "Omits default values from the JSON output.")); // Minimal serialization
+                SerFormat.JSON, SerGraph.FLAT_TREE, SerClass.CLASSES_KNOWN,
+                "Omits default values from the JSON output.")); // Minimal serialization
     }
 
     static class DSLPlatformSerializer extends Serializer<MediaContent> {
         private static JsonWriter writer = new JsonWriter();
         private final boolean minimal;
+        private final char[] tmp = new char[64];
 
         @Override
         public String getName() {
-            return "json/dsl-platform" + (this.minimal ? "/omit-defaults" : "");
+            return "json/dsl-platform" + (this.minimal
+                    ? "/omit-defaults" : "");
         }
-        
-        public DSLPlatformSerializer(){
-            this(true); // minimal serialization
-        }	
 
-        public DSLPlatformSerializer(boolean minimal){
+        public DSLPlatformSerializer() {
+            this(true); // minimal serialization
+        }
+
+        public DSLPlatformSerializer(final boolean minimal) {
             this.minimal = minimal;
         }
 
         @Override
         public MediaContent deserialize(final byte[] array) throws Exception {
-            return (MediaContent) MediaContent.deserialize(new JsonReader(array, null), null);
+            return (MediaContent) MediaContent.deserialize(new JsonReader(array, null, tmp), null);
         }
 
         @Override
@@ -75,24 +78,27 @@ public class DSLPlatform {
             return new MediaContent(forward(commonMediaContent.media), forward(commonMediaContent.images));
         }
 
-        private Media forward(final data.media.Media media) {
-            return new Media(media.uri, media.title, media.width, media.height, media.format,
-                    media.duration, media.size, media.bitrate, media.persons, this.forward(media.player),
+        private static Media forward(final data.media.Media media) {
+            return new Media(media.uri,
+                    media.title,
+                    media.width,
+                    media.height,
+                    media.format,
+                    media.duration,
+                    media.size,
+                    media.bitrate,
+                    media.persons,
+                    forward(media.player),
                     media.copyright);
         }
 
-        private Player forward(final data.media.Media.Player player) {
-            switch (player) {
-                case JAVA:
-                    return Player.JAVA;
-                case FLASH:
-                    return Player.FLASH;
-                default:
-                    throw new AssertionError("invalid case: " + player);
-            }
+        private static Player forward(final data.media.Media.Player player) {
+            return player == data.media.Media.Player.JAVA
+                    ? Player.JAVA
+                    : Player.FLASH;
         }
 
-        private List<Image> forward(final List<data.media.Image> images) {
+        private static List<Image> forward(final List<data.media.Image> images) {
             final ArrayList<Image> forwardedImgs = new ArrayList<Image>(images.size());
             for (final data.media.Image image : images) {
                 forwardedImgs.add(forward(image));
@@ -100,21 +106,19 @@ public class DSLPlatform {
             return forwardedImgs;
         }
 
-        private Image forward(final data.media.Image image) {
-            return new Image(image.uri, image.title, image.width, image.height,
-                    this.forward(image.size));
+        private static Image forward(final data.media.Image image) {
+            return new Image(image.uri,
+                    image.title,
+                    image.width,
+                    image.height,
+                    forward(image.size));
         }
 
-        private Size forward(final data.media.Image.Size size) {
-            switch (size) {
-                case SMALL:
-                    return Size.SMALL;
-                case LARGE:
-                    return Size.LARGE;
-                default:
-                    throw new AssertionError("invalid case: " + size);
-            }
-        }
+        private static Size forward(final data.media.Image.Size size) {
+            return size == data.media.Image.Size.SMALL
+					? Size.SMALL
+					: Size.LARGE;
+		}
 
         // ----------------------------------------------------------
         // Reverse
@@ -124,25 +128,29 @@ public class DSLPlatform {
             return new data.media.MediaContent(reverse(mc.getMedia()), reverse(mc.getImages()));
         }
 
-        private data.media.Media reverse(final Media media) {
+        private static data.media.Media reverse(final Media media) {
             // Media
-            return new data.media.Media(media.getUri(), media.getTitle(), media.getWidth(), media.getHeight(),
-                    media.getFormat(), media.getDuration(), media.getSize(), media.getBitrate(),
-                    media.getBitrate() != 0, media.getPersons(), reverse(media.getPlayer()), media.getCopyright());
+            return new data.media.Media(media.getUri(),
+                    media.getTitle(),
+                    media.getWidth(),
+                    media.getHeight(),
+                    media.getFormat(),
+                    media.getDuration(),
+                    media.getSize(),
+                    media.getBitrate(),
+                    media.getBitrate() != 0,
+                    media.getPersons(),
+                    reverse(media.getPlayer()),
+                    media.getCopyright());
         }
 
-        private data.media.Media.Player reverse(final Player player) {
-            switch (player) {
-                case JAVA:
-                    return data.media.Media.Player.JAVA;
-                case FLASH:
-                    return data.media.Media.Player.FLASH;
-                default:
-                    throw new AssertionError("invalid case: " + player);
-            }
+        private static data.media.Media.Player reverse(final Player player) {
+            return player == Player.JAVA
+                    ? data.media.Media.Player.JAVA
+                    : data.media.Media.Player.FLASH;
         }
 
-        private List<data.media.Image> reverse(final List<Image> images) {
+        private static List<data.media.Image> reverse(final List<Image> images) {
             final ArrayList<data.media.Image> reversed = new ArrayList<data.media.Image>(images.size());
             for (final Image image : images) {
                 reversed.add(reverse(image));
@@ -150,20 +158,18 @@ public class DSLPlatform {
             return reversed;
         }
 
-        private data.media.Image reverse(final Image image) {
-            return new data.media.Image(image.getUri(), image.getTitle(), image.getWidth(), image.getHeight(),
+        private static data.media.Image reverse(final Image image) {
+            return new data.media.Image(image.getUri(),
+                    image.getTitle(),
+                    image.getWidth(),
+                    image.getHeight(),
                     reverse(image.getSize()));
         }
 
-        private data.media.Image.Size reverse(final Size size) {
-            switch (size) {
-                case SMALL:
-                    return data.media.Image.Size.SMALL;
-                case LARGE:
-                    return data.media.Image.Size.LARGE;
-                default:
-                    throw new AssertionError("invalid case: " + size);
-            }
+        private static data.media.Image.Size reverse(final Size size) {
+            return size == Size.SMALL
+                    ? data.media.Image.Size.SMALL
+                    : data.media.Image.Size.LARGE;
         }
 
         @Override
