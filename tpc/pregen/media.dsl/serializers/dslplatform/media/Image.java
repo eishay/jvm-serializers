@@ -35,7 +35,7 @@ public final class Image   implements java.io.Serializable, com.dslplatform.clie
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + 70760763;
+		result = prime * result + 1561429203;
 		result = prime * result + (this.uri.hashCode());
 		result = prime * result + (this.title != null ? this.title.hashCode() : 0);
 		result = prime * result + (this.width);
@@ -177,39 +177,36 @@ public final class Image   implements java.io.Serializable, com.dslplatform.clie
 		
 		
 			if (!(this.uri.length() == 0)) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"uri\":", 6);
+				sw.writeAscii("\"uri\":", 6);
 				com.dslplatform.client.json.StringConverter.serialize(this.uri, sw);
 			}
 		
 			if (this.title != null) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
+			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"title\":", 8);
+				sw.writeAscii("\"title\":", 8);
 				com.dslplatform.client.json.StringConverter.serialize(this.title, sw);
 			}
 		
 			if (this.width != 0) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
+			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"width\":", 8);
+				sw.writeAscii("\"width\":", 8);
 				com.dslplatform.client.json.NumberConverter.serialize(this.width, sw);
 			}
 		
 			if (this.height != 0) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
+			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"height\":", 9);
+				sw.writeAscii("\"height\":", 9);
 				com.dslplatform.client.json.NumberConverter.serialize(this.height, sw);
 			}
 		
 		if(this.size != serializers.dslplatform.media.Size.SMALL) {
 			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"size\":\"", 8);
-			sw.writeAscii(this.size.name());
-			sw.writeByte(com.dslplatform.client.json.JsonWriter.QUOTE);
+			sw.writeAscii("\"size\":\"LARGE\"", 14);
 		}
 	}
 
@@ -271,19 +268,19 @@ public final class Image   implements java.io.Serializable, com.dslplatform.clie
 					
 					case 932140029:
 						_uri_ = com.dslplatform.client.json.StringConverter.deserialize(reader);
-							nextToken = reader.getNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case -1738164983:
 						_title_ = com.dslplatform.client.json.StringConverter.deserialize(reader);
-							nextToken = reader.getNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case -1786286561:
 						_width_ = com.dslplatform.client.json.NumberConverter.deserializeInt(reader);
-							nextToken = reader.moveToNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case -708986046:
 						_height_ = com.dslplatform.client.json.NumberConverter.deserializeInt(reader);
-							nextToken = reader.moveToNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case 597743964:
 						
@@ -318,19 +315,19 @@ public final class Image   implements java.io.Serializable, com.dslplatform.clie
 					
 					case 932140029:
 						_uri_ = com.dslplatform.client.json.StringConverter.deserialize(reader);
-							nextToken = reader.getNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case -1738164983:
 						_title_ = com.dslplatform.client.json.StringConverter.deserialize(reader);
-							nextToken = reader.getNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case -1786286561:
 						_width_ = com.dslplatform.client.json.NumberConverter.deserializeInt(reader);
-							nextToken = reader.moveToNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case -708986046:
 						_height_ = com.dslplatform.client.json.NumberConverter.deserializeInt(reader);
-							nextToken = reader.moveToNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case 597743964:
 						

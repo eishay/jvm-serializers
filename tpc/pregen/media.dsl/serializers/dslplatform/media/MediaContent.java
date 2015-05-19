@@ -27,7 +27,7 @@ public final class MediaContent   implements java.io.Serializable, com.dslplatfo
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + 1135396885;
+		result = prime * result + 2088671553;
 		result = prime * result + (this.media.hashCode());
 		return result;
 	}
@@ -109,10 +109,8 @@ public final class MediaContent   implements java.io.Serializable, com.dslplatfo
 		
 		
 		
-			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
-			hasWrittenProperty = true;
-		sw.writeAscii("\"media\":", 8);
-		sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_START);
+		sw.writeAscii("\"media\":{", 9);
+		
 					this.media.__serializeJsonObjectMinimal(sw, false);
 					sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_END);
 		
@@ -137,8 +135,8 @@ public final class MediaContent   implements java.io.Serializable, com.dslplatfo
 		
 		
 		
-		sw.writeAscii("\"media\":", 8);
-		sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_START);
+		sw.writeAscii("\"media\":{", 9);
+		
 					this.media.__serializeJsonObjectFull(sw, false);
 					sw.writeByte(com.dslplatform.client.json.JsonWriter.OBJECT_END);
 		

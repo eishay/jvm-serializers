@@ -52,7 +52,7 @@ public final class Media   implements java.io.Serializable, com.dslplatform.clie
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + 74219460;
+		result = prime * result + 730674406;
 		result = prime * result + (this.uri.hashCode());
 		result = prime * result + (this.title != null ? this.title.hashCode() : 0);
 		result = prime * result + (this.width);
@@ -316,58 +316,57 @@ public final class Media   implements java.io.Serializable, com.dslplatform.clie
 		
 		
 			if (!(this.uri.length() == 0)) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"uri\":", 6);
+				sw.writeAscii("\"uri\":", 6);
 				com.dslplatform.client.json.StringConverter.serialize(this.uri, sw);
 			}
 		
 			if (this.title != null) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
+			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"title\":", 8);
+				sw.writeAscii("\"title\":", 8);
 				com.dslplatform.client.json.StringConverter.serialize(this.title, sw);
 			}
 		
 			if (this.width != 0) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
+			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"width\":", 8);
+				sw.writeAscii("\"width\":", 8);
 				com.dslplatform.client.json.NumberConverter.serialize(this.width, sw);
 			}
 		
 			if (this.height != 0) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
+			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"height\":", 9);
+				sw.writeAscii("\"height\":", 9);
 				com.dslplatform.client.json.NumberConverter.serialize(this.height, sw);
 			}
 		
 			if (!(this.format.length() == 0)) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
+			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"format\":", 9);
+				sw.writeAscii("\"format\":", 9);
 				com.dslplatform.client.json.StringConverter.serialize(this.format, sw);
 			}
 		
 			if (this.duration != 0L) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
+			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"duration\":", 11);
+				sw.writeAscii("\"duration\":", 11);
 				com.dslplatform.client.json.NumberConverter.serialize(this.duration, sw);
 			}
 		
 			if (this.size != 0L) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
+			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"size\":", 7);
+				sw.writeAscii("\"size\":", 7);
 				com.dslplatform.client.json.NumberConverter.serialize(this.size, sw);
 			}
 		
 			if (this.bitrate != 0) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
+			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"bitrate\":", 10);
+				sw.writeAscii("\"bitrate\":", 10);
 				com.dslplatform.client.json.NumberConverter.serialize(this.bitrate, sw);
 			}
 		
@@ -386,15 +385,13 @@ public final class Media   implements java.io.Serializable, com.dslplatform.clie
 		if(this.player != serializers.dslplatform.media.Player.JAVA) {
 			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"player\":\"", 10);
-			sw.writeAscii(this.player.name());
-			sw.writeByte(com.dslplatform.client.json.JsonWriter.QUOTE);
+			sw.writeAscii("\"player\":\"FLASH\"", 16);
 		}
 		
 			if (this.copyright != null) {
-				if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
+			if(hasWrittenProperty) sw.writeByte(com.dslplatform.client.json.JsonWriter.COMMA);
 			hasWrittenProperty = true;
-			sw.writeAscii("\"copyright\":", 12);
+				sw.writeAscii("\"copyright\":", 12);
 				com.dslplatform.client.json.StringConverter.serialize(this.copyright, sw);
 			}
 	}
@@ -498,35 +495,35 @@ public final class Media   implements java.io.Serializable, com.dslplatform.clie
 					
 					case 932140029:
 						_uri_ = com.dslplatform.client.json.StringConverter.deserialize(reader);
-							nextToken = reader.getNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case -1738164983:
 						_title_ = com.dslplatform.client.json.StringConverter.deserialize(reader);
-							nextToken = reader.getNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case -1786286561:
 						_width_ = com.dslplatform.client.json.NumberConverter.deserializeInt(reader);
-							nextToken = reader.moveToNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case -708986046:
 						_height_ = com.dslplatform.client.json.NumberConverter.deserializeInt(reader);
-							nextToken = reader.moveToNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case -1180859054:
 						_format_ = com.dslplatform.client.json.StringConverter.deserialize(reader);
-							nextToken = reader.getNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case 799079693:
 						_duration_ = com.dslplatform.client.json.NumberConverter.deserializeLong(reader);
-							nextToken = reader.moveToNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case 597743964:
 						_size_ = com.dslplatform.client.json.NumberConverter.deserializeLong(reader);
-							nextToken = reader.moveToNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case 854445426:
 						_bitrate_ = com.dslplatform.client.json.NumberConverter.deserializeInt(reader);
-							nextToken = reader.moveToNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case 181318793:
 						
@@ -553,7 +550,7 @@ public final class Media   implements java.io.Serializable, com.dslplatform.clie
 						break;
 					case -1190269634:
 						_copyright_ = com.dslplatform.client.json.StringConverter.deserialize(reader);
-							nextToken = reader.getNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					default:
 						nextToken = reader.skip();
@@ -576,35 +573,35 @@ public final class Media   implements java.io.Serializable, com.dslplatform.clie
 					
 					case 932140029:
 						_uri_ = com.dslplatform.client.json.StringConverter.deserialize(reader);
-							nextToken = reader.getNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case -1738164983:
 						_title_ = com.dslplatform.client.json.StringConverter.deserialize(reader);
-							nextToken = reader.getNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case -1786286561:
 						_width_ = com.dslplatform.client.json.NumberConverter.deserializeInt(reader);
-							nextToken = reader.moveToNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case -708986046:
 						_height_ = com.dslplatform.client.json.NumberConverter.deserializeInt(reader);
-							nextToken = reader.moveToNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case -1180859054:
 						_format_ = com.dslplatform.client.json.StringConverter.deserialize(reader);
-							nextToken = reader.getNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case 799079693:
 						_duration_ = com.dslplatform.client.json.NumberConverter.deserializeLong(reader);
-							nextToken = reader.moveToNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case 597743964:
 						_size_ = com.dslplatform.client.json.NumberConverter.deserializeLong(reader);
-							nextToken = reader.moveToNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case 854445426:
 						_bitrate_ = com.dslplatform.client.json.NumberConverter.deserializeInt(reader);
-							nextToken = reader.moveToNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					case 181318793:
 						
@@ -631,7 +628,7 @@ public final class Media   implements java.io.Serializable, com.dslplatform.clie
 						break;
 					case -1190269634:
 						_copyright_ = com.dslplatform.client.json.StringConverter.deserialize(reader);
-							nextToken = reader.getNextToken();
+					nextToken = reader.getNextToken();
 						break;
 					default:
 						nextToken = reader.skip();
