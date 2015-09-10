@@ -4,6 +4,7 @@ import serializers.avro.AvroGeneric;
 import serializers.avro.AvroSpecific;
 import serializers.cks.CksBinary;
 import serializers.cks.CksText;
+import serializers.datakernel.DataKernelSerializer;
 import serializers.jackson.*;
 import serializers.javaxjson.*;
 import serializers.json.*;
@@ -63,7 +64,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         //    usage, and basically seems to optimize for benchmarks instead of reflecting real usage.
         MsgPack.register(groups);
         JacksonCBORDatabind.register(groups);
-        
+
         // JSON
         JacksonJsonManual.register(groups);
         JacksonJsonDatabind.register(groups);
@@ -126,9 +127,11 @@ public class BenchmarkRunner extends MediaItemBenchmark
 
         // Jackson databind with Afterburner; add-on module that uses bytecode gen for speed
         JacksonWithAfterburner.registerAll(groups);
-        
+
         // Jackson's column-oriented variants for formats that usually use key/value notation
         JacksonWithColumnsDatabind.registerAll(groups);
+
+	    DataKernelSerializer.register(groups);
 
 	DSLPlatform.register(groups);
     }

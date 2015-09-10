@@ -8,6 +8,7 @@
 	<classpathentry kind="src" path="build/gen/media.activemq.proto"/>
 	<classpathentry kind="src" path="build/gen/media.avro"/>
 	<classpathentry kind="src" path="build/gen/media.protostuff.proto"/>
+	<classpathentry kind="lib" path="lib/serializer-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/aalto-gpl-0.9.5.jar"/>
 	<classpathentry kind="lib" path="lib/activemq-protobuf-1.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/activemq-util-6.0-SNAPSHOT.jar"/>
