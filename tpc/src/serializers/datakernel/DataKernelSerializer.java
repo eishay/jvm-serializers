@@ -11,15 +11,14 @@ import io.datakernel.serializer.SerializerBuilder;
 import io.datakernel.serializer.annotations.Serialize;
 import io.datakernel.serializer.annotations.SerializeNullable;
 import io.datakernel.serializer.annotations.SerializeStringFormat;
-import io.datakernel.serializer.asm.SerializerGenInt;
-import io.datakernel.serializer.asm.SerializerGenLong;
+import io.datakernel.serializer.annotations.SerializeVarLength;
 import serializers.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static io.datakernel.serializer.StringFormat.ASCII;
+import static io.datakernel.serializer.StringFormat.ISO_8859_1;
 
 public class DataKernelSerializer {
 
@@ -44,10 +43,6 @@ public class DataKernelSerializer {
 		public DefaultSerializer() {
 			serializer = SerializerBuilder
 					.newDefaultInstance(ClassLoader.getSystemClassLoader())
-					.registry(Integer.TYPE, new SerializerGenInt(true))
-					.registry(Integer.class, new SerializerGenInt(true))
-					.registry(Long.TYPE, new SerializerGenLong(true))
-					.registry(Long.class, new SerializerGenLong(true))
 					.create(DMediaContent.class);
 		}
 
@@ -79,18 +74,19 @@ public class DataKernelSerializer {
 		}
 
 		@Serialize(order = 1)
-		@SerializeStringFormat(ASCII)
+		@SerializeStringFormat(ISO_8859_1)
 		public String uri;
 
 		@Serialize(order = 2)
 		@SerializeNullable
-		@SerializeStringFormat(ASCII)
 		public String title; // can be null;
 
 		@Serialize(order = 3)
+		@SerializeVarLength
 		public int width;
 
 		@Serialize(order = 4)
+		@SerializeVarLength
 		public int height;
 
 		@Serialize(order = 5)
@@ -113,22 +109,23 @@ public class DataKernelSerializer {
 		}
 
 		@Serialize(order = 1)
-		@SerializeStringFormat(ASCII)
+		@SerializeStringFormat(ISO_8859_1)
 		public String uri;
 
 		@Serialize(order = 2)
 		@SerializeNullable
-		@SerializeStringFormat(ASCII)
 		public String title; // can be null
 
 		@Serialize(order = 3)
+		@SerializeVarLength
 		public int width;
 
 		@Serialize(order = 4)
+		@SerializeVarLength
 		public int height;
 
 		@Serialize(order = 5)
-		@SerializeStringFormat(ASCII)
+		@SerializeStringFormat(ISO_8859_1)
 		public String format;
 
 		@Serialize(order = 6)
@@ -144,7 +141,6 @@ public class DataKernelSerializer {
 		public boolean hasBitrate;
 
 		@Serialize(order = 10)
-		@SerializeStringFormat(value = ASCII, path = {0})
 		public List<String> persons;
 
 		@Serialize(order = 11)
@@ -152,7 +148,6 @@ public class DataKernelSerializer {
 
 		@Serialize(order = 12)
 		@SerializeNullable
-		@SerializeStringFormat(ASCII)
 		public String copyright; // can be null
 
 		public DMedia(String uri, String title, int width, int height,
