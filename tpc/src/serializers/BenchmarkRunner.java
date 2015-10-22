@@ -14,10 +14,7 @@ import serializers.protobuf.ProtobufJson;
 import serializers.protostuff.Protostuff;
 import serializers.protostuff.ProtostuffJson;
 import serializers.wobly.Wobly;
-import serializers.xml.ExiExificient;
-import serializers.xml.XmlJavolution;
-import serializers.xml.XmlStax;
-import serializers.xml.XmlXStream;
+import serializers.xml.*;
 import serializers.dslplatform.DSLPlatform;
 
 /**
@@ -33,6 +30,8 @@ public class BenchmarkRunner extends MediaItemBenchmark
     protected void addTests(TestGroups groups)
     {
         // Binary Formats; language-specific ones
+		JaxbAalto.register(groups);
+        Jaxb.register(groups);
         JavaBuiltIn.register(groups);
         JavaManual.register(groups);
         Stephenerialization.register(groups);

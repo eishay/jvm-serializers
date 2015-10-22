@@ -1,19 +1,26 @@
 package serializers.xml;
 
+import com.fasterxml.aalto.stax.InputFactoryImpl;
+import com.fasterxml.aalto.stax.OutputFactoryImpl;
 import serializers.*;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class Jaxb<T> extends Serializer<T>
+public class JaxbAalto<T> extends Serializer<T>
 {
     public static void register(TestGroups groups)
     {
         groups.media.add(new JaxbMediaTransformer(),
-                new Jaxb<>("xml/JAXB", JaxbMediaContent.class),
+                new JaxbAalto<>("xml/JAXB/aalto", JaxbMediaContent.class,
+                        new InputFactoryImpl(), new OutputFactoryImpl()),
                 new SerFeatures(
                         SerFormat.XML,
                         SerGraph.FULL_GRAPH,
@@ -24,12 +31,17 @@ public class Jaxb<T> extends Serializer<T>
     }
 
     private final String name;
+    private final XMLInputFactory inputFactory;
+    private final XMLOutputFactory outputFactory;
     private final JAXBContext jaxbContext;
-
+    
     @SuppressWarnings("UnusedParameters")
-    public Jaxb(String name, Class<T> clazz)
+    public JaxbAalto(String name, Class<T> clazz,
+                     XMLInputFactory inputF, XMLOutputFactory outputF)
     {
         this.name = name;
+        inputFactory = inputF;
+        outputFactory = outputF;
         try {
             jaxbContext = JAXBContext.newInstance(JaxbMediaContent.class);
         } catch (JAXBException e) {
@@ -45,7 +57,9 @@ public class Jaxb<T> extends Serializer<T>
     {
         ByteArrayOutputStream baos = outputStream(data);
         try {
-            jaxbContext.createMarshaller().marshal(data, baos);
+            XMLStreamWriter sw = outputFactory.createXMLStreamWriter(baos, "UTF-8");
+            jaxbContext.createMarshaller().marshal(data, sw);
+            sw.close();
         } catch (Exception e) {
             throw new IOException(e);
         }
@@ -56,8 +70,10 @@ public class Jaxb<T> extends Serializer<T>
     public T deserialize(byte[] data) throws Exception
     {
         try {
+            XMLStreamReader sr = inputFactory.createXMLStreamReader(new ByteArrayInputStream(data));
             @SuppressWarnings("unchecked")
-            T result = (T) jaxbContext.createUnmarshaller().unmarshal(new ByteArrayInputStream(data));
+            T result = (T) jaxbContext.createUnmarshaller().unmarshal(sr);
+            sr.close();
             return result;
         } catch (Exception e) {
             throw new IOException(e);
