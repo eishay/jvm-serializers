@@ -6,7 +6,6 @@ import java.util.List;
 @XmlRootElement
 @SuppressWarnings("serial")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "JaxbMediaContent")
 public class JaxbMediaContent
 {
 	public JaxbMedia media;
