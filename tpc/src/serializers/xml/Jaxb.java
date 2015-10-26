@@ -1,5 +1,6 @@
 package serializers.xml;
 
+import data.media.MediaContent;
 import serializers.*;
 
 import javax.xml.bind.JAXBContext;
@@ -12,8 +13,8 @@ public class Jaxb<T> extends Serializer<T>
 {
     public static void register(TestGroups groups)
     {
-        groups.media.add(new JaxbMediaTransformer(),
-                new Jaxb<>("xml/JAXB", JaxbMediaContent.class),
+        groups.media.add(JavaBuiltIn.mediaTransformer,
+                new Jaxb<>("xml/JAXB", MediaContent.class),
                 new SerFeatures(
                         SerFormat.XML,
                         SerGraph.FULL_GRAPH,
@@ -31,7 +32,7 @@ public class Jaxb<T> extends Serializer<T>
     {
         this.name = name;
         try {
-            jaxbContext = JAXBContext.newInstance(JaxbMediaContent.class);
+            jaxbContext = JAXBContext.newInstance(MediaContent.class);
         } catch (JAXBException e) {
             throw new IllegalStateException(e);
         }

@@ -1,10 +1,15 @@
 package data.media;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 import static data.ReprUtil.repr;
 
 @SuppressWarnings("serial")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "JaxbMedia")
 public class Media implements java.io.Serializable {
 	public enum Player {
 		JAVA, FLASH;

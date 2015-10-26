@@ -2,6 +2,7 @@ package serializers.xml;
 
 import com.fasterxml.aalto.stax.InputFactoryImpl;
 import com.fasterxml.aalto.stax.OutputFactoryImpl;
+import data.media.MediaContent;
 import serializers.*;
 
 import javax.xml.bind.JAXBContext;
@@ -18,8 +19,8 @@ public class JaxbAalto<T> extends Serializer<T>
 {
     public static void register(TestGroups groups)
     {
-        groups.media.add(new JaxbMediaTransformer(),
-                new JaxbAalto<>("xml/JAXB/aalto", JaxbMediaContent.class,
+        groups.media.add(JavaBuiltIn.mediaTransformer,
+                new JaxbAalto<>("xml/JAXB/aalto", MediaContent.class,
                         new InputFactoryImpl(), new OutputFactoryImpl()),
                 new SerFeatures(
                         SerFormat.XML,
@@ -43,7 +44,7 @@ public class JaxbAalto<T> extends Serializer<T>
         inputFactory = inputF;
         outputFactory = outputF;
         try {
-            jaxbContext = JAXBContext.newInstance(JaxbMediaContent.class);
+            jaxbContext = JAXBContext.newInstance(MediaContent.class);
         } catch (JAXBException e) {
             throw new IllegalStateException(e);
         }

@@ -1,7 +1,11 @@
 package data.media;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 import static data.ReprUtil.repr;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Image implements java.io.Serializable
 {
     private static final long serialVersionUID = 1L;

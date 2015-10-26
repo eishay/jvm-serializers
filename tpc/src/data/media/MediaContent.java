@@ -1,8 +1,13 @@
 package data.media;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @SuppressWarnings("serial")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class MediaContent implements java.io.Serializable
 {
 	public Media media;
