@@ -20,16 +20,23 @@ public final class Guards   {
 	public static <T> void checkNulls(final T[] values) {
 		if (values == null) return;
 
-		int i = 0;
-		for (final T value : values) {
-			if (value == null) throw new IllegalArgumentException("Element at index " + i + " was a null value, which is not permitted.");
-			i++;
+		for (int i = 0; i < values.length; i++) {
+			if (values[i] == null) throw new IllegalArgumentException("Element at index " + i + " was a null value, which is not permitted.");
+		}
+	}
+
+	public static <T> void checkNulls(final List<T> values) {
+		if (values == null) return;
+
+		for (int i = 0; i < values.size(); i++) {
+			if (values.get(i) == null) throw new IllegalArgumentException("Element at index " + i + " was a null value, which is not permitted.");
 		}
 	}
 	
 	public static void checkScale(final BigDecimal value, final int scale) {
+		if (value == null) return;
 		try {
-			if (value != null) value.setScale(scale);
+			value.setScale(scale);
 		} catch (final ArithmeticException e) {
 			throw new IllegalArgumentException("Decimal places allowed: " + scale + ". Value: " + value, e);
 		}
@@ -38,15 +45,28 @@ public final class Guards   {
 	public static void checkScale(final BigDecimal[] values, final int scale) {
 		if (values == null) return;
 
-		int i = 0;
-		for (final BigDecimal value : values) {
+		for (int i = 0; i < values.length; i++) {
+			final BigDecimal value = values[i];
+			if (value == null) continue;
 			try {
-				if (value != null) value.setScale(scale);
+				value.setScale(scale);
 			} catch (final ArithmeticException e) {
 				throw new IllegalArgumentException("Invalid value for element at index " + i + ". Decimal places allowed: " + scale + ". Value: " + value, e);
 			}
+		}
+	}
 
-			i++;
+	public static void checkScale(final List<BigDecimal> values, final int scale) {
+		if (values == null) return;
+
+		for (int i = 0; i < values.size(); i++) {
+			final BigDecimal value = values.get(i);
+			if (value == null) continue;
+			try {
+				value.setScale(scale);
+			} catch (final ArithmeticException e) {
+				throw new IllegalArgumentException("Invalid value for element at index " + i + ". Decimal places allowed: " + scale + ". Value: " + value, e);
+			}
 		}
 	}
 
@@ -61,21 +81,12 @@ public final class Guards   {
 				throw new IllegalArgumentException(
 						"Invalid value for element at index " + i + ". Decimal places allowed: " + scale + ". Value: " + value, e);
 			}
-
 			i++;
 		}
 	}
 
 	public static BigDecimal setScale(final BigDecimal value, final int scale) {
 		return value.setScale(scale, BigDecimal.ROUND_HALF_UP);
-	}
-
-	public static List<BigDecimal> setScale(final List<BigDecimal> values, final int scale) {
-		if (values == null) return null;
-
-		final ArrayList<BigDecimal> result = new ArrayList<BigDecimal>(values.size());
-		for (final BigDecimal value : values) result.add(value != null ? setScale(value, scale) : null);
-		return result;
 	}
 
 	public static Set<BigDecimal> setScale(final Set<BigDecimal> values, final int scale) {
@@ -90,8 +101,54 @@ public final class Guards   {
 		if (values == null) return null;
 
 		final BigDecimal[] result = new BigDecimal[values.length];
-		int i = 0;
-		for (final BigDecimal value : values) result[i++] = value != null ? setScale(value, scale) : null;
+		for (int i = 0; i < values.length; i++) {
+			final BigDecimal value = values[i];
+			result[i] = value != null ? setScale(value, scale) : null;
+		}
+		return result;
+	}
+
+	public static List<BigDecimal> setScale(final List<BigDecimal> values, final int scale) {
+		if (values == null) return null;
+
+		final ArrayList<BigDecimal> result = new ArrayList<BigDecimal>(values.size());
+		for (int i = 0; i < values.size(); i++) {
+			final BigDecimal value = values.get(i);
+			result.add(value != null ? setScale(value, scale) : null);
+		}
+		return result;
+	}
+
+	public static Stack<BigDecimal> setScale(final Stack<BigDecimal> values, final int scale) {
+		if (values == null) return null;
+
+		final Stack<BigDecimal> result = new Stack<BigDecimal>();
+		for (int i = 0; i < values.size(); i++) {
+			final BigDecimal value = values.get(i);
+			result.add(value != null ? setScale(value, scale) : null);
+		}
+		return result;
+	}
+
+	public static Vector<BigDecimal> setScale(final Vector<BigDecimal> values, final int scale) {
+		if (values == null) return null;
+
+		final Vector<BigDecimal> result = new Vector<BigDecimal>();
+		for (int i = 0; i < values.size(); i++) {
+			final BigDecimal value = values.get(i);
+			result.add(value != null ? setScale(value, scale) : null);
+		}
+		return result;
+	}
+
+	public static LinkedList<BigDecimal> setScale(final LinkedList<BigDecimal> values, final int scale) {
+		if (values == null) return null;
+
+		final LinkedList<BigDecimal> result = new LinkedList<BigDecimal>();
+		for (int i = 0; i < values.size(); i++) {
+			final BigDecimal value = values.get(i);
+			result.add(value != null ? setScale(value, scale) : null);
+		}
 		return result;
 	}
 	
@@ -114,11 +171,20 @@ public final class Guards   {
 	public static void checkLength(final String[] values, final int length) {
 		if (values == null) return;
 
-		int i = 0;
-		for (final String value : values) {
+		for (int i = 0; i < values.length; i++) {
+			final String value = values[i];
 			if (value != null && value.length() > length) throw new IllegalArgumentException(
 					"Invalid value for element at index " + i + ". Maximum length allowed: " + length + ". Value: " + value);
-			i++;
+		}
+	}
+
+	public static void checkLength(final List<String> values, final int length) {
+		if (values == null) return;
+
+		for (int i = 0; i < values.size(); i++) {
+			final String value = values.get(i);
+			if (value != null && value.length() > length) throw new IllegalArgumentException(
+					"Invalid value for element at index " + i + ". Maximum length allowed: " + length + ". Value: " + value);
 		}
 	}
 	
