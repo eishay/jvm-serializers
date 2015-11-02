@@ -130,17 +130,16 @@ else ifneq ($(findstring .avro,$(2)),)
 else ifneq ($(findstring .dsl,$(2)),)
 	$(p1)mkdir -p $(dslplatform_dir)/tmp
 	$(p1)$(dslplatform_compiler) \
-		-temp=$(dslplatform_dir)/tmp \
-		-dsl=schema \
-		-settings=manual-json,no-jackson \
-		-namespace=serializers.dslplatform \
-		-target=java_client \
-		-no-prompt \
-		-compiler \
-		-dependencies:java_client=$(dslplatform_dir)/dependencies \
-		-java_client=$(dslplatform_dir)/model.jar \
-		-download
-	$(p1)cp -r $(dslplatform_dir)/tmp/java_client/serializers build/gen/$(2)
+		temp=$(dslplatform_dir)/tmp \
+		dsl=schema \
+		manual-json \
+		namespace=serializers.dslplatform \
+		java_pojo \
+		no-prompt \
+		force \
+		source-only \
+		download
+	$(p1)cp -r $(dslplatform_dir)/tmp/JAVA_POJO/serializers build/gen/$(2)
 else
 endif
 
