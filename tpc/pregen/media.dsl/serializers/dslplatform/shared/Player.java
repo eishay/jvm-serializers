@@ -1,4 +1,4 @@
-package serializers.dslplatform.media;
+package serializers.dslplatform.shared;
 
 
 
