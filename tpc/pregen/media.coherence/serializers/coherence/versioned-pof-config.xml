@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pof-config xmlns="http://xmlns.oracle.com/coherence/coherence-pof-config">
+    <user-type-list>
+        <include>coherence-pof-config.xml</include>
+        <user-type>
+            <type-id>20000</type-id>
+            <class-name>serializers.coherence.media.Media</class-name>
+            <serializer>
+                <class-name>com.seovic.pof.PortableTypeSerializer</class-name>
+            </serializer>
+        </user-type>
+        <user-type>
+            <type-id>20001</type-id>
+            <class-name>serializers.coherence.media.Player</class-name>
+            <serializer>
+                <class-name>com.tangosol.io.pof.EnumPofSerializer</class-name>
+            </serializer>
+        </user-type>
+        <user-type>
+            <type-id>20002</type-id>
+            <class-name>serializers.coherence.media.Image</class-name>
+            <serializer>
+                <class-name>com.seovic.pof.PortableTypeSerializer</class-name>
+            </serializer>
+        </user-type>
+
+        <user-type>
+            <type-id>20003</type-id>
+            <class-name>serializers.coherence.media.Size</class-name>
+            <serializer>
+                <class-name>com.tangosol.io.pof.EnumPofSerializer</class-name>
+            </serializer>
+        </user-type>
+
+        <user-type>
+            <type-id>20004</type-id>
+            <class-name>serializers.coherence.media.MediaContent</class-name>
+            <serializer>
+                <class-name>com.seovic.pof.PortableTypeSerializer</class-name>
+            </serializer>
+        </user-type>
+
+
+    </user-type-list>
+    <allow-interfaces>true</allow-interfaces>
+    <allow-subclasses>true</allow-subclasses>
+    <enable-references>true</enable-references>
+</pof-config>
