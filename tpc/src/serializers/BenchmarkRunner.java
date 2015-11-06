@@ -4,8 +4,10 @@ import serializers.avro.AvroGeneric;
 import serializers.avro.AvroSpecific;
 import serializers.cks.CksBinary;
 import serializers.cks.CksText;
+import serializers.dslplatform.DSLPlatform;
 import serializers.jackson.*;
-import serializers.javaxjson.*;
+import serializers.javaxjson.JavaxJsonStreamGlassfish;
+import serializers.javaxjson.JavaxJsonTreeGlassfish;
 import serializers.json.*;
 import serializers.kryo.Kryo;
 import serializers.msgpack.MsgPack;
@@ -15,7 +17,9 @@ import serializers.protostuff.Protostuff;
 import serializers.protostuff.ProtostuffJson;
 import serializers.wobly.Wobly;
 import serializers.xml.*;
-import serializers.dslplatform.DSLPlatform;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Full test of various codecs, using a single <code>MediaItem</code>
@@ -36,7 +40,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         JavaManual.register(groups);
         Stephenerialization.register(groups);
 
-        Scala.register(groups);
+        //Scala.register(groups);
 // hessian, kryo and wobly are Java object serializations
         Hessian.register(groups);
         Kryo.register(groups);
@@ -129,6 +133,30 @@ public class BenchmarkRunner extends MediaItemBenchmark
         // Jackson's column-oriented variants for formats that usually use key/value notation
         JacksonWithColumnsDatabind.registerAll(groups);
 
-	DSLPlatform.register(groups);
+	    DSLPlatform.register(groups);
+
+        // Since Oracle serializers.coherence.Coherence is not open source we need to check if it's in the classpath
+        try {
+            // Check if serializers.coherence.Coherence is in classpath
+            Class clz = Class.forName("com.tangosol.io.pof.ConfigurablePofContext");
+            //if serializers.coherence.Coherence classes are in the classoath then register the class using reflection.
+            Class clzCoherence = Class.forName("serializers.coherence.Coherence");
+            Method method = clzCoherence.getMethod("register", TestGroups.class);
+            Object o = method.invoke(null, groups);
+
+            Class clzCoherenceVersioned = Class.forName("serializers.coherence.CoherenceVersioned");
+            Method method_versioned = clzCoherenceVersioned.getMethod("register", TestGroups.class);
+            Object o1 = method_versioned.invoke(null, groups);
+
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }
