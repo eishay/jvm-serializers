@@ -63,7 +63,7 @@ public class DSLPlatform {
 
         @Override
         public String getName() {
-            return "json/dsl-platform/minified";
+            return "minified-json/dsl-platform";
         }
 
         @Override
