@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>deprecated</groupId>
+  <artifactId>sbinary_2.11</artifactId>
+  <versioning>
+    <versions>
+      <version>0.4.3-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20160204080010</lastUpdated>
+  </versioning>
+</metadata>

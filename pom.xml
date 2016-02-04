@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>jvm-serializers</groupId>
+  <artifactId>jvm-serializers-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>jvm-serializers-parent</name><description>jvm-serializers Terraformed... by jim@psychosynthintelligence... on x86_64 x86_64 GNU/Linux... for  protowar,scala_media_container,tpc... </description>
+  <url>http://psychosynthintelligence</url><scm><tag>HEAD</tag></scm>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <modules>
+    <module>jvm-serializers-protowar</module>
+    <module>jvm-serializers-scala_media_container</module>
+    <module>jvm-serializers-tpc</module>
+  </modules>
+</project>
