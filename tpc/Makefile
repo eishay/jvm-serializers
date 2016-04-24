@@ -34,11 +34,13 @@ avro_generator ?= java -cp "$(avro_cp)" org.apache.avro.tool.Main
 protostuff_compiler ?= $(wildcard lib/protostuff-compiler-*.jar)
 dslplatform_compiler = java -jar lib/dsl-clc.jar
 dslplatform_dir = build/dslplatform
+flatbuffers_generator ?= flatc
 
 # Default to 'no' because we might not have these tools available.
 Generate_protobuf ?= n
 Generate_thrift ?= n
 Generate_dslplatform ?= n # Requires Mono 3.10+
+Generate_flatbuffers ?= n
 
 # Default to 'yes' because the generator tools are included in 'lib/'.
 Generate_activemqprotobuf ?= y
@@ -65,7 +67,7 @@ endif
 
 ##########################################################################
 
-SchemaExtensions := .thrift .proto .tcks .avro .dsl
+SchemaExtensions := .thrift .proto .tcks .avro .dsl .fbs
 Schemas = $(patsubst schema/%,%,$(wildcard $(SchemaExtensions:%=schema/*%)))
 
 ##########################################################################
@@ -99,6 +101,8 @@ else ifneq ($(findstring .avro,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_avro)
 else ifneq ($(findstring .dsl,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_dslplatform)
+else ifneq ($(findstring .fbs,$(2)),)
+	NeedToGenerate_$(1) := $(Generate_flatbuffers)
 else
 endif
 
@@ -140,6 +144,8 @@ else ifneq ($(findstring .dsl,$(2)),)
 		source-only \
 		download
 	$(p1)cp -r $(dslplatform_dir)/tmp/JAVA_POJO/serializers build/gen/$(2)
+else ifneq ($(findstring .fbs,$(2)),)
+	$(p1)$(flatbuffers_generator) -o build/gen/$(2) --java $$<
 else
 endif
 

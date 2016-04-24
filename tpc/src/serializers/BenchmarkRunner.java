@@ -4,6 +4,7 @@ import serializers.avro.AvroGeneric;
 import serializers.avro.AvroSpecific;
 import serializers.cks.CksBinary;
 import serializers.cks.CksText;
+import serializers.flatbuffers.FlatBuffers;
 import serializers.jackson.*;
 import serializers.javaxjson.*;
 import serializers.json.*;
@@ -129,6 +130,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         // Jackson's column-oriented variants for formats that usually use key/value notation
         JacksonWithColumnsDatabind.registerAll(groups);
 
-	DSLPlatform.register(groups);
+        DSLPlatform.register(groups);
+        FlatBuffers.register(groups);
     }
 }
