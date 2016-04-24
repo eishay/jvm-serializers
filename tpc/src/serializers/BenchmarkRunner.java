@@ -2,6 +2,7 @@ package serializers;
 
 import serializers.avro.AvroGeneric;
 import serializers.avro.AvroSpecific;
+import serializers.capnproto.CapNProto;
 import serializers.cks.CksBinary;
 import serializers.cks.CksText;
 import serializers.flatbuffers.FlatBuffers;
@@ -132,5 +133,6 @@ public class BenchmarkRunner extends MediaItemBenchmark
 
         DSLPlatform.register(groups);
         FlatBuffers.register(groups);
+        CapNProto.register(groups);
     }
 }
