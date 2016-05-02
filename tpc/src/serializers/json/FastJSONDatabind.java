@@ -49,17 +49,10 @@ public class FastJSONDatabind
 
     public void serializeItems(T[] items, OutputStream out) throws IOException
     {
-        SerializeWriter writer = new SerializeWriter(new OutputStreamWriter(out, "UTF-8")
-                                                     , JSON.DEFAULT_GENERATE_FEATURE, SerializerFeature.WriteEnumUsingToString,SerializerFeature.DisableCircularReferenceDetect);
-
-        try {
-            for (int i = 0, len = items.length; i < len; ++i) {
-                    JSON.writeJSONString(items[i], out, SerializerFeature.WriteEnumUsingToString,
+      for (int i = 0, len = items.length; i < len; ++i) {
+        JSON.writeJSONString(out, items[i], SerializerFeature.WriteEnumUsingToString,
                                          SerializerFeature.DisableCircularReferenceDetect);
-            }
-        } finally {
-            writer.close();
-        }
+      }
     }
 
     @SuppressWarnings("unchecked")

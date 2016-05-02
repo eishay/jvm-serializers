@@ -61,8 +61,8 @@ public class FastJSONArrayDatabind
     public void serializeItems(T[] items, OutputStream out) throws IOException
     {
             for (int i = 0, len = items.length; i < len; ++i) {
-                    JSON.writeJSONString(items[i], 
-                                         out, 
+                    JSON.writeJSONString(out,
+                                         items[i], 
                                          serializerFeatures);
             }
     }
