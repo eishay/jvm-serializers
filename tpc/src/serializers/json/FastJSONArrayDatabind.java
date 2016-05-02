@@ -10,17 +10,19 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.JSONSerializer;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializeWriter;
+import com.alibaba.fastjson.serializer.SerializeFilter;
 
 /**
  * This serializer uses FastJSON [http://code.alibabatech.com/wiki/display/FastJSON] for JSON data binding.
  */
-public class FastJSONDatabind
+public class FastJSONArrayDatabind
 {
   public static void register(TestGroups groups)
   {
     groups.media.add(JavaBuiltIn.mediaTransformer,
-        new GenericSerializer<MediaContent>("json/fastjson/databind", MediaContent.class),
+        new GenericSerializer<MediaContent>("json/fastjson_array/databind", MediaContent.class),
             new SerFeatures(
                     SerFormat.BINARY,
                     SerGraph.FLAT_TREE,
@@ -35,10 +37,19 @@ public class FastJSONDatabind
     private final String name;
     private final Class<T> type;
 
+    private int serializerFeatures;
+    private SerializeFilter[] emptyFilters     = new SerializeFilter[0];
+
     public GenericSerializer(String name, Class<T> clazz)
     {
       this.name = name;
       type = clazz;
+
+      serializerFeatures |= SerializerFeature.QuoteFieldNames.getMask();
+      serializerFeatures |= SerializerFeature.SkipTransientField.getMask();
+      serializerFeatures |= SerializerFeature.SortField.getMask();
+      serializerFeatures |= SerializerFeature.DisableCircularReferenceDetect.getMask();
+      serializerFeatures |= SerializerFeature.BeanToArray.getMask();
     }
 
     @Override
@@ -49,31 +60,26 @@ public class FastJSONDatabind
 
     public void serializeItems(T[] items, OutputStream out) throws IOException
     {
-        SerializeWriter writer = new SerializeWriter(new OutputStreamWriter(out, "UTF-8")
-                                                     , JSON.DEFAULT_GENERATE_FEATURE, SerializerFeature.WriteEnumUsingToString,SerializerFeature.DisableCircularReferenceDetect);
-
-        try {
             for (int i = 0, len = items.length; i < len; ++i) {
-                    JSON.writeJSONString(items[i], out, SerializerFeature.WriteEnumUsingToString,
-                                         SerializerFeature.DisableCircularReferenceDetect);
+                    JSON.writeJSONString(items[i], 
+                                         out, 
+                                         serializerFeatures);
             }
-        } finally {
-            writer.close();
-        }
     }
+
 
     @SuppressWarnings("unchecked")
     @Override
     public T deserialize(byte[] array) throws Exception
     {
 	// fastjson can parse from byte array, yay:
-	return (T) JSON.parseObject(array, type, Feature.DisableCircularReferenceDetect);
+	return (T) JSON.parseObject(array, type, Feature.SupportArrayToBean, Feature.DisableCircularReferenceDetect);
     }
 
     @Override
     public byte[] serialize(T data) throws IOException
     {
-      return JSON.toJSONBytes(data, SerializerFeature.WriteEnumUsingToString,SerializerFeature.DisableCircularReferenceDetect);
+        return JSON.toJSONBytes(data, serializerFeatures);
     }
   }
 }
