@@ -4,6 +4,7 @@ import serializers.avro.AvroGeneric;
 import serializers.avro.AvroSpecific;
 import serializers.cks.CksBinary;
 import serializers.cks.CksText;
+import serializers.colfer.Colfer;
 import serializers.jackson.*;
 import serializers.javaxjson.*;
 import serializers.json.*;
@@ -130,5 +131,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         JacksonWithColumnsDatabind.registerAll(groups);
 
 	DSLPlatform.register(groups);
+
+        Colfer.register(groups);
     }
 }
