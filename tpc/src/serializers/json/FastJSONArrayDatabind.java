@@ -15,7 +15,7 @@ import com.alibaba.fastjson.serializer.SerializeWriter;
 import com.alibaba.fastjson.serializer.SerializeFilter;
 
 /**
- * This serializer uses FastJSON [http://code.alibabatech.com/wiki/display/FastJSON] for JSON data binding.
+ * This serializer uses FastJSON [https://github.com/alibaba/fastjson] for JSON data binding.
  */
 public class FastJSONArrayDatabind
 {

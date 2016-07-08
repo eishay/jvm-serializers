@@ -13,7 +13,7 @@ import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.SerializeWriter;
 
 /**
- * This serializer uses FastJSON [http://code.alibabatech.com/wiki/display/FastJSON] for JSON data binding.
+ * This serializer uses FastJSON [https://github.com/alibaba/fastjson] for JSON data binding.
  */
 public class FastJSONDatabind
 {
