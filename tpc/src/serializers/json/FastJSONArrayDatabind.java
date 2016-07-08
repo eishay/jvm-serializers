@@ -24,7 +24,7 @@ public class FastJSONArrayDatabind
     groups.media.add(JavaBuiltIn.mediaTransformer,
         new GenericSerializer<MediaContent>("json/fastjson_array/databind", MediaContent.class),
             new SerFeatures(
-                    SerFormat.BINARY,
+                    SerFormat.JSON,
                     SerGraph.FLAT_TREE,
                     SerClass.ZERO_KNOWLEDGE,
                     ""
