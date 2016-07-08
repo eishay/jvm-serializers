@@ -5,10 +5,9 @@ package serializers.colfer.media;
 
 
 import static java.lang.String.format;
+import java.util.InputMismatchException;
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
-import javax.xml.bind.TypeConstraintException;
-import javax.xml.bind.DataBindingException;
 
 
 /**
@@ -37,99 +36,104 @@ public class Image implements java.io.Serializable {
 	/**
 	 * Serializes the object.
 	 * @param buf the data destination.
-	 * @param offset the first byte index.
-	 * @return the index of the first byte after the last byte written.
+	 * @param offset the initial index for {@code buf}, inclusive.
+	 * @return the final index for {@code buf}, exclusive.
 	 * @throws BufferOverflowException when {@code buf} is too small.
 	 * @throws IllegalStateException on an upper limit breach defined by either {@link #colferSizeMax} or {@link #colferListMax}.
 	 */
 	public int marshal(byte[] buf, int offset) {
 		int i = offset;
 		try {
-
 			if (! this.uri.isEmpty()) {
 				buf[i++] = (byte) 0;
-				String s = this.uri;
-				int sLength = s.length();
-
 				int start = ++i;
-				for (int sIndex = 0; sIndex < sLength; sIndex++) {
+
+				String s = this.uri;
+				for (int sIndex = 0, sLength = s.length(); sIndex < sLength; sIndex++) {
 					char c = s.charAt(sIndex);
-					if (c < 128) {
+					if (c < '\u0080') {
 						buf[i++] = (byte) c;
-					} else if (c < 2048) {
+					} else if (c < '\u0800') {
 						buf[i++] = (byte) (192 | c >>> 6);
 						buf[i++] = (byte) (128 | c & 63);
-					} else if (! Character.isSurrogate(c)) {
+					} else if (c < '\ud800' || c > '\udfff') {
 						buf[i++] = (byte) (224 | c >>> 12);
 						buf[i++] = (byte) (128 | c >>> 6 & 63);
 						buf[i++] = (byte) (128 | c & 63);
-					} else if (++sIndex != sLength) {
-						int cp = Character.toCodePoint(c, s.charAt(sIndex));
-						buf[i++] = (byte) (240 | cp >>> 18);
-						buf[i++] = (byte) (128 | cp >>> 12 & 63);
-						buf[i++] = (byte) (128 | cp >>> 6 & 63);
-						buf[i++] = (byte) (128 | cp & 63);
+					} else {
+						int cp = 0;
+						if (++sIndex < sLength) cp = Character.toCodePoint(c, s.charAt(sIndex));
+						if ((cp >= 1 << 16) && (cp < 1 << 21)) {
+							buf[i++] = (byte) (240 | cp >>> 18);
+							buf[i++] = (byte) (128 | cp >>> 12 & 63);
+							buf[i++] = (byte) (128 | cp >>> 6 & 63);
+							buf[i++] = (byte) (128 | cp & 63);
+						} else
+							buf[i++] = (byte) '?';
 					}
 				}
-
 				int size = i - start;
 				if (size > colferSizeMax)
 					throw new IllegalStateException(format("colfer: field serializers/colfer/media.image.uri size %d exceeds %d UTF-8 bytes", size, colferSizeMax));
 
-				int shift = 0;
-				for (int x = size; (x & ~((1 << 7) - 1)) != 0; x >>>= 7) shift++;
-				if (shift != 0) System.arraycopy(buf, start, buf, start + shift, size);
-				i = start + shift + size;
+				int ii = start - 1;
+				if (size > 0x7f) {
+					i++;
+					for (int x = size; x >= 1 << 14; x >>>= 7) i++;
+					System.arraycopy(buf, start, buf, i - size, size);
 
-				start--;
-				while ((size & ~((1 << 7) - 1)) != 0) {
-					buf[start++] = (byte) (size | 0x80);
-					size >>>= 7;
+					do {
+						buf[ii++] = (byte) (size | 0x80);
+						size >>>= 7;
+					} while (size > 0x7f);
 				}
-				buf[start++] = (byte) size;
+				buf[ii] = (byte) size;
 			}
 
 			if (! this.title.isEmpty()) {
 				buf[i++] = (byte) 1;
-				String s = this.title;
-				int sLength = s.length();
-
 				int start = ++i;
-				for (int sIndex = 0; sIndex < sLength; sIndex++) {
+
+				String s = this.title;
+				for (int sIndex = 0, sLength = s.length(); sIndex < sLength; sIndex++) {
 					char c = s.charAt(sIndex);
-					if (c < 128) {
+					if (c < '\u0080') {
 						buf[i++] = (byte) c;
-					} else if (c < 2048) {
+					} else if (c < '\u0800') {
 						buf[i++] = (byte) (192 | c >>> 6);
 						buf[i++] = (byte) (128 | c & 63);
-					} else if (! Character.isSurrogate(c)) {
+					} else if (c < '\ud800' || c > '\udfff') {
 						buf[i++] = (byte) (224 | c >>> 12);
 						buf[i++] = (byte) (128 | c >>> 6 & 63);
 						buf[i++] = (byte) (128 | c & 63);
-					} else if (++sIndex != sLength) {
-						int cp = Character.toCodePoint(c, s.charAt(sIndex));
-						buf[i++] = (byte) (240 | cp >>> 18);
-						buf[i++] = (byte) (128 | cp >>> 12 & 63);
-						buf[i++] = (byte) (128 | cp >>> 6 & 63);
-						buf[i++] = (byte) (128 | cp & 63);
+					} else {
+						int cp = 0;
+						if (++sIndex < sLength) cp = Character.toCodePoint(c, s.charAt(sIndex));
+						if ((cp >= 1 << 16) && (cp < 1 << 21)) {
+							buf[i++] = (byte) (240 | cp >>> 18);
+							buf[i++] = (byte) (128 | cp >>> 12 & 63);
+							buf[i++] = (byte) (128 | cp >>> 6 & 63);
+							buf[i++] = (byte) (128 | cp & 63);
+						} else
+							buf[i++] = (byte) '?';
 					}
 				}
-
 				int size = i - start;
 				if (size > colferSizeMax)
 					throw new IllegalStateException(format("colfer: field serializers/colfer/media.image.title size %d exceeds %d UTF-8 bytes", size, colferSizeMax));
 
-				int shift = 0;
-				for (int x = size; (x & ~((1 << 7) - 1)) != 0; x >>>= 7) shift++;
-				if (shift != 0) System.arraycopy(buf, start, buf, start + shift, size);
-				i = start + shift + size;
+				int ii = start - 1;
+				if (size > 0x7f) {
+					i++;
+					for (int x = size; x >= 1 << 14; x >>>= 7) i++;
+					System.arraycopy(buf, start, buf, i - size, size);
 
-				start--;
-				while ((size & ~((1 << 7) - 1)) != 0) {
-					buf[start++] = (byte) (size | 0x80);
-					size >>>= 7;
+					do {
+						buf[ii++] = (byte) (size | 0x80);
+						size >>>= 7;
+					} while (size > 0x7f);
 				}
-				buf[start++] = (byte) size;
+				buf[ii] = (byte) size;
 			}
 
 			if (this.width != 0) {
@@ -139,7 +143,7 @@ public class Image implements java.io.Serializable {
 					buf[i++] = (byte) (2 | 0x80);
 				} else
 					buf[i++] = (byte) 2;
-				while ((x & ~((1 << 7) - 1)) != 0) {
+				while ((x & ~0x7f) != 0) {
 					buf[i++] = (byte) (x | 0x80);
 					x >>>= 7;
 				}
@@ -153,7 +157,7 @@ public class Image implements java.io.Serializable {
 					buf[i++] = (byte) (3 | 0x80);
 				} else
 					buf[i++] = (byte) 3;
-				while ((x & ~((1 << 7) - 1)) != 0) {
+				while ((x & ~0x7f) != 0) {
 					buf[i++] = (byte) (x | 0x80);
 					x >>>= 7;
 				}
@@ -175,50 +179,53 @@ public class Image implements java.io.Serializable {
 				throw new IllegalStateException(format("colfer: serial exceeds %d bytes", colferSizeMax));
 			if (i >= buf.length)
 				throw new BufferOverflowException();
-			throw new RuntimeException("colfer: bug", e);
+			throw e;
 		}
 	}
 
 	/**
 	 * Deserializes the object.
 	 * @param buf the data source.
-	 * @param offset the first byte index.
-	 * @return the index of the first byte after the last byte read.
+	 * @param offset the initial index for {@code buf}, inclusive.
+	 * @return the final index for {@code buf}, exclusive.
 	 * @throws BufferUnderflowException when {@code buf} is incomplete. (EOF)
-	 * @throws TypeConstraintException on an upper limit breach defined by either {@link #colferSizeMax} or {@link #colferListMax}.
-	 * @throws DataBindingException when the data does not match this object's schema.
+	 * @throws SecurityException on an upper limit breach defined by either {@link #colferSizeMax} or {@link #colferListMax}.
+	 * @throws InputMismatchException when the data does not match this object's schema.
 	 */
-	public int unmarshal(byte[] buf, int offset)
-	throws BufferUnderflowException, TypeConstraintException, DataBindingException {
+	public int unmarshal(byte[] buf, int offset) {
 		int i = offset;
 		try {
 			byte header = buf[i++];
 
 			if (header == (byte) 0) {
-				int n = 0;
+				int size = 0;
 				for (int shift = 0; true; shift += 7) {
 					byte b = buf[i++];
-					n |= (b & 0x7f) << shift;
+					size |= (b & 0x7f) << shift;
 					if (shift == 28 || b >= 0) break;
 				}
-				if (n > colferSizeMax)
-					throw new TypeConstraintException(format("colfer: field serializers/colfer/media.image.uri size %d exceeds %d UTF-8 bytes", n, colferSizeMax));
-				this.uri = new String(buf, i, n, this._utf8);
-				i += n;
+				if (size > colferSizeMax)
+					throw new SecurityException(format("colfer: field serializers/colfer/media.image.uri size %d exceeds %d UTF-8 bytes", size, colferSizeMax));
+
+				int start = i;
+				i += size;
+				this.uri = new String(buf, start, size, this._utf8);
 				header = buf[i++];
 			}
 
 			if (header == (byte) 1) {
-				int n = 0;
+				int size = 0;
 				for (int shift = 0; true; shift += 7) {
 					byte b = buf[i++];
-					n |= (b & 0x7f) << shift;
+					size |= (b & 0x7f) << shift;
 					if (shift == 28 || b >= 0) break;
 				}
-				if (n > colferSizeMax)
-					throw new TypeConstraintException(format("colfer: field serializers/colfer/media.image.title size %d exceeds %d UTF-8 bytes", n, colferSizeMax));
-				this.title = new String(buf, i, n, this._utf8);
-				i += n;
+				if (size > colferSizeMax)
+					throw new SecurityException(format("colfer: field serializers/colfer/media.image.title size %d exceeds %d UTF-8 bytes", size, colferSizeMax));
+
+				int start = i;
+				i += size;
+				this.title = new String(buf, start, size, this._utf8);
 				header = buf[i++];
 			}
 
@@ -273,15 +280,17 @@ public class Image implements java.io.Serializable {
 			}
 
 			if (header != (byte) 0x7f)
-				throw new DataBindingException(format("colfer: unknown header at byte %d", i - 1), null);
+				throw new InputMismatchException(format("colfer: unknown header at byte %d", i - 1));
 		} catch (IndexOutOfBoundsException e) {
 			if (i - offset > colferSizeMax)
-				throw new TypeConstraintException(format("colfer: serial exceeds %d bytes", colferSizeMax));
+				throw new SecurityException(format("colfer: serial exceeds %d bytes", colferSizeMax));
 			if (i >= buf.length)
 				throw new BufferUnderflowException();
 			throw new RuntimeException("colfer: bug", e);
 		}
 
+		if (i - offset > colferSizeMax)
+			throw new SecurityException(format("colfer: serial exceeds %d bytes", colferSizeMax));
 		return i;
 	}
 
@@ -335,7 +344,14 @@ public class Image implements java.io.Serializable {
 
 	@Override
 	public final int hashCode() {
-		return java.util.Objects.hash(0x7f, uri, title, width, height, small, large);
+		int h = 1;
+		if (this.uri != null) h = 31 * h + this.uri.hashCode();
+		if (this.title != null) h = 31 * h + this.title.hashCode();
+		h = 31 * h + this.width;
+		h = 31 * h + this.height;
+		h = 31 * h + (this.small ? 1231 : 1237);
+		h = 31 * h + (this.large ? 1231 : 1237);
+		return h;
 	}
 
 	@Override

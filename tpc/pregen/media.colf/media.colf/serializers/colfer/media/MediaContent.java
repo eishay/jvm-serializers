@@ -5,10 +5,9 @@ package serializers.colfer.media;
 
 
 import static java.lang.String.format;
+import java.util.InputMismatchException;
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
-import javax.xml.bind.TypeConstraintException;
-import javax.xml.bind.DataBindingException;
 
 
 /**
@@ -35,15 +34,14 @@ public class MediaContent implements java.io.Serializable {
 	 * Serializes the object.
 	 * All {@code null} entries in {@link #images} will be replaced with a {@code new} value.
 	 * @param buf the data destination.
-	 * @param offset the first byte index.
-	 * @return the index of the first byte after the last byte written.
+	 * @param offset the initial index for {@code buf}, inclusive.
+	 * @return the final index for {@code buf}, exclusive.
 	 * @throws BufferOverflowException when {@code buf} is too small.
 	 * @throws IllegalStateException on an upper limit breach defined by either {@link #colferSizeMax} or {@link #colferListMax}.
 	 */
 	public int marshal(byte[] buf, int offset) {
 		int i = offset;
 		try {
-
 			if (this.images.length != 0) {
 				buf[i++] = (byte) 0;
 				Image[] a = this.images;
@@ -51,7 +49,7 @@ public class MediaContent implements java.io.Serializable {
 				int x = a.length;
 				if (x > colferListMax)
 					throw new IllegalStateException(format("colfer: field serializers/colfer/media.mediaContent.images length %d exceeds %d elements", x, colferListMax));
-				while ((x & ~((1 << 7) - 1)) != 0) {
+				while (x > 0x7f) {
 					buf[i++] = (byte) (x | 0x80);
 					x >>>= 7;
 				}
@@ -79,36 +77,36 @@ public class MediaContent implements java.io.Serializable {
 				throw new IllegalStateException(format("colfer: serial exceeds %d bytes", colferSizeMax));
 			if (i >= buf.length)
 				throw new BufferOverflowException();
-			throw new RuntimeException("colfer: bug", e);
+			throw e;
 		}
 	}
 
 	/**
 	 * Deserializes the object.
 	 * @param buf the data source.
-	 * @param offset the first byte index.
-	 * @return the index of the first byte after the last byte read.
+	 * @param offset the initial index for {@code buf}, inclusive.
+	 * @return the final index for {@code buf}, exclusive.
 	 * @throws BufferUnderflowException when {@code buf} is incomplete. (EOF)
-	 * @throws TypeConstraintException on an upper limit breach defined by either {@link #colferSizeMax} or {@link #colferListMax}.
-	 * @throws DataBindingException when the data does not match this object's schema.
+	 * @throws SecurityException on an upper limit breach defined by either {@link #colferSizeMax} or {@link #colferListMax}.
+	 * @throws InputMismatchException when the data does not match this object's schema.
 	 */
-	public int unmarshal(byte[] buf, int offset)
-	throws BufferUnderflowException, TypeConstraintException, DataBindingException {
+	public int unmarshal(byte[] buf, int offset) {
 		int i = offset;
 		try {
 			byte header = buf[i++];
 
 			if (header == (byte) 0) {
-				int n = 0;
+				int length = 0;
 				for (int shift = 0; true; shift += 7) {
 					byte b = buf[i++];
-					n |= (b & 0x7f) << shift;
+					length |= (b & 0x7f) << shift;
 					if (shift == 28 || b >= 0) break;
 				}
-				if (n > colferListMax)
-					throw new TypeConstraintException(format("colfer: field serializers/colfer/media.mediaContent.images length %d exceeds %d elements", n, colferListMax));
-				Image[] a = new Image[n];
-				for (int ai = 0; ai < n; ai++) {
+				if (length > colferListMax)
+					throw new SecurityException(format("colfer: field serializers/colfer/media.mediaContent.images length %d exceeds %d elements", length, colferListMax));
+
+				Image[] a = new Image[length];
+				for (int ai = 0; ai < length; ai++) {
 					Image o = new Image();
 					i = o.unmarshal(buf, i);
 					a[ai] = o;
@@ -124,15 +122,17 @@ public class MediaContent implements java.io.Serializable {
 			}
 
 			if (header != (byte) 0x7f)
-				throw new DataBindingException(format("colfer: unknown header at byte %d", i - 1), null);
+				throw new InputMismatchException(format("colfer: unknown header at byte %d", i - 1));
 		} catch (IndexOutOfBoundsException e) {
 			if (i - offset > colferSizeMax)
-				throw new TypeConstraintException(format("colfer: serial exceeds %d bytes", colferSizeMax));
+				throw new SecurityException(format("colfer: serial exceeds %d bytes", colferSizeMax));
 			if (i >= buf.length)
 				throw new BufferUnderflowException();
 			throw new RuntimeException("colfer: bug", e);
 		}
 
+		if (i - offset > colferSizeMax)
+			throw new SecurityException(format("colfer: serial exceeds %d bytes", colferSizeMax));
 		return i;
 	}
 
@@ -154,7 +154,10 @@ public class MediaContent implements java.io.Serializable {
 
 	@Override
 	public final int hashCode() {
-		return java.util.Objects.hash(0x7f, images, media);
+		int h = 1;
+		for (Image o : this.images) h = 31 * h + (o == null ? 0 : o.hashCode());
+		if (this.media != null) h = 31 * h + this.media.hashCode();
+		return h;
 	}
 
 	@Override
