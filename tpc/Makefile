@@ -36,6 +36,7 @@ dslplatform_compiler = java -jar lib/dsl-clc.jar
 dslplatform_dir = build/dslplatform
 flatbuffers_generator ?= flatc
 capnproto_generator ?= capnp
+colfer_generator ?= colf
 
 # Default to 'no' because we might not have these tools available.
 Generate_protobuf ?= n
@@ -43,6 +44,7 @@ Generate_thrift ?= n
 Generate_dslplatform ?= n # Requires Mono 3.10+
 Generate_flatbuffers ?= n
 Generate_capnproto ?= n
+Generate_colfer ?= n
 
 # Default to 'yes' because the generator tools are included in 'lib/'.
 Generate_activemqprotobuf ?= y
@@ -69,7 +71,7 @@ endif
 
 ##########################################################################
 
-SchemaExtensions := .thrift .proto .tcks .avro .dsl .fbs .capnp
+SchemaExtensions := .thrift .proto .tcks .avro .dsl .fbs .capnp .colf
 Schemas = $(patsubst schema/%,%,$(wildcard $(SchemaExtensions:%=schema/*%)))
 
 ##########################################################################
@@ -107,6 +109,8 @@ else ifneq ($(findstring .fbs,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_flatbuffers)
 else ifneq ($(findstring .capnp,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_capnproto)
+else ifneq ($(findstring .colf,$(2)),)
+	NeedToGenerate_$(1) := $(Generate_colfer)
 else
 endif
 
@@ -152,6 +156,8 @@ else ifneq ($(findstring .fbs,$(2)),)
 	$(p1)$(flatbuffers_generator) -o build/gen/$(2) --java $$<
 else ifneq ($(findstring .capnp,$(2)),)
 	$(p1)$(capnproto_generator) compile -ojava $$<
+else ifneq ($(findstring .colf,$(2)),)
+	$(p1)$(colfer_generator) -b build/gen/$(2) -p serializers/colfer java $$<
 else
 endif
 

@@ -5,6 +5,7 @@ import serializers.avro.AvroSpecific;
 import serializers.capnproto.CapNProto;
 import serializers.cks.CksBinary;
 import serializers.cks.CksText;
+import serializers.colfer.Colfer;
 import serializers.flatbuffers.FlatBuffers;
 import serializers.jackson.*;
 import serializers.javaxjson.*;
@@ -134,5 +135,6 @@ public class BenchmarkRunner extends MediaItemBenchmark
         DSLPlatform.register(groups);
         FlatBuffers.register(groups);
         CapNProto.register(groups);
+        Colfer.register(groups);
     }
 }
