@@ -35,7 +35,6 @@ public class DataKernelSerializer {
 		private BufferSerializer<T> serializer;
 		private byte[] array = new byte[20000];
 		SerializationOutputBuffer output = new SerializationOutputBuffer(array);
-		SerializationInputBuffer input = new SerializationInputBuffer(array, 0);
 
 		public DefaultSerializer() {
 			serializer = SerializerBuilder
@@ -45,8 +44,7 @@ public class DataKernelSerializer {
 
 		@Override
 		public T deserialize(byte[] array) throws Exception {
-			input.position(0);
-			return serializer.deserialize(input);
+			return serializer.deserialize(new SerializationInputBuffer(array, 0));
 		}
 
 		@Override
