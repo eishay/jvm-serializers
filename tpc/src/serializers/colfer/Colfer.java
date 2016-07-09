@@ -17,8 +17,6 @@ import serializers.colfer.media.Image;
 import serializers.colfer.media.Media;
 import serializers.colfer.media.MediaContent;
 
-import org.apache.commons.lang.StringUtils;
-
 
 public class Colfer {
 
@@ -110,7 +108,7 @@ public class Colfer {
 			dst.size = src.size;
 			dst.bitrate = src.bitrate;
 			dst.hasBitrate = src.hasBitrate;
-			dst.persons = StringUtils.join(src.persons, '\n');
+			dst.persons = src.persons.toArray(dst.persons);
 			switch (src.player) {
 				case FLASH:
 					dst.flashPlay = true;
@@ -135,7 +133,7 @@ public class Colfer {
 			dst.size = src.size;
 			dst.bitrate = src.bitrate;
 			dst.hasBitrate = src.hasBitrate;
-			dst.persons = Arrays.asList(StringUtils.split(src.persons, '\n'));
+			dst.persons = Arrays.asList(src.persons);
 			if (src.flashPlay) {
 				dst.player = data.media.Media.Player.FLASH;
 			}

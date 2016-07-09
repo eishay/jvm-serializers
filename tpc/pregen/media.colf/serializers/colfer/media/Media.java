@@ -24,6 +24,7 @@ public class Media implements java.io.Serializable {
 	public static int colferListMax = 64 * 1024;
 
 	private static final java.nio.charset.Charset _utf8 = java.nio.charset.Charset.forName("UTF-8");
+	private static final String[] _zeroPersons = new String[0];
 
 	public String uri = "";
 	public String title = "";
@@ -32,7 +33,7 @@ public class Media implements java.io.Serializable {
 	public String format = "";
 	public long duration;
 	public long size;
-	public String persons = "";
+	public String[] persons = _zeroPersons;
 	public String copyright = "";
 	public int bitrate;
 	public boolean hasBitrate;
@@ -42,6 +43,7 @@ public class Media implements java.io.Serializable {
 
 	/**
 	 * Serializes the object.
+	 * All {@code null} entries in {@link #persons} will be replaced with a "" value.
 	 * @param buf the data destination.
 	 * @param offset the initial index for {@code buf}, inclusive.
 	 * @return the final index for {@code buf}, exclusive.
@@ -245,50 +247,68 @@ public class Media implements java.io.Serializable {
 				buf[i++] = (byte) x;
 			}
 
-			if (! this.persons.isEmpty()) {
+			if (this.persons.length != 0) {
 				buf[i++] = (byte) 7;
-				int start = ++i;
+				String[] a = this.persons;
 
-				String s = this.persons;
-				for (int sIndex = 0, sLength = s.length(); sIndex < sLength; sIndex++) {
-					char c = s.charAt(sIndex);
-					if (c < '\u0080') {
-						buf[i++] = (byte) c;
-					} else if (c < '\u0800') {
-						buf[i++] = (byte) (192 | c >>> 6);
-						buf[i++] = (byte) (128 | c & 63);
-					} else if (c < '\ud800' || c > '\udfff') {
-						buf[i++] = (byte) (224 | c >>> 12);
-						buf[i++] = (byte) (128 | c >>> 6 & 63);
-						buf[i++] = (byte) (128 | c & 63);
-					} else {
-						int cp = 0;
-						if (++sIndex < sLength) cp = Character.toCodePoint(c, s.charAt(sIndex));
-						if ((cp >= 1 << 16) && (cp < 1 << 21)) {
-							buf[i++] = (byte) (240 | cp >>> 18);
-							buf[i++] = (byte) (128 | cp >>> 12 & 63);
-							buf[i++] = (byte) (128 | cp >>> 6 & 63);
-							buf[i++] = (byte) (128 | cp & 63);
-						} else
-							buf[i++] = (byte) '?';
+				int x = a.length;
+				if (x > colferListMax)
+					throw new IllegalStateException(format("colfer: field serializers/colfer/media.media.persons length %d exceeds %d elements", x, colferListMax));
+				while (x > 0x7f) {
+					buf[i++] = (byte) (x | 0x80);
+					x >>>= 7;
+				}
+				buf[i++] = (byte) x;
+
+				for (int ai = 0; ai < a.length; ai++) {
+					String s = a[ai];
+					if (s == null) {
+						s = "";
+						a[ai] = s;
 					}
-				}
-				int size = i - start;
-				if (size > colferSizeMax)
-					throw new IllegalStateException(format("colfer: field serializers/colfer/media.media.persons size %d exceeds %d UTF-8 bytes", size, colferSizeMax));
 
-				int ii = start - 1;
-				if (size > 0x7f) {
-					i++;
-					for (int x = size; x >= 1 << 14; x >>>= 7) i++;
-					System.arraycopy(buf, start, buf, i - size, size);
+					int start = ++i;
 
-					do {
-						buf[ii++] = (byte) (size | 0x80);
-						size >>>= 7;
-					} while (size > 0x7f);
+					for (int sIndex = 0, sLength = s.length(); sIndex < sLength; sIndex++) {
+						char c = s.charAt(sIndex);
+						if (c < '\u0080') {
+							buf[i++] = (byte) c;
+						} else if (c < '\u0800') {
+							buf[i++] = (byte) (192 | c >>> 6);
+							buf[i++] = (byte) (128 | c & 63);
+						} else if (c < '\ud800' || c > '\udfff') {
+							buf[i++] = (byte) (224 | c >>> 12);
+							buf[i++] = (byte) (128 | c >>> 6 & 63);
+							buf[i++] = (byte) (128 | c & 63);
+						} else {
+							int cp = 0;
+							if (++sIndex < sLength) cp = Character.toCodePoint(c, s.charAt(sIndex));
+							if ((cp >= 1 << 16) && (cp < 1 << 21)) {
+								buf[i++] = (byte) (240 | cp >>> 18);
+								buf[i++] = (byte) (128 | cp >>> 12 & 63);
+								buf[i++] = (byte) (128 | cp >>> 6 & 63);
+								buf[i++] = (byte) (128 | cp & 63);
+							} else
+								buf[i++] = (byte) '?';
+						}
+					}
+					int size = i - start;
+					if (size > colferSizeMax)
+						throw new IllegalStateException(format("colfer: field serializers/colfer/media.media.persons size %d exceeds %d UTF-8 bytes", size, colferSizeMax));
+
+					int ii = start - 1;
+					if (size > 0x7f) {
+						i++;
+						for (int y = size; y >= 1 << 14; y >>>= 7) i++;
+						System.arraycopy(buf, start, buf, i - size, size);
+
+						do {
+							buf[ii++] = (byte) (size | 0x80);
+							size >>>= 7;
+						} while (size > 0x7f);
+					}
+					buf[ii] = (byte) size;
 				}
-				buf[ii] = (byte) size;
 			}
 
 			if (! this.copyright.isEmpty()) {
@@ -529,18 +549,31 @@ public class Media implements java.io.Serializable {
 			}
 
 			if (header == (byte) 7) {
-				int size = 0;
+				int length = 0;
 				for (int shift = 0; true; shift += 7) {
 					byte b = buf[i++];
-					size |= (b & 0x7f) << shift;
+					length |= (b & 0x7f) << shift;
 					if (shift == 28 || b >= 0) break;
 				}
-				if (size > colferSizeMax)
-					throw new SecurityException(format("colfer: field serializers/colfer/media.media.persons size %d exceeds %d UTF-8 bytes", size, colferSizeMax));
+				if (length > colferListMax)
+					throw new SecurityException(format("colfer: field serializers/colfer/media.media.persons length %d exceeds %d elements", length, colferListMax));
 
-				int start = i;
-				i += size;
-				this.persons = new String(buf, start, size, this._utf8);
+				String[] a = new String[length];
+				for (int ai = 0; ai < length; ai++) {
+					int size = 0;
+					for (int shift = 0; true; shift += 7) {
+						byte b = buf[i++];
+						size |= (b & 0x7f) << shift;
+						if (shift == 28 || b >= 0) break;
+					}
+					if (size > colferSizeMax)
+						throw new SecurityException(format("colfer: field serializers/colfer/media.media.persons size %d exceeds %d UTF-8 bytes", size, colferSizeMax));
+
+					int start = i;
+					i += size;
+					a[ai] = new String(buf, start, size, this._utf8);
+				}
+				this.persons = a;
 				header = buf[i++];
 			}
 
@@ -666,11 +699,11 @@ public class Media implements java.io.Serializable {
 		this.size = value;
 	}
 
-	public String getPersons() {
+	public String[] getPersons() {
 		return this.persons;
 	}
 
-	public void setPersons(String value) {
+	public void setPersons(String[] value) {
 		this.persons = value;
 	}
 
@@ -724,7 +757,7 @@ public class Media implements java.io.Serializable {
 		if (this.format != null) h = 31 * h + this.format.hashCode();
 		h = 31 * h + (int)(this.duration ^ this.duration >>> 32);
 		h = 31 * h + (int)(this.size ^ this.size >>> 32);
-		if (this.persons != null) h = 31 * h + this.persons.hashCode();
+		for (String o : this.persons) h = 31 * h + (o == null ? 0 : o.hashCode());
 		if (this.copyright != null) h = 31 * h + this.copyright.hashCode();
 		h = 31 * h + this.bitrate;
 		h = 31 * h + (this.hasBitrate ? 1231 : 1237);
@@ -747,7 +780,7 @@ public class Media implements java.io.Serializable {
 			&& java.util.Objects.equals(this.format, o.format)
 			&& this.duration == o.duration
 			&& this.size == o.size
-			&& java.util.Objects.equals(this.persons, o.persons)
+			&& java.util.Arrays.equals(this.persons, o.persons)
 			&& java.util.Objects.equals(this.copyright, o.copyright)
 			&& this.bitrate == o.bitrate
 			&& this.hasBitrate == o.hasBitrate
