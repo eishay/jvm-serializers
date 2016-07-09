@@ -67,3 +67,4 @@ xml/xstream+c-woodstox
 xml/xstream+c-aalto
 xml/xstream+c-fastinfo
 xml/javolution
+datakernel
