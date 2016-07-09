@@ -38,7 +38,6 @@ public class FastJSONArrayDatabind
     private final Class<T> type;
 
     private int serializerFeatures;
-    private SerializeFilter[] emptyFilters     = new SerializeFilter[0];
 
     public GenericSerializer(String name, Class<T> clazz)
     {
