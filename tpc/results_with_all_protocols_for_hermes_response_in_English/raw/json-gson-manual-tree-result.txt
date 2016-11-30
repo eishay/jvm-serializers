@@ -1,0 +1,7 @@
+json/gson/manual-tree
+Checking correctness...
+[done]
+Pre-warmup... json/gson/manual-tree
+[done]
+                                   create     ser   deser   total   size  +dfl
+json/gson/manual-tree                  91    8461    9602   18062   1048   472

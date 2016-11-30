@@ -1,0 +1,7 @@
+protobuf/protostuff-runtime
+Checking correctness...
+[done]
+Pre-warmup... protobuf/protostuff-runtime
+[done]
+                                   create     ser   deser   total   size  +dfl
+protobuf/protostuff-runtime            96    1294    1436    2731    681   404

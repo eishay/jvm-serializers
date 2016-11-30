@@ -1,0 +1,7 @@
+cbor/jackson+afterburner/databind
+Checking correctness...
+[done]
+Pre-warmup... cbor/jackson+afterburner/databind
+[done]
+                                   create     ser   deser   total   size  +dfl
+cbor/jackson+afterburner/databind      94    2029    2703    4732   1021   487

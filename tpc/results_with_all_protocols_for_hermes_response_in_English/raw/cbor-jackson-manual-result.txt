@@ -1,0 +1,7 @@
+cbor/jackson/manual
+Checking correctness...
+[done]
+Pre-warmup... cbor/jackson/manual
+[done]
+                                   create     ser   deser   total   size  +dfl
+cbor/jackson/manual                   104    1638    2131    3769    900   465

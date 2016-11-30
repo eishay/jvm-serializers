@@ -1,0 +1,7 @@
+msgpack/manual
+Checking correctness...
+[done]
+Pre-warmup... msgpack/manual
+[done]
+                                   create     ser   deser   total   size  +dfl
+msgpack/manual                         97    1630    2118    3748    653   386

@@ -1,0 +1,7 @@
+smile/jackson/databind
+Checking correctness...
+[done]
+Pre-warmup... smile/jackson/databind
+[done]
+                                   create     ser   deser   total   size  +dfl
+smile/jackson/databind                 97    2155    3042    5196    811   480

@@ -1,0 +1,126 @@
+<h3>Test Platform</h3>
+OS:Mac OS X
+JVM:Oracle Corporation 1.8.0_102
+CPU:null os-arch:null
+Cores (incl HT):8
+
+<h3>Disclaimer</h3>
+
+This test focusses on en/decoding of a cyclefree data structure, but the featureset of the libraries compared differs a lot:
+<ul><li>some serializers support cycle detection/object sharing others just write non-cyclic tree structures</li>
+<li>some include full metadata in serialized output, some don't</li>
+<li>some are cross platform, some are language specific</li>
+<li>some are text based, some are binary,</li>
+<li>some support versioning forward/backward, both, some don't</li></ul>
+
+(See "ToolBehavior":wiki/ToolBehavior)
+Other test data will yield different results (e.g. adding a non ascii char to every string :-) ). However the results give a raw estimation of library performance.
+
+
+<h3>Serializers (no shared refs)</h3>
+Benchmarks serializers
+<ul><li>Only cycle free tree structures. An object referenced twice will be serialized twice.</li>
+<li>no manual optimizations.</li>
+<li>schema is known in advance (pre registration or even class generation). (Not all might make use of that)</li>
+</ul>
+<b>Ser Time+Deser Time (ns)</b><br><img src='https://chart.googleapis.com/chart?cht=bhs&chs=600x74&chd=t:2517,2751,2772|1485,1456,1471&chco=5d99f9,4d89f9&chdlp=t&chbh=15&chds=0,4243&chxr=1,0,4243&chxt=y,x&chxl=0:|thrift|flatbuffers|protobuf'/>
+<br clear='all' /><b>Size, Compressed size [light] in bytes</b><br><img src='https://chart.googleapis.com/chart?cht=bhs&chs=600x74&chd=t:397,430,503|262,404,417&chco=5d99f9,4d89f9&chdlp=t&chbh=15&chds=0,920&chxr=1,0,920&chxt=y,x&chxl=0:|flatbuffers|thrift|protobuf'/>
+<br clear='all' />
+<pre>                                   create     ser   deser   total   size  +dfl
+protobuf                              230    2517    1484    4002    659   397
+flatbuffers                            98    2751    1456    4207    920   503
+thrift                                165    2772    1471    4243    834   430
+</pre>
+
+
+
+<h3>Full Object Graph Serializers</h3>
+Contains serializer(-configurations)
+<ul><li>supporting full object graph write/read. Object graph may contain cycles. If an Object is referenced twice, it will be so after deserialization.</li>
+<li>nothing is known in advance, no class generation, no preregistering of classes. Everything is captured at runtime using e.g. reflection.</li>
+<li>note this usually cannot be used cross language, however JSON/XML formats may enable cross language deserialization.</li>
+</ul>
+<b>Ser Time+Deser Time (ns)</b><br><img src='https://chart.googleapis.com/chart?cht=bhs&chs=600x14&chd=t:&chco=5d99f9,4d89f9&chdlp=t&chbh=15&chds=0,-2147483648&chxr=1,0,-2147483648&chxt=y,x&chxl=0:|'/>
+<br clear='all' /><b>Size, Compressed size [light] in bytes</b><br><img src='https://chart.googleapis.com/chart?cht=bhs&chs=600x14&chd=t:&chco=5d99f9,4d89f9&chdlp=t&chbh=15&chds=0,-2147483648&chxr=1,0,-2147483648&chxt=y,x&chxl=0:|'/>
+<br clear='all' />
+<pre>                                   create     ser   deser   total   size  +dfl
+</pre>
+
+
+
+<h3>Cross Lang Binary Serializers</h3>
+Contains serializer(-configurations)
+<ul><li>Only cycle free tree structures. An object referenced twice will be serialized twice.</li>
+<li>schema is known in advance (pre registration, intermediate message description languages, class generation).</li>
+</ul>
+<b>Ser Time+Deser Time (ns)</b><br><img src='https://chart.googleapis.com/chart?cht=bhs&chs=600x74&chd=t:2517,2751,2772|1485,1456,1471&chco=5d99f9,4d89f9&chdlp=t&chbh=15&chds=0,4243&chxr=1,0,4243&chxt=y,x&chxl=0:|thrift|flatbuffers|protobuf'/>
+<br clear='all' /><b>Size, Compressed size [light] in bytes</b><br><img src='https://chart.googleapis.com/chart?cht=bhs&chs=600x74&chd=t:397,430,503|262,404,417&chco=5d99f9,4d89f9&chdlp=t&chbh=15&chds=0,920&chxr=1,0,920&chxt=y,x&chxl=0:|flatbuffers|thrift|protobuf'/>
+<br clear='all' />
+<pre>                                   create     ser   deser   total   size  +dfl
+protobuf                              230    2517    1484    4002    659   397
+flatbuffers                            98    2751    1456    4207    920   503
+thrift                                165    2772    1471    4243    834   430
+</pre>
+
+
+
+<h3>XML/JSon Serializers</h3>
+<ul><li>text format based. Usually can be read by anybody. Frequently inline schema inside data.</li>
+<li>Mixed regarding required preparation, object graph awareness (references).</li>
+</ul>
+<b>Ser Time+Deser Time (ns)</b><br><img src='https://chart.googleapis.com/chart?cht=bhs&chs=600x14&chd=t:&chco=5d99f9,4d89f9&chdlp=t&chbh=15&chds=0,-2147483648&chxr=1,0,-2147483648&chxt=y,x&chxl=0:|'/>
+<br clear='all' /><b>Size, Compressed size [light] in bytes</b><br><img src='https://chart.googleapis.com/chart?cht=bhs&chs=600x14&chd=t:&chco=5d99f9,4d89f9&chdlp=t&chbh=15&chds=0,-2147483648&chxr=1,0,-2147483648&chxt=y,x&chxl=0:|'/>
+<br clear='all' />
+<pre>                                   create     ser   deser   total   size  +dfl
+</pre>
+
+
+
+<h3>Manually optimized Serializers</h3>
+all flavours of manually optimized serializers. Handcoded and hardwired to exactly the benchmark's message structures.
+<ul><li>illustrates what's possible, at what level generic approaches can be optimized in case
+</li></ul>
+<b>Ser Time+Deser Time (ns)</b><br><img src='https://chart.googleapis.com/chart?cht=bhs&chs=600x54&chd=t:2892,3333|2237,1862&chco=5d99f9,4d89f9&chdlp=t&chbh=15&chds=0,5195&chxr=1,0,5195&chxt=y,x&chxl=0:|avro-generic|avro-specific'/>
+<br clear='all' /><b>Size, Compressed size [light] in bytes</b><br><img src='https://chart.googleapis.com/chart?cht=bhs&chs=600x54&chd=t:369,369|255,255&chco=5d99f9,4d89f9&chdlp=t&chbh=15&chds=0,624&chxr=1,0,624&chxt=y,x&chxl=0:|avro-generic|avro-specific'/>
+<br clear='all' />
+<pre>                                   create     ser   deser   total   size  +dfl
+avro-specific                         130    2892    2237    5129    624   369
+avro-generic                          608    3333    1862    5195    624   369
+</pre>
+
+
+
+<h3>Cost of features</h3>
+shows performance vs convenience of manually-selected libs.
+<ul><li>cycle free, schema known at compile time, manual optimization: kryo-manual, msgpack/manual</li>
+<li>cycle free, schema known at compile time: protostuff, fst-flat-pre, kryo-flat-pre. (note: protostuff uses class generation while the other two just require a list of classes to be written)</li>
+<li>cycle free, schema UNKNOWN at compile time: fst-flat, kryo-flat, protostuff-runtime, msgpack/databind</li>
+<li>full object graph awareness, schema UNKNOWN at compile time: fst, kryo.</li>
+</ul>
+<b>Ser Time+Deser Time (ns)</b><br><img src='https://chart.googleapis.com/chart?cht=bhs&chs=600x14&chd=t:&chco=5d99f9,4d89f9&chdlp=t&chbh=15&chds=0,-2147483648&chxr=1,0,-2147483648&chxt=y,x&chxl=0:|'/>
+<br clear='all' /><b>Size, Compressed size [light] in bytes</b><br><img src='https://chart.googleapis.com/chart?cht=bhs&chs=600x14&chd=t:&chco=5d99f9,4d89f9&chdlp=t&chbh=15&chds=0,-2147483648&chxr=1,0,-2147483648&chxt=y,x&chxl=0:|'/>
+<br clear='all' />
+<pre>                                   create     ser   deser   total   size  +dfl
+</pre>
+
+<h3>Full data</h3>
+
+
+<pre>                                   create     ser   deser   total   size  +dfl
+protobuf                              230    2517    1484    4002    659   397
+flatbuffers                            98    2751    1456    4207    920   503
+thrift                                165    2772    1471    4243    834   430
+avro-specific                         130    2892    2237    5129    624   369
+avro-generic                          608    3333    1862    5195    624   369
+</pre>
+
+
+
+<pre>                                   Effort          Format         Structure  Misc
+protobuf                           CLASSES_KNOWN   BIN_CROSSLANG  FLAT_TREE  []                                                          
+flatbuffers                        CLASSES_KNOWN   BIN_CROSSLANG  FLAT_TREE  []                                                          
+thrift                             CLASSES_KNOWN   BIN_CROSSLANG  FLAT_TREE  []                                                          
+avro-specific                      MANUAL_OPT      BIN_CROSSLANG  UNKNOWN    []                                                          
+avro-generic                       MANUAL_OPT      BIN_CROSSLANG  FLAT_TREE  []                                                          
+</pre>
+

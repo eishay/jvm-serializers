@@ -1,0 +1,7 @@
+bson/mongodb/manual
+Checking correctness...
+[done]
+Pre-warmup... bson/mongodb/manual
+[done]
+                                   create     ser   deser   total   size  +dfl
+bson/mongodb/manual                   101    7375    9535   16911   1079   529

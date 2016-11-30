@@ -1,0 +1,7 @@
+fst
+Checking correctness...
+[done]
+Pre-warmup... fst
+[done]
+                                   create     ser   deser   total   size  +dfl
+fst                                   105    2778    2604    5383    753   434

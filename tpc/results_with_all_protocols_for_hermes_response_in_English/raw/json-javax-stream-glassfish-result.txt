@@ -1,0 +1,7 @@
+json/javax-stream/glassfish
+Checking correctness...
+[done]
+Pre-warmup... json/javax-stream/glassfish
+[done]
+                                   create     ser   deser   total   size  +dfl
+json/javax-stream/glassfish            94    8571   17203   25774   1031   463

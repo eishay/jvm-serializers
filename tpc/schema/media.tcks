@@ -5,6 +5,10 @@ def Image = {
 	Height: Int32
 	Size: Size
 	def Size = < Small, Large >
+
+	Price: Int32
+	Image: String
+	ItemId: Int32
 }
 
 def Media = {

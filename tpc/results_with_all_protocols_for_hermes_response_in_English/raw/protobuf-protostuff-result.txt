@@ -1,0 +1,7 @@
+protobuf/protostuff
+Checking correctness...
+[done]
+Pre-warmup... protobuf/protostuff
+[done]
+                                   create     ser   deser   total   size  +dfl
+protobuf/protostuff                   118    1092    1280    2372    659   397

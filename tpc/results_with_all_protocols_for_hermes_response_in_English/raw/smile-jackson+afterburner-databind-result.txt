@@ -1,0 +1,7 @@
+smile/jackson+afterburner/databind
+Checking correctness...
+[done]
+Pre-warmup... smile/jackson+afterburner/databind
+[done]
+                                   create     ser   deser   total   size  +dfl
+smile/jackson+afterburner/databind     98    2005    2867    4872    840   494

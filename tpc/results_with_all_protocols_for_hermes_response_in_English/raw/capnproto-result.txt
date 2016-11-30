@@ -1,0 +1,7 @@
+capnproto
+Checking correctness...
+[done]
+Pre-warmup... capnproto
+[done]
+                                   create     ser   deser   total   size  +dfl
+capnproto                              96    2638    1827    4465    896   462

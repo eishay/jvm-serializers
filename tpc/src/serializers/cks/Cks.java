@@ -1,13 +1,14 @@
 package serializers.cks;
 
 import cks.value.data.Maybe;
-import serializers.cks.media.*;
+import data.media.MediaTransformer;
+import serializers.cks.media.Image;
+import serializers.cks.media.Media;
+import serializers.cks.media.MediaContent;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import data.media.MediaTransformer;
 
 public class Cks
 {
@@ -66,7 +67,10 @@ public class Cks
 				image.title != null ? Maybe.Just(image.title) : Maybe.<String>Nothing(),
 				image.width,
 				image.height,
-				forwardSize(image.size)
+				forwardSize(image.size),
+				image.price,
+				image.image,
+				image.itemId
 			);
 		}
 
