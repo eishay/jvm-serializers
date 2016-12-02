@@ -28,7 +28,6 @@ protobuf_generator ?= protoc
 thrift_generator ?= thrift
 activemqprotobuf_cp := $(call mkcp,$(wildcard lib/activemq-*.jar))
 activemqprotobuf_generator ?= java -cp "$(activemqprotobuf_cp)" org.apache.activemq.protobuf.compiler.AltJavaGenerator
-cks_generator ?= java -jar lib/cks-tool.jar
 avro_cp ?= $(call mkcp,$(wildcard lib/avro-*.jar lib/jackson-*.jar lib/jopt-simple-*.jar lib/velocity-*.jar lib/slf4j-*.jar))
 avro_generator ?= java -cp "$(avro_cp)" org.apache.avro.tool.Main
 protostuff_compiler ?= $(wildcard lib/protostuff-compiler-*.jar)
@@ -48,7 +47,6 @@ Generate_colfer ?= n
 
 # Default to 'yes' because the generator tools are included in 'lib/'.
 Generate_activemqprotobuf ?= y
-Generate_cks ?= y
 Generate_avro ?= y
 Generate_protostuff ?= y
 
@@ -71,7 +69,7 @@ endif
 
 ##########################################################################
 
-SchemaExtensions := .thrift .proto .tcks .avro .dsl .fbs .capnp .colf
+SchemaExtensions := .thrift .proto .avro .dsl .fbs .capnp .colf
 Schemas = $(patsubst schema/%,%,$(wildcard $(SchemaExtensions:%=schema/*%)))
 
 ##########################################################################
@@ -99,8 +97,6 @@ else ifneq ($(findstring .proto,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_protobuf)
 else ifneq ($(findstring .thrift,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_thrift)
-else ifneq ($(findstring .tcks,$(2)),)
-	NeedToGenerate_$(1) := $(Generate_cks)
 else ifneq ($(findstring .avro,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_avro)
 else ifneq ($(findstring .dsl,$(2)),)
@@ -135,8 +131,6 @@ else ifneq ($(findstring .proto,$(2)),)
 	$(p1)$(protobuf_generator) --java_out=build/gen/$(2) $$<
 else ifneq ($(findstring .thrift,$(2)),)
 	$(p1)$(thrift_generator) -o build/gen/$(2) --gen java:hashcode,beans $$<
-else ifneq ($(findstring .tcks,$(2)),)
-	$(p1)$(cks_generator) gen-java $$< serializers.cks.$(basename $(2)) build/gen/$(2)/serializers/cks/$(basename $(2))
 else ifneq ($(findstring .avro,$(2)),)
 	$(p1)$(avro_generator) compile schema $$< build/gen/$(2)
 else ifneq ($(findstring .dsl,$(2)),)

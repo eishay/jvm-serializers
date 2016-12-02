@@ -58,7 +58,12 @@ do
     file=$word-result.txt
     file="$raw_result_dir"/${file//\//-}  # change '/' to '-'
     echo $word > $file
-    java $mem -cp $cp $clz -iterations=$iter -warmup-time=$warmupTime -testRunMillis=$testTime -include=$word data/media.hermes.cks >> $file
+
+    java $mem -cp $cp $clz -iterations=$iter -warmup-time=$warmupTime -testRunMillis=$testTime -include=$word data/media.1.json >> $file || code=$? 
+    if [[ $code -ne 0 ]]; then
+        echo "ERROR: exit code $code"
+        exit $code
+    fi
 done
 
 echo "about to run mk-stats.sh now."
