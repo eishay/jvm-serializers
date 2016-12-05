@@ -22,7 +22,7 @@ type media struct {
 	format     text
 	duration   int64
 	size       int64
-	persons    text
+	persons    []text
 	copyright  text
 	bitrate    int32
 	hasBitrate bool

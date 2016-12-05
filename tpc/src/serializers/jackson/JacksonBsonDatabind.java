@@ -51,7 +51,7 @@ public class JacksonBsonDatabind
             this.name = name;
             type = mapper.constructType(clazz);
             this.mapper = mapper;
-            objectReader = mapper.reader(type);
+            objectReader = mapper.readerFor(type);
             objectWriter = mapper.writerFor(type);
         }
 
