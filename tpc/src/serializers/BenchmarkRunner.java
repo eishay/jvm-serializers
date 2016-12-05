@@ -3,8 +3,6 @@ package serializers;
 import serializers.avro.AvroGeneric;
 import serializers.avro.AvroSpecific;
 import serializers.capnproto.CapNProto;
-import serializers.cks.CksBinary;
-import serializers.cks.CksText;
 import serializers.colfer.Colfer;
 import serializers.datakernel.DataKernelSerializer;
 import serializers.flatbuffers.FlatBuffers;
@@ -60,7 +58,6 @@ public class BenchmarkRunner extends MediaItemBenchmark
         Thrift.register(groups);
         AvroSpecific.register(groups);
         AvroGeneric.register(groups);
-        CksBinary.register(groups);
         // 01-Oct-2014: MsgPack implementation uses questionable technique as well: instead of using Maps (name/value),
         //    uses arrays, presumes ordering (and implied schema thereby) -- not inter-operable with most non-Java MsgPack
         //    usage, and basically seems to optimize for benchmarks instead of reflecting real usage.
@@ -98,10 +95,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
 // 06-May-2013, tatu: Too slow (100x above fastest)
 // JsonPathDeserializerOnly.register(groups);
 
-        // Then JSON-like
-        // CKS text is textual JSON-like format
-        CksText.register(groups);
-        // then binary variants
+        // Then JSON-like binary variants
         // Smile is 1-to-1 binary JSON serialization
         JacksonSmileManual.register(groups);
         JacksonSmileDatabind.register(groups);
