@@ -1,7 +1,0 @@
-flatbuffers
-Checking correctness...
-[done]
-Pre-warmup... flatbuffers
-[done]
-                                   create     ser   deser   total   size  +dfl
-flatbuffers                           103    2864    1550    4414    920   503

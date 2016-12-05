@@ -1,0 +1,29 @@
+def Image = {
+	Uri: String
+	Title: String?
+	Width: Int32
+	Height: Int32
+	Size: Size
+	def Size = < Small, Large >
+}
+
+def Media = {
+	Uri: String
+	Title: String?
+	Width: Int32
+	Height: Int32
+	Format: String
+	Duration: Int64
+	Size: Int64
+	Bitrate: Int32?
+	Persons: List(String)
+	Player: Player
+	Copyright: String?
+
+	def Player = < Java, Flash >
+}
+
+def MediaContent = {
+  Images: List(Image)
+  Media: Media
+}

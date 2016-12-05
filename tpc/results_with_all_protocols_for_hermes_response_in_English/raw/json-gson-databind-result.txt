@@ -1,7 +1,0 @@
-json/gson/databind
-Checking correctness...
-[done]
-Pre-warmup... json/gson/databind
-[done]
-                                   create     ser   deser   total   size  +dfl
-json/gson/databind                    107   12075   10742   22817   1154   485

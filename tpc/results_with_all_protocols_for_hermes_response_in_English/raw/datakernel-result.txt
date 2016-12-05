@@ -1,7 +1,0 @@
-datakernel
-Checking correctness...
-[done]
-Pre-warmup... datakernel
-[done]
-                                   create     ser   deser   total   size  +dfl
-datakernel                            122    1185     977    2161    623   365

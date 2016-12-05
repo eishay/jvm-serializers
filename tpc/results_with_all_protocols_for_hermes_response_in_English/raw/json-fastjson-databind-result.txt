@@ -1,7 +1,0 @@
-json/fastjson/databind
-Checking correctness...
-[done]
-Pre-warmup... json/fastjson/databind
-[done]
-                                   create     ser   deser   total   size  +dfl
-json/fastjson/databind                 95    2551    3159    5710   1154   489

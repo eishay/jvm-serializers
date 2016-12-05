@@ -1,7 +1,0 @@
-json/json-smart/manual-tree
-Checking correctness...
-[done]
-Pre-warmup... json/json-smart/manual-tree
-[done]
-                                   create     ser   deser   total   size  +dfl
-json/json-smart/manual-tree            96   11986    7270   19256   1067   477

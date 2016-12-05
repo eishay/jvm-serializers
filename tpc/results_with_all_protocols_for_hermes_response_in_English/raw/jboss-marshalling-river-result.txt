@@ -1,7 +1,0 @@
-jboss-marshalling-river
-Checking correctness...
-[done]
-Pre-warmup... jboss-marshalling-river
-[done]
-                                   create     ser   deser   total   size  +dfl
-jboss-marshalling-river                93    5951   26896   32847   1201   647

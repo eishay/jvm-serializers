@@ -1,7 +1,0 @@
-json/flexjson/databind
-Checking correctness...
-[done]
-Pre-warmup... json/flexjson/databind
-[done]
-                                   create     ser   deser   total   size  +dfl
-json/flexjson/databind                 94   25573   34620   60194   1236   505

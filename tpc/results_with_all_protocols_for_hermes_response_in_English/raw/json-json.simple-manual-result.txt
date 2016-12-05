@@ -1,7 +1,0 @@
-json/json.simple/manual
-Checking correctness...
-[done]
-Pre-warmup... json/json.simple/manual
-[done]
-                                   create     ser   deser   total   size  +dfl
-json/json.simple/manual                95   12375   16239   28613   1067   477

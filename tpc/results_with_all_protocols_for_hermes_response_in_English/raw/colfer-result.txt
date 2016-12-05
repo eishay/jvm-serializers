@@ -1,7 +1,0 @@
-colfer
-Checking correctness...
-[done]
-Pre-warmup... colfer
-[done]
-                                   create     ser   deser   total   size  +dfl
-colfer                                 95     592     934    1527    651   385

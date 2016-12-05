@@ -1,7 +1,0 @@
-xml/jackson/databind
-Checking correctness...
-[done]
-Pre-warmup... xml/jackson/databind
-[done]
-                                   create     ser   deser   total   size  +dfl
-xml/jackson/databind                   99    6055    9609   15664   1572   529

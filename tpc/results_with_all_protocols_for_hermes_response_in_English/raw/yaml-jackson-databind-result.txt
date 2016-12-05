@@ -1,7 +1,0 @@
-yaml/jackson/databind
-Checking correctness...
-[done]
-Pre-warmup... yaml/jackson/databind
-[done]
-                                   create     ser   deser   total   size  +dfl
-yaml/jackson/databind                  98   39581   70404  109984   1269   495

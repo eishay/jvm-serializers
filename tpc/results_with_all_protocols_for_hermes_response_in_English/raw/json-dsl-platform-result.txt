@@ -1,7 +1,0 @@
-json/dsl-platform
-Checking correctness...
-[done]
-Pre-warmup... json/dsl-platform
-[done]
-                                   create     ser   deser   total   size  +dfl
-json/dsl-platform                      81    1038    1669    2707   1048   472

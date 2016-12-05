@@ -1,7 +1,0 @@
-xml/JAXB/aalto
-Checking correctness...
-[done]
-Pre-warmup... xml/JAXB/aalto
-[done]
-                                   create     ser   deser   total   size  +dfl
-xml/JAXB/aalto                        103    9973   18899   28872   1551   556

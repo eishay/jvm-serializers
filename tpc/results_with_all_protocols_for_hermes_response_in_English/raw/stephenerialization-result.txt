@@ -1,7 +1,0 @@
-stephenerialization
-Checking correctness...
-[done]
-Pre-warmup... stephenerialization
-[done]
-                                   create     ser   deser   total   size  +dfl
-stephenerialization                   109    7867   28622   36489   1572   749

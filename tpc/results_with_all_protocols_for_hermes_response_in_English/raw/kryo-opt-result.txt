@@ -1,7 +1,0 @@
-kryo-opt
-Checking correctness...
-[done]
-Pre-warmup... kryo-opt
-[done]
-                                   create     ser   deser   total   size  +dfl
-kryo-opt                               93    1359    1353    2712    623   372

@@ -1,7 +1,0 @@
-fst-flat
-Checking correctness...
-[done]
-Pre-warmup... fst-flat
-[done]
-                                   create     ser   deser   total   size  +dfl
-fst-flat                               93    1435    2067    3502    751   434

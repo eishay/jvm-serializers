@@ -1,7 +1,0 @@
-smile-col/jackson/databind
-Checking correctness...
-[done]
-Pre-warmup... smile-col/jackson/databind
-[done]
-                                   create     ser   deser   total   size  +dfl
-smile-col/jackson/databind             93    1842    2383    4225    694   402

@@ -1,7 +1,0 @@
-json/jackson+afterburner/databind
-Checking correctness...
-[done]
-Pre-warmup... json/jackson+afterburner/databind
-[done]
-                                   create     ser   deser   total   size  +dfl
-json/jackson+afterburner/databind      95    2693    3664    6356   1218   490

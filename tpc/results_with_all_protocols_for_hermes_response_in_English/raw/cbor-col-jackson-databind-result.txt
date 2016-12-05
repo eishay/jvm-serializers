@@ -1,7 +1,0 @@
-cbor-col/jackson/databind
-Checking correctness...
-[done]
-Pre-warmup... cbor-col/jackson/databind
-[done]
-                                   create     ser   deser   total   size  +dfl
-cbor-col/jackson/databind              98    2031    2666    4697    696   402

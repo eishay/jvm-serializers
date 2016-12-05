@@ -21,10 +21,6 @@ public class Image implements java.io.Serializable
 	public int height;
 	public Size size;
 
-	public int price;
-	public String image;
-	public int itemId;
-
 	public Image() {}
 
 	public Image (String uri, String title, int width, int height, Size size) {
@@ -33,17 +29,6 @@ public class Image implements java.io.Serializable
 		this.uri = uri;
 		this.width = width;
 		this.size = size;
-	}
-
-	public Image (String uri, String title, int width, int height, Size size, int price, String image, int itemId) {
-		this.height = height;
-		this.title = title;
-		this.uri = uri;
-		this.width = width;
-		this.size = size;
-		this.price = price;
-		this.image = image;
-		this.itemId = itemId;
 	}
 
 	@Override

@@ -1,7 +1,0 @@
-xml/JAXB
-Checking correctness...
-[done]
-Pre-warmup... xml/JAXB
-[done]
-                                   create     ser   deser   total   size  +dfl
-xml/JAXB                               96    9622  181656  191277   1563   559

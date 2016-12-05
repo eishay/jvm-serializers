@@ -1,7 +1,0 @@
-json/jackson/manual
-Checking correctness...
-[done]
-Pre-warmup... json/jackson/manual
-[done]
-                                   create     ser   deser   total   size  +dfl
-json/jackson/manual                    95    2212    2367    4579   1031   463
