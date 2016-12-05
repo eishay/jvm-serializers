@@ -1,7 +1,0 @@
-thrift
-Checking correctness...
-[done]
-Pre-warmup... thrift
-[done]
-                                   create     ser   deser   total   size  +dfl
-thrift                                163    3360    2074    5434   1082   738
