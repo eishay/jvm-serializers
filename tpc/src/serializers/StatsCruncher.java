@@ -283,9 +283,9 @@ public class StatsCruncher {
         List<TestCaseResult> all = statsCruncher.generateChartList(stats, "*", "total", 1000, 1000, new SerFeatures(null, null, null));
         for (int i = 0; i < all.size(); i++) {
             TestCaseResult testCaseResult = all.get(i);
-            if ( 
+            if (
                     testCaseResult.getFeatures().getGraph() == SerGraph.FULL_GRAPH     // exclude full serializers
-                 || testCaseResult.getFeatures().getClz() == SerClass.MANUAL_OPT  // exclude manually optimized
+//                 || testCaseResult.getFeatures().getClz() == SerClass.MANUAL_OPT  // exclude manually optimized
                  || ",kryo-flat,fst-flat,protobuf/protostuff,protostuff-runtime,protobuf/protostuff-runtime,"
                             .indexOf(","+testCaseResult.getName()+",") >= 0 // prevent some libs to contribute twice to chart
                ) {
