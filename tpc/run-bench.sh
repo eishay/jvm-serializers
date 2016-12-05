@@ -78,3 +78,4 @@ find ./results/raw/. -print -type f -name "*.txt" -exec tail -1 {} \; | grep -B 
 echo "====================================================================================="
 echo ""
 
+exec ./mk-stats.sh
