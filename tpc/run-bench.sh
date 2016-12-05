@@ -47,12 +47,11 @@ do
     file="$raw_result_dir"/${file//\//-}  # change '/' to '-'
     echo $word > $file
 
-    java $mem -cp $cp $clz -iterations=$iter -warmup-time=$warmupTime -testRunMillis=$testTime -include=$word data/media.hermes.json >> $file || code=$?
+    java $mem -cp $cp $clz -iterations=$iter -warmup-time=$warmupTime -testRunMillis=$testTime -include=$word data/media.1.json >> $file || code=$?
     if [[ $code -ne 0 ]]; then
         echo "ERROR: exit code $code"
         exit $code
     fi
-    java $mem -cp $cp $clz -iterations=$iter -warmup-time=$warmupTime -testRunMillis=$testTime -include=$word data/media.1.cks >> $file
 done
 
 # find files with no numbers => errors

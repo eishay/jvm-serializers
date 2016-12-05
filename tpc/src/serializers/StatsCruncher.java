@@ -285,7 +285,7 @@ public class StatsCruncher {
             TestCaseResult testCaseResult = all.get(i);
             if (
                     testCaseResult.getFeatures().getGraph() == SerGraph.FULL_GRAPH     // exclude full serializers
-//                 || testCaseResult.getFeatures().getClz() == SerClass.MANUAL_OPT  // exclude manually optimized
+                 || testCaseResult.getFeatures().getClz() == SerClass.MANUAL_OPT  // exclude manually optimized
                  || ",kryo-flat,fst-flat,protobuf/protostuff,protostuff-runtime,protobuf/protostuff-runtime,"
                             .indexOf(","+testCaseResult.getName()+",") >= 0 // prevent some libs to contribute twice to chart
                ) {
