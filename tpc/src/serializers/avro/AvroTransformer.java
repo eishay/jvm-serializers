@@ -1,16 +1,13 @@
 package serializers.avro;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.avro.generic.GenericArray;
-import org.apache.avro.generic.GenericData;
-
+import data.media.MediaTransformer;
 import serializers.avro.media.Image;
 import serializers.avro.media.Media;
 import serializers.avro.media.MediaContent;
-import data.media.MediaTransformer;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Transformer is needed when we use Avro-generated Java classes, to convert
@@ -29,70 +26,33 @@ public class AvroTransformer extends MediaTransformer<MediaContent>
 
     public MediaContent forward(data.media.MediaContent mc)
     {
-        GenericArray<Image> images = new GenericData.Array<Image>(mc.images.size(), Avro.Media.sImages);
-        for (data.media.Image image : mc.images) {
-            images.add(forwardImage(image));
-        }
-
-        MediaContent amc = new MediaContent();
-        amc.setMedia(forwardMedia(mc.media));
-        amc.setImages(images);
-        return amc;
+        return new MediaContent(forwardImages(mc.images), forwardMedia(mc.media));
     }
+
+    private List<Image> forwardImages(List<data.media.Image> images) {
+        List<Image> result = new ArrayList<Image>(images.size());
+        for (int i = 0; i < images.size(); i++) {
+            result.add(i, forwardImage(images.get(i)));
+        }
+        return result;
+    }
+
 
     private Media forwardMedia(data.media.Media media)
     {
-            Media m = new Media();
+        Integer bitRate = media.hasBitrate ? media.bitrate : null;
+        List<CharSequence> persons = new ArrayList<>(media.persons.size());
+        for (int i = 0; i < media.persons.size(); i++) {
+            persons.add(i, media.persons.get(i));
+        }
+        return new Media(media.uri, media.title, media.width, media.height, media.format, media.duration,
+                media.size, bitRate, persons, AvroGeneric.forwardPlayer(media.player), media.copyright);
 
-            m.setUri(media.uri);
-            m.setTitle(media.title);
-            m.setWidth(media.width);
-            m.setHeight(media.height);
-            m.setFormat(media.format);
-            m.setDuration(media.duration);
-            m.setSize(media.size);
-            if (media.hasBitrate) {
-                m.setBitrate(media.bitrate);
-            }
-
-            GenericArray<CharSequence> persons = new GenericData.Array<CharSequence>(media.persons.size(), Avro.Media.sPersons);
-            for (String s : media.persons) {
-              persons.add(s);
-            }
-            m.setPersons(persons);
-            m.setPlayer(forwardPlayer(media.player));
-            m.setCopyright(media.copyright);
-
-            return m;
-    }
-
-    public int forwardPlayer(data.media.Media.Player p)
-    {
-            switch (p) {
-                    case JAVA: return 1;
-                    case FLASH: return 2;
-                    default: throw new AssertionError("invalid case: " + p);
-            }
     }
 
     private Image forwardImage(data.media.Image image)
     {
-            Image i = new Image();
-            i.setUri(image.uri);
-            i.setTitle(image.title);
-            i.setWidth(image.width);
-            i.setHeight(image.height);
-            i.setSize(forwardSize(image.size));
-            return i;
-    }
-
-    public int forwardSize(data.media.Image.Size s)
-    {
-            switch (s) {
-                    case SMALL: return 1;
-                    case LARGE: return 2;
-                    default: throw new AssertionError("invalid case: " + s);
-            }
+            return new Image(image.uri, image.title, image.width, image.height, AvroGeneric.forwardSize(image.size));
     }
 
     // ----------------------------------------------------------
@@ -100,7 +60,7 @@ public class AvroTransformer extends MediaTransformer<MediaContent>
 
     public data.media.MediaContent reverse(MediaContent mc)
     {
-            List<data.media.Image> images = new ArrayList<data.media.Image>((int) mc.getImages().size());
+            List<data.media.Image> images = new ArrayList<data.media.Image>(mc.getImages().size());
 
             for (Image image : mc.getImages()) {
                 images.add(reverseImage(image));
