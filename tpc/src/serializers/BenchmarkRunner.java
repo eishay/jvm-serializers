@@ -29,16 +29,15 @@ public class BenchmarkRunner extends MediaItemBenchmark
         new BenchmarkRunner().runBenchmark(args);
     }
 
+    @Override
     protected void addTests(TestGroups groups)
     {
         // Binary Formats; language-specific ones
-		JaxbAalto.register(groups);
-        Jaxb.register(groups);
         JavaBuiltIn.register(groups);
         JavaManual.register(groups);
         Stephenerialization.register(groups);
 
-        Scala.register(groups);
+//        Scala.register(groups);
 // hessian, kryo and wobly are Java object serializations
         Hessian.register(groups);
         Kryo.register(groups);
@@ -63,6 +62,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         //    usage, and basically seems to optimize for benchmarks instead of reflecting real usage.
         MsgPack.register(groups);
         JacksonCBORDatabind.register(groups);
+        JacksonProtobufDatabind.register(groups);
 
         // JSON
         JacksonJsonManual.register(groups);
@@ -104,13 +104,11 @@ public class BenchmarkRunner extends MediaItemBenchmark
         //    here too -- commenting out, to let David fix it
 //        ProtostuffSmile.register(groups);
         // BSON is JSON-like format with extended datatypes
-        JacksonBsonDatabind.register(groups);
         MongoDB.register(groups);
 
-        // YAML (using Jackson module built on SnakeYAML)
-        JacksonYAMLDatabind.register(groups);
-
         // XML-based formats; first textual XML
+        JaxbAalto.register(groups);
+        Jaxb.register(groups);
         XmlStax.register(groups, true, true, false); // woodstox/aalto/-
         XmlXStream.register(groups);
         JacksonXmlDatabind.register(groups);

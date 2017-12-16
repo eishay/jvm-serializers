@@ -1,0 +1,42 @@
+// See README.txt for information and build instructions.
+
+package serializers.protobuf.media;
+
+option java_package = "serializers.protobuf.media";
+option java_outer_classname = "MediaContentHolder";
+option optimize_for = SPEED;
+
+message Image {
+  required string uri = 1;      //url to the thumbnail
+  optional string title = 2;    //used in the html ALT
+  required int32 width = 3;     // of the image
+  required int32 height = 4;    // of the image
+  enum Size {
+    SMALL = 0;
+    LARGE = 1;
+  }
+  required Size size = 5;       // of the image (in relative terms, provided by cnbc for example)
+}
+
+message Media {
+  required string uri = 1;      //uri to the video, may not be an actual URL
+  optional string title = 2;    //used in the html ALT
+  required int32 width = 3;     // of the video
+  required int32 height = 4;    // of the video
+  required string format = 5;   //avi, jpg, youtube, cnbc, audio/mpeg formats ...
+  required int64 duration = 6;  //time in miliseconds
+  required int64 size = 7;      //file size
+  optional int32 bitrate = 8;   //video 
+  repeated string persons = 9;   //names of persons featured in the video
+  enum Player {
+    JAVA = 0;
+    FLASH = 1;
+  }
+  required Player player = 10;   //in case of a player specific media
+  optional string copyright = 11;//media copyright
+}
+
+message MediaContent {
+  repeated Image images = 1;
+  required Media media = 2;
+}

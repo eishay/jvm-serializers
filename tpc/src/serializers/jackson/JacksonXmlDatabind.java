@@ -18,7 +18,7 @@ public class JacksonXmlDatabind
 {
     public static void register(TestGroups groups)
     {
-        XmlMapper mapper = new XmlMapper(new XmlFactory(null,
+        XmlMapper mapper = new XmlMapper(new XmlFactory(
                 new InputFactoryImpl(), new OutputFactoryImpl()));
         groups.media.add(JavaBuiltIn.mediaTransformer,
                 new StdJacksonDataBind<MediaContent>("xml/jackson/databind",

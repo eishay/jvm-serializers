@@ -14,7 +14,7 @@ public final class TestGroups
         media.addExtensionHandler(
             "json",
             JavaBuiltIn.mediaTransformer,
-            new JacksonJsonManual("", new JsonFactory().enable(JsonParser.Feature.ALLOW_COMMENTS)));
+            new JacksonJsonManual("", (JsonFactory) new JsonFactory().enable(JsonParser.Feature.ALLOW_COMMENTS)));
     }
 
 	public final Map<String,TestGroup<?>> groupMap = new HashMap<String,TestGroup<?>>();
