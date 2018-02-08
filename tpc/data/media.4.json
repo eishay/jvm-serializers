@@ -1,0 +1,33 @@
+// Short strings.
+{
+	"media": {
+		"uri": "g",
+		"title": "J",
+		"width": 640,
+		"height": 480,
+		"format": "v",
+		"duration": 18000000,   // half hour in milliseconds
+		"size": 58982400,       // bitrate * duration in seconds / 8 bits per byte
+		"bitrate": 262144,      // 256k
+		"persons": ["B", "S"],
+		"player": "JAVA",
+		"copyright": null
+	},
+
+	"images": [
+		{
+			"uri": "h",
+			"title": "J",
+			"width": 1024,
+			"height": 768,
+			"size": "LARGE"
+		},
+		{
+			"uri": "h",
+			"title": "J",
+			"width": 320,
+			"height": 240,
+			"size": "SMALL"
+		}
+	]
+}

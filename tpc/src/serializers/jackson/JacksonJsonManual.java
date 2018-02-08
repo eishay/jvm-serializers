@@ -207,7 +207,7 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
         }
         
         // and fallback if order was changed
-        for (; parser.getCurrentToken() == JsonToken.FIELD_NAME; parser.nextToken()) {
+        for (; parser.currentToken() == JsonToken.FIELD_NAME; parser.nextToken()) {
             String field = parser.getCurrentName();
             Integer I = fullFieldToIndex.get(field);
             if (I != null) {
@@ -286,7 +286,7 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
         
         // and if something reorder or missing, general loop:
         
-        for (; parser.getCurrentToken() == JsonToken.FIELD_NAME; parser.nextToken()) {
+        for (; parser.currentToken() == JsonToken.FIELD_NAME; parser.nextToken()) {
             String field = parser.getCurrentName();
             Integer I = fullFieldToIndex.get(field);
             if (I != null) {
@@ -400,7 +400,7 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
             }
         }
         
-        for (; parser.getCurrentToken() == JsonToken.FIELD_NAME; parser.nextToken()) {
+        for (; parser.currentToken() == JsonToken.FIELD_NAME; parser.nextToken()) {
             String field = parser.getCurrentName();
             // read value token (or START_ARRAY)
             parser.nextToken();
@@ -441,14 +441,14 @@ public class JacksonJsonManual extends BaseJacksonDriver<MediaContent>
     
     private final void verifyCurrent(JsonParser parser, JsonToken expToken) throws IOException
     {   
-        if (parser.getCurrentToken() != expToken) {
+        if (parser.currentToken() != expToken) {
             reportIllegal(parser, expToken);
         }
     }
 
     private void reportIllegal(JsonParser parser, JsonToken expToken) throws IOException
     {
-        JsonToken curr = parser.getCurrentToken();
+        JsonToken curr = parser.currentToken();
         String msg = "Expected token "+expToken+"; got "+curr;
         if (curr == JsonToken.FIELD_NAME) {
             msg += " (current field name '"+parser.getCurrentName()+"')";

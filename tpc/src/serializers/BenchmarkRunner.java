@@ -2,8 +2,10 @@ package serializers;
 
 import serializers.avro.AvroGeneric;
 import serializers.avro.AvroSpecific;
-import serializers.cks.CksBinary;
-import serializers.cks.CksText;
+import serializers.capnproto.CapNProto;
+import serializers.colfer.Colfer;
+import serializers.datakernel.DataKernelSerializer;
+import serializers.flatbuffers.FlatBuffers;
 import serializers.jackson.*;
 import serializers.javaxjson.*;
 import serializers.json.*;
@@ -27,16 +29,15 @@ public class BenchmarkRunner extends MediaItemBenchmark
         new BenchmarkRunner().runBenchmark(args);
     }
 
+    @Override
     protected void addTests(TestGroups groups)
     {
         // Binary Formats; language-specific ones
-		JaxbAalto.register(groups);
-        Jaxb.register(groups);
         JavaBuiltIn.register(groups);
         JavaManual.register(groups);
         Stephenerialization.register(groups);
 
-        Scala.register(groups);
+//        Scala.register(groups);
 // hessian, kryo and wobly are Java object serializations
         Hessian.register(groups);
         Kryo.register(groups);
@@ -56,13 +57,13 @@ public class BenchmarkRunner extends MediaItemBenchmark
         Thrift.register(groups);
         AvroSpecific.register(groups);
         AvroGeneric.register(groups);
-        CksBinary.register(groups);
         // 01-Oct-2014: MsgPack implementation uses questionable technique as well: instead of using Maps (name/value),
         //    uses arrays, presumes ordering (and implied schema thereby) -- not inter-operable with most non-Java MsgPack
         //    usage, and basically seems to optimize for benchmarks instead of reflecting real usage.
         MsgPack.register(groups);
         JacksonCBORDatabind.register(groups);
-        
+        JacksonProtobufDatabind.register(groups);
+
         // JSON
         JacksonJsonManual.register(groups);
         JacksonJsonDatabind.register(groups);
@@ -83,6 +84,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
 
         JsonLibJsonDatabind.register(groups);
         FastJSONDatabind.register(groups);
+        FastJSONArrayDatabind.register(groups);
         JsonSimpleWithContentHandler.register(groups);
 //        JsonSimpleManualTree.register(groups);
         JsonSmartManualTree.register(groups);
@@ -93,10 +95,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
 // 06-May-2013, tatu: Too slow (100x above fastest)
 // JsonPathDeserializerOnly.register(groups);
 
-        // Then JSON-like
-        // CKS text is textual JSON-like format
-        CksText.register(groups);
-        // then binary variants
+        // Then JSON-like binary variants
         // Smile is 1-to-1 binary JSON serialization
         JacksonSmileManual.register(groups);
         JacksonSmileDatabind.register(groups);
@@ -105,13 +104,11 @@ public class BenchmarkRunner extends MediaItemBenchmark
         //    here too -- commenting out, to let David fix it
 //        ProtostuffSmile.register(groups);
         // BSON is JSON-like format with extended datatypes
-        JacksonBsonDatabind.register(groups);
         MongoDB.register(groups);
 
-        // YAML (using Jackson module built on SnakeYAML)
-        JacksonYAMLDatabind.register(groups);
-
         // XML-based formats; first textual XML
+        JaxbAalto.register(groups);
+        Jaxb.register(groups);
         XmlStax.register(groups, true, true, false); // woodstox/aalto/-
         XmlXStream.register(groups);
         JacksonXmlDatabind.register(groups);
@@ -125,10 +122,14 @@ public class BenchmarkRunner extends MediaItemBenchmark
 
         // Jackson databind with Afterburner; add-on module that uses bytecode gen for speed
         JacksonWithAfterburner.registerAll(groups);
-        
+
         // Jackson's column-oriented variants for formats that usually use key/value notation
         JacksonWithColumnsDatabind.registerAll(groups);
 
-	DSLPlatform.register(groups);
+        DSLPlatform.register(groups);
+        FlatBuffers.register(groups);
+        CapNProto.register(groups);
+        Colfer.register(groups);
+        DataKernelSerializer.register(groups);
     }
 }

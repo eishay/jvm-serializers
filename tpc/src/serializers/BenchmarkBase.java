@@ -20,14 +20,6 @@ abstract class BenchmarkBase
      */
     final static long DEFAULT_WARMUP_MSECS = 10000;
 
-    // These tests aren't included by default.  Use the "-hidden" flag to enable them.
-    protected static final HashSet<String> HIDDEN = new HashSet<String>();
-    static {
-            // CKS is not included because it's not really publicly released.
-            HIDDEN.add("cks");
-            HIDDEN.add("cks-text");
-    }
-
     protected static final String ERROR_DIVIDER = "-------------------------------------------------------------------";
 
     // ------------------------------------------------------------------------------------
@@ -39,7 +31,7 @@ abstract class BenchmarkBase
             totalTime("total (nanos)"), timeSerialize("ser (nanos)"), 
             timeDeserialize("deser (nanos)"),
             length("size (bytes)"), lengthDeflate("size+dfl (bytes)"),
-				timeCreate("create (nanos)")
+            timeCreate("create (nanos)")
             ;
 
             public final String displayName;
@@ -60,7 +52,6 @@ abstract class BenchmarkBase
         public Boolean filterIsInclude;
         public Set<String> filterStrings;
         public boolean printChart = false;
-        public boolean enableHidden = false;
 
         // Information in input data file:
         public String dataFileName;
@@ -68,7 +59,6 @@ abstract class BenchmarkBase
         public String dataExtra; // from second part
         public String dataExtension; // from last part of file name
     }
-    
 
     // ------------------------------------------------------------------------------------
     // Actual benchmark flow
@@ -217,13 +207,6 @@ abstract class BenchmarkBase
                 }
                 params.printChart = true;
             }
-            else if (option.equals("hidden")) {
-                if (value != null) {
-                    System.err.println("The \"hidden\" option does not take a value: \"" + arg + "\"");
-                    System.exit(1);
-                }
-                params.enableHidden = true;
-            }
             else if (option.equals("help")) {
                 if (value != null) {
                     System.err.println("The \"help\" option does not take a value: \"" + arg + "\"");
@@ -244,7 +227,6 @@ abstract class BenchmarkBase
                 System.out.println("  -chart                (generate a Google Chart URL for the results)");
                 System.out.println("  -include=impl1,impl2,impl3,...");
                 System.out.println("  -exclude=impl1,impl2,impl3,...");
-                System.out.println("  -hidden               (enable \"hidden\" serializers)");
                 System.out.println("  -help");
                 System.out.println();
                 System.out.println("Example: run  -chart -include=protobuf,thrift  data/media.1.cks");
@@ -267,12 +249,12 @@ abstract class BenchmarkBase
         // And then let's verify input data file bit more...
         File dataFile = new File(params.dataFileName);
         if (!dataFile.exists()) {
-            System.out.println("Couldn't find data file \"" + dataFile.getPath() + "\"");
+            System.err.println("Couldn't find data file \"" + dataFile.getPath() + "\"");
             System.exit(1);
         }
         String[] parts = dataFile.getName().split("\\.");
         if (parts.length < 3) {
-            System.out.println("Data file \"" + dataFile.getName() + "\" should be of the form \"<type>.<name>.<extension>\"");
+            System.err.println("Data file \"" + dataFile.getName() + "\" should be of the form \"<type>.<name>.<extension>\"");
             System.exit(1);
         }
         params.dataType = parts[0];
@@ -325,8 +307,8 @@ abstract class BenchmarkBase
     {
         TestGroup<?> group = groups.groupMap.get(params.dataType);
         if (group == null) {
-            System.out.println("Data file \"" + params.dataFileName + "\" can't be loaded.");
-            System.out.println("Don't know about data type \"" + params.dataType + "\"");
+            System.err.println("Data file \"" + params.dataFileName + "\" can't be loaded.");
+            System.err.println("Don't know about data type \"" + params.dataType + "\"");
             System.exit(1);
         }
         return group;
@@ -337,10 +319,10 @@ abstract class BenchmarkBase
 
     protected Object loadTestData(TestGroup<?> bootstrapGroup, Params params)
     {
-        TestGroup.Entry<?,Object> loader = bootstrapGroup.extensionMap.get(params.dataExtension);
+        TestGroup.Entry<?,Object> loader = bootstrapGroup.extensionHandlers.get(params.dataExtension);
         if (loader == null) {
-            System.out.println("Data file \"" + params.dataFileName + "\" can't be loaded.");
-            System.out.println("No deserializer registered for data type \"" + params.dataType
+            System.err.println("Data file \"" + params.dataFileName + "\" can't be loaded.");
+            System.err.println("No deserializer registered for data type \"" + params.dataType
                     + "\" and file extension \"." + params.dataExtension + "\"");
             System.exit(1);
         }
@@ -373,22 +355,7 @@ abstract class BenchmarkBase
         TestGroup<Object> group_ = (TestGroup<Object>) bootstrapGroup;
         Set<String> matched = new HashSet<String>();
 
-        Iterable<TestGroup.Entry<Object,Object>> available;
-
-        if (params.enableHidden) {
-            // Use all of them.
-            available = group_.entries;
-        } else {
-            // Remove the hidden ones.
-            ArrayList<TestGroup.Entry<Object,Object>> unhidden = new ArrayList<TestGroup.Entry<Object,Object>>();
-            for (TestGroup.Entry<?,Object> entry_ : bootstrapGroup.entries) {
-                @SuppressWarnings("unchecked")
-                TestGroup.Entry<Object,Object> entry = (TestGroup.Entry<Object,Object>) entry_;
-                String name = entry.serializer.getName();
-                if (!HIDDEN.contains(name)) unhidden.add(entry);
-            }
-            available = unhidden;
-        }
+        Iterable<TestGroup.Entry<Object,Object>> available = group_.entries.values();
 
         if (params.filterStrings == null) {
             return available;
@@ -417,15 +384,6 @@ abstract class BenchmarkBase
         unmatched.removeAll(matched);
         for (String s : unmatched) {
             System.err.println("Warning: there is no implementation name matching the pattern \"" + s + "\"");
-            if (!params.enableHidden) {
-                for (String hiddenName : HIDDEN) {
-                    if (match(s, hiddenName)) {
-                        System.err.println("(The \"" + hiddenName + "\", serializer is hidden by default.");
-                        System.err.println(" Use the \"-hidden\" option to enable hidden serializers)");
-                        break;
-                    }
-                }
-            }
         }
         return matchingEntries;
     }
@@ -596,7 +554,7 @@ abstract class BenchmarkBase
             array = serializer.serialize(specialInput);
         }
         catch (Exception ex) {
-      	  ex.printStackTrace();
+            ex.printStackTrace();
             System.out.println("ERROR: \"" + name + "\" crashed during serialization.");
             errors.println(ERROR_DIVIDER);
             errors.println("\"" + name + "\" crashed during serialization.");

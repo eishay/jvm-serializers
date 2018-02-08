@@ -22,7 +22,7 @@ class AsArrayIntrospector extends JacksonAnnotationIntrospector
             if (ac.getAnnotated().isEnum()) {
                 return null;
             }
-            return new JsonFormat.Value("", JsonFormat.Shape.ARRAY, "", "");
+            return JsonFormat.Value.forShape(JsonFormat.Shape.ARRAY);
         }
         return null;
     }

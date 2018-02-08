@@ -1,0 +1,42 @@
+// A test value where everything is different from media.1.json.
+// Also uses Unicode to make sure nobody's cheating and only handling ASCII.
+// This is mainly used to check if the serializers are "honest".
+{
+	"media": {
+		"uri": "http://javaone.com/keynote.ogg\u1234",
+		"title": null,
+		"width": 641,
+		"height": 481,
+		"format": "video/theora\u1234",
+		"duration": 18000001,
+		"size": 58982401,
+		"bitrate": null,
+		"persons": ["Bill Gates, Jr.\u1234", "Steven Jobs\u1234"],
+		"player": "FLASH",
+		"copyright": "2009, Scooby Doo\uD834\uDD1E"  // last two characters are a UTF-16 surrogate pair
+	},
+
+	"images": [
+		{
+			"uri": "http://javaone.com/keynote_huge.jpg\u1234",
+			"title": "Javaone Keynote\u1234",
+			"width": 32000,
+			"height": 24000,
+			"size": "LARGE"
+		},
+		{
+			"uri": "http://javaone.com/keynote_large.jpg\u1234",
+			"title": null,
+			"width": 1024,
+			"height": 768,
+			"size": "LARGE"
+		},
+		{
+			"uri": "http://javaone.com/keynote_small.jpg\u1234",
+			"title": null,
+			"width": 320,
+			"height": 240,
+			"size": "SMALL"
+		}
+	]
+}
