@@ -31,8 +31,6 @@ activemqprotobuf_generator ?= java -cp "$(activemqprotobuf_cp)" org.apache.activ
 avro_cp ?= $(call mkcp,$(wildcard lib/extra/avro-tools-*.jar lib/avro-*.jar lib/jackson-*.jar lib/jopt-simple-*.jar lib/velocity-*.jar lib/slf4j-*.jar))
 avro_generator ?= java -cp "$(avro_cp)" org.apache.avro.tool.Main
 protostuff_compiler ?= $(wildcard lib/protostuff-compiler-*.jar)
-dslplatform_compiler = java -jar lib/dsl-clc.jar
-dslplatform_dir = build/dslplatform
 flatbuffers_generator ?= flatc
 capnproto_generator ?= capnp
 colfer_generator ?= colf
@@ -40,7 +38,6 @@ colfer_generator ?= colf
 # Default to 'no' because we might not have these tools available.
 Generate_protobuf ?= n
 Generate_thrift ?= n
-Generate_dslplatform ?= n # Requires Mono 3.10+
 Generate_flatbuffers ?= n
 Generate_capnproto ?= n
 Generate_colfer ?= n
@@ -69,7 +66,7 @@ endif
 
 ##########################################################################
 
-SchemaExtensions := .thrift .proto .avro .dsl .fbs .capnp .colf
+SchemaExtensions := .thrift .proto .avro .fbs .capnp .colf
 Schemas = $(patsubst schema/%,%,$(wildcard $(SchemaExtensions:%=schema/*%)))
 
 ##########################################################################
@@ -99,8 +96,6 @@ else ifneq ($(findstring .thrift,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_thrift)
 else ifneq ($(findstring .avro,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_avro)
-else ifneq ($(findstring .dsl,$(2)),)
-	NeedToGenerate_$(1) := $(Generate_dslplatform)
 else ifneq ($(findstring .fbs,$(2)),)
 	NeedToGenerate_$(1) := $(Generate_flatbuffers)
 else ifneq ($(findstring .capnp,$(2)),)
@@ -133,19 +128,6 @@ else ifneq ($(findstring .thrift,$(2)),)
 	$(p1)$(thrift_generator) -o build/gen/$(2) --gen java:hashcode,beans $$<
 else ifneq ($(findstring .avro,$(2)),)
 	$(p1)$(avro_generator) compile schema $$< build/gen/$(2)
-else ifneq ($(findstring .dsl,$(2)),)
-	$(p1)mkdir -p $(dslplatform_dir)/tmp
-	$(p1)$(dslplatform_compiler) \
-		temp=$(dslplatform_dir)/tmp \
-		dsl=schema \
-		manual-json \
-		namespace=serializers.dslplatform \
-		java_pojo \
-		no-prompt \
-		force \
-		source-only \
-		download
-	$(p1)cp -r $(dslplatform_dir)/tmp/JAVA_POJO/serializers build/gen/$(2)
 else ifneq ($(findstring .fbs,$(2)),)
 	$(p1)$(flatbuffers_generator) -o build/gen/$(2) --java $$<
 else ifneq ($(findstring .capnp,$(2)),)

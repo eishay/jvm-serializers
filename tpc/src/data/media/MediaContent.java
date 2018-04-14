@@ -1,5 +1,8 @@
 package data.media;
 
+import com.dslplatform.json.CompiledJson;
+import com.dslplatform.json.JsonAttribute;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -8,6 +11,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@CompiledJson(formats = {CompiledJson.Format.ARRAY, CompiledJson.Format.OBJECT})
 public class MediaContent implements java.io.Serializable
 {
 	public Media media;
@@ -59,10 +63,12 @@ public class MediaContent implements java.io.Serializable
         this.images = images;
     }
 
+    @JsonAttribute(index = 1)
     public Media getMedia() {
         return media;
     }
 
+    @JsonAttribute(index = 2)
     public List<Image> getImages() {
         return images;
     }

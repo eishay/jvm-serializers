@@ -17,7 +17,6 @@ import serializers.protostuff.Protostuff;
 import serializers.protostuff.ProtostuffJson;
 import serializers.wobly.Wobly;
 import serializers.xml.*;
-import serializers.dslplatform.DSLPlatform;
 
 /**
  * Full test of various codecs, using a single <code>MediaItem</code>
@@ -128,7 +127,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         // Jackson's column-oriented variants for formats that usually use key/value notation
         JacksonWithColumnsDatabind.registerAll(groups);
 
-        DSLPlatform.register(groups);
+        serializers.dsljson.DSLJson.register(groups);
         FlatBuffers.register(groups);
         CapNProto.register(groups);
         Colfer.register(groups);
