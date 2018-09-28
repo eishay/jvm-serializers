@@ -16,6 +16,9 @@ import serializers.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -72,12 +75,54 @@ public class AvroGeneric
                   encoder.flush();
                   return out.toByteArray();
 		}
+
+		@Override
+		public void serializeItems(GenericRecord[] items, OutputStream out) throws Exception {
+			encoder = ENCODER_FACTORY.binaryEncoder(out, encoder);
+			for (GenericRecord item : items) {
+				WRITER.write(item, encoder);
+			}
+			encoder.flush();
+		}
+
+		@Override
+		public GenericRecord[] deserializeItems(InputStream in, int numberOfItems) throws Exception {
+			decoder = DECODER_FACTORY.binaryDecoder(in, decoder);
+			@SuppressWarnings("unchecked")
+			GenericRecord[] result = (GenericRecord[]) Array.newInstance(GenericRecord.class, numberOfItems);
+			GenericRecord item = null;
+			for (int i = 0; i < numberOfItems; ++i) {
+				result[i] = READER.read(item, decoder);
+			}
+			return result;
+		}
 	}
 
 	// ------------------------------------------------------------
 	// MediaTransformer
 
 	public static final Schema sMediaContent = serializers.avro.media.MediaContent.SCHEMA$;
+
+	static int forwardPlayer(Media.Player p)
+	{
+		switch (p) {
+			case JAVA: return 1;
+			case FLASH: return 2;
+			default:
+				throw new AssertionError("invalid case: " + p);
+		}
+	}
+
+	static int forwardSize(Image.Size s)
+	{
+		switch (s) {
+			case SMALL: return 1;
+			case LARGE: return 2;
+			default:
+				throw new AssertionError("invalid case: " + s);
+		}
+	}
+
 
 	public static final Transformer<MediaContent,GenericRecord> MediaTransformer = new MediaTransformer<GenericRecord>()
 	{
@@ -142,16 +187,6 @@ public class AvroGeneric
 			return m;
 		}
 
-		public int forwardPlayer(Media.Player p)
-		{
-			switch (p) {
-				case JAVA: return 1;
-				case FLASH: return 2;
-				default:
-					throw new AssertionError("invalid case: " + p);
-			}
-		}
-
 		private GenericRecord forwardImage(Image image)
 		{
 			GenericRecord i = new GenericData.Record(Avro.Media.sImage);
@@ -163,16 +198,6 @@ public class AvroGeneric
                           i.put("title",  image.title);
 			}
 			return i;
-		}
-
-		public int forwardSize(Image.Size s)
-		{
-			switch (s) {
-				case SMALL: return 1;
-				case LARGE: return 2;
-				default:
-					throw new AssertionError("invalid case: " + s);
-			}
 		}
 
 		// ----------------------------------------------------------

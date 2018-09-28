@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 
 import serializers.avro.AvroSpecific;
+import serializers.avro.AvroGeneric;
 import serializers.jackson.*;
 import serializers.kryo.Kryo;
 import serializers.protobuf.Protobuf;
@@ -41,6 +42,7 @@ public class MediaStreamBenchmark extends BenchmarkBase
         // Binary formats, generic: protobuf, thrift, avro, CKS, msgpack
         Protobuf.register(groups);
         Thrift.register(groups);
+        AvroGeneric.register(groups);
         AvroSpecific.register(groups);
  
         // JSON
