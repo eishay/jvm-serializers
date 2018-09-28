@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.dyuproject.protostuff.GraphIOUtil;
-import com.dyuproject.protostuff.Input;
-import com.dyuproject.protostuff.LinkedBuffer;
-import com.dyuproject.protostuff.Output;
-import com.dyuproject.protostuff.ProtobufIOUtil;
-import com.dyuproject.protostuff.ProtostuffIOUtil;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.runtime.RuntimeSchema;
+import io.protostuff.GraphIOUtil;
+import io.protostuff.Input;
+import io.protostuff.LinkedBuffer;
+import io.protostuff.Output;
+import io.protostuff.ProtobufIOUtil;
+import io.protostuff.ProtostuffIOUtil;
+import io.protostuff.Schema;
+import io.protostuff.runtime.RuntimeSchema;
 
 import data.media.MediaTransformer;
 
