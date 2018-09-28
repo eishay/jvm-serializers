@@ -1,11 +1,15 @@
 package data.media;
 
+import com.dslplatform.json.CompiledJson;
+import com.dslplatform.json.JsonAttribute;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import static data.ReprUtil.repr;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@CompiledJson(formats = {CompiledJson.Format.ARRAY, CompiledJson.Format.OBJECT})
 public class Image implements java.io.Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -91,22 +95,27 @@ public class Image implements java.io.Serializable
         this.size = size;
     }
 
+    @JsonAttribute(index = 1)
     public String getUri() {
         return uri;
     }
 
+    @JsonAttribute(index = 2)
     public String getTitle() {
         return title;
     }
 
+    @JsonAttribute(index = 3)
     public int getWidth() {
         return width;
     }
 
+    @JsonAttribute(index = 4)
     public int getHeight() {
         return height;
     }
 
+    @JsonAttribute(index = 5)
     public Size getSize() {
         return size;
     }

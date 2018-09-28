@@ -1,5 +1,8 @@
 package data.media;
 
+import com.dslplatform.json.CompiledJson;
+import com.dslplatform.json.JsonAttribute;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -10,6 +13,7 @@ import static data.ReprUtil.repr;
 @SuppressWarnings("serial")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "JaxbMedia")
+@CompiledJson(formats = {CompiledJson.Format.ARRAY, CompiledJson.Format.OBJECT})
 public class Media implements java.io.Serializable {
 	public enum Player {
 		JAVA, FLASH;
@@ -36,10 +40,11 @@ public class Media implements java.io.Serializable {
 	@jsonij.json.annotation.JSONIgnore // required by JSONiJ
 	@org.codehaus.jackson.annotate.JsonIgnore // Jackson 1.x
         @com.fasterxml.jackson.annotation.JsonIgnore // Jackson 2.x
+	@JsonAttribute(ignore = true)
 	public boolean hasBitrate;
 
 	public List<String> persons;
-	
+
 	public Player player;
 
 	public String copyright;    // Can be unset.
@@ -168,46 +173,57 @@ public class Media implements java.io.Serializable {
         this.copyright = copyright;
     }
 
+    @JsonAttribute(index = 1)
     public String getUri() {
         return uri;
     }
 
+    @JsonAttribute(index = 2)
     public String getTitle() {
         return title;
     }
 
+    @JsonAttribute(index = 3)
     public int getWidth() {
         return width;
     }
 
+    @JsonAttribute(index = 4)
     public int getHeight() {
         return height;
     }
 
+    @JsonAttribute(index = 5)
     public String getFormat() {
         return format;
     }
 
+    @JsonAttribute(index = 6)
     public long getDuration() {
         return duration;
     }
 
+    @JsonAttribute(index = 7)
     public long getSize() {
         return size;
     }
 
+    @JsonAttribute(index = 8)
     public int getBitrate() {
         return bitrate;
     }
 
+    @JsonAttribute(index = 9)
     public List<String> getPersons() {
         return persons;
     }
 
+    @JsonAttribute(index = 10)
     public Player getPlayer() {
         return player;
     }
 
+    @JsonAttribute(index = 11)
     public String getCopyright() {
         return copyright;
     }
