@@ -8,6 +8,7 @@ import java.util.List;
 import org.bson.BSONDecoder;
 import org.bson.BSONEncoder;
 import org.bson.BSONObject;
+import org.bson.BasicBSONDecoder;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 
@@ -98,7 +99,7 @@ public class MongoDB
 		{
 			MediaContent r = new MediaContent();
 			
-			BSONDecoder dec = new BSONDecoder();
+			BSONDecoder dec = new BasicBSONDecoder();
 			BSONObject o = dec.readObject(array);
 			for (String name : o.keySet())
 			{
