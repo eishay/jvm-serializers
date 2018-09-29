@@ -10,14 +10,15 @@ import com.google.flatbuffers.*;
 @SuppressWarnings("unused")
 public final class MediaContent extends Table {
   public static MediaContent getRootAsMediaContent(ByteBuffer _bb) { return getRootAsMediaContent(_bb, new MediaContent()); }
-  public static MediaContent getRootAsMediaContent(ByteBuffer _bb, MediaContent obj) { _bb.order(ByteOrder.LITTLE_ENDIAN); return (obj.__init(_bb.getInt(_bb.position()) + _bb.position(), _bb)); }
-  public MediaContent __init(int _i, ByteBuffer _bb) { bb_pos = _i; bb = _bb; return this; }
+  public static MediaContent getRootAsMediaContent(ByteBuffer _bb, MediaContent obj) { _bb.order(ByteOrder.LITTLE_ENDIAN); return (obj.__assign(_bb.getInt(_bb.position()) + _bb.position(), _bb)); }
+  public void __init(int _i, ByteBuffer _bb) { bb_pos = _i; bb = _bb; }
+  public MediaContent __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
   public Image images(int j) { return images(new Image(), j); }
-  public Image images(Image obj, int j) { int o = __offset(4); return o != 0 ? obj.__init(__indirect(__vector(o) + j * 4), bb) : null; }
+  public Image images(Image obj, int j) { int o = __offset(4); return o != 0 ? obj.__assign(__indirect(__vector(o) + j * 4), bb) : null; }
   public int imagesLength() { int o = __offset(4); return o != 0 ? __vector_len(o) : 0; }
   public Media media() { return media(new Media()); }
-  public Media media(Media obj) { int o = __offset(6); return o != 0 ? obj.__init(__indirect(o + bb_pos), bb) : null; }
+  public Media media(Media obj) { int o = __offset(6); return o != 0 ? obj.__assign(__indirect(o + bb_pos), bb) : null; }
 
   public static int createMediaContent(FlatBufferBuilder builder,
       int imagesOffset,
@@ -40,5 +41,6 @@ public final class MediaContent extends Table {
     return o;
   }
   public static void finishMediaContentBuffer(FlatBufferBuilder builder, int offset) { builder.finish(offset); }
+  public static void finishSizePrefixedMediaContentBuffer(FlatBufferBuilder builder, int offset) { builder.finishSizePrefixed(offset); }
 }
 
