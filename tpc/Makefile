@@ -125,7 +125,7 @@ else ifneq ($(findstring .protostuff.proto,$(2)),)
 else ifneq ($(findstring .proto,$(2)),)
 	$(p1)$(protobuf_generator) --java_out=build/gen/$(2) $$<
 else ifneq ($(findstring .thrift,$(2)),)
-	$(p1)$(thrift_generator) -o build/gen/$(2) --gen java:hashcode,beans $$<
+	$(p1)$(thrift_generator) -o build/gen/$(2) --gen java $$<
 else ifneq ($(findstring .avro,$(2)),)
 	$(p1)$(avro_generator) compile schema $$< build/gen/$(2)
 else ifneq ($(findstring .fbs,$(2)),)
