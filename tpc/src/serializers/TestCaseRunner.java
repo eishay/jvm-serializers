@@ -58,7 +58,7 @@ public final class TestCaseRunner<J>
         System.err.println("1/2:"+measurementVals[count/2]);
         System.err.println("3/4:"+measurementVals[count/4*3]);
         System.err.println("max:"+measurementVals[count-1]);
-        System.err.println("average:"+ avg +"ms deviation:"+(avg-measurementVals[count/2])+"ms");
+        System.err.println("average:"+ avg +"ns deviation:"+(avg-measurementVals[count/2])+"ns, total iteration:" + count * iterations);
         System.err.println("-----------------------------------------------------------------------------");
         return avg;
     }
