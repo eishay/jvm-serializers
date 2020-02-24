@@ -2,9 +2,9 @@ package serializers.protostuff;
 
 import static serializers.protostuff.Protostuff.MEDIA_CONTENT_SCHEMA;
 
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.SmileIOUtil;
-import com.dyuproject.protostuff.runtime.RuntimeSchema;
+import io.protostuff.Schema;
+import io.protostuff.SmileIOUtil;
+import io.protostuff.runtime.RuntimeSchema;
 
 import serializers.*;
 import serializers.protostuff.media.MediaContent;

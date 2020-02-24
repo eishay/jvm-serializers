@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 
 import serializers.avro.AvroSpecific;
-import serializers.cks.CksText;
+import serializers.avro.AvroGeneric;
 import serializers.jackson.*;
 import serializers.kryo.Kryo;
 import serializers.protobuf.Protobuf;
@@ -42,6 +42,7 @@ public class MediaStreamBenchmark extends BenchmarkBase
         // Binary formats, generic: protobuf, thrift, avro, CKS, msgpack
         Protobuf.register(groups);
         Thrift.register(groups);
+        AvroGeneric.register(groups);
         AvroSpecific.register(groups);
  
         // JSON
@@ -55,9 +56,6 @@ public class MediaStreamBenchmark extends BenchmarkBase
         JacksonSmileDatabind.register(groups, true, true);
         JacksonWithAfterburner.registerSmile(groups, true, true);
 
-        // this one needed to read in test data, too:
-        CksText.register(groups);
-        
         // XML (only fastest codecs)
         XmlStax.register(groups, false, true, true); // skip woodstox, include aalto and fast-infoset
     }

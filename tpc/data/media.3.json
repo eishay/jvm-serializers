@@ -1,0 +1,33 @@
+// Long strings.
+{
+	"media": {
+		"uri": "http://javaone.com/keynote.mpglkajldfjlskajdflkjslfjdslfjldjfljsdfljsdlfjsljfldjfldjals;djfasldjf;alskdjf;aslkdjf;asdjf;laskdjflsjdalfjd;alksjdfl;jsa;lfdja;slkdjf;alsjfd;lajsfl;dj",
+		"title": "Javaone Keynotelkajldfjlskajdflkjslfjdslfjldjfljsdfljsdlfjsljfldjfldjals;djfasldjf;alskdjf;aslkdjf;asdjf;laskdjflsjdalfjd;alksjdfl;jsa;lfdja;slkdjf;alsjfd;lajsfl;dj",
+		"width": 640,
+		"height": 480,
+		"format": "video/mpg4lkajldfjlskajdflkjslfjdslfjldjfljsdfljsdlfjsljfldjfldjals;djfasldjf;alskdjf;aslkdjf;asdjf;laskdjflsjdalfjd;alksjdfl;jsa;lfdja;slkdjf;alsjfd;lajsfl;dj",
+		"duration": 18000000,   // half hour in milliseconds
+		"size": 58982400,       // bitrate * duration in seconds / 8 bits per byte
+		"bitrate": 262144,      // 256k
+		"persons": ["Bill Gateslkajldfjlskajdflkjslfjdslfjldjfljsdfljsdlfjsljfldjfldjals;djfasldjf;alskdjf;aslkdjf;asdjf;laskdjflsjdalfjd;alksjdfl;jsa;lfdja;slkdjf;alsjfd;lajsfl;dj", "Steve Jobslkajldfjlskajdflkjslfjdslfjldjfljsdfljsdlfjsljfldjfldjals;djfasldjf;alskdjf;aslkdjf;asdjf;laskdjflsjdalfjd;alksjdfl;jsa;lfdja;slkdjf;alsjfd;lajsfl;dj"],
+		"player": "JAVA",
+		"copyright": null
+	},
+
+	"images": [
+		{
+			"uri": "http://javaone.com/keynote_large.jpglkajldfjlskajdflkjslfjdslfjldjfljsdfljsdlfjsljfldjfldjals;djfasldjf;alskdjf;aslkdjf;asdjf;laskdjflsjdalfjd;alksjdfl;jsa;lfdja;slkdjf;alsjfd;lajsfl;dj",
+			"title": "Javaone Keynotelkajldfjlskajdflkjslfjdslfjldjfljsdfljsdlfjsljfldjfldjals;djfasldjf;alskdjf;aslkdjf;asdjf;laskdjflsjdalfjd;alksjdfl;jsa;lfdja;slkdjf;alsjfd;lajsfl;dj",
+			"width": 1024,
+			"height": 768,
+			"size": "LARGE"
+		},
+		{
+			"uri": "http://javaone.com/keynote_small.jpglkajldfjlskajdflkjslfjdslfjldjfljsdfljsdlfjsljfldjfldjals;djfasldjf;alskdjf;aslkdjf;asdjf;laskdjflsjdalfjd;alksjdfl;jsa;lfdja;slkdjf;alsjfd;lajsfl;dj",
+			"title": "Javaone Keynotelkajldfjlskajdflkjslfjdslfjldjfljsdfljsdlfjsljfldjfldjals;djfasldjf;alskdjf;aslkdjf;asdjf;laskdjflsjdalfjd;alksjdfl;jsa;lfdja;slkdjf;alsjfd;lajsfl;dj",
+			"width": 320,
+			"height": 240,
+			"size": "SMALL"
+		}
+	]
+}

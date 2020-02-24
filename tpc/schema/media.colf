@@ -1,0 +1,31 @@
+package media
+
+type mediaContent struct {
+	images []image
+	media  media
+}
+
+type image struct {
+	uri    text
+	title  text
+	width  int32
+	height int32
+	small  bool
+	large  bool
+}
+
+type media struct {
+	uri        text
+	title      text
+	width      int32
+	height     int32
+	format     text
+	duration   int64
+	size       int64
+	persons    []text
+	copyright  text
+	bitrate    int32
+	hasBitrate bool
+	flashPlay  bool
+	javaPlay   bool
+}

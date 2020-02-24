@@ -8,32 +8,51 @@
 	<classpathentry kind="src" path="build/gen/media.activemq.proto"/>
 	<classpathentry kind="src" path="build/gen/media.avro"/>
 	<classpathentry kind="src" path="build/gen/media.protostuff.proto"/>
-	<classpathentry kind="lib" path="lib/aalto-gpl-0.9.5.jar"/>
+	<classpathentry kind="lib" path="lib/aalto-xml-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/activemq-protobuf-1.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/activemq-util-6.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/argo-2.10.jar"/>
+	<classpathentry kind="lib" path="lib/asm-4.0.jar"/>
 	<classpathentry kind="lib" path="lib/asm-commons-3.2.jar"/>
-	<classpathentry kind="lib" path="lib/avro-1.7.2.jar"/>
-	<classpathentry kind="lib" path="lib/avro-compiler-1.7.2.jar"/>
-	<classpathentry kind="lib" path="lib/avro-tools-1.7.2.jar"/>
-	<classpathentry kind="lib" path="lib/cakoose-util.jar"/>
-	<classpathentry kind="lib" path="lib/cks-core.jar"/>
-	<classpathentry kind="lib" path="lib/cks-text-reader.jar"/>
-	<classpathentry kind="lib" path="lib/cks-text-writer.jar"/>
-	<classpathentry kind="lib" path="lib/cks-tool.jar"/>
+	<classpathentry kind="lib" path="lib/avro-1.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/avro-compiler-1.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/bson4jackson-2.7.0.jar"/>
+	<classpathentry kind="lib" path="lib/capnproto-runtime-0.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-beanutils-1.8.3.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.3.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-httpclient-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/dsl-clc.jar"/>
+	<classpathentry kind="lib" path="lib/dsl-json-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/exi-exificient-0.9.1.jar"/>
 	<classpathentry kind="lib" path="lib/ezmorph-1.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/FastInfoset-1.2.6.jar"/>
+	<classpathentry kind="lib" path="lib/fastjson-1.2.11.jar"/>
+	<classpathentry kind="lib" path="lib/flatbuffers-1.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/flexjson-2.1.jar"/>
-	<classpathentry kind="lib" path="lib/gson-2.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/fst-1.42.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.8.0.jar"/>
 	<classpathentry kind="lib" path="lib/hessian-4.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-all-1.9.6.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-annotations-2.9.0.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-2.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-databind-2.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-avro-2.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-cbor-2.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-protobuf-2.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-smile-2.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-xml-2.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-yaml-2.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-jr-objects-2.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-module-afterburner-2.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-module-jaxb-annotations-2.9.2.jar"/>
 	<classpathentry kind="lib" path="lib/javassist-3.15.0-GA.jar"/>
+	<classpathentry kind="lib" path="lib/javax.json-1.0-b06.jar"/>
 	<classpathentry kind="lib" path="lib/javolution-5.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-marshalling-osgi-1.3.15.GA.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-serialization-1.0.3.GA.jar"/>
 	<classpathentry kind="lib" path="lib/jopt-simple-3.2.jar"/>
 	<classpathentry kind="lib" path="lib/json_simple-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/json-0.19-tpc.jar"/>
@@ -42,10 +61,15 @@
 	<classpathentry kind="lib" path="lib/json.org-ref-2011.06.21.jar"/>
 	<classpathentry kind="lib" path="lib/jsonij-0.2.7.jar"/>
 	<classpathentry kind="lib" path="lib/jsonpath-2011.06.23.jar"/>
-	<classpathentry kind="lib" path="lib/libthrift.jar"/>
+	<classpathentry kind="lib" path="lib/libthrift-0.9.3.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="lib/minlog-none-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/mongo-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/msgpack-0.6.9.jar"/>
+	<classpathentry kind="lib" path="lib/objenesis-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/obser-0.9.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/paranamer-1.5.jar"/>
-	<classpathentry kind="lib" path="lib/protobuf-java-2.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/protobuf-java-3.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/protostuff-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/protostuff-collectionschema-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/protostuff-compiler-1.0.1-jarjar.jar"/>
@@ -53,48 +77,26 @@
 	<classpathentry kind="lib" path="lib/protostuff-json-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/protostuff-runtime-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/protostuff-xml-1.0.1.jar"/>
-	<classpathentry kind="lib" path="lib/sbinary-0.3.1-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/scala-library-2.8.0-rc1.jar"/>
+	<classpathentry kind="lib" path="lib/reflectasm-1.05.jar"/>
+	<classpathentry kind="lib" path="lib/sbinary_2.11-0.4.3-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/scala-library_2.11.2.jar"/>
+	<classpathentry kind="lib" path="lib/scala-reflect_2.11.2.jar"/>
+	<classpathentry kind="lib" path="lib/scala-xml_2.11-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/serializer-1.1.2.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.5.10.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-nop-1.5.10.jar"/>
-	<classpathentry kind="lib" path="lib/snakeyaml-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/snakeyaml-1.18.jar"/>
 	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/stax2-api-3.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/stephenerialization-3.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/svenson-1.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/trove-1.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/velocity-1.7-dep.jar"/>
 	<classpathentry kind="lib" path="lib/velocity-1.7.jar"/>
 	<classpathentry kind="lib" path="lib/wobly-core-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/woodstox-core-asl-4.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/woodstox-core-5.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-1.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/minlog-none-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-all-1.9.6.jar"/>
-	<classpathentry kind="lib" path="lib/asm-4.0.jar"/>
-	<classpathentry kind="lib" path="lib/objenesis-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/fastjson-1.1.19.jar"/>
-	<classpathentry kind="lib" path="lib/reflectasm-1.05.jar"/>
-	<classpathentry kind="lib" path="lib/jboss-serialization-1.0.3.GA.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.8.jar"/>
-	<classpathentry kind="lib" path="lib/trove-1.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/jboss-marshalling-osgi-1.3.15.GA.jar"/>
-	<classpathentry kind="lib" path="lib/obser-0.9.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/javax.json-1.0-b06.jar"/>
-	<classpathentry kind="lib" path="lib/exi-exificient-0.9.1.jar"/>
-	<classpathentry kind="lib" path="lib/bson4jackson-2.3.0.jar"/>
-	<classpathentry kind="lib" path="lib/fst-1.42.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-annotations-2.4.0.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-core-2.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-databind-2.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-dataformat-avro-2.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-dataformat-cbor-2.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-dataformat-smile-2.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-dataformat-xml-2.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-dataformat-yaml-2.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-jr-objects-2.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-module-afterburner-2.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-module-jaxb-annotations-2.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/kryo-2.23.0.jar"/>
-	<classpathentry kind="lib" path="lib/msgpack-0.6.9.jar"/>
-	<classpathentry kind="lib" path="lib/stephenerialization-3.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/kryo-4.0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

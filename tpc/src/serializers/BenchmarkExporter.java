@@ -44,12 +44,12 @@ public class BenchmarkExporter extends BenchmarkRunner {
     {
         TestGroups groups = new TestGroups();
         addTests(groups);
-        Set<String> media = groups.groupMap.get("media").entryNames;
+        Set<String> media = groups.groupMap.get("media").entries.keySet();
         for (Iterator<String> iterator = media.iterator(); iterator.hasNext(); ) {
             String next = iterator.next().trim();
             if ( ! next.equals("cks") && ! next.equals("cks-text") ) // used to read data, exclude
                 alltests += next+ (iterator.hasNext() ? "," : "");
-            SerFeatures features = groups.groupMap.get("media").getSerMap().get(next).getFeatures();
+            SerFeatures features = groups.groupMap.get("media").entries.get(next).serializer.getFeatures();
 //            System.out.println("serializer:"+next+" miscFeatures: "+miscFeatures);
             featureMap.put(next, features);
         }
