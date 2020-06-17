@@ -1,9 +1,17 @@
 package serializers.avro;
 
+import java.util.EnumSet;
 import org.apache.avro.Schema;
+import serializers.MiscFeatures;
+
 
 public class Avro
 {
+	public static final EnumSet<MiscFeatures> miscFeatures = EnumSet.of(
+			MiscFeatures.VERSIONING_BACKWARD_COMPATIBLE,
+			MiscFeatures.VERSIONING_FORWARD_COMPATIBLE,
+			MiscFeatures.VERSIONING_MISMATCH_DETECTION);
+
 	// -------------------------------------------------------------
 	// Media
 

@@ -446,15 +446,15 @@ abstract class BenchmarkBase
                                 doGc();
                                 // ruediger: turns out startup/init time is pretty equal for all tests. 
                                 // No need to spend too much time here
-                                double timeCreate = runner.runWithTimeMeasurement(params.testRunMillis / 3, testCreate, params.iterations); 
+                                double timeCreate = runner.runWithTimeMeasurement(params.testRunMillis / 3, testCreate, params.iterations, "Create");
 
                                 warmTest(runner, params.warmupTime, testSerialize);
 
                                 doGc();
-                                double timeSerialize = runner.runWithTimeMeasurement(params.testRunMillis, testSerialize, params.iterations);
+                                double timeSerialize = runner.runWithTimeMeasurement(params.testRunMillis, testSerialize, params.iterations, "Serialize");
                             
                                 doGc();
-                                double timeDeserialize = runner.runWithTimeMeasurement(params.testRunMillis, testDeserialize, params.iterations);
+                                double timeDeserialize = runner.runWithTimeMeasurement(params.testRunMillis, testDeserialize, params.iterations, "Deserialize");
 
                                 double totalTime = timeSerialize + timeDeserialize;
 
