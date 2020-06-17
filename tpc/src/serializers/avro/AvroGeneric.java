@@ -1,5 +1,7 @@
 package serializers.avro;
 
+import com.linkedin.avro.fastserde.FastGenericDatumReader;
+import com.linkedin.avro.fastserde.FastGenericDatumWriter;
 import data.media.*;
 
 import org.apache.avro.Schema;
@@ -7,6 +9,8 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.BinaryEncoder;
@@ -31,10 +35,41 @@ public class AvroGeneric
                 new SerFeatures(
                         SerFormat.BIN_CROSSLANG,
                         SerGraph.FLAT_TREE,
-                        SerClass.MANUAL_OPT,
-                        ""
+                        SerClass.CLASSES_KNOWN,
+                        "",
+												Avro.miscFeatures
                 )
         );
+
+		groups.media.add(MediaTransformer, new GenericSerializerWithObjectReuse(Avro.Media.sMediaContent),
+								new SerFeatures(
+												SerFormat.BIN_CROSSLANG,
+												SerGraph.FLAT_TREE,
+												SerClass.MANUAL_OPT,
+												"",
+												Avro.miscFeatures
+								)
+				);
+
+		groups.media.add(MediaTransformer, new FastGenericSerializer(Avro.Media.sMediaContent),
+								new SerFeatures(
+												SerFormat.BIN_CROSSLANG,
+												SerGraph.FLAT_TREE,
+												SerClass.CLASSES_KNOWN,
+												"",
+												Avro.miscFeatures
+								)
+				);
+
+		groups.media.add(MediaTransformer, new FastGenericSerializerWithObjectReuse(Avro.Media.sMediaContent),
+								new SerFeatures(
+												SerFormat.BIN_CROSSLANG,
+												SerGraph.FLAT_TREE,
+												SerClass.MANUAL_OPT,
+												"",
+												Avro.miscFeatures
+								)
+				);
 	}
 
 	// ------------------------------------------------------------
@@ -49,16 +84,21 @@ public class AvroGeneric
 	{
 		public String getName() { return "avro-generic"; }
 
-		private final GenericDatumWriter<GenericRecord> WRITER;
-		private final GenericDatumReader<GenericRecord> READER;
+		protected final DatumWriter<GenericRecord> WRITER;
+		protected final DatumReader<GenericRecord> READER;
 
-		private BinaryEncoder encoder;
-		private BinaryDecoder decoder;
+		protected BinaryEncoder encoder;
+		protected BinaryDecoder decoder;
+
+		protected GenericSerializer(DatumWriter<GenericRecord> writer, DatumReader<GenericRecord> reader)
+		{
+			this.WRITER = writer;
+			this.READER = reader;
+		}
 
 		public GenericSerializer(Schema schema)
 		{
-			WRITER = new GenericDatumWriter<GenericRecord>(schema);
-			READER = new GenericDatumReader<GenericRecord>(schema);
+			this(new GenericDatumWriter<>(schema), new GenericDatumReader<>(schema));
 		}
 
 		public GenericRecord deserialize(byte[] array) throws Exception
@@ -77,7 +117,8 @@ public class AvroGeneric
 		}
 
 		@Override
-		public void serializeItems(GenericRecord[] items, OutputStream out) throws Exception {
+		public void serializeItems(GenericRecord[] items, OutputStream out) throws Exception
+		{
 			encoder = ENCODER_FACTORY.binaryEncoder(out, encoder);
 			for (GenericRecord item : items) {
 				WRITER.write(item, encoder);
@@ -86,7 +127,8 @@ public class AvroGeneric
 		}
 
 		@Override
-		public GenericRecord[] deserializeItems(InputStream in, int numberOfItems) throws Exception {
+		public GenericRecord[] deserializeItems(InputStream in, int numberOfItems) throws Exception
+		{
 			decoder = DECODER_FACTORY.binaryDecoder(in, decoder);
 			@SuppressWarnings("unchecked")
 			GenericRecord[] result = (GenericRecord[]) Array.newInstance(GenericRecord.class, numberOfItems);
@@ -95,6 +137,59 @@ public class AvroGeneric
 				result[i] = READER.read(item, decoder);
 			}
 			return result;
+		}
+	}
+
+	public static class GenericSerializerWithObjectReuse extends GenericSerializer
+	{
+		public String getName() { return "avro-generic-manual"; }
+
+		private final ByteArrayOutputStream out = outputStream(null);
+		private final GenericRecord reuse;
+
+		public GenericSerializerWithObjectReuse(Schema schema) {
+			this(new GenericDatumWriter<>(schema), new GenericDatumReader<>(schema), schema);
+		}
+
+		public <T> GenericSerializerWithObjectReuse(DatumWriter<GenericRecord> writer, DatumReader<GenericRecord> reader, Schema schema) {
+			super(writer, reader);
+			this.reuse = new GenericData.Record(schema);
+		}
+
+		@Override
+		public GenericRecord deserialize(byte[] array) throws Exception
+		{
+			decoder = DECODER_FACTORY.binaryDecoder(array, decoder);
+			return READER.read(reuse, decoder);
+		}
+
+		@Override
+		public byte[] serialize(GenericRecord data) throws IOException
+		{
+			out.reset();
+			encoder = ENCODER_FACTORY.binaryEncoder(out, encoder);
+			WRITER.write(data, encoder);
+			encoder.flush();
+			return out.toByteArray();
+		}
+	}
+
+	public static class FastGenericSerializer extends AvroGeneric.GenericSerializer
+	{
+		public String getName() { return "avro-fastserde-generic"; }
+
+		public FastGenericSerializer(Schema schema)
+		{
+			super(new FastGenericDatumWriter<>(schema), new FastGenericDatumReader<>(schema));
+		}
+	}
+
+	public static class FastGenericSerializerWithObjectReuse extends AvroGeneric.GenericSerializerWithObjectReuse
+	{
+		public String getName() { return "avro-fastserde-generic-manual"; }
+
+		public FastGenericSerializerWithObjectReuse(Schema schema) {
+			super(new FastGenericDatumWriter<>(schema), new FastGenericDatumReader<>(schema), schema);
 		}
 	}
 

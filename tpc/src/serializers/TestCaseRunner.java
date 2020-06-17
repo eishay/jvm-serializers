@@ -1,10 +1,12 @@
 package serializers;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 public final class TestCaseRunner<J>
 {
-    static double measurementVals[] = new double[1000*1000]; 
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#");
+    static double measurementVals[] = new double[1000*1000];
     // because full gc is triggered by main loop, this should move to oldgen 
     private final Transformer<J,Object> transformer;
     private final Serializer<Object> serializer;
@@ -22,7 +24,7 @@ public final class TestCaseRunner<J>
             return tc.run(transformer, serializer, value, iterations);
     }
 
-    public double runWithTimeMeasurement(int timeMillis, TestCase tc, int iterations) throws Exception
+    public double runWithTimeMeasurement(int timeMillis, TestCase tc, int iterations, String testCaseName) throws Exception
     {
         // ruediger: 
         // 1. made this also time based (like warmup). 
@@ -52,14 +54,28 @@ public final class TestCaseRunner<J>
         double avg = sumTime / count;
         Arrays.sort(measurementVals,0,count);
         System.err.println("-----------------------------------------------------------------------------");
-        System.err.println(serializer.getName());
-        System.err.println("min:" + measurementVals[0]);
-        System.err.println("1/4:"+measurementVals[count/4]);
-        System.err.println("1/2:"+measurementVals[count/2]);
-        System.err.println("3/4:"+measurementVals[count/4*3]);
-        System.err.println("max:"+measurementVals[count-1]);
-        System.err.println("average:"+ avg +"ns deviation:"+(avg-measurementVals[count/2])+"ns, total iteration:" + count * iterations);
+        System.err.println(testCaseName + ": " + serializer.getName());
+        System.err.println("min: " + printLatency(measurementVals[0]));
+        System.err.println(printNthPercentileLatency(count, 25));
+        System.err.println(printNthPercentileLatency(count, 50));
+        System.err.println(printNthPercentileLatency(count, 75));
+        System.err.println(printNthPercentileLatency(count, 99));
+        System.err.println("max: " + printLatency(measurementVals[count - 1]));
+        System.err.println("avg: " + printLatency(avg));
+        System.err.println("deviation: " + printLatency(avg-measurementVals[count/2]));
+        System.err.println("total iterations: " + count * iterations);
         System.err.println("-----------------------------------------------------------------------------");
         return avg;
     }
+
+    private String printNthPercentileLatency(int count, int percentile)
+    {
+        return  "p" + percentile + ": " + printLatency(measurementVals[count / 100 * percentile]);
+    }
+
+    private String printLatency(double latency)
+    {
+        return DECIMAL_FORMAT.format(latency) + " ns";
+    }
+
 }

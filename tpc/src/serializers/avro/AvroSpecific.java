@@ -1,11 +1,18 @@
 package serializers.avro;
 
+import com.linkedin.avro.fastserde.FastSpecificDatumReader;
+import com.linkedin.avro.fastserde.FastSpecificDatumWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.BinaryEncoder;
@@ -20,36 +27,69 @@ public class AvroSpecific
 {
     public static void register(TestGroups groups)
     {
-        groups.media.add(new AvroTransformer(), new GenericSerializer<MediaContent>(MediaContent.class),
+        groups.media.add(new AvroTransformer(), new SpecificSerializer<>(MediaContent.class),
                 new SerFeatures(
                         SerFormat.BIN_CROSSLANG,
-                        SerGraph.UNKNOWN,
-                        SerClass.MANUAL_OPT,
-                        ""
+                        SerGraph.FLAT_TREE,
+                        SerClass.CLASSES_KNOWN,
+                        "",
+												Avro.miscFeatures
                 )
         );
-    }
+				groups.media.add(new AvroTransformer(), new SpecificSerializerWithObjectReuse<>(MediaContent.class),
+								new SerFeatures(
+												SerFormat.BIN_CROSSLANG,
+												SerGraph.FLAT_TREE,
+												SerClass.MANUAL_OPT,
+												"",
+												Avro.miscFeatures
+								)
+				);
+				groups.media.add(new AvroTransformer(), new FastSpecificSerializer<>(MediaContent.class, Avro.Media.sMediaContent),
+								new SerFeatures(
+												SerFormat.BIN_CROSSLANG,
+												SerGraph.FLAT_TREE,
+												SerClass.CLASSES_KNOWN,
+												"",
+												Avro.miscFeatures
+								)
+				);
+				groups.media.add(new AvroTransformer(), new FastGenericSerializerWithObjectReuse<>(MediaContent.class, Avro.Media.sMediaContent),
+								new SerFeatures(
+												SerFormat.BIN_CROSSLANG,
+												SerGraph.FLAT_TREE,
+												SerClass.MANUAL_OPT,
+												"",
+												Avro.miscFeatures
+								)
+				);
+		}
 
     private static final DecoderFactory DECODER_FACTORY = DecoderFactory.get();
     private static final EncoderFactory ENCODER_FACTORY = EncoderFactory.get();
 
-	public static final class GenericSerializer<T> extends Serializer<T>
+	public static class SpecificSerializer<T> extends Serializer<T>
 	{
 		public String getName() { return "avro-specific"; }
 
-		private final SpecificDatumReader<T> READER;
-		private final SpecificDatumWriter<T> WRITER;
+		protected final DatumReader<T> READER;
+		protected final DatumWriter<T> WRITER;
 
-                private BinaryEncoder encoder;
-                private BinaryDecoder decoder;
+		protected BinaryEncoder encoder;
+		protected BinaryDecoder decoder;
 
-                private final Class<T> clazz;
-                
-		public GenericSerializer(Class<T> clazz)
+		protected final Class<T> clazz;
+
+		public SpecificSerializer(Class<T> clazz, DatumReader<T> reader, DatumWriter<T> writer)
 		{
 		    this.clazz = clazz;
-		    this.READER = new SpecificDatumReader<T>(clazz);
-		    this.WRITER = new SpecificDatumWriter<T>(clazz);
+				this.READER = reader;
+				this.WRITER = writer;
+		}
+
+		public SpecificSerializer(Class<T> clazz)
+		{
+				this(clazz, new SpecificDatumReader<T>(clazz), new SpecificDatumWriter<T>(clazz));
 		}
 
 		public T deserialize(byte[] array) throws Exception {
@@ -87,5 +127,58 @@ public class AvroSpecific
 	            }
 	            return result;
 	        }
+	}
+
+	public static class SpecificSerializerWithObjectReuse<T> extends AvroSpecific.SpecificSerializer<T>
+	{
+		public String getName() { return "avro-specific-manual"; }
+
+		private final ByteArrayOutputStream out = outputStream(null);
+		private final T reuse;
+
+		public SpecificSerializerWithObjectReuse(Class<T> clazz) {
+			super(clazz);
+			try {
+				this.reuse = clazz.newInstance();
+			} catch (InstantiationException|IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public T deserialize(byte[] array) throws Exception
+		{
+			decoder = DECODER_FACTORY.binaryDecoder(array, decoder);
+			return READER.read(reuse, decoder);
+		}
+
+		@Override
+		public byte[] serialize(T data) throws IOException
+		{
+			out.reset();
+			encoder = ENCODER_FACTORY.binaryEncoder(out, encoder);
+			WRITER.write(data, encoder);
+			encoder.flush();
+			return out.toByteArray();
+		}
+	}
+
+	public static final class FastSpecificSerializer<T> extends AvroSpecific.SpecificSerializer<T>
+	{
+		public String getName() { return "avro-fastserde-specific"; }
+
+		public FastSpecificSerializer(Class<T> clazz, Schema schema)
+		{
+			super(clazz, new FastSpecificDatumReader<>(schema), new FastSpecificDatumWriter<>(schema));
+		}
+	}
+
+	public static class FastGenericSerializerWithObjectReuse<T> extends AvroSpecific.SpecificSerializer<T>
+	{
+		public String getName() { return "avro-fastserde-specific-manual"; }
+
+		public FastGenericSerializerWithObjectReuse(Class<T> clazz, Schema schema) {
+			super(clazz, new FastSpecificDatumReader<>(schema), new FastSpecificDatumWriter<>(schema));
+		}
 	}
 }
