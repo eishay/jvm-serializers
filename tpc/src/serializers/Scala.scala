@@ -1,7 +1,8 @@
 package serializers
 
 import _root_.java.util.ArrayList
-import _root_.scala.collection.JavaConversions._
+import _root_.scala.collection.JavaConverters._
+
 
 import _root_.sbinary.Operations
 import _root_.sbinary.{Format, Input, Output, DefaultProtocol}
@@ -24,7 +25,7 @@ object Scala
 		import sdata.media._
 
 		def forward(mc: data.media.MediaContent) : MediaContent =
-			new MediaContent(forwardMedia(mc.media), List.concat(mc.images.map(forwardImage)))
+			new MediaContent(forwardMedia(mc.media), List.concat(mc.images.asScala.toList.map(forwardImage)))
 
 		def forwardMedia(m: data.media.Media) : Media =
 			new Media(
@@ -36,7 +37,7 @@ object Scala
 				m.duration,
 				m.size,
 				if (m.hasBitrate) Some(m.bitrate) else None,
-				List.concat(m.persons),
+				List.concat(m.persons.asScala),
 				forwardPlayer(m.player),
 				nullToOption(m.copyright))
 
@@ -59,7 +60,7 @@ object Scala
 		}
 
 		def reverse(mc: MediaContent) : data.media.MediaContent =
-			new data.media.MediaContent(reverseMedia(mc.media), new ArrayList(mc.images.map(reverseImage)))
+			new data.media.MediaContent(reverseMedia(mc.media), mc.images.map(reverseImage).asJava)
 
 		def reverseMedia(m: Media) : data.media.Media =
 			new data.media.Media(
@@ -72,7 +73,7 @@ object Scala
 				m.size,
 				m.bitrate.getOrElse(0),
 				m.bitrate.isDefined,
-				new ArrayList(m.persons),
+				m.persons.asJava,
 				reversePlayer(m.player),
 				m.copyright.getOrElse(null))
 

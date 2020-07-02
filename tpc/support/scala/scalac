@@ -1,6 +1,6 @@
 #! /bin/bash
 
-sv="2.11.2"
+sv="2.13.3"
 
 # Locate the script file.  Cross symlinks if necessary.
 loc="$0"
@@ -23,7 +23,7 @@ esac
 
 cp=""
 sep=""
-for jar in "$base_dir"/scala-compiler-$sv.jar "$base_dir/../../lib"/scala-{library,reflect}_$sv.jar; do
+for jar in "$base_dir"/scala-compiler-$sv.jar "$base_dir/../../lib"/scala-{library,reflect}-$sv.jar; do
 	cp="$cp$sep$jar"
 	sep="$path_sep"
 done
