@@ -187,29 +187,29 @@ public class Kryo {
 
 		public void optimize (com.esotericsoftware.kryo.Kryo kryo) {
 			FieldSerializer imageSerializer = (FieldSerializer)kryo.getSerializer(Image.class);
-			imageSerializer.setFieldsCanBeNull(false);
+			imageSerializer.setAcceptsNull(false);
 			imageSerializer.getField("title").setCanBeNull(true);
 
 			FieldSerializer mediaContentSerializer = (FieldSerializer)kryo.getSerializer(MediaContent.class);
-			mediaContentSerializer.setFieldsCanBeNull(false);
+			mediaContentSerializer.setAcceptsNull(false);
 
 			CachedField imagesField = mediaContentSerializer.getField("images");
 			CollectionSerializer imagesSerializer = new CollectionSerializer();
 			imagesSerializer.setElementsCanBeNull(false);
-			imagesField.setClass(ArrayList.class, imagesSerializer);
+			imagesField.setValueClass(ArrayList.class, imagesSerializer);
 
 			FieldSerializer mediaSerializer = new FieldSerializer(kryo, Media.class);
-			mediaSerializer.setFieldsCanBeNull(false);
+			mediaSerializer.setAcceptsNull(false);
 			mediaSerializer.getField("title").setCanBeNull(true);
 			mediaSerializer.getField("copyright").setCanBeNull(true);
 
 			CachedField mediaField = mediaContentSerializer.getField("media");
-			mediaField.setClass(Media.class, mediaSerializer);
+			mediaField.setValueClass(Media.class, mediaSerializer);
 
 			CachedField personsField = mediaSerializer.getField("persons");
 			CollectionSerializer personsSerializer = new CollectionSerializer();
 			personsSerializer.setElementsCanBeNull(false);
-			personsField.setClass(ArrayList.class, personsSerializer);
+			personsField.setValueClass(ArrayList.class, personsSerializer);
 		}
 
 		public void registerCustom (com.esotericsoftware.kryo.Kryo kryo) {
@@ -233,7 +233,7 @@ public class Kryo {
 			imagesSerializer.setElementClass(Image.class, imageSerializer);
 		}
 
-		public MediaContent read (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<MediaContent> type) {
+		public MediaContent read (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<? extends MediaContent> type) {
 			return new MediaContent(kryo.readObject(input, Media.class), kryo.readObject(input, ArrayList.class, imagesSerializer));
 		}
 
@@ -254,7 +254,7 @@ public class Kryo {
 			personsSerializer.setElementClass(String.class, kryo.getSerializer(String.class));
 		}
 
-		public Media read (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<Media> type) {
+		public Media read (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<? extends Media> type) {
 			return new Media(input.readString(), input.readString(), input.readInt(true), input.readInt(true), input.readString(),
 				input.readLong(true), input.readLong(true), input.readInt(true), input.readBoolean(),
 				kryo.readObject(input, ArrayList.class, personsSerializer), players[input.readInt(true)], input.readString());
@@ -279,7 +279,7 @@ public class Kryo {
 	static class ImageSerializer extends com.esotericsoftware.kryo.Serializer<Image> {
 		static private final Size[] sizes = Size.values();
 
-		public Image read (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<Image> type) {
+		public Image read (com.esotericsoftware.kryo.Kryo kryo, Input input, Class<? extends Image> type) {
 			return new Image(input.readString(), input.readString(), input.readInt(true), input.readInt(true),
 				sizes[input.readInt(true)]);
 		}
