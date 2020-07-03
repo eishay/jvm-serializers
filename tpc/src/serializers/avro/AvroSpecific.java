@@ -1,7 +1,7 @@
 package serializers.avro;
 
-import com.linkedin.avro.fastserde.FastSpecificDatumReader;
-import com.linkedin.avro.fastserde.FastSpecificDatumWriter;
+import com.rtbhouse.utils.avro.FastSpecificDatumReader;
+import com.rtbhouse.utils.avro.FastSpecificDatumWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
