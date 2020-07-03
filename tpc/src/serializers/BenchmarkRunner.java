@@ -106,8 +106,6 @@ public class BenchmarkRunner extends MediaItemBenchmark
         MongoDB.register(groups);
 
         // XML-based formats; first textual XML
-        JaxbAalto.register(groups);
-        Jaxb.register(groups);
         XmlStax.register(groups, true, true, false); // woodstox/aalto/-
         XmlXStream.register(groups);
         JacksonXmlDatabind.register(groups);
