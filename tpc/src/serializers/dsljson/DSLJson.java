@@ -4,7 +4,8 @@ import data.media.MediaContent;
 import serializers.*;
 
 import com.dslplatform.json.*;
-import com.dslplatform.json.runtime.Settings;
+
+import java.io.ByteArrayOutputStream;
 
 public class DSLJson {
 
@@ -17,37 +18,29 @@ public class DSLJson {
     }
 
     static class DSLJsonSerializer extends Serializer<MediaContent> {
-        private final JsonWriter writer;
-        private final JsonReader reader;
-        private final JsonWriter.WriteObject<MediaContent> encoder;
-        private final JsonReader.ReadObject<MediaContent> decoder;
-        private final boolean asArray;
+        final boolean asArray;
+        final DslJson<Object> json;
+        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
         DSLJsonSerializer(boolean asArray) {
-            DslJson<Object> dslJson = new DslJson<>(Settings.withRuntime().allowArrayFormat(asArray).includeServiceLoader());
-            this.writer = dslJson.newWriter();
-            this.reader = dslJson.newReader();
-            this.encoder = dslJson.tryFindWriter(MediaContent.class);
-            this.decoder = dslJson.tryFindReader(MediaContent.class);
             this.asArray = asArray;
+            this.json = new DslJson<Object>(new DslJson.Settings<>().allowArrayFormat(asArray).includeServiceLoader());
         }
 
         @Override
         public String getName() {
-            return asArray ? "json-array/dsl-json/databind" : "json/dsl-json/databind";
+            return this.asArray ? "json-array/dsl-json/databind" : "json/dsl-json/databind";
         }
 
         @Override
         public MediaContent deserialize(final byte[] array) throws Exception {
-            reader.process(array, array.length).read();
-            return decoder.read(reader);
+            return json.deserialize(MediaContent.class, array, array.length);
         }
 
         @Override
         public byte[] serialize(final MediaContent content) throws Exception {
-            writer.reset();
-            encoder.write(writer, content);
-            return writer.toByteArray();
+            json.serialize(content, buffer);
+            return buffer.toByteArray();
         }
     }
 }
