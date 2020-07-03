@@ -140,7 +140,6 @@ public class JBossMarshalling {
 
 	    	MarshallingConfiguration cfg = new MarshallingConfiguration();
 	    	cfg.setBufferSize(Serializer.BUFFER_SIZE);
-	    	cfg.setExternalizerCreator(new SunReflectiveCreator());
 
 	    	if (useCustomClassTable) {
 	    		cfg.setClassTable(new CustomClassTable());
@@ -387,20 +386,10 @@ public class JBossMarshalling {
 			}
 
 			@Override
-			public void readExternal(
-				final Object subject,
-				final ObjectInput input
-			) throws IOException, ClassNotFoundException {
-				readMedia(input, (Media)subject);
-			}
-
-			@Override
-			public Object createExternal(
-				final Class<?> subjectType,
-				final ObjectInput input,
-				final Creator defaultCreator
-			) throws IOException, ClassNotFoundException {
-				return new Media();
+			public Object createExternal(Class<?> aClass, ObjectInput objectInput) throws IOException, ClassNotFoundException {
+				Media m = new Media();
+				readMedia(objectInput, m);
+				return m;
 			}
 		}
 
@@ -418,20 +407,10 @@ public class JBossMarshalling {
 			}
 
 			@Override
-			public void readExternal(
-				final Object subject,
-				final ObjectInput input
-			) throws IOException, ClassNotFoundException {
-				readMediaContent(input, (MediaContent)subject);
-			}
-
-			@Override
-			public Object createExternal(
-				final Class<?> subjectType,
-				final ObjectInput input,
-				final Creator defaultCreator
-			) throws IOException, ClassNotFoundException {
-				return new MediaContent();
+			public Object createExternal(Class<?> aClass, ObjectInput objectInput) throws IOException, ClassNotFoundException {
+				MediaContent m = new MediaContent();
+				readMediaContent(objectInput, m);
+				return m;
 			}
 		}
 
@@ -455,19 +434,7 @@ public class JBossMarshalling {
 			}
 
 			@Override
-			public void readExternal(
-				final Object subject,
-				final ObjectInput input
-			) throws IOException, ClassNotFoundException {
-				// there is no state
-			}
-
-			@Override
-			public Object createExternal(
-				final Class<?> subjectType,
-				final ObjectInput input,
-				final Creator defaultCreator
-			) throws IOException, ClassNotFoundException {
+			public Object createExternal(Class<?> subjectType, ObjectInput objectInput) throws IOException, ClassNotFoundException {
 				for (Externalizer ext : EXTERNALIZERS) {
 					if (ext.getClass().equals(subjectType)) {
 						return ext;
@@ -492,20 +459,10 @@ public class JBossMarshalling {
 			}
 
 			@Override
-			public void readExternal(
-				final Object subject,
-				final ObjectInput input
-			) throws IOException, ClassNotFoundException {
-				readImage(input, (Image)subject);
-			}
-
-			@Override
-			public Object createExternal(
-				final Class<?> subjectType,
-				final ObjectInput input,
-				final Creator defaultCreator
-			) throws IOException, ClassNotFoundException {
-				return new Image();
+			public Object createExternal(Class<?> aClass, ObjectInput objectInput) throws IOException, ClassNotFoundException {
+				Image i = new Image();
+				readImage(objectInput, i);
+				return i;
 			}
 		}
 
