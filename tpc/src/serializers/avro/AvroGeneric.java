@@ -1,7 +1,7 @@
 package serializers.avro;
 
-import com.rtbhouse.utils.avro.FastGenericDatumReader;
-import com.rtbhouse.utils.avro.FastGenericDatumWriter;
+import com.linkedin.avro.fastserde.FastGenericDatumReader;
+import com.linkedin.avro.fastserde.FastGenericDatumWriter;
 import data.media.*;
 
 import org.apache.avro.Schema;
