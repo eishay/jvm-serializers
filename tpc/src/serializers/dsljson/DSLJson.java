@@ -4,8 +4,7 @@ import data.media.MediaContent;
 import serializers.*;
 
 import com.dslplatform.json.*;
-
-import java.io.ByteArrayOutputStream;
+import com.dslplatform.json.runtime.Settings;
 
 public class DSLJson {
 
@@ -18,29 +17,37 @@ public class DSLJson {
     }
 
     static class DSLJsonSerializer extends Serializer<MediaContent> {
-        final boolean asArray;
-        final DslJson<Object> json;
-        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        private final JsonWriter writer;
+        private final JsonReader reader;
+        private final JsonWriter.WriteObject<MediaContent> encoder;
+        private final JsonReader.ReadObject<MediaContent> decoder;
+        private final boolean asArray;
 
         DSLJsonSerializer(boolean asArray) {
+            DslJson<Object> dslJson = new DslJson<>(Settings.withRuntime().allowArrayFormat(asArray).includeServiceLoader());
+            this.writer = dslJson.newWriter();
+            this.reader = dslJson.newReader();
+            this.encoder = dslJson.tryFindWriter(MediaContent.class);
+            this.decoder = dslJson.tryFindReader(MediaContent.class);
             this.asArray = asArray;
-            this.json = new DslJson<Object>(new DslJson.Settings<>().allowArrayFormat(asArray).includeServiceLoader());
         }
 
         @Override
         public String getName() {
-            return this.asArray ? "json-array/dsl-json/databind" : "json/dsl-json/databind";
+            return asArray ? "json-array/dsl-json/databind" : "json/dsl-json/databind";
         }
 
         @Override
         public MediaContent deserialize(final byte[] array) throws Exception {
-            return json.deserialize(MediaContent.class, array, array.length);
+            reader.process(array, array.length).read();
+            return decoder.read(reader);
         }
 
         @Override
         public byte[] serialize(final MediaContent content) throws Exception {
-            json.serialize(content, buffer);
-            return buffer.toByteArray();
+            writer.reset();
+            encoder.write(writer, content);
+            return writer.toByteArray();
         }
     }
 }
