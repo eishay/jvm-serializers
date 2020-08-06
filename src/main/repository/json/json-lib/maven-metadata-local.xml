@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>json</groupId>
+  <artifactId>json-lib</artifactId>
+  <versioning>
+    <release>2.4-jdk15</release>
+    <versions>
+      <version>2.4-jdk15</version>
+    </versions>
+    <lastUpdated>20160204080000</lastUpdated>
+  </versioning>
+</metadata>

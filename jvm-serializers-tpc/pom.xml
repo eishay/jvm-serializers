@@ -1,0 +1,537 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>jvm-serializers</groupId>
+    <artifactId>jvm-serializers-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <groupId>jvm-serializers</groupId>
+  <artifactId>jvm-serializers-tpc</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>jvm-serializers-tpc</name>
+  <description>tpc of jvm-serializers Terraformed... by jim@psychosynthintelligence... on x86_64 x86_64 GNU/Linux... for  protowar,scala_media_container,tpc... </description>
+  <url>http://psychosynthintelligence/tpc</url>
+  <scm>
+    <tag>HEAD</tag>
+  </scm>
+  <!-- dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+-->
+  <repositories>
+    <repository>
+      <id>jvm-serializers-legacy</id>
+      <name>jvm-serializers-Repo</name>
+      <url> file://${basedir}/../src/main/repository </url>
+      <layout>default</layout>
+    </repository>
+  </repositories>
+  <dependencies>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>3.3.2.GA</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.transaction</groupId>
+      <artifactId>jta</artifactId>
+      <version>1.0.1B</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-management</artifactId>
+      <version>6.1H.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <dependency>
+      <artifactId> FastInfoset </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.2.6 </version>
+    </dependency>
+    <dependency>
+      <artifactId> aalto-gpl </artifactId>
+      <groupId> aalto </groupId>
+      <version> 0.9.5 </version>
+    </dependency>
+    <dependency>
+      <artifactId> activemq-protobuf </artifactId>
+      <groupId> activemq </groupId>
+      <version> 1.1-SNAPSHOT </version>
+    </dependency>
+    <dependency>
+      <artifactId> activemq-util </artifactId>
+      <groupId> activemq </groupId>
+      <version> 6.0-SNAPSHOT </version>
+    </dependency>
+    <dependency>
+      <artifactId> argo </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 2.10 </version>
+    </dependency>
+    <dependency>
+      <artifactId> asm </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 4.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> asm-commons </artifactId>
+      <groupId> asm </groupId>
+      <version> 3.2 </version>
+    </dependency>
+    <dependency>
+      <artifactId> avro </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.7.2 </version>
+    </dependency>
+    <dependency>
+      <artifactId> avro-compiler </artifactId>
+      <groupId> avro </groupId>
+      <version> 1.7.2 </version>
+    </dependency>
+    <dependency>
+      <artifactId> avro-tools </artifactId>
+      <groupId> avro </groupId>
+      <version> 1.7.2 </version>
+    </dependency>
+    <dependency>
+      <artifactId> bson4jackson </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 2.3.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> cakoose-util </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.0-SNAPSHOT </version>
+    </dependency>
+    <dependency>
+      <artifactId> cks-core </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.0-SNAPSHOT </version>
+    </dependency>
+    <dependency>
+      <artifactId> cks-text-reader </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.0-SNAPSHOT </version>
+    </dependency>
+    <dependency>
+      <artifactId> cks-text-writer </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.0-SNAPSHOT </version>
+    </dependency>
+    <dependency>
+      <artifactId> cks-tool </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.0-SNAPSHOT </version>
+    </dependency>
+    <dependency>
+      <artifactId> commons-beanutils </artifactId>
+      <groupId> commons </groupId>
+      <version> 1.8.3 </version>
+    </dependency>
+    <dependency>
+      <artifactId> commons-codec </artifactId>
+      <groupId> commons </groupId>
+      <version> 1.3 </version>
+    </dependency>
+    <dependency>
+      <artifactId> commons-collections </artifactId>
+      <groupId> commons </groupId>
+      <version> 3.2.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> commons-httpclient </artifactId>
+      <groupId> commons </groupId>
+      <version> 3.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> commons-lang </artifactId>
+      <groupId> commons </groupId>
+      <version> 2.4 </version>
+    </dependency>
+    <dependency>
+      <artifactId> commons-logging </artifactId>
+      <groupId> commons </groupId>
+      <version> 1.1.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> dsl-clc </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.0-SNAPSHOT </version>
+    </dependency>
+    <dependency>
+      <artifactId> dsl-json </artifactId>
+      <groupId> dsl </groupId>
+      <version> 0.9.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> exi-exificient </artifactId>
+      <groupId> exi </groupId>
+      <version> 0.9.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> ezmorph </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.0.6 </version>
+    </dependency>
+    <dependency>
+      <artifactId> fastjson </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.1.19 </version>
+    </dependency>
+    <dependency>
+      <artifactId> flexjson </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 2.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> fst </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.42 </version>
+    </dependency>
+    <dependency>
+      <artifactId> gson </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 2.2.2 </version>
+    </dependency>
+    <dependency>
+      <artifactId> hessian </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 4.0.7 </version>
+    </dependency>
+    <dependency>
+      <artifactId> jackson-all </artifactId>
+      <groupId> jackson </groupId>
+      <version> 1.9.6 </version>
+    </dependency>
+    <dependency>
+      <artifactId> jackson-annotations </artifactId>
+      <groupId> jackson </groupId>
+      <version> 2.5.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> jackson-core </artifactId>
+      <groupId> jackson </groupId>
+      <version> 2.5.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> jackson-databind </artifactId>
+      <groupId> jackson </groupId>
+      <version> 2.5.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> jackson-dataformat-avro </artifactId>
+      <groupId> jackson-dataformat </groupId>
+      <version> 2.5.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> jackson-dataformat-cbor </artifactId>
+      <groupId> jackson-dataformat </groupId>
+      <version> 2.5.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> jackson-dataformat-smile </artifactId>
+      <groupId> jackson-dataformat </groupId>
+      <version> 2.5.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> jackson-dataformat-xml </artifactId>
+      <groupId> jackson-dataformat </groupId>
+      <version> 2.5.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> jackson-dataformat-yaml </artifactId>
+      <groupId> jackson-dataformat </groupId>
+      <version> 2.5.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> jackson-jr-objects </artifactId>
+      <groupId> jackson-jr </groupId>
+      <version> 2.5.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> jackson-module-afterburner </artifactId>
+      <groupId> jackson-module </groupId>
+      <version> 2.5.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> javassist </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 3.15.0-GA </version>
+    </dependency>
+    <dependency>
+      <artifactId> javax.json </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.0-b06 </version>
+    </dependency>
+    <dependency>
+      <artifactId> javolution </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 5.5.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> jboss-marshalling-osgi </artifactId>
+      <groupId> jboss-marshalling </groupId>
+      <version> 1.3.15.GA </version>
+    </dependency>
+    <dependency>
+      <artifactId> jboss-serialization </artifactId>
+      <groupId> jboss </groupId>
+      <version> 1.0.3.GA </version>
+    </dependency>
+    <dependency>
+      <artifactId> jopt-simple </artifactId>
+      <groupId> jopt </groupId>
+      <version> 3.2 </version>
+    </dependency>
+    <dependency>
+      <artifactId> json </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 0.19-tpc </version>
+    </dependency>
+    <dependency>
+      <artifactId> json-lib </artifactId>
+      <groupId> json </groupId>
+      <version> 2.4-jdk15 </version>
+    </dependency>
+    <dependency>
+      <artifactId> json-smart </artifactId>
+      <groupId> json </groupId>
+      <version> 1.0.8 </version>
+    </dependency>
+    <dependency>
+      <artifactId> json.org-ref </artifactId>
+      <groupId> json.org </groupId>
+      <version> 2011.06.21 </version>
+    </dependency>
+    <dependency>
+      <artifactId> json_simple </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> jsonij </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 0.2.7 </version>
+    </dependency>
+    <dependency>
+      <artifactId> jsonpath </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 2011.06.23 </version>
+    </dependency>
+    <dependency>
+      <artifactId> kryo </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 2.23.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> libthrift </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.0-SNAPSHOT </version>
+    </dependency>
+    <dependency>
+      <artifactId> log4j </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.2.8 </version>
+    </dependency>
+    <dependency>
+      <artifactId> minlog-none </artifactId>
+      <groupId> minlog </groupId>
+      <version> 1.2 </version>
+    </dependency>
+    <dependency>
+      <artifactId> mongo </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 2.4 </version>
+    </dependency>
+    <dependency>
+      <artifactId> msgpack </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 0.6.9 </version>
+    </dependency>
+    <dependency>
+      <artifactId> objenesis </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.2 </version>
+    </dependency>
+    <dependency>
+      <artifactId> obser </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 0.9.0-SNAPSHOT </version>
+    </dependency>
+    <dependency>
+      <artifactId> paranamer </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.5 </version>
+    </dependency>
+    <dependency>
+      <artifactId> protobuf-java </artifactId>
+      <groupId> protobuf </groupId>
+      <version> 2.3.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> protostuff-api </artifactId>
+      <groupId> protostuff </groupId>
+      <version> 1.0.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> protostuff-collectionschema </artifactId>
+      <groupId> protostuff </groupId>
+      <version> 1.0.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> protostuff-compiler </artifactId>
+      <groupId> protostuff </groupId>
+      <version> 1.0.1-jarjar </version>
+    </dependency>
+    <dependency>
+      <artifactId> protostuff-core </artifactId>
+      <groupId> protostuff </groupId>
+      <version> 1.0.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> protostuff-json </artifactId>
+      <groupId> protostuff </groupId>
+      <version> 1.0.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> protostuff-runtime </artifactId>
+      <groupId> protostuff </groupId>
+      <version> 1.0.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> protostuff-xml </artifactId>
+      <groupId> protostuff </groupId>
+      <version> 1.0.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> reflectasm </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.05 </version>
+    </dependency>
+    <dependency>
+      <artifactId> sbinary_2.11 </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 0.4.3-SNAPSHOT </version>
+    </dependency>
+    <dependency>
+      <artifactId> scala-library_2.11.2 </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.0-SNAPSHOT </version>
+    </dependency>
+    <dependency>
+      <artifactId> scala-reflect_2.11.2 </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.0-SNAPSHOT </version>
+    </dependency>
+    <dependency>
+      <artifactId> scala-xml_2.11 </artifactId>
+      <groupId> scala </groupId>
+      <version> 1.0.2 </version>
+    </dependency>
+    <dependency>
+      <artifactId> slf4j-api </artifactId>
+      <groupId> slf4j </groupId>
+      <version> 1.5.10 </version>
+    </dependency>
+    <dependency>
+      <artifactId> slf4j-nop </artifactId>
+      <groupId> slf4j </groupId>
+      <version> 1.5.10 </version>
+    </dependency>
+    <dependency>
+      <artifactId> snakeyaml </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> stax-api </artifactId>
+      <groupId> stax </groupId>
+      <version> 1.0.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> stax2-api </artifactId>
+      <groupId> stax2 </groupId>
+      <version> 3.0.1 </version>
+    </dependency>
+    <dependency>
+      <artifactId> stephenerialization </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 3.0.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> svenson </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.4.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> trove </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.0.2 </version>
+    </dependency>
+    <dependency>
+      <artifactId> velocity </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.7-dep </version>
+    </dependency>
+    <dependency>
+      <artifactId> velocity </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.7 </version>
+    </dependency>
+    <dependency>
+      <artifactId> wobly-core </artifactId>
+      <groupId> wobly </groupId>
+      <version> 1.0 </version>
+    </dependency>
+    <dependency>
+      <artifactId> woodstox-core-asl </artifactId>
+      <groupId> woodstox-core </groupId>
+      <version> 4.0.7 </version>
+    </dependency>
+    <dependency>
+      <artifactId> xpp3_min </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.1.4c </version>
+    </dependency>
+    <dependency>
+      <artifactId> xstream </artifactId>
+      <groupId> deprecated </groupId>
+      <version> 1.3.1 </version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <fork>true</fork>
+          <meminitial>1024m</meminitial>
+          <maxmem>1024m</maxmem>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javacc-maven-plugin</artifactId>
+        <version>2.4.1</version>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>

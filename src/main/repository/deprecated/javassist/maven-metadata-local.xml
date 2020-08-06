@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>deprecated</groupId>
+  <artifactId>javassist</artifactId>
+  <versioning>
+    <release>3.15.0-GA</release>
+    <versions>
+      <version>3.15.0-GA</version>
+    </versions>
+    <lastUpdated>20160204075955</lastUpdated>
+  </versioning>
+</metadata>

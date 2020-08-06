@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>activemq</groupId>
+  <artifactId>activemq-util</artifactId>
+  <versioning>
+    <versions>
+      <version>6.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20160204075920</lastUpdated>
+  </versioning>
+</metadata>

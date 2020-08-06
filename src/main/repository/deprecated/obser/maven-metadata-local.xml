@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>deprecated</groupId>
+  <artifactId>obser</artifactId>
+  <versioning>
+    <versions>
+      <version>0.9.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20160204080009</lastUpdated>
+  </versioning>
+</metadata>

@@ -31,5 +31,5 @@ public enum SerGraph {
      * capable of read/write fully linked object graphs with reference restauration
      */
     FULL_GRAPH,
-    UNKNOWN
+       UNKNOWN
 }
