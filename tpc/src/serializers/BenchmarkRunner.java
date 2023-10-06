@@ -6,6 +6,7 @@ import serializers.capnproto.CapNProto;
 import serializers.colfer.Colfer;
 import serializers.datakernel.DataKernelSerializer;
 import serializers.flatbuffers.FlatBuffers;
+import serializers.fury.Fury;
 import serializers.jackson.*;
 import serializers.javaxjson.*;
 import serializers.json.*;
@@ -41,6 +42,7 @@ public class BenchmarkRunner extends MediaItemBenchmark
         Hessian.register(groups);
         Kryo.register(groups);
         FastSerialization.register(groups);
+        Fury.register(groups);
         Wobly.register(groups);
         JBossSerialization.register(groups);
         JBossMarshalling.register(groups);

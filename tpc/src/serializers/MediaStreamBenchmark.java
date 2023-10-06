@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 
 import serializers.avro.AvroSpecific;
 import serializers.avro.AvroGeneric;
+import serializers.fury.Fury;
 import serializers.jackson.*;
 import serializers.kryo.Kryo;
 import serializers.protobuf.Protobuf;
@@ -36,6 +37,7 @@ public class MediaStreamBenchmark extends BenchmarkBase
         Hessian.register(groups);
         Kryo.register(groups);
         FastSerialization.register(groups);
+        Fury.register(groups);
         JBossSerialization.register(groups);
         JBossMarshalling.register(groups);
 
@@ -127,6 +129,7 @@ public class MediaStreamBenchmark extends BenchmarkBase
             	objects[i] = transformer.forwardAll(src);
             }
             ByteArrayOutputStream out = serializer.outputStreamForList(src);
+            System.out.println("start benchmark");
             long start = System.nanoTime();
             for (int i = 0; i < iterations; i++) {
                 serializer.serializeItems(objects[i], out);
@@ -143,6 +146,10 @@ public class MediaStreamBenchmark extends BenchmarkBase
             @SuppressWarnings("unchecked")
             J[] src = (J[]) value;
             byte[] bytes = serializer.serializeAsBytes(transformer.forwardAll(src));
+            for (int i = 0; i < iterations; i++) {
+                serializer.deserializeItems(new ByteArrayInputStream(bytes), src.length);
+            }
+            System.out.println("start benchmark");
             long start = System.nanoTime();
             for (int i = 0; i < iterations; i++) {
                 serializer.deserializeItems(new ByteArrayInputStream(bytes), src.length);
