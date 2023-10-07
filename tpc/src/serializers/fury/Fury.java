@@ -7,6 +7,8 @@ import data.media.Media;
 import data.media.MediaContent;
 import data.media.MediaTransformer;
 import io.fury.config.FuryBuilder;
+import io.fury.memory.MemoryBuffer;
+import io.fury.util.LoggerFactory;
 import serializers.JavaBuiltIn;
 import serializers.SerClass;
 import serializers.SerFeatures;
@@ -27,7 +29,6 @@ public class Fury {
 	public static void register (TestGroups groups) {
 		register(groups.media, JavaBuiltIn.mediaTransformer, MediaTypeHandler);
 	}
-
 
 	public static final MediaTransformer<MediaContent> mediaTransformer = new MediaTransformer<MediaContent>() {
 
@@ -86,6 +87,7 @@ public class Fury {
 	public static class BasicSerializer<T> extends Serializer<T> {
 		private final Class<T> type;
 		final io.fury.Fury fury;
+		final MemoryBuffer buffer;
 		private final String name;
 
 		public BasicSerializer (
@@ -97,6 +99,7 @@ public class Fury {
 			TypeHandler<T> handler, String name, boolean register, boolean references, boolean compression) {
 			this.type = handler.type;
 			this.name = name;
+			LoggerFactory.disableLogging();
 			FuryBuilder builder = io.fury.Fury.builder()
 				.withRefTracking(references)
 				.requireClassRegistration(register);
@@ -108,6 +111,7 @@ public class Fury {
 			if (register) {
 				handler.register(fury);
 			}
+			buffer = MemoryBuffer.newHeapBuffer(512);
 		}
 
 		public T deserialize (byte[] array) {
@@ -120,7 +124,14 @@ public class Fury {
 
 		public void serializeItems (T[] items, OutputStream outStream) throws Exception {
 			for (T item : items) {
-				fury.serializeJavaObject(outStream, item);
+				buffer.writerIndex(4);
+				// Fury serializeJavaObject(outStream, item) has special optimization for
+				// ByteOutputStream which save a copy, we ignore it to make a copy to compare
+				// with other frameworks.
+				fury.serializeJavaObject(buffer, item);
+				int size = buffer.writerIndex();
+				buffer.putInt(0, size - 4);
+				outStream.write(buffer.getHeapMemory(), 0, size);
 			}
 			outStream.flush();
 		}
@@ -128,8 +139,16 @@ public class Fury {
 		@SuppressWarnings("unchecked")
 		public T[] deserializeItems (InputStream inStream, int numberOfItems) throws IOException {
 			MediaContent[] result = new MediaContent[numberOfItems];
-			for (int i = 0; i < numberOfItems; ++i)
-				result[i] = fury.deserializeJavaObject(inStream, MediaContent.class);
+			byte[] heapMemory = buffer.getHeapMemory();
+			for (int i = 0; i < numberOfItems; ++i) {
+				buffer.readerIndex(0);
+				assert inStream.read(heapMemory, 0, 4) == 4;
+				int size = buffer.readInt();
+				assert inStream.read(heapMemory, 4, size) == size;
+				// don't use `deserializeJavaObject(inStream, MediaContent.class)` to make an extra copy
+				// to compare with other frameworks.
+				result[i] = fury.deserializeJavaObject(buffer, MediaContent.class);
+			}
 			return (T[])result;
 		}
 
