@@ -7,6 +7,7 @@ import data.media.Media;
 import data.media.MediaContent;
 import data.media.MediaTransformer;
 import io.fury.config.FuryBuilder;
+import io.fury.util.LoggerFactory;
 import serializers.JavaBuiltIn;
 import serializers.SerClass;
 import serializers.SerFeatures;
@@ -27,7 +28,6 @@ public class Fury {
 	public static void register (TestGroups groups) {
 		register(groups.media, JavaBuiltIn.mediaTransformer, MediaTypeHandler);
 	}
-
 
 	public static final MediaTransformer<MediaContent> mediaTransformer = new MediaTransformer<MediaContent>() {
 
@@ -97,6 +97,7 @@ public class Fury {
 			TypeHandler<T> handler, String name, boolean register, boolean references, boolean compression) {
 			this.type = handler.type;
 			this.name = name;
+			LoggerFactory.disableLogging();
 			FuryBuilder builder = io.fury.Fury.builder()
 				.withRefTracking(references)
 				.requireClassRegistration(register);
