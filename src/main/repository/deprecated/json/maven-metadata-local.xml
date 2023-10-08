@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>deprecated</groupId>
+  <artifactId>json</artifactId>
+  <versioning>
+    <release>0.19-tpc</release>
+    <versions>
+      <version>0.19-tpc</version>
+    </versions>
+    <lastUpdated>20160204075958</lastUpdated>
+  </versioning>
+</metadata>

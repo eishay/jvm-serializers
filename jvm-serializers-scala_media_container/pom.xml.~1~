@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>jvm-serializers</groupId>
+    <artifactId>jvm-serializers-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <groupId>jvm-serializers</groupId>
+  <artifactId>jvm-serializers-scala_media_container</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>jvm-serializers-scala_media_container</name><description>scala_media_container of jvm-serializers Terraformed... by jim@psychosynthintelligence... on x86_64 x86_64 GNU/Linux... for  protowar,scala_media_container,tpc... </description>
+  <url>http://psychosynthintelligence/scala_media_container</url><scm><tag>HEAD</tag></scm>
+  <!-- dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+--> <repositories> <repository> <id>jvm-serializers-legacy</id> <name>jvm-serializers-Repo</name> <url> file://${basedir}/../src/main/repository </url> <layout>default</layout> </repository> </repositories> <dependencies> </dependencies> <build> <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-compiler-plugin</artifactId> <configuration> <source>1.5</source> <target>1.5</target> <fork>true</fork> <meminitial>1024m</meminitial> <maxmem>1024m</maxmem> </configuration> </plugin> </plugins> </build> <reporting> <plugins> <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>javacc-maven-plugin</artifactId> <version>2.4.1</version> </plugin> </plugins> </reporting> </project>

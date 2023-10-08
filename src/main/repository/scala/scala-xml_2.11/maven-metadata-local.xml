@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>scala</groupId>
+  <artifactId>scala-xml_2.11</artifactId>
+  <versioning>
+    <release>1.0.2</release>
+    <versions>
+      <version>1.0.2</version>
+    </versions>
+    <lastUpdated>20160204080011</lastUpdated>
+  </versioning>
+</metadata>
